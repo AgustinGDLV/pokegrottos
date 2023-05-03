@@ -72,6 +72,10 @@ Debug_Script_1::
 	end
 
 Debug_Script_2::
+	fadescreen FADE_TO_BLACK
+	special ShowMapScreen
+	waitstate
+	releaseall
 	end
 
 Debug_Script_3::

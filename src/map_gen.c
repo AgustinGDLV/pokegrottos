@@ -7,9 +7,19 @@
 #include "text.h"
 
 // global floorplan
-EWRAM_DATA struct Floorplan* gFloorplan = NULL; 
+EWRAM_DATA struct Floorplan gFloorplan = {0};
 
 // Queue helper functions
+static void ZeroQueue(struct Queue* queue)
+{
+    u32 i;
+    queue->size = 0;
+    queue->front = 0;
+    queue->rear = 0;
+    for (i = 0; i < MAX_QUEUE_SIZE; ++i)
+        queue->arr[i] = 0;
+}
+
 static void Enqueue(struct Queue* queue, u8 item)
 {
     if (queue->size == MAX_QUEUE_SIZE)
@@ -46,6 +56,14 @@ static void DebugPrintQueue(struct Queue* queue)
 }
 
 // Stack helper functions
+static void ZeroStack(struct Stack* stack)
+{
+    u32 i;
+    stack->top = 0;
+    for (i = 0; i < MAX_STACK_SIZE; ++i)
+        stack->arr[i] = 0;
+}
+
 static void Push(struct Stack* stack, u8 item)
 {
     if (stack->top >= MAX_STACK_SIZE)
@@ -87,6 +105,17 @@ static bool32 Visit(struct Floorplan* floorplan, u8 i)
     return TRUE;
 }
 
+static void ZeroFloorplan(struct Floorplan* floorplan)
+{
+    u32 i;
+    floorplan->numRooms = 0;
+    floorplan->maxRooms = 0;
+    ZeroQueue(&floorplan->queue);
+    ZeroStack(&floorplan->endrooms);
+    for (i = 0; i < LAYOUT_SIZE; ++i)
+        floorplan->layout[i] = 0;
+}
+
 // Populates an empty floorplan.
 // TODO: Take into account depth.
 static void PopulateFloorplan(struct Floorplan* floorplan)
@@ -118,13 +147,14 @@ static void PopulateFloorplan(struct Floorplan* floorplan)
 }
 
 // TODO: Make this more functional (wow!).
-static void AssignEndrooms(struct Floorplan* floorplan)
+static void AssignSpecialRooms(struct Floorplan* floorplan)
 {
-    floorplan->layout[Pop(&floorplan->endrooms)] = 3;
+    floorplan->layout[Pop(&floorplan->endrooms)] = BOSS_ROOM;
     while (floorplan->endrooms.top > 0)
-        floorplan->layout[Pop(&floorplan->endrooms)] = 2;
+        floorplan->layout[Pop(&floorplan->endrooms)] = TREASURE_ROOM;
 }
 
+// This prints the floor layout backwards.
 void DebugPrintFloorplan(struct Floorplan* floorplan)
 {
     u32 x, y, row, exponent;
@@ -134,7 +164,7 @@ void DebugPrintFloorplan(struct Floorplan* floorplan)
         exponent = 1;
         for(x = 0; x < MAX_LAYOUT_WIDTH; ++x)
         {
-            row += floorplan->layout[x + y*10] * exponent;
+            row += floorplan->layout[ROOM_COORD(x, y)] * exponent;
             exponent *= 10;
         }
         DebugPrintf("%d", row);
@@ -144,11 +174,9 @@ void DebugPrintFloorplan(struct Floorplan* floorplan)
 void CreateDebugFloorplan(void)
 {
     do {
-        if (gFloorplan != NULL)
-            Free(gFloorplan);
-        gFloorplan = AllocZeroed(sizeof(struct Floorplan));
-        PopulateFloorplan(gFloorplan);
-    } while (gFloorplan->numRooms < MIN_ROOMS);
-    AssignEndrooms(gFloorplan);
-    DebugPrintFloorplan(gFloorplan);
+        ZeroFloorplan(&gFloorplan);
+        PopulateFloorplan(&gFloorplan);
+    } while (gFloorplan.numRooms < MIN_ROOMS);
+    AssignSpecialRooms(&gFloorplan);
+    DebugPrintFloorplan(&gFloorplan);
 }

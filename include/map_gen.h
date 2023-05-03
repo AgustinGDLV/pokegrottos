@@ -11,6 +11,8 @@
 
 #define STARTING_ROOM   45
 
+#define ROOM_COORD(x, y)    (x + y*10)
+
 struct Queue {
     u8 front;
     u8 rear;
@@ -30,6 +32,15 @@ struct Floorplan {
     struct Queue queue;
     struct Stack endrooms;
 };
+
+enum RoomTypes {
+    NORMAL_ROOM = 1,
+    BOSS_ROOM,
+    TREASURE_ROOM,
+    SHOP_ROOM,
+};
+
+extern struct Floorplan gFloorplan;
 
 void DebugPrintFloorplan(struct Floorplan* floorplan);
 void CreateDebugFloorplan(void);
