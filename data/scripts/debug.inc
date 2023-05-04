@@ -79,7 +79,7 @@ Debug_Script_2::
 	end
 
 Debug_Script_3::
-	trywarptoroom 2 @ EAST
+	trywarptoroom DIR_EAST
 	end
 
 Debug_Script_4::

@@ -8,12 +8,6 @@
 #define MAX_LAYOUT_WIDTH    9
 #define MAX_LAYOUT_HEIGHT   8
 
-// Directions
-#define NORTH   (1 << 0)
-#define EAST    (1 << 1)
-#define SOUTH   (1 << 2)
-#define WEST    (1 << 3)
-
 // Misc. Constants
 #define MIN_ROOMS       7
 #define STARTING_ROOM   45

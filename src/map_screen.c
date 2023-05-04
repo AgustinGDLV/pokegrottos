@@ -281,6 +281,7 @@ static void Task_MapScreenFadeOutAndWarp(u8 taskId)
 {
     if (!gPaletteFade.active && !IsSEPlaying())
 	{
+        gSpecialVar_0x8000 = 0;
         SetWarpDestinationToRoom(gSaveBlock1Ptr->currentRoom);
         WarpIntoMap();
         SetMainCallback2(CB2_LoadMap);

@@ -1,5 +1,6 @@
 #include "global.h"
 #include "event_data.h"
+#include "field_player_avatar.h"
 #include "main.h"
 #include "malloc.h"
 #include "map_gen.h"
@@ -120,8 +121,8 @@ static void ZeroFloorplan(struct Floorplan* floorplan)
     {
         floorplan->layout[i].type = 0;
         floorplan->layout[i].visited = FALSE;
-        floorplan->layout[i].mapNum = 0;
-        floorplan->layout[i].mapGroup = 0;
+        floorplan->layout[i].mapNum = 1;
+        floorplan->layout[i].mapGroup = 34;
     }
 }
 
@@ -224,24 +225,25 @@ bool32 IsRoomMapIdValid(u8 i)
 
 void SetWarpDestinationToRoom(u8 i)
 {
-    SetWarpDestination(gFloorplan.layout[i].mapGroup, gFloorplan.layout[i].mapNum, WARP_ID_NONE, -1, -1);
+    SetWarpDestination(gFloorplan.layout[i].mapGroup, gFloorplan.layout[i].mapNum, gSpecialVar_0x8000, -1, -1);
 }
 
 void TryWarpToRoom(void)
 {
     u32 target;
+    gSpecialVar_Result = FALSE;
     switch (gSpecialVar_0x8000) // stores intended direction
     {
-        case NORTH:
+        case DIR_NORTH:
             target = gSaveBlock1Ptr->currentRoom - 10;
             break;
-        case SOUTH:
+        case DIR_SOUTH:
             target = gSaveBlock1Ptr->currentRoom + 10;
             break;
-        case EAST:
+        case DIR_EAST:
             target = gSaveBlock1Ptr->currentRoom + 1;
             break;
-        case WEST:
+        case DIR_WEST:
             target = gSaveBlock1Ptr->currentRoom - 1;
             break;
     }
@@ -250,8 +252,10 @@ void TryWarpToRoom(void)
     if (!DoesRoomExist(target) || !IsRoomMapIdValid(target))
         return;
 
+    gSpecialVar_Result = TRUE;
     gSaveBlock1Ptr->currentRoom = target;
     gFloorplan.layout[target].visited = TRUE;
+    FlagSet(FLAG_SET_PLAYER_DIR_AFTER_WARP);
     SetWarpDestinationToRoom(target);
     WarpIntoMap();
     SetMainCallback2(CB2_LoadMap);
