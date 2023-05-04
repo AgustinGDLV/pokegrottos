@@ -61,5 +61,7 @@ void DebugPrintFloorplan(struct Floorplan* floorplan);
 void CreateDebugFloorplan(void);
 bool32 DoesRoomExist(u8 i);
 bool32 IsRoomAdjacentToVisited(u8 i);
+bool32 IsRoomMapIdValid(u8 i);
+void SetWarpDestinationToRoom(u8 i);
 
 #endif

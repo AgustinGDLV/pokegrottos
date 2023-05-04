@@ -217,9 +217,14 @@ bool32 IsRoomAdjacentToVisited(u8 i)
     return FALSE;
 }
 
-static bool32 IsRoomMapValid(u8 i)
+bool32 IsRoomMapIdValid(u8 i)
 {
-    return !(gFloorplan.layout[i].mapNum == 0 && gFloorplan.layout[i].mapGroup == 0);
+    return TRUE; //!(gFloorplan.layout[i].mapNum == 0 && gFloorplan.layout[i].mapGroup == 0);
+}
+
+void SetWarpDestinationToRoom(u8 i)
+{
+    SetWarpDestination(gFloorplan.layout[i].mapGroup, gFloorplan.layout[i].mapNum, WARP_ID_NONE, -1, -1);
 }
 
 void TryWarpToRoom(void)
@@ -242,12 +247,12 @@ void TryWarpToRoom(void)
     }
 
     // Don't warp if invalid room.
-    if (!DoesRoomExist(target) || !IsRoomMapValid(target))
+    if (!DoesRoomExist(target) || !IsRoomMapIdValid(target))
         return;
 
     gSaveBlock1Ptr->currentRoom = target;
     gFloorplan.layout[target].visited = TRUE;
-    SetWarpDestination(gFloorplan.layout[target].mapGroup, gFloorplan.layout[target].mapNum, WARP_ID_NONE, -1, -1);
+    SetWarpDestinationToRoom(target);
     WarpIntoMap();
     SetMainCallback2(CB2_LoadMap);
 }

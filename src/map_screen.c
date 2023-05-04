@@ -42,6 +42,7 @@ enum {
 enum Windows
 {
 	WIN_FLOOR,
+    // WIN_YESNO,
 	WINDOW_COUNT,
 };
 
@@ -66,6 +67,16 @@ static const struct WindowTemplate sMapScreenWinTemplates[WINDOW_COUNT + 1] =
 		.paletteNum = 15,
 		.baseBlock = 1,
 	},
+    // [WIN_YESNO] =
+    // {
+    //     .bg = 1,
+    //     .tilemapLeft = 24,
+    //     .tilemapTop = 13,
+    //     .width = 5,
+    //     .height = 4,
+    //     .paletteNum = 15,
+    //     .baseBlock = 2,
+    // },
 	DUMMY_WIN_TEMPLATE
 };
 
@@ -110,7 +121,7 @@ static const struct OamData sBossRoomOAM =
 	.priority = 2, // On BG 2
 };
 
-static void SpriteCB_Dummy(struct Sprite *);
+static void SpriteCB_Dummy(struct Sprite *sprite) {}
 static const struct SpriteTemplate sBossRoomSpriteTemplate =
 {
 	.tileTag = TAG_BOSS_ROOM,
@@ -165,9 +176,11 @@ static void CommitWindows(void);
 static void LoadMapScreenGfx(void);
 static void ClearTasksAndGraphicalStructs(void);
 static void ClearVramOamPlttRegs(void);
-static void Task_MapScreenFadeOut(u8 taskId);
+static void Task_MapScreenFadeOutAndExit(u8 taskId);
 static void Task_MapScreenWaitForKeypress(u8 taskId);
 static void Task_MapScreenFadeIn(u8 taskId);
+static void Task_MapScreenWarpYesNo(u8 taskId);
+static void Task_HandleMapScreenWarpYesNoInput(u8 taskId);
 static void InitMapScreen(void);
 static void ShowRooms(void);
 
@@ -243,7 +256,7 @@ void CB2_MapScreen(void)
 	}
 }
 
-static void Task_MapScreenFadeOut(u8 taskId)
+static void Task_MapScreenFadeOutAndExit(u8 taskId)
 {
 	if (!gPaletteFade.active)
 	{
@@ -256,48 +269,69 @@ static void Task_MapScreenFadeOut(u8 taskId)
 	}
 }
 
+static void Task_MapScreenFadeOutAndWarp(u8 taskId)
+{
+    if (!gPaletteFade.active)
+	{
+        PlaySE(SE_WARP_IN);
+        SetWarpDestinationToRoom(gSaveBlock1Ptr->currentRoom);
+        WarpIntoMap();
+        SetMainCallback2(CB2_LoadMap);
+		Free(sMapScreenTilemapPtr);
+        sMapScreenTilemapPtr = NULL;
+		FreeAllWindowBuffers();
+        ResetSpriteData();
+		DestroyTask(taskId);
+	}
+}
+
 static void Task_MapScreenWaitForKeypress(u8 taskId)
 {
-    if (gMain.newKeys & DPAD_UP && DoesRoomExist(gSaveBlock1Ptr->currentRoom - 10))
+    // Check if player is selecting a new room.
+    u32 target = gSaveBlock1Ptr->currentRoom;
+    if (gMain.newKeys & DPAD_UP)
+        target = gSaveBlock1Ptr->currentRoom - 10;
+    if (gMain.newKeys & DPAD_DOWN)
+        target = gSaveBlock1Ptr->currentRoom + 10;
+    if (gMain.newKeys & DPAD_RIGHT)
+        target = gSaveBlock1Ptr->currentRoom + 1;
+    if (gMain.newKeys & DPAD_LEFT)
+        target = gSaveBlock1Ptr->currentRoom - 1;
+
+    #ifdef NDEBUG
+    if (target != gSaveBlock1Ptr->currentRoom && DoesRoomExist(target) && gFloorplan.layout[target].visited
+        && IsRoomMapIdValid(target))
     {
         PlaySE(SE_SELECT);
-        gSaveBlock1Ptr->currentRoom -= 10;
-        gFloorplan.layout[gSaveBlock1Ptr->currentRoom].visited = TRUE;
+        gSaveBlock1Ptr->currentRoom = target;
         ShowRooms();
     }
-    if (gMain.newKeys & DPAD_DOWN && DoesRoomExist(gSaveBlock1Ptr->currentRoom + 10))
+    #else
+    // In Debug mode, you can reveal the map by navigating in this screen.
+    if (target != gSaveBlock1Ptr->currentRoom && DoesRoomExist(target) && IsRoomMapIdValid(target))
     {
         PlaySE(SE_SELECT);
-        gSaveBlock1Ptr->currentRoom += 10;
-        gFloorplan.layout[gSaveBlock1Ptr->currentRoom].visited = TRUE;
+        gFloorplan.layout[target].visited = TRUE;
+        gSaveBlock1Ptr->currentRoom = target;
         ShowRooms();
     }
-    if (gMain.newKeys & DPAD_LEFT && DoesRoomExist(gSaveBlock1Ptr->currentRoom - 1))
-    {
-        PlaySE(SE_SELECT);
-        gSaveBlock1Ptr->currentRoom -= 1;
-        gFloorplan.layout[gSaveBlock1Ptr->currentRoom].visited = TRUE;
-        ShowRooms();
-    }
-    if (gMain.newKeys & DPAD_RIGHT && DoesRoomExist(gSaveBlock1Ptr->currentRoom + 1))
-    {
-        PlaySE(SE_SELECT);
-        gSaveBlock1Ptr->currentRoom += 1;
-        gFloorplan.layout[gSaveBlock1Ptr->currentRoom].visited = TRUE;
-        ShowRooms();
-    }
-    if (gMain.newKeys & A_BUTTON)
+    #endif
+
+    // Try to warp to new room.
+    if (gMain.newKeys & A_BUTTON && gSaveBlock1Ptr->currentRoom != sRoomBuffer)
 	{
-		PlaySE(SE_RG_CARD_OPEN);
+		PlaySE(SE_SELECT);
 		BeginNormalPaletteFade(PALETTES_ALL, 0, 0, 16, RGB_BLACK);
-		gTasks[taskId].func = Task_MapScreenFadeOut;
+		gTasks[taskId].func = Task_MapScreenFadeOutAndWarp;
     }
+
+    // Exit map menu.
     if (gMain.newKeys & B_BUTTON)
 	{
 		PlaySE(SE_RG_CARD_FLIP);
         gSaveBlock1Ptr->currentRoom = sRoomBuffer;
 		BeginNormalPaletteFade(PALETTES_ALL, 0, 0, 16, RGB_BLACK);
-		gTasks[taskId].func = Task_MapScreenFadeOut;
+		gTasks[taskId].func = Task_MapScreenFadeOutAndExit;
     }
 }
 
@@ -469,7 +503,29 @@ void ShowMapScreen(void)
     }
 }
 
-static void SpriteCB_Dummy(struct Sprite *sprite)
-{
+// static void Task_MapScreenWarpYesNo(u8 taskId)
+// {
+//     CreateYesNoMenu(&sMapScreenWinTemplates[WIN_YESNO], 0x4F, 13, 0);
+//     gTasks[taskId].func = Task_HandleMapScreenWarpYesNoInput;
+// }
 
-}
+// static void Task_HandleMapScreenWarpYesNoInput(u8 taskId)
+// {
+//     switch (Menu_ProcessInputNoWrapClearOnChoose())
+//     {
+//         case 0: // Yes
+//             BeginNormalPaletteFade(PALETTES_ALL, 0, 0, 16, RGB_BLACK);
+//             gTasks[taskId].func = Task_MapScreenFadeOutAndExit;
+//             break;
+//         case MENU_B_PRESSED:
+//             PlaySE(SE_SELECT);
+//         case 1: // No
+//             ClearStdWindowAndFrameToTransparent(WIN_YESNO, FALSE);
+//             ClearWindowTilemap(WIN_YESNO);
+//             if (MenuHelpers_IsLinkActive() == TRUE)
+//             {
+//                 gTasks[taskId].func = Task_MapScreenWaitForKeypress;
+//             }
+//             break;
+//     }
+// }
