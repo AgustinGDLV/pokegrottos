@@ -300,13 +300,13 @@ static void Task_MapScreenWaitForKeypress(u8 taskId)
     // Check if player is selecting a new room.
     u32 target = gSaveBlock1Ptr->currentRoom;
     if (gMain.newKeys & DPAD_UP)
-        target = gSaveBlock1Ptr->currentRoom - 10;
+        target = GetRoomInDirection(DIR_NORTH);
     if (gMain.newKeys & DPAD_DOWN)
-        target = gSaveBlock1Ptr->currentRoom + 10;
+        target = GetRoomInDirection(DIR_SOUTH);
     if (gMain.newKeys & DPAD_RIGHT)
-        target = gSaveBlock1Ptr->currentRoom + 1;
+        target = GetRoomInDirection(DIR_EAST);
     if (gMain.newKeys & DPAD_LEFT)
-        target = gSaveBlock1Ptr->currentRoom - 1;
+        target = GetRoomInDirection(DIR_WEST);
 
     #ifdef NDEBUG
     if (target != gSaveBlock1Ptr->currentRoom && DoesRoomExist(target) && gFloorplan.layout[target].visited

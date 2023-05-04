@@ -539,3 +539,4 @@ gSpecials::
 	def_special CreateDebugFloorplan
 	def_special ShowMapScreen
 	def_special TryWarpToRoom
+	def_special CoverInvalidRoomExits
