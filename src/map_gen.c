@@ -85,14 +85,15 @@ static u8 Pop(struct Stack* stack)
 // Generation helper functions
 static u32 CountNeighbors(struct Floorplan* floorplan, u8 i)
 {
-    return floorplan->layout[i-10] + floorplan->layout[i-1] + floorplan->layout[i+1] + floorplan->layout[i+10];
+    return (floorplan->layout[i-10].type >= NORMAL_ROOM) + (floorplan->layout[i-1].type >= NORMAL_ROOM) \
+    + (floorplan->layout[i+1].type >= NORMAL_ROOM) + (floorplan->layout[i+10].type >= NORMAL_ROOM);
 }
 
 static bool32 Visit(struct Floorplan* floorplan, u8 i)
 {
     if (floorplan->numRooms >= floorplan->maxRooms)
         return FALSE;
-    if (floorplan->layout[i])
+    if (floorplan->layout[i].type >= NORMAL_ROOM)
         return FALSE;
     if (CountNeighbors(floorplan, i) > 1)
         return FALSE;
@@ -100,7 +101,7 @@ static bool32 Visit(struct Floorplan* floorplan, u8 i)
         return FALSE;
 
     Enqueue(&floorplan->queue, i);
-    floorplan->layout[i] = 1;
+    floorplan->layout[i].type = 1;
     floorplan->numRooms += 1;
     return TRUE;
 }
@@ -113,18 +114,31 @@ static void ZeroFloorplan(struct Floorplan* floorplan)
     ZeroQueue(&floorplan->queue);
     ZeroStack(&floorplan->endrooms);
     for (i = 0; i < LAYOUT_SIZE; ++i)
-        floorplan->layout[i] = 0;
+    {
+        floorplan->layout[i].type = 0;
+        floorplan->layout[i].visited = FALSE;
+        floorplan->layout[i].mapNum = 0;
+        floorplan->layout[i].mapGroup = 0;
+    }
+}
+
+// TODO: Take into account depth.
+static u8 GetMaxRooms(void)
+{
+    return 15;
 }
 
 // Populates an empty floorplan.
-// TODO: Take into account depth.
 static void PopulateFloorplan(struct Floorplan* floorplan)
 {
     // Set up floorplan.
+    ZeroFloorplan(floorplan);
     Enqueue(&floorplan->queue, STARTING_ROOM);
     floorplan->numRooms = 1;
-    floorplan->layout[STARTING_ROOM] = 1;
-    floorplan->maxRooms = 15;
+    floorplan->layout[STARTING_ROOM].type = NORMAL_ROOM;
+    floorplan->layout[STARTING_ROOM].visited = TRUE;
+    floorplan->maxRooms = GetMaxRooms();
+
     // Generate rooms.
     while (floorplan->queue.size > 0)
     {
@@ -149,9 +163,9 @@ static void PopulateFloorplan(struct Floorplan* floorplan)
 // TODO: Make this more functional (wow!).
 static void AssignSpecialRooms(struct Floorplan* floorplan)
 {
-    floorplan->layout[Pop(&floorplan->endrooms)] = BOSS_ROOM;
+    floorplan->layout[Pop(&floorplan->endrooms)].type = BOSS_ROOM;
     while (floorplan->endrooms.top > 0)
-        floorplan->layout[Pop(&floorplan->endrooms)] = TREASURE_ROOM;
+        floorplan->layout[Pop(&floorplan->endrooms)].type = TREASURE_ROOM;
 }
 
 // This prints the floor layout backwards.
@@ -164,7 +178,7 @@ void DebugPrintFloorplan(struct Floorplan* floorplan)
         exponent = 1;
         for(x = 0; x < MAX_LAYOUT_WIDTH; ++x)
         {
-            row += floorplan->layout[ROOM_COORD(x, y)] * exponent;
+            row += floorplan->layout[ROOM_COORD(x, y)].type * exponent;
             exponent *= 10;
         }
         DebugPrintf("%d", row);
@@ -173,10 +187,29 @@ void DebugPrintFloorplan(struct Floorplan* floorplan)
 
 void CreateDebugFloorplan(void)
 {
+    gSaveBlock1Ptr->currentRoom = STARTING_ROOM;
     do {
-        ZeroFloorplan(&gFloorplan);
         PopulateFloorplan(&gFloorplan);
     } while (gFloorplan.numRooms < MIN_ROOMS);
     AssignSpecialRooms(&gFloorplan);
     DebugPrintFloorplan(&gFloorplan);
+}
+
+// Public functions
+bool32 DoesRoomExist(u8 i)
+{
+    return gFloorplan.layout[i].type >= NORMAL_ROOM;
+}
+
+bool32 IsRoomAdjacentToVisited(u8 i)
+{
+    if (gFloorplan.layout[i - 10].visited)
+        return TRUE;
+    if (gFloorplan.layout[i + 10].visited)
+        return TRUE;
+    if (gFloorplan.layout[i - 1].visited)
+        return TRUE;
+    if (gFloorplan.layout[i + 1].visited)
+        return TRUE;
+    return FALSE;
 }

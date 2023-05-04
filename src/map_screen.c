@@ -170,8 +170,8 @@ static void Task_MapScreenWaitForKeypress(u8 taskId);
 static void Task_MapScreenFadeIn(u8 taskId);
 static void InitMapScreen(void);
 static void ShowRooms(void);
-static bool8 GetMapData(void);
 
+EWRAM_DATA static u32 sRoomBuffer = 0;
 EWRAM_DATA static u32* sMapScreenTilemapPtr = NULL;
 
 // code
@@ -258,9 +258,44 @@ static void Task_MapScreenFadeOut(u8 taskId)
 
 static void Task_MapScreenWaitForKeypress(u8 taskId)
 {
+    if (gMain.newKeys & DPAD_UP && DoesRoomExist(gSaveBlock1Ptr->currentRoom - 10))
+    {
+        PlaySE(SE_SELECT);
+        gSaveBlock1Ptr->currentRoom -= 10;
+        gFloorplan.layout[gSaveBlock1Ptr->currentRoom].visited = TRUE;
+        ShowRooms();
+    }
+    if (gMain.newKeys & DPAD_DOWN && DoesRoomExist(gSaveBlock1Ptr->currentRoom + 10))
+    {
+        PlaySE(SE_SELECT);
+        gSaveBlock1Ptr->currentRoom += 10;
+        gFloorplan.layout[gSaveBlock1Ptr->currentRoom].visited = TRUE;
+        ShowRooms();
+    }
+    if (gMain.newKeys & DPAD_LEFT && DoesRoomExist(gSaveBlock1Ptr->currentRoom - 1))
+    {
+        PlaySE(SE_SELECT);
+        gSaveBlock1Ptr->currentRoom -= 1;
+        gFloorplan.layout[gSaveBlock1Ptr->currentRoom].visited = TRUE;
+        ShowRooms();
+    }
+    if (gMain.newKeys & DPAD_RIGHT && DoesRoomExist(gSaveBlock1Ptr->currentRoom + 1))
+    {
+        PlaySE(SE_SELECT);
+        gSaveBlock1Ptr->currentRoom += 1;
+        gFloorplan.layout[gSaveBlock1Ptr->currentRoom].visited = TRUE;
+        ShowRooms();
+    }
+    if (gMain.newKeys & A_BUTTON)
+	{
+		PlaySE(SE_RG_CARD_OPEN);
+		BeginNormalPaletteFade(PALETTES_ALL, 0, 0, 16, RGB_BLACK);
+		gTasks[taskId].func = Task_MapScreenFadeOut;
+    }
     if (gMain.newKeys & B_BUTTON)
 	{
 		PlaySE(SE_RG_CARD_FLIP);
+        gSaveBlock1Ptr->currentRoom = sRoomBuffer;
 		BeginNormalPaletteFade(PALETTES_ALL, 0, 0, 16, RGB_BLACK);
 		gTasks[taskId].func = Task_MapScreenFadeOut;
     }
@@ -289,10 +324,14 @@ static void DrawRoomOnBg(u32 x, u32 y)
     u16 *tilemapPtr = GetBgTilemapBuffer(2);
     u32 tileId, bgX, bgY;
 
-    if (ROOM_COORD(x, y) == STARTING_ROOM) // TODO: Is room occupied?
+    if (ROOM_COORD(x, y) == gSaveBlock1Ptr->currentRoom)
+        tileId = 0x09;
+    else if (gFloorplan.layout[ROOM_COORD(x, y)].visited)
         tileId = 0x05;
-    else
+    else if (IsRoomAdjacentToVisited(ROOM_COORD(x, y)))
         tileId = 0x01;
+    else
+        return;
     
     bgX = 3 + x*2;
     bgY = 2 + y*2;
@@ -305,7 +344,10 @@ static void DrawRoomOnBg(u32 x, u32 y)
 
 static void DrawRoomIcon(u32 x, u32 y)
 {
-    switch (gFloorplan.layout[ROOM_COORD(x, y)])
+    if (!gFloorplan.layout[ROOM_COORD(x, y)].visited && !IsRoomAdjacentToVisited(ROOM_COORD(x, y)))
+        return;
+
+    switch (gFloorplan.layout[ROOM_COORD(x, y)].type)
     {
         case BOSS_ROOM:
             LoadSpritePalette(&sBossRoomSpritePalette);
@@ -327,7 +369,7 @@ static void ShowRooms(void)
     {
         for (y = 0; y < MAX_LAYOUT_HEIGHT; ++y)
         {
-            if (gFloorplan.layout[ROOM_COORD(x, y)])
+            if (DoesRoomExist(ROOM_COORD(x, y)))
             {
                 DrawRoomOnBg(x, y);
                 DrawRoomIcon(x, y);
@@ -415,6 +457,7 @@ void ShowMapScreen(void)
     if (gFloorplan.numRooms != 0 && !gPaletteFade.active)
 	{
         DebugPrintFloorplan(&gFloorplan);
+        sRoomBuffer = gSaveBlock1Ptr->currentRoom;
         PlaySE(SE_RG_CARD_FLIPPING);
         PlayRainStoppingSoundEffect();
 		SetMainCallback2(CB2_MapScreen);
