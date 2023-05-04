@@ -209,26 +209,31 @@ void CB2_MapScreen(void)
     switch (gMain.state) {
         default:
         case 0:
+            UpdatePaletteFade();
+            if (!gPaletteFade.active)
+                gMain.state++;
+            break;
+        case 1:
             SetVBlankCallback(NULL); 
             ClearVramOamPlttRegs();
             gMain.state++;
             break;
-        case 1:
+        case 2:
             ClearTasksAndGraphicalStructs();
             gMain.state++;
             break;
-        case 2:
+        case 3:
             sMapScreenTilemapPtr = AllocZeroed(BG_SCREEN_SIZE);
             ResetBgsAndClearDma3BusyFlags(0);
             InitBgsFromTemplates(0, sMapScreenBgTemplates, 3);
             SetBgTilemapBuffer(2, sMapScreenTilemapPtr);
             gMain.state++;
             break;
-        case 3:
+        case 4:
             LoadMapScreenGfx();
             gMain.state++;
             break;
-        case 4:
+        case 5:
             if (IsDma3ManagerBusyWithBgCopy() != TRUE)
             {
                 ShowBg(0);
@@ -238,16 +243,17 @@ void CB2_MapScreen(void)
                 gMain.state++;
             }
             break;
-        case 5:
+        case 6:
             InitWindows(sMapScreenWinTemplates);
             DeactivateAllTextPrinters();
             gMain.state++;
             break;
-        case 6:
+        case 7:
+            BlendPalettes(PALETTES_ALL, 16, 0);
             BeginNormalPaletteFade(PALETTES_ALL, 0, 16, 0, RGB_BLACK);
             gMain.state++;
             break;
-        case 7:
+        case 8:
             SetVBlankCallback(VBlankCB_MapScreen);
             InitMapScreen();
             CreateTask(Task_MapScreenFadeIn, 0);
@@ -260,20 +266,21 @@ static void Task_MapScreenFadeOutAndExit(u8 taskId)
 {
 	if (!gPaletteFade.active)
 	{
-        SetMainCallback2(CB2_ReturnToFieldContinueScript);
+        SetMainCallback2(CB2_ReturnToField);
 		Free(sMapScreenTilemapPtr);
         sMapScreenTilemapPtr = NULL;
 		FreeAllWindowBuffers();
         ResetSpriteData();
+        UnlockPlayerFieldControls();
+        UnfreezeObjectEvents();
 		DestroyTask(taskId);
 	}
 }
 
 static void Task_MapScreenFadeOutAndWarp(u8 taskId)
 {
-    if (!gPaletteFade.active)
+    if (!gPaletteFade.active && !IsSEPlaying())
 	{
-        PlaySE(SE_WARP_IN);
         SetWarpDestinationToRoom(gSaveBlock1Ptr->currentRoom);
         WarpIntoMap();
         SetMainCallback2(CB2_LoadMap);
@@ -281,6 +288,8 @@ static void Task_MapScreenFadeOutAndWarp(u8 taskId)
         sMapScreenTilemapPtr = NULL;
 		FreeAllWindowBuffers();
         ResetSpriteData();
+        UnlockPlayerFieldControls();
+        UnfreezeObjectEvents();
 		DestroyTask(taskId);
 	}
 }
@@ -320,7 +329,7 @@ static void Task_MapScreenWaitForKeypress(u8 taskId)
     // Try to warp to new room.
     if (gMain.newKeys & A_BUTTON && gSaveBlock1Ptr->currentRoom != sRoomBuffer)
 	{
-		PlaySE(SE_SELECT);
+        PlaySE(SE_WARP_OUT); // TODO: doesn't play audibly
 		BeginNormalPaletteFade(PALETTES_ALL, 0, 0, 16, RGB_BLACK);
 		gTasks[taskId].func = Task_MapScreenFadeOutAndWarp;
     }
@@ -488,7 +497,7 @@ static void ClearVramOamPlttRegs(void)
 
 void ShowMapScreen(void)
 {
-    if (gFloorplan.numRooms != 0 && !gPaletteFade.active)
+    if (gFloorplan.numRooms != 0)
 	{
         DebugPrintFloorplan(&gFloorplan);
         sRoomBuffer = gSaveBlock1Ptr->currentRoom;
@@ -496,10 +505,9 @@ void ShowMapScreen(void)
         PlayRainStoppingSoundEffect();
 		SetMainCallback2(CB2_MapScreen);
 	}
-    else if (!gPaletteFade.active) // safety check, looks awful
+    else
     {
-		BeginNormalPaletteFade(PALETTES_ALL, 0, 0, 16, RGB_BLACK);
-        SetMainCallback2(CB2_ReturnToFieldContinueScript);
+		SetMainCallback2(CB2_ReturnToField);
     }
 }
 
