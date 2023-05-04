@@ -1,6 +1,9 @@
 #include "global.h"
+#include "event_data.h"
+#include "main.h"
 #include "malloc.h"
 #include "map_gen.h"
+#include "overworld.h"
 #include "random.h"
 #include "strings.h"
 #include "string_util.h"
@@ -187,15 +190,15 @@ void DebugPrintFloorplan(struct Floorplan* floorplan)
 
 void CreateDebugFloorplan(void)
 {
+    u32 attempts = 0;
     gSaveBlock1Ptr->currentRoom = STARTING_ROOM;
     do {
         PopulateFloorplan(&gFloorplan);
-    } while (gFloorplan.numRooms < MIN_ROOMS);
+    } while (gFloorplan.numRooms < MIN_ROOMS && ++attempts < 10);
     AssignSpecialRooms(&gFloorplan);
     DebugPrintFloorplan(&gFloorplan);
 }
 
-// Public functions
 bool32 DoesRoomExist(u8 i)
 {
     return gFloorplan.layout[i].type >= NORMAL_ROOM;
@@ -212,4 +215,39 @@ bool32 IsRoomAdjacentToVisited(u8 i)
     if (gFloorplan.layout[i + 1].visited)
         return TRUE;
     return FALSE;
+}
+
+static bool32 IsRoomMapValid(u8 i)
+{
+    return !(gFloorplan.layout[i].mapNum == 0 && gFloorplan.layout[i].mapGroup == 0);
+}
+
+void TryWarpToRoom(void)
+{
+    u32 target;
+    switch (gSpecialVar_0x8000) // stores intended direction
+    {
+        case NORTH:
+            target = gSaveBlock1Ptr->currentRoom - 10;
+            break;
+        case SOUTH:
+            target = gSaveBlock1Ptr->currentRoom + 10;
+            break;
+        case EAST:
+            target = gSaveBlock1Ptr->currentRoom + 1;
+            break;
+        case WEST:
+            target = gSaveBlock1Ptr->currentRoom - 1;
+            break;
+    }
+
+    // Don't warp if invalid room.
+    if (!DoesRoomExist(target) || !IsRoomMapValid(target))
+        return;
+
+    gSaveBlock1Ptr->currentRoom = target;
+    gFloorplan.layout[target].visited = TRUE;
+    SetWarpDestination(gFloorplan.layout[target].mapGroup, gFloorplan.layout[target].mapNum, WARP_ID_NONE, -1, -1);
+    WarpIntoMap();
+    SetMainCallback2(CB2_LoadMap);
 }

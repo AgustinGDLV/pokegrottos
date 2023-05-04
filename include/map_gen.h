@@ -4,7 +4,7 @@
 // Sizes
 #define MAX_QUEUE_SIZE      20
 #define MAX_STACK_SIZE      10
-#define LAYOUT_SIZE         100
+#define LAYOUT_SIZE         90
 #define MAX_LAYOUT_WIDTH    9
 #define MAX_LAYOUT_HEIGHT   8
 
@@ -18,7 +18,7 @@
 #define MIN_ROOMS       7
 #define STARTING_ROOM   45
 
-#define ROOM_COORD(x, y)    (x + y*10)
+#define ROOM_COORD(x, y)    ((x+1) + (y+1)*10)  // gFloorplan.layout is not zero-indexed
 
 struct Queue {
     u8 front;

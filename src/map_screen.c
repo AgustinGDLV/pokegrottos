@@ -333,7 +333,7 @@ static void DrawRoomOnBg(u32 x, u32 y)
     else
         return;
     
-    bgX = 3 + x*2;
+    bgX = 5 + x*2;
     bgY = 2 + y*2;
 
     tilemapPtr[POS_TO_SCR_ADDR(bgX, bgY)] = SCR_MAP_ENTRY(tileId, 0, FALSE, FALSE);
@@ -352,12 +352,12 @@ static void DrawRoomIcon(u32 x, u32 y)
         case BOSS_ROOM:
             LoadSpritePalette(&sBossRoomSpritePalette);
             LoadSpriteSheet(&sBossRoomSpriteSheet);
-            CreateSprite(&sBossRoomSpriteTemplate, 8*(3 + x*2) + 9, 8*(2 + y*2) + 8, 0);
+            CreateSprite(&sBossRoomSpriteTemplate, 8*(5 + x*2) + 9, 8*(2 + y*2) + 8, 0);
             break;
         case TREASURE_ROOM:
             LoadSpritePalette(&sTreasureRoomSpritePalette);
             LoadSpriteSheet(&sTreasureRoomSpriteSheet);
-            CreateSprite(&sTreasureRoomSpriteTemplate, 8*(3 + x*2) + 9, 8*(2 + y*2) + 8, 0);
+            CreateSprite(&sTreasureRoomSpriteTemplate, 8*(5 + x*2) + 9, 8*(2 + y*2) + 8, 0);
             break;
     }
 }
