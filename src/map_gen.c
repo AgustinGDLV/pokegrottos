@@ -14,6 +14,8 @@
 // global floorplan
 EWRAM_DATA struct Floorplan gFloorplan = {0};
 
+#include "data/prefab_rules.h"
+
 // Queue helper functions
 static void ZeroQueue(struct Queue* queue)
 {
@@ -118,12 +120,12 @@ static void ZeroFloorplan(struct Floorplan* floorplan)
     floorplan->maxRooms = 0;
     ZeroQueue(&floorplan->queue);
     ZeroStack(&floorplan->endrooms);
+    floorplan->mapGroup = 35;
     for (i = 0; i < LAYOUT_SIZE; ++i)
     {
         floorplan->layout[i].type = 0;
         floorplan->layout[i].visited = FALSE;
         floorplan->layout[i].mapNum = 1;
-        floorplan->layout[i].mapGroup = 35;
     }
 }
 
@@ -247,7 +249,7 @@ u32 GetRoomInDirection(u32 dir)
 
 void SetWarpDestinationToRoom(u8 i)
 {
-    SetWarpDestination(gFloorplan.layout[i].mapGroup, gFloorplan.layout[i].mapNum, gSpecialVar_0x8000, -1, -1);
+    SetWarpDestination(gFloorplan.mapGroup, gFloorplan.layout[i].mapNum, gSpecialVar_0x8000, -1, -1);
 }
 
 void TryWarpToRoom(void)
@@ -313,20 +315,16 @@ static void PasteMapChunk(u16 x, u16 y, struct MapChunk *chunk)
     chunk->map = NULL;
 }
 
-static s32 GetVerticalCoverOffset(u32 dir)
+static s32 GetCoverXOffset(u32 dir)
 {
-    if (dir == DIR_NORTH || dir == DIR_SOUTH)
-        return -1;
-    else
-        return 0;
+    u32 mapGroup = gSaveBlock1Ptr->location.mapGroup;
+    return sPrefabRules[mapGroup].offsets[dir][0];
 }
 
-static s32 GetHorizontalCoverOffset(u32 dir)
+static s32 GetCoverYOffset(u32 dir)
 {
-    if (dir == DIR_EAST || dir == DIR_WEST)
-        return -1;
-    else
-        return 0;
+    u32 mapGroup = gSaveBlock1Ptr->location.mapGroup;
+    return sPrefabRules[mapGroup].offsets[dir][1];
 }
 
 static void CoverExitInDirection(u32 dir)
@@ -343,7 +341,7 @@ static void CoverExitInDirection(u32 dir)
     chunkWidth = layout->width;
     chunkHeight = layout->height/4;
     CopyMapChunk(mapGroup, 0, 0, (dir - 1) * chunkHeight, chunkWidth, chunkHeight, &chunk);
-    PasteMapChunk(warp->x - 1, warp->y - 1, &chunk);
+    PasteMapChunk(warp->x + GetCoverXOffset(dir), warp->y + GetCoverYOffset(dir), &chunk);
 }
 
 void CoverInvalidRoomExits(void)

@@ -37,7 +37,6 @@ enum RoomTypes {
 struct Room {
     enum RoomTypes type:4;      // room type
     u8 visited:4;               // has player visited this room
-    u8 mapGroup;
     u8 mapNum;
 };
 
@@ -47,6 +46,9 @@ struct Floorplan {
     struct Room layout[LAYOUT_SIZE];
     struct Queue queue;
     struct Stack endrooms;
+    u8 mapGroup;
+    u16 seed;
+    u16 nextFloorSeed;
 };
 
 extern struct Floorplan gFloorplan;
