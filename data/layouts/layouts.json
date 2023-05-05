@@ -4430,6 +4430,26 @@
       "secondary_tileset": "gTileset_Petalburg",
       "border_filepath": "data/layouts/ForestPrefabs_Room1/border.bin",
       "blockdata_filepath": "data/layouts/ForestPrefabs_Room1/map.bin"
+    },
+    {
+      "id": "LAYOUT_CAVE_PREFABS_BASES",
+      "name": "CavePrefabs_Bases_Layout",
+      "width": 3,
+      "height": 12,
+      "primary_tileset": "gTileset_General",
+      "secondary_tileset": "gTileset_Cave",
+      "border_filepath": "data/layouts/CavePrefabs_Bases/border.bin",
+      "blockdata_filepath": "data/layouts/CavePrefabs_Bases/map.bin"
+    },
+    {
+      "id": "LAYOUT_CAVE_PREFABS_ROOM1",
+      "name": "CavePrefabs_Room1_Layout",
+      "width": 9,
+      "height": 9,
+      "primary_tileset": "gTileset_General",
+      "secondary_tileset": "gTileset_Cave",
+      "border_filepath": "data/layouts/CavePrefabs_Room1/border.bin",
+      "blockdata_filepath": "data/layouts/CavePrefabs_Room1/map.bin"
     }
   ]
 }

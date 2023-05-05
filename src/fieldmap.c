@@ -5,6 +5,7 @@
 #include "fldeff.h"
 #include "fldeff_misc.h"
 #include "frontier_util.h"
+#include "map_gen.h"
 #include "menu.h"
 #include "mirage_tower.h"
 #include "overworld.h"
@@ -72,6 +73,8 @@ void InitMap(void)
 {
     InitMapLayoutData(&gMapHeader);
     SetOccupiedSecretBaseEntranceMetatiles(gMapHeader.events);
+    if (gSaveBlock1Ptr->location.mapGroup >= MAP_GROUP(FOREST_PREFABS_BASES))
+        CoverInvalidRoomExits();
     RunOnLoadMapScript();
 }
 
@@ -81,6 +84,8 @@ void InitMapFromSavedGame(void)
     InitSecretBaseAppearance(FALSE);
     SetOccupiedSecretBaseEntranceMetatiles(gMapHeader.events);
     LoadSavedMapView();
+    if (gSaveBlock1Ptr->location.mapGroup >= MAP_GROUP(FOREST_PREFABS_BASES))
+        CoverInvalidRoomExits();
     RunOnLoadMapScript();
     UpdateTVScreensOnMap(gBackupMapLayout.width, gBackupMapLayout.height);
 }

@@ -34,7 +34,8 @@
     "gMapGroup_IndoorRoute123",
     "gMapGroup_IndoorRoute119",
     "gMapGroup_IndoorRoute124",
-    "gMapGroup_ForestPrefabs"
+    "gMapGroup_ForestPrefabs",
+    "gMapGroup_CavePrefabs"
   ],
   "gMapGroup_TownsAndRoutes": [
     "PetalburgCity",
@@ -625,5 +626,9 @@
   "gMapGroup_ForestPrefabs": [
     "ForestPrefabs_Bases",
     "ForestPrefabs_Room1"
+  ],
+  "gMapGroup_CavePrefabs": [
+    "CavePrefabs_Bases",
+    "CavePrefabs_Room1"
   ]
 }

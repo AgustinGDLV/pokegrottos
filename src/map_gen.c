@@ -123,7 +123,7 @@ static void ZeroFloorplan(struct Floorplan* floorplan)
         floorplan->layout[i].type = 0;
         floorplan->layout[i].visited = FALSE;
         floorplan->layout[i].mapNum = 1;
-        floorplan->layout[i].mapGroup = 34;
+        floorplan->layout[i].mapGroup = 35;
     }
 }
 
@@ -343,7 +343,7 @@ static void CoverExitInDirection(u32 dir)
     chunkWidth = layout->width;
     chunkHeight = layout->height/4;
     CopyMapChunk(mapGroup, 0, 0, (dir - 1) * chunkHeight, chunkWidth, chunkHeight, &chunk);
-    PasteMapChunk(warp->x + GetHorizontalCoverOffset(dir), warp->y + GetVerticalCoverOffset(dir), &chunk);
+    PasteMapChunk(warp->x - 1, warp->y - 1, &chunk);
 }
 
 void CoverInvalidRoomExits(void)

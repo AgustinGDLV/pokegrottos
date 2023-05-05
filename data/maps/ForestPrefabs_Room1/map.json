@@ -61,7 +61,7 @@
       "elevation": 0,
       "var": "VAR_TEMP_0",
       "var_value": "0",
-      "script": "ForestPrefabs_Room1_EventScript_TryWarpWest"
+      "script": "Prefabs_EventScript_TryWarpWest"
     },
     {
       "type": "trigger",
@@ -70,7 +70,7 @@
       "elevation": 0,
       "var": "VAR_TEMP_0",
       "var_value": "0",
-      "script": "ForestPrefabs_Room1_EventScript_TryWarpWest"
+      "script": "Prefabs_EventScript_TryWarpWest"
     },
     {
       "type": "trigger",
@@ -79,7 +79,7 @@
       "elevation": 0,
       "var": "VAR_TEMP_0",
       "var_value": "0",
-      "script": "ForestPrefabs_Room1_EventScript_TryWarpNorth"
+      "script": "Prefabs_EventScript_TryWarpNorth"
     },
     {
       "type": "trigger",
@@ -88,7 +88,7 @@
       "elevation": 0,
       "var": "VAR_TEMP_0",
       "var_value": "0",
-      "script": "ForestPrefabs_Room1_EventScript_TryWarpNorth"
+      "script": "Prefabs_EventScript_TryWarpNorth"
     },
     {
       "type": "trigger",
@@ -97,7 +97,7 @@
       "elevation": 0,
       "var": "VAR_TEMP_0",
       "var_value": "0",
-      "script": "ForestPrefabs_Room1_EventScript_TryWarpEast"
+      "script": "Prefabs_EventScript_TryWarpEast"
     },
     {
       "type": "trigger",
@@ -106,7 +106,7 @@
       "elevation": 0,
       "var": "VAR_TEMP_0",
       "var_value": "0",
-      "script": "ForestPrefabs_Room1_EventScript_TryWarpEast"
+      "script": "Prefabs_EventScript_TryWarpEast"
     },
     {
       "type": "trigger",
@@ -115,7 +115,7 @@
       "elevation": 0,
       "var": "VAR_TEMP_0",
       "var_value": "0",
-      "script": "ForestPrefabs_Room1_EventScript_TryWarpSouth"
+      "script": "Prefabs_EventScript_TryWarpSouth"
     },
     {
       "type": "trigger",
@@ -124,7 +124,7 @@
       "elevation": 0,
       "var": "VAR_TEMP_0",
       "var_value": "0",
-      "script": "ForestPrefabs_Room1_EventScript_TryWarpSouth"
+      "script": "Prefabs_EventScript_TryWarpSouth"
     }
   ],
   "bg_events": [

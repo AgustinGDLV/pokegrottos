@@ -595,6 +595,10 @@
 #define MAP_FOREST_PREFABS_BASES (0 | (34 << 8))
 #define MAP_FOREST_PREFABS_ROOM1 (1 | (34 << 8))
 
-#define MAP_GROUPS_COUNT 35
+// gMapGroup_CavePrefabs
+#define MAP_CAVE_PREFABS_BASES (0 | (35 << 8))
+#define MAP_CAVE_PREFABS_ROOM1 (1 | (35 << 8))
+
+#define MAP_GROUPS_COUNT 36
 
 #endif // GUARD_CONSTANTS_MAP_GROUPS_H

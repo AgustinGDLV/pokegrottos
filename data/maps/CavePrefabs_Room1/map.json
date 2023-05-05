@@ -1,0 +1,97 @@
+{
+  "id": "MAP_CAVE_PREFABS_ROOM1",
+  "name": "CavePrefabs_Room1",
+  "layout": "LAYOUT_CAVE_PREFABS_ROOM1",
+  "music": "MUS_RG_SEVII_CAVE",
+  "region_map_section": "MAPSEC_NONE",
+  "requires_flash": false,
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_NONE",
+  "allow_cycling": false,
+  "allow_escaping": false,
+  "allow_running": true,
+  "show_map_name": false,
+  "battle_scene": "MAP_BATTLE_SCENE_NORMAL",
+  "connections": 0,
+  "object_events": [
+
+  ],
+  "warp_events": [
+    {
+      "x": 4,
+      "y": 4,
+      "elevation": 0,
+      "dest_map": "MAP_CAVE_PREFABS_ROOM1",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 4,
+      "y": 2,
+      "elevation": 0,
+      "dest_map": "MAP_CAVE_PREFABS_ROOM1",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 4,
+      "y": 7,
+      "elevation": 0,
+      "dest_map": "MAP_CAVE_PREFABS_ROOM1",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 7,
+      "y": 4,
+      "elevation": 0,
+      "dest_map": "MAP_CAVE_PREFABS_ROOM1",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 1,
+      "y": 4,
+      "elevation": 0,
+      "dest_map": "MAP_CAVE_PREFABS_ROOM1",
+      "dest_warp_id": "0"
+    }
+  ],
+  "coord_events": [
+    {
+      "type": "trigger",
+      "x": 8,
+      "y": 4,
+      "elevation": 0,
+      "var": "VAR_TEMP_0",
+      "var_value": "0",
+      "script": "Prefabs_EventScript_TryWarpEast"
+    },
+    {
+      "type": "trigger",
+      "x": 4,
+      "y": 8,
+      "elevation": 0,
+      "var": "VAR_TEMP_0",
+      "var_value": "0",
+      "script": "Prefabs_EventScript_TryWarpSouth"
+    },
+    {
+      "type": "trigger",
+      "x": 0,
+      "y": 4,
+      "elevation": 0,
+      "var": "VAR_TEMP_0",
+      "var_value": "0",
+      "script": "Prefabs_EventScript_TryWarpWest"
+    },
+    {
+      "type": "trigger",
+      "x": 4,
+      "y": 1,
+      "elevation": 0,
+      "var": "VAR_TEMP_0",
+      "var_value": "0",
+      "script": "Prefabs_EventScript_TryWarpNorth"
+    }
+  ],
+  "bg_events": [
+
+  ]
+}
