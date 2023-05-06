@@ -2,14 +2,19 @@
 #include "event_data.h"
 #include "event_object_movement.h"
 #include "fieldmap.h"
+#include "field_screen_effect.h"
+#include "field_weather.h"
 #include "main.h"
 #include "malloc.h"
 #include "map_gen.h"
 #include "overworld.h"
 #include "random.h"
+#include "sound.h"
+#include "script.h"
 #include "strings.h"
 #include "string_util.h"
 #include "text.h"
+#include "constants/songs.h"
 
 // global floorplan
 EWRAM_DATA struct Floorplan gFloorplan = {0};
@@ -261,10 +266,18 @@ void TryWarpToRoom(void)
     if (!DoesRoomExist(target) || !IsRoomMapIdValid(target))
         return;
 
+    // Set appropriate variables and flags.
     gSpecialVar_Result = TRUE;
     gSaveBlock1Ptr->currentRoom = target;
     gFloorplan.layout[target].visited = TRUE;
-    FlagSet(FLAG_SET_PLAYER_DIR_AFTER_WARP);
+
+    // Do warp.
+    StoreInitialPlayerAvatarState();
+    LockPlayerFieldControls();
+    TryFadeOutOldMapMusic();
+    WarpFadeOutScreen();
+    PlayRainStoppingSoundEffect();
+    PlaySE(SE_EXIT);
     SetWarpDestinationToRoom(target);
     WarpIntoMap();
     SetMainCallback2(CB2_LoadMap);

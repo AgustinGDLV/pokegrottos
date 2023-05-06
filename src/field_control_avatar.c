@@ -18,6 +18,7 @@
 #include "fldeff_misc.h"
 #include "item_menu.h"
 #include "link.h"
+#include "map_gen.h"
 #include "map_screen.h"
 #include "match_call.h"
 #include "metatile_behavior.h"
@@ -760,10 +761,19 @@ static bool8 TryArrowWarp(struct MapPosition *position, u16 metatileBehavior, u8
 
     if (IsArrowWarpMetatileBehavior(metatileBehavior, direction) == TRUE && warpEventId != WARP_ID_NONE)
     {
-        StoreInitialPlayerAvatarState();
-        SetupWarp(&gMapHeader, warpEventId, position);
-        DoWarp();
-        return TRUE;
+        if (gSaveBlock1Ptr->location.mapGroup < MAP_GROUP(FOREST_PREFABS_BASES))
+        {
+            StoreInitialPlayerAvatarState();
+            SetupWarp(&gMapHeader, warpEventId, position);
+            DoWarp();
+            return TRUE;
+        }
+        else
+        {
+            gSpecialVar_0x8000 = direction;
+            TryWarpToRoom();
+            return gSpecialVar_Result;
+        }
     }
     return FALSE;
 }

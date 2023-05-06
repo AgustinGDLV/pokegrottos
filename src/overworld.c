@@ -980,11 +980,6 @@ static u8 GetAdjustedInitialDirection(struct InitialPlayerAvatarState *playerStr
         return playerStruct->direction;
     else if (MetatileBehavior_IsLadder(metatileBehavior) == TRUE)
         return playerStruct->direction;
-    else if (FlagGet(FLAG_SET_PLAYER_DIR_AFTER_WARP))
-    {
-        FlagClear(FLAG_SET_PLAYER_DIR_AFTER_WARP);
-        return gSpecialVar_0x8000;
-    }
     else
         return DIR_SOUTH;
 }

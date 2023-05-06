@@ -26,7 +26,7 @@
     },
     {
       "x": 4,
-      "y": 2,
+      "y": 1,
       "elevation": 0,
       "dest_map": "MAP_CAVE_PREFABS_ROOM1",
       "dest_warp_id": "0"
@@ -54,42 +54,7 @@
     }
   ],
   "coord_events": [
-    {
-      "type": "trigger",
-      "x": 8,
-      "y": 4,
-      "elevation": 0,
-      "var": "VAR_TEMP_0",
-      "var_value": "0",
-      "script": "Prefabs_EventScript_TryWarpEast"
-    },
-    {
-      "type": "trigger",
-      "x": 4,
-      "y": 8,
-      "elevation": 0,
-      "var": "VAR_TEMP_0",
-      "var_value": "0",
-      "script": "Prefabs_EventScript_TryWarpSouth"
-    },
-    {
-      "type": "trigger",
-      "x": 0,
-      "y": 4,
-      "elevation": 0,
-      "var": "VAR_TEMP_0",
-      "var_value": "0",
-      "script": "Prefabs_EventScript_TryWarpWest"
-    },
-    {
-      "type": "trigger",
-      "x": 4,
-      "y": 1,
-      "elevation": 0,
-      "var": "VAR_TEMP_0",
-      "var_value": "0",
-      "script": "Prefabs_EventScript_TryWarpNorth"
-    }
+
   ],
   "bg_events": [
 

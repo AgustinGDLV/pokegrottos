@@ -61,5 +61,6 @@ bool32 IsRoomMapIdValid(u8 i);
 u32 GetRoomInDirection(u32 dir);
 void SetWarpDestinationToRoom(u8 i);
 void CoverInvalidRoomExits(void);
+void TryWarpToRoom(void);
 
 #endif

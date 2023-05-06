@@ -56,60 +56,6 @@
   "coord_events": [
     {
       "type": "trigger",
-      "x": 0,
-      "y": 11,
-      "elevation": 0,
-      "var": "VAR_TEMP_0",
-      "var_value": "0",
-      "script": "Prefabs_EventScript_TryWarpWest"
-    },
-    {
-      "type": "trigger",
-      "x": 0,
-      "y": 10,
-      "elevation": 0,
-      "var": "VAR_TEMP_0",
-      "var_value": "0",
-      "script": "Prefabs_EventScript_TryWarpWest"
-    },
-    {
-      "type": "trigger",
-      "x": 11,
-      "y": 0,
-      "elevation": 0,
-      "var": "VAR_TEMP_0",
-      "var_value": "0",
-      "script": "Prefabs_EventScript_TryWarpNorth"
-    },
-    {
-      "type": "trigger",
-      "x": 10,
-      "y": 0,
-      "elevation": 0,
-      "var": "VAR_TEMP_0",
-      "var_value": "0",
-      "script": "Prefabs_EventScript_TryWarpNorth"
-    },
-    {
-      "type": "trigger",
-      "x": 19,
-      "y": 10,
-      "elevation": 0,
-      "var": "VAR_TEMP_0",
-      "var_value": "0",
-      "script": "Prefabs_EventScript_TryWarpEast"
-    },
-    {
-      "type": "trigger",
-      "x": 19,
-      "y": 11,
-      "elevation": 0,
-      "var": "VAR_TEMP_0",
-      "var_value": "0",
-      "script": "Prefabs_EventScript_TryWarpEast"
-    },
-    {
-      "type": "trigger",
       "x": 11,
       "y": 19,
       "elevation": 0,

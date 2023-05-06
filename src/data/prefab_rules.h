@@ -17,7 +17,7 @@ static const struct PrefabRules sPrefabRules[MAP_GROUPS_COUNT] =
     [MAP_GROUP(CAVE_PREFABS_BASES)] =
     {
         .offsets = {
-            [DIR_NORTH] = {-1, -2},
+            [DIR_NORTH] = {-1, -1},
             [DIR_SOUTH] = {-1, -1},
             [DIR_EAST] = {-1, -1},
             [DIR_WEST] = {-1, -1},
