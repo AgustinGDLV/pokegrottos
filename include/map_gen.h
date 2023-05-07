@@ -1,9 +1,9 @@
 #ifndef GUARD_MAP_GEN_H
 #define GUARD_MAP_GEN_H
 
+#include "data_util.h"
+
 // Sizes
-#define MAX_QUEUE_SIZE      20
-#define MAX_STACK_SIZE      10
 #define LAYOUT_SIZE         90
 #define MAX_LAYOUT_WIDTH    9
 #define MAX_LAYOUT_HEIGHT   8
@@ -13,19 +13,6 @@
 #define STARTING_ROOM   45
 
 #define ROOM_COORD(x, y)    ((x+1) + (y+1)*10)  // gFloorplan.layout is not zero-indexed
-
-struct Queue {
-    u8 front;
-    u8 rear;
-    u8 size;
-    u8 arr[MAX_QUEUE_SIZE];
-};
-
-struct Stack {
-    u8 top;
-    u8 arr[MAX_STACK_SIZE];
-};
-
 
 enum RoomTypes {
     NORMAL_ROOM = 1,

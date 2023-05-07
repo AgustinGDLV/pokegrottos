@@ -289,6 +289,7 @@ void MovementType_RunInPlace(struct Sprite *);
 void MovementType_Invisible(struct Sprite *);
 void MovementType_WalkSlowlyInPlace(struct Sprite *);
 void MovementType_FollowPlayer(struct Sprite *);
+void MovementType_TurnBasedEncounter(struct Sprite *);
 u8 GetSlideMovementAction(u32);
 u8 GetJumpMovementAction(u32);
 u8 GetJump2MovementAction(u32);
@@ -464,6 +465,15 @@ u8 MovementType_RunInPlace_Step0(struct ObjectEvent *, struct Sprite *);
 u8 MovementType_Invisible_Step0(struct ObjectEvent *, struct Sprite *);
 u8 MovementType_Invisible_Step1(struct ObjectEvent *, struct Sprite *);
 u8 MovementType_Invisible_Step2(struct ObjectEvent *, struct Sprite *);
+u8 MovementType_TurnBasedEncounter_WanderStep0(struct ObjectEvent *, struct Sprite *);
+u8 MovementType_TurnBasedEncounter_WanderStep1(struct ObjectEvent *, struct Sprite *);
+u8 MovementType_TurnBasedEncounter_WanderStep2(struct ObjectEvent *, struct Sprite *);
+u8 MovementType_TurnBasedEncounter_WanderStep3(struct ObjectEvent *, struct Sprite *);
+u8 MovementType_TurnBasedEncounter_WanderStep4(struct ObjectEvent *, struct Sprite *);
+u8 MovementType_TurnBasedEncounter_WanderStep5(struct ObjectEvent *, struct Sprite *);
+u8 MovementType_TurnBasedEncounter_TrackStep6(struct ObjectEvent *, struct Sprite *);
+u8 MovementType_TurnBasedEncounter_TrackStep7(struct ObjectEvent *, struct Sprite *);
+u8 MovementType_TurnBasedEncounter_TrackStep8(struct ObjectEvent *, struct Sprite *);
 
 u8 CreateVirtualObject(u16 graphicsId, u8 virtualObjId, s16 x, s16 y, u8 elevation, u8 direction);
 void TurnVirtualObject(u8 virtualObjId, u8 direction);
@@ -480,5 +490,9 @@ u8 GetPlayerRunSlowMovementAction(u32);
 u8 GetSidewaysStairsToRightDirection(s16, s16, u8);
 u8 GetSidewaysStairsToLeftDirection(s16, s16, u8);
 u8 GetSidewaysStairsCollision(struct ObjectEvent *objectEvent, u8 dir, u8 currentBehavior, u8 nextBehavior, u8 collision);
+
+// for A*
+u8 GetCollisionInDirection(struct ObjectEvent *, u8);
+u32 CheckCollisionAtCoords(struct ObjectEvent *objectEvent, s32 x, s32 y, u32 dir, u32 currentElevation);
 
 #endif //GUARD_EVENT_OBJECT_MOVEMENT_H

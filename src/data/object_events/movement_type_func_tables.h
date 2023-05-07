@@ -456,3 +456,15 @@ u8 (*const gMovementTypeFuncs_Invisible[])(struct ObjectEvent *, struct Sprite *
     MovementType_Invisible_Step1,
     MovementType_Invisible_Step2,
 };
+
+u8 (*const gMovementTypeFuncs_TurnBasedEncounter[])(struct ObjectEvent *, struct Sprite *) = {
+    MovementType_TurnBasedEncounter_WanderStep0,
+    MovementType_TurnBasedEncounter_WanderStep1,
+    MovementType_TurnBasedEncounter_WanderStep2,
+    MovementType_TurnBasedEncounter_WanderStep3,
+    MovementType_TurnBasedEncounter_WanderStep4,
+    MovementType_TurnBasedEncounter_WanderStep5,
+    MovementType_TurnBasedEncounter_TrackStep6,
+    MovementType_TurnBasedEncounter_TrackStep7,
+    MovementType_TurnBasedEncounter_TrackStep8,
+};

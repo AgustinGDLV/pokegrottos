@@ -151,3 +151,4 @@
 	.include "src/debug.o"
 	.include "src/map_gen.o"
 	.include "src/map_screen.o"
+	.include "src/pathfinding.o"

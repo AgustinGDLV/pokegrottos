@@ -23,6 +23,7 @@
 #include "metatile_behavior.h"
 #include "overworld.h"
 #include "palette.h"
+#include "pathfinding.h"
 #include "pokemon.h"
 #include "random.h"
 #include "region_map.h"
@@ -104,7 +105,6 @@ static void MoveCoordsInDirection(u32, s16 *, s16 *, s16, s16);
 static bool8 ObjectEventExecSingleMovementAction(struct ObjectEvent *, struct Sprite *);
 static void SetMovementDelay(struct Sprite *, s16);
 static bool8 WaitForMovementDelay(struct Sprite *);
-static u8 GetCollisionInDirection(struct ObjectEvent *, u8);
 static u32 GetCopyDirection(u8, u32, u32);
 static void TryEnableObjectEventAnim(struct ObjectEvent *, struct Sprite *);
 static void ObjectEventExecHeldMovementAction(struct ObjectEvent *, struct Sprite *);
@@ -195,6 +195,9 @@ static bool8 IsElevationMismatchAt(u8, s16, s16);
 static bool8 AreElevationsCompatible(u8, u8);
 static u16 PackGraphicsId(const struct ObjectEventTemplate *template);
 static void CopyObjectGraphicsInfoToSpriteTemplate_WithMovementType(u16 graphicsId, u16 movementType, struct SpriteTemplate *spriteTemplate, const struct SubspriteTable **subspriteTables);
+static bool32 ObjectEventIsWithinRangeOfPlayer(struct ObjectEvent *objectEvent, u32 range);
+static bool32 IsObjectEventAdjacentToPlayer(struct ObjectEvent *objectEvent);
+static u32 GetMoveDirectionTowardsPlayer(struct ObjectEvent *objectEvent);
 
 static const struct SpriteFrameImage sPicTable_PechaBerryTree[];
 
@@ -318,6 +321,7 @@ static void (*const sMovementTypeCallbacks[])(struct Sprite *) =
     [MOVEMENT_TYPE_WALK_SLOWLY_IN_PLACE_LEFT] = MovementType_WalkSlowlyInPlace,
     [MOVEMENT_TYPE_WALK_SLOWLY_IN_PLACE_RIGHT] = MovementType_WalkSlowlyInPlace,
     [MOVEMENT_TYPE_FOLLOW_PLAYER] = MovementType_FollowPlayer,
+    [MOVEMENT_TYPE_TURN_BASED_ENCOUNTER] = MovementType_TurnBasedEncounter,
 };
 
 static const bool8 sMovementTypeHasRange[NUM_MOVEMENT_TYPES] = {
@@ -446,6 +450,7 @@ const u8 gInitialMovementTypeFacingDirections[] = {
     [MOVEMENT_TYPE_WALK_SLOWLY_IN_PLACE_UP] = DIR_NORTH,
     [MOVEMENT_TYPE_WALK_SLOWLY_IN_PLACE_LEFT] = DIR_WEST,
     [MOVEMENT_TYPE_WALK_SLOWLY_IN_PLACE_RIGHT] = DIR_EAST,
+    [MOVEMENT_TYPE_TURN_BASED_ENCOUNTER] = DIR_SOUTH,
 };
 
 #define OBJ_EVENT_PAL_TAG_BRENDAN                 0x1100
@@ -5609,6 +5614,125 @@ bool8 MovementType_Invisible_Step2(struct ObjectEvent *objectEvent, struct Sprit
     return FALSE;
 }
 
+movement_type_def(MovementType_TurnBasedEncounter, gMovementTypeFuncs_TurnBasedEncounter)
+
+bool8 MovementType_TurnBasedEncounter_WanderStep0(struct ObjectEvent *objectEvent, struct Sprite *sprite)
+{
+    ClearObjectEventMovement(objectEvent, sprite);
+    sprite->sTypeFuncId = 1;
+    return TRUE;
+}
+
+bool8 MovementType_TurnBasedEncounter_WanderStep1(struct ObjectEvent *objectEvent, struct Sprite *sprite)
+{
+    // Check if we should start tracking the player.
+    if (ObjectEventIsWithinRangeOfPlayer(objectEvent, objectEvent->trainerRange_berryTreeId)
+        && !ObjectEventIsWithinRangeOfPlayer(objectEvent, 1))
+    {
+        ObjectEventSetSingleMovement(objectEvent, sprite, MOVEMENT_ACTION_EMOTE_QUESTION_MARK);
+        sprite->sTypeFuncId = 7;
+        return TRUE;
+    }
+    
+    // Only initiate a movement action if the player moves.
+    if (gPlayerAvatar.tileTransitionState == T_NOT_MOVING
+        || gObjectEvents[gPlayerAvatar.objectEventId].movementActionId <= MOVEMENT_ACTION_FACE_RIGHT)
+    {
+        return FALSE;
+    }
+
+    ObjectEventSetSingleMovement(objectEvent, sprite, GetFaceDirectionMovementAction(objectEvent->facingDirection));
+    sprite->sTypeFuncId = 2;
+    return TRUE;
+}
+
+bool8 MovementType_TurnBasedEncounter_WanderStep2(struct ObjectEvent *objectEvent, struct Sprite *sprite)
+{
+    if (!ObjectEventExecSingleMovementAction(objectEvent, sprite))
+        return FALSE;
+    sprite->sTypeFuncId = 3;
+    return TRUE;
+}
+
+bool8 MovementType_TurnBasedEncounter_WanderStep3(struct ObjectEvent *objectEvent, struct Sprite *sprite)
+{
+    u8 directions[4];
+    u8 chosenDirection;
+
+    memcpy(directions, gStandardDirections, sizeof directions);
+    chosenDirection = directions[Random() & 3];
+    SetObjectEventDirection(objectEvent, chosenDirection);
+    sprite->sTypeFuncId = 4;
+    if (GetCollisionInDirection(objectEvent, chosenDirection))
+        sprite->sTypeFuncId = 1;
+
+    return TRUE;
+}
+
+bool8 MovementType_TurnBasedEncounter_WanderStep4(struct ObjectEvent *objectEvent, struct Sprite *sprite)
+{
+    ObjectEventSetSingleMovement(objectEvent, sprite, GetWalkNormalMovementAction(objectEvent->movementDirection));
+    objectEvent->singleMovementActive = TRUE;
+    sprite->sTypeFuncId = 5;
+    return TRUE;
+}
+
+bool8 MovementType_TurnBasedEncounter_WanderStep5(struct ObjectEvent *objectEvent, struct Sprite *sprite)
+{
+    // Execute the movement action and return to decision state.
+    if (ObjectEventExecSingleMovementAction(objectEvent, sprite))
+    {
+        objectEvent->singleMovementActive = FALSE;
+        sprite->sTypeFuncId = 1;
+    }
+    return FALSE;
+}
+
+bool8 MovementType_TurnBasedEncounter_TrackStep6(struct ObjectEvent *objectEvent, struct Sprite *sprite)
+{
+    // Go back to wandering in player leaves range.
+    if (!ObjectEventIsWithinRangeOfPlayer(objectEvent, objectEvent->trainerRange_berryTreeId))
+    {
+        sprite->sTypeFuncId = 1;
+        return TRUE;
+    }
+
+    // Only initiate a movement action if the player moves.
+    if (gPlayerAvatar.tileTransitionState == T_NOT_MOVING
+        || gObjectEvents[gPlayerAvatar.objectEventId].movementActionId <= MOVEMENT_ACTION_FACE_RIGHT)
+    {
+        return FALSE;
+    }
+
+    // Move towards player!
+    ObjectEventSetSingleMovement(objectEvent, sprite, GetFirstMoveTowardsPlayer(objectEvent));
+    sprite->sTypeFuncId = 7;
+    return TRUE;
+}
+
+bool8 MovementType_TurnBasedEncounter_TrackStep7(struct ObjectEvent *objectEvent, struct Sprite *sprite)
+{
+    // Execute the movement action.
+    if (ObjectEventExecSingleMovementAction(objectEvent, sprite))
+    {
+        objectEvent->singleMovementActive = FALSE;
+        sprite->sTypeFuncId = 8;
+        return TRUE;
+    }
+    return FALSE;
+}
+
+bool8 MovementType_TurnBasedEncounter_TrackStep8(struct ObjectEvent *objectEvent, struct Sprite *sprite)
+{
+    // Wait for player to finish a movement action to return to decision state.
+    if (gPlayerAvatar.tileTransitionState == T_TILE_CENTER)
+    {
+        sprite->sTypeFuncId = 6;
+        return TRUE;
+    }
+    return FALSE;
+}
+
 void ClearObjectEventMovement(struct ObjectEvent *objectEvent, struct Sprite *sprite)
 {
     objectEvent->singleMovementActive = FALSE;
@@ -10686,4 +10810,73 @@ bool8 ScrFunc_getdaycaregfx(struct ScriptContext *ctx) {
     }
     gSpecialVar_Result = i;
     return FALSE;
+}
+
+static bool32 ObjectEventIsWithinRangeOfPlayer(struct ObjectEvent *objectEvent, u32 range)
+{
+    s32 x1, x2, y1, y2;
+
+    // object event
+    x1 = objectEvent->currentCoords.x;
+    y1 = objectEvent->currentCoords.y;
+    // player
+    x2 = gObjectEvents[gPlayerAvatar.objectEventId].currentCoords.x;
+    y2 = gObjectEvents[gPlayerAvatar.objectEventId].currentCoords.y;
+
+    if (x2 >= (x1 - range) && x2 <= (x1 + range) && y2 >= (y1 - range) && y2 <= (y1 + range))
+        return TRUE;
+    else
+        return FALSE;
+}
+
+static bool32 IsObjectEventAdjacentToPlayer(struct ObjectEvent *objectEvent)
+{
+    s32 x1, x2, y1, y2;
+
+    // object event
+    x1 = objectEvent->currentCoords.x;
+    y1 = objectEvent->currentCoords.y;
+    // player
+    x2 = gObjectEvents[gPlayerAvatar.objectEventId].currentCoords.x;
+    y2 = gObjectEvents[gPlayerAvatar.objectEventId].currentCoords.y;
+
+    if (x1 == x2 && (y1 == (y2 - 1) || y1 == (y2 + 1)))
+        return TRUE;
+    else if (y2 == y1 && (x1 == (x2 - 1) || x1 == (x2 + 1)))
+        return TRUE;
+    else
+        return FALSE;
+}
+
+static bool32 DoesObjectCollideWithObjectAtZ(struct ObjectEvent *objectEvent, s32 x, s32 y)
+{
+    u32 i;
+    struct ObjectEvent *curObject;
+
+    for (i = 0; i < OBJECT_EVENTS_COUNT; i++)
+    {
+        curObject = &gObjectEvents[i];
+        if (curObject->active && curObject != objectEvent)
+        {
+            if ((curObject->currentCoords.x == x && curObject->currentCoords.y == y) || (curObject->previousCoords.x == x && curObject->previousCoords.y == y))
+            {
+                return TRUE;
+            }
+        }
+    }
+    return FALSE;
+}
+
+u32 CheckCollisionAtCoords(struct ObjectEvent *objectEvent, s32 x, s32 y, u32 dir, u32 currentElevation)
+{
+    u32 direction = dir;
+    if (MapGridGetCollisionAt(x, y) || GetMapBorderIdAt(x, y) == CONNECTION_INVALID || IsMetatileDirectionallyImpassable(objectEvent, x, y, direction))
+        return COLLISION_IMPASSABLE;
+    else if (objectEvent->trackedByCamera && !CanCameraMoveInDirection(direction))
+        return COLLISION_IMPASSABLE;
+    else if (IsElevationMismatchAt(currentElevation, x, y))
+        return COLLISION_ELEVATION_MISMATCH;
+    // else if (DoesObjectCollideWithObjectAt(objectEvent, x, y))
+    //     return COLLISION_OBJECT_EVENT;
+    return COLLISION_NONE;
 }
