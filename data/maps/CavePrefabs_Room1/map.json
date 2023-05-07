@@ -25,7 +25,7 @@
       "trainer_type": "TRAINER_TYPE_NONE",
       "trainer_sight_or_berry_tree_id": "3",
       "script": "NULL",
-      "flag": "0"
+      "flag": "FLAG_CAVE_ROOM_1_ENCOUNTER_1"
     }
   ],
   "warp_events": [

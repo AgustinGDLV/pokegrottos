@@ -28,6 +28,7 @@
 #include "random.h"
 #include "region_map.h"
 #include "script.h"
+#include "script_pokemon_util.h"
 #include "sound.h"
 #include "sprite.h"
 #include "task.h"
@@ -196,7 +197,7 @@ static bool8 AreElevationsCompatible(u8, u8);
 static u16 PackGraphicsId(const struct ObjectEventTemplate *template);
 static void CopyObjectGraphicsInfoToSpriteTemplate_WithMovementType(u16 graphicsId, u16 movementType, struct SpriteTemplate *spriteTemplate, const struct SubspriteTable **subspriteTables);
 static bool32 ObjectEventIsWithinRangeOfPlayer(struct ObjectEvent *objectEvent, u32 range);
-static bool32 IsObjectEventAdjacentToPlayer(struct ObjectEvent *objectEvent);
+static bool32 ObjectEventIsAdjacentToPlayer(struct ObjectEvent *objectEvent);
 static u32 GetMoveDirectionTowardsPlayer(struct ObjectEvent *objectEvent);
 
 static const struct SpriteFrameImage sPicTable_PechaBerryTree[];
@@ -5690,6 +5691,17 @@ bool8 MovementType_TurnBasedEncounter_WanderStep5(struct ObjectEvent *objectEven
 
 bool8 MovementType_TurnBasedEncounter_TrackStep6(struct ObjectEvent *objectEvent, struct Sprite *sprite)
 {
+    // Trigger battle if player is adjacent to object.
+    if (ObjectEventIsAdjacentToPlayer(objectEvent))
+    {
+        gSpecialVar_0x8000 = OW_SPECIES(objectEvent);
+        gSpecialVar_0x8001 = objectEvent->localId;
+        LockPlayerFieldControls();
+        ScriptContext_SetupScript(EventScript_OverworldEncounterStart);
+        sprite->sTypeFuncId = 0;
+        return TRUE;
+    }
+
     // Go back to wandering in player leaves range.
     if (!ObjectEventIsWithinRangeOfPlayer(objectEvent, objectEvent->trainerRange_berryTreeId))
     {
@@ -10829,7 +10841,8 @@ static bool32 ObjectEventIsWithinRangeOfPlayer(struct ObjectEvent *objectEvent, 
         return FALSE;
 }
 
-static bool32 IsObjectEventAdjacentToPlayer(struct ObjectEvent *objectEvent)
+// This specifically only checks in cardinal directions.
+static bool32 ObjectEventIsAdjacentToPlayer(struct ObjectEvent *objectEvent)
 {
     s32 x1, x2, y1, y2;
 
@@ -10840,9 +10853,9 @@ static bool32 IsObjectEventAdjacentToPlayer(struct ObjectEvent *objectEvent)
     x2 = gObjectEvents[gPlayerAvatar.objectEventId].currentCoords.x;
     y2 = gObjectEvents[gPlayerAvatar.objectEventId].currentCoords.y;
 
-    if (x1 == x2 && (y1 == (y2 - 1) || y1 == (y2 + 1)))
+    if (x1 == x2 && y1 >= (y2 - 1) && y1 <= (y2 + 1))
         return TRUE;
-    else if (y2 == y1 && (x1 == (x2 - 1) || x1 == (x2 + 1)))
+    else if (y2 == y1 && x1 >= (x2 - 1) && x1 <= (x2 + 1))
         return TRUE;
     else
         return FALSE;
