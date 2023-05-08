@@ -575,5 +575,7 @@ bool32 TryFormChange(u32 monId, u32 side, u16 method);
 void TryToSetBattleFormChangeMoves(struct Pokemon *mon, u16 method);
 u32 GetMonFriendshipScore(struct Pokemon *pokemon);
 void UpdateMonPersonality(struct BoxPokemon *boxMon, u32 personality);
+bool32 IsDuplicateEvolution(u16 baseSpecies, u16 targetSpecies, u32 currIndex);
+u32 GetEvolutionCount(u32 species);
 
 #endif // GUARD_POKEMON_H

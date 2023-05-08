@@ -8666,3 +8666,29 @@ void UpdateMonPersonality(struct BoxPokemon *boxMon, u32 personality)
     boxMon->checksum = CalculateBoxMonChecksum(boxMon);
     EncryptBoxMon(boxMon);
 }
+
+// Returns whether the target species occurs before the current index in gEvolutionTable.
+bool32 IsDuplicateEvolution(u16 baseSpecies, u16 targetSpecies, u32 currIndex)
+{
+    u32 i, count = 0;
+    for (i = 0; i < currIndex; ++i)
+    {
+        if (gEvolutionTable[baseSpecies][i].targetSpecies == targetSpecies)
+            return TRUE;
+    }
+    return FALSE;
+}
+
+// Returns the number of different evolutions a species has.
+u32 GetEvolutionCount(u32 species)
+{
+    u32 i, targetSpecies, count = 0;
+    for (i = 0; i < EVOS_PER_MON; ++i)
+    {
+        targetSpecies = gEvolutionTable[species][i].targetSpecies;
+        // This is probably somewhat inefficient with the double loops.
+        if (targetSpecies && !IsDuplicateEvolution(species, targetSpecies, i))
+            ++count;
+    }
+    return count;
+}

@@ -2556,6 +2556,9 @@ static u8 DisplaySelectionWindow(u8 windowType)
     case SELECTWINDOW_MAIL:
         window = sMailReadTakeWindowTemplate;
         break;
+    case SELECTWINDOW_EVOS:
+        SetWindowTemplateFields(&window, 2, 19, 19 - (gPartyMenu.data1 * 2), 10, gPartyMenu.data1 * 2, 14, 0x2E9);
+        break;
     default: // SELECTWINDOW_MOVES
         window = sMoveSelectWindowTemplate;
         break;
@@ -6979,5 +6982,84 @@ void IsLastMonThatKnowsSurf(void)
         }
         if (AnyStorageMonWithMove(move) != TRUE)
             gSpecialVar_Result = TRUE;
+    }
+}
+
+extern const struct Evolution gEvolutionTable[NUM_SPECIES][EVOS_PER_MON];
+static void ShowEvolutionSelectWindow(struct Pokemon* mon)
+{
+    u32 i;
+    u32 evoCount = 0;
+    u32 fontId = FONT_NORMAL;
+    u32 windowId = DisplaySelectionWindow(SELECTWINDOW_EVOS);
+    u32 baseSpecies = GetMonData(mon, MON_DATA_SPECIES);
+    u32 targetSpecies;
+
+    for (i = 0; i < EVOS_PER_MON; i++)
+    {
+        targetSpecies = gEvolutionTable[baseSpecies][i].targetSpecies;
+        if (targetSpecies && !IsDuplicateEvolution(baseSpecies, targetSpecies, i))
+        {
+            AddTextPrinterParameterized(windowId, fontId, gSpeciesNames[targetSpecies], 8, (evoCount * 16) + 1, TEXT_SKIP_DRAW, NULL);
+            ++evoCount;
+        }
+    }
+    InitMenuInUpperLeftCornerNormal(windowId, evoCount, 0);
+    ScheduleBgCopyTilemapToVram(2);
+}
+
+static void Task_HandleWhichEvolutionInput(u8 taskId)
+{
+    s8 input = Menu_ProcessInput();
+
+    if (input != MENU_NOTHING_CHOSEN)
+    {
+        if (input == MENU_B_PRESSED)
+        {
+            PlaySE(SE_SELECT);
+            ReturnToUseOnWhichMon(taskId);
+        }
+        else
+        {
+            struct Pokemon *mon = &gPlayerParty[gPartyMenu.slotId];
+            u16 targetSpecies = gEvolutionTable[GetMonData(mon, MON_DATA_SPECIES)][Menu_GetCursorPos()].targetSpecies;
+
+            PartyMenuRemoveWindow(&sPartyMenuInternal->windowId[1]);
+            PartyMenuRemoveWindow(&sPartyMenuInternal->windowId[0]);
+            RemoveBagItem(gSpecialVar_ItemId, 1);
+            BeginEvolutionScene(mon, targetSpecies, FALSE, gPartyMenu.slotId);
+        }
+    }
+}
+
+void ItemUseCB_SuperEvolutionStone(u8 taskId, TaskFunc task)
+{
+    // Set up variables.
+    struct Pokemon* mon = &gPlayerParty[gPartyMenu.slotId];
+    u16 species = GetMonData(mon, MON_DATA_SPECIES);
+    u32 numEvos = gPartyMenu.data1 = GetEvolutionCount(species);
+
+    PlaySE(SE_SELECT);
+    gCB2_AfterEvolution = gPartyMenu.exitCallback;
+    // Item has no effect if Pokemon doesn't have any evolutions.
+    if (numEvos == 0)
+    {
+        gPartyMenuUseExitCallback = FALSE;
+        DisplayPartyMenuMessage(gText_WontHaveEffect, TRUE);
+        ScheduleBgCopyTilemapToVram(2);
+        gTasks[taskId].func = task;
+    }
+    // Use multichoice if Pokemon has more than one evolution.
+    else if (numEvos > 1)
+    {
+        ShowEvolutionSelectWindow(mon);
+        gTasks[taskId].func = Task_HandleWhichEvolutionInput;
+    }
+    // Since there is only one option, just go straight to evolution!
+    else
+    {
+        u16 targetSpecies = gEvolutionTable[species][0].targetSpecies;
+        RemoveBagItem(gSpecialVar_ItemId, 1);
+        BeginEvolutionScene(mon, targetSpecies, FALSE, gPartyMenu.slotId);
     }
 }
