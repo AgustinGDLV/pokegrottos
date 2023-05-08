@@ -33,18 +33,19 @@
 enum {
     TAG_BOSS_ROOM = 10000,
     TAG_TREASURE_ROOM,
+    TAG_SHOP_ROOM,
+    TAG_CHALLENGE_ROOM,
+};
+
+enum Windows
+{
+	WIN_FLOOR,
+	WINDOW_COUNT,
 };
 
 // credit to Sbird for dynamic BG code
 #define POS_TO_SCR_ADDR(x,y) (32*(y) + (x))
 #define SCR_MAP_ENTRY(tile, pal, hflip, vflip) ((tile) | (hflip ? (1<<10) : 0) | (vflip ? (1 << 11) : 0) | (pal << 12))
-
-enum Windows
-{
-	WIN_FLOOR,
-    // WIN_YESNO,
-	WINDOW_COUNT,
-};
 
 // const rom data
 static const u32 sMapScreenBgGfx[]      = INCBIN_U32("graphics/interface/map_screen.4bpp.lz");
@@ -54,6 +55,10 @@ static const u8 sBossRoomGfx[]          = INCBIN_U8("graphics/interface/boss_roo
 static const u16 sBossRoomPal[]         = INCBIN_U16("graphics/interface/boss_room.gbapal");
 static const u8 sTreasureRoomGfx[]          = INCBIN_U8("graphics/interface/treasure_room.4bpp");
 static const u16 sTreasureRoomPal[]         = INCBIN_U16("graphics/interface/treasure_room.gbapal");
+static const u8 sShopRoomGfx[]          = INCBIN_U8("graphics/interface/shop_room.4bpp");
+static const u16 sShopRoomPal[]         = INCBIN_U16("graphics/interface/shop_room.gbapal");
+static const u8 sChallengeRoomGfx[]          = INCBIN_U8("graphics/interface/challenge_room.4bpp");
+static const u16 sChallengeRoomPal[]         = INCBIN_U16("graphics/interface/challenge_room.gbapal");
 
 static const struct WindowTemplate sMapScreenWinTemplates[WINDOW_COUNT + 1] =
 {
@@ -67,16 +72,6 @@ static const struct WindowTemplate sMapScreenWinTemplates[WINDOW_COUNT + 1] =
 		.paletteNum = 15,
 		.baseBlock = 1,
 	},
-    // [WIN_YESNO] =
-    // {
-    //     .bg = 1,
-    //     .tilemapLeft = 24,
-    //     .tilemapTop = 13,
-    //     .width = 5,
-    //     .height = 4,
-    //     .paletteNum = 15,
-    //     .baseBlock = 2,
-    // },
 	DUMMY_WIN_TEMPLATE
 };
 
@@ -133,10 +128,13 @@ static const struct SpriteTemplate sBossRoomSpriteTemplate =
 	.callback = SpriteCB_Dummy,
 };
 
-static const struct SpriteSheet sBossRoomSpriteSheet = {
+static const struct SpriteSheet sBossRoomSpriteSheet = 
+{
     sBossRoomGfx, sizeof(sBossRoomGfx), TAG_BOSS_ROOM
 };
-static const struct SpritePalette sBossRoomSpritePalette = {
+
+static const struct SpritePalette sBossRoomSpritePalette = 
+{
     sBossRoomPal, TAG_BOSS_ROOM
 };
 
@@ -150,7 +148,6 @@ static const struct OamData sTreasureRoomOAM =
 	.priority = 2, // On BG 2
 };
 
-static void SpriteCB_TreasureRoom(struct Sprite *sprite);
 static const struct SpriteTemplate sTreasureRoomSpriteTemplate =
 {
 	.tileTag = TAG_TREASURE_ROOM,
@@ -162,11 +159,76 @@ static const struct SpriteTemplate sTreasureRoomSpriteTemplate =
 	.callback = SpriteCB_Dummy,
 };
 
-static const struct SpriteSheet sTreasureRoomSpriteSheet = {
+static const struct SpriteSheet sTreasureRoomSpriteSheet = 
+{
     sTreasureRoomGfx, sizeof(sTreasureRoomGfx), TAG_TREASURE_ROOM
 };
-static const struct SpritePalette sTreasureRoomSpritePalette = {
+
+static const struct SpritePalette sTreasureRoomSpritePalette = 
+{
     sTreasureRoomPal, TAG_TREASURE_ROOM
+};
+
+// Shop Room sprite data
+static const struct OamData sShopRoomOAM =
+{
+	.affineMode = ST_OAM_AFFINE_OFF,
+	.objMode = ST_OAM_OBJ_NORMAL,
+	.shape = SPRITE_SHAPE(16x16),
+	.size = SPRITE_SIZE(16x16),
+	.priority = 2, // On BG 2
+};
+
+static const struct SpriteTemplate sShopRoomSpriteTemplate =
+{
+	.tileTag = TAG_SHOP_ROOM,
+	.paletteTag = TAG_SHOP_ROOM,
+	.oam = &sShopRoomOAM,
+	.anims = gDummySpriteAnimTable,
+	.images = NULL,
+	.affineAnims = gDummySpriteAffineAnimTable,
+	.callback = SpriteCB_Dummy,
+};
+
+static const struct SpriteSheet sShopRoomSpriteSheet = 
+{
+    sShopRoomGfx, sizeof(sShopRoomGfx), TAG_SHOP_ROOM
+};
+
+static const struct SpritePalette sShopRoomSpritePalette = 
+{
+    sShopRoomPal, TAG_SHOP_ROOM
+};
+
+// Challenge Room sprite data
+static const struct OamData sChallengeRoomOAM =
+{
+	.affineMode = ST_OAM_AFFINE_OFF,
+	.objMode = ST_OAM_OBJ_NORMAL,
+	.shape = SPRITE_SHAPE(16x16),
+	.size = SPRITE_SIZE(16x16),
+	.priority = 2, // On BG 2
+};
+
+static const struct SpriteTemplate sChallengeRoomSpriteTemplate =
+{
+	.tileTag = TAG_CHALLENGE_ROOM,
+	.paletteTag = TAG_CHALLENGE_ROOM,
+	.oam = &sChallengeRoomOAM,
+	.anims = gDummySpriteAnimTable,
+	.images = NULL,
+	.affineAnims = gDummySpriteAffineAnimTable,
+	.callback = SpriteCB_Dummy,
+};
+
+static const struct SpriteSheet sChallengeRoomSpriteSheet = 
+{
+    sChallengeRoomGfx, sizeof(sChallengeRoomGfx), TAG_CHALLENGE_ROOM
+};
+
+static const struct SpritePalette sChallengeRoomSpritePalette = 
+{
+    sChallengeRoomPal, TAG_CHALLENGE_ROOM
 };
 
 // functions
@@ -362,6 +424,32 @@ static void PrintFloorText(void)
 	AddTextPrinterParameterized3(WIN_FLOOR, 0, 4, 0, colour, 0, gStringVar1);
 }
 
+struct SpriteTable {
+    const struct SpritePalette* spritePalette;
+    const struct SpriteSheet* spriteSheet;
+    const struct SpriteTemplate* spriteTemplate;
+};
+
+static const struct SpriteTable sRoomTypeSpriteTable[NUM_ROOM_TYPES] =
+{
+    [BOSS_ROOM] = {&sBossRoomSpritePalette, &sBossRoomSpriteSheet, &sBossRoomSpriteTemplate},
+    [TREASURE_ROOM] = {&sTreasureRoomSpritePalette, &sTreasureRoomSpriteSheet, &sTreasureRoomSpriteTemplate},
+    [SHOP_ROOM] = {&sShopRoomSpritePalette, &sShopRoomSpriteSheet, &sShopRoomSpriteTemplate},
+    [CHALLENGE_ROOM] = {&sChallengeRoomSpritePalette, &sChallengeRoomSpriteSheet, &sChallengeRoomSpriteTemplate},
+};
+
+static void DrawRoomIcon(u32 x, u32 y)
+{
+    // Assumes room itself is drawn, but still do safety check on types.
+    u32 type = gFloorplan.layout[ROOM_COORD(x, y)].type;
+    if (type == NORMAL_ROOM || type >= NUM_ROOM_TYPES)
+        return;
+
+    LoadSpritePalette(sRoomTypeSpriteTable[type].spritePalette);
+    LoadSpriteSheet(sRoomTypeSpriteTable[type].spriteSheet);
+    CreateSprite(sRoomTypeSpriteTable[type].spriteTemplate, 8*(5 + x*2) + 9, 8*(2 + y*2) + 8, 0);
+}
+
 static void DrawRoomOnBg(u32 x, u32 y)
 {
     u16 *tilemapPtr = GetBgTilemapBuffer(2);
@@ -373,36 +461,20 @@ static void DrawRoomOnBg(u32 x, u32 y)
         tileId = 0x05;
     else if (IsRoomAdjacentToVisited(ROOM_COORD(x, y)))
         tileId = 0x01;
-    else
+    else // Room is empty or unvisited and not adjacent: don't draw.
         return;
     
     bgX = 5 + x*2;
     bgY = 2 + y*2;
 
+    // The rooms are drawn directly on the background using tiles from the tilemap.
     tilemapPtr[POS_TO_SCR_ADDR(bgX, bgY)] = SCR_MAP_ENTRY(tileId, 0, FALSE, FALSE);
     tilemapPtr[POS_TO_SCR_ADDR(bgX + 1, bgY)] = SCR_MAP_ENTRY(tileId + 1, 0, FALSE, FALSE);
     tilemapPtr[POS_TO_SCR_ADDR(bgX, bgY + 1)] = SCR_MAP_ENTRY(tileId + 2, 0, FALSE, FALSE);
     tilemapPtr[POS_TO_SCR_ADDR(bgX + 1, bgY + 1)] = SCR_MAP_ENTRY(tileId + 3, 0, FALSE, FALSE);
-}
 
-static void DrawRoomIcon(u32 x, u32 y)
-{
-    if (!gFloorplan.layout[ROOM_COORD(x, y)].visited && !IsRoomAdjacentToVisited(ROOM_COORD(x, y)))
-        return;
-
-    switch (gFloorplan.layout[ROOM_COORD(x, y)].type)
-    {
-        case BOSS_ROOM:
-            LoadSpritePalette(&sBossRoomSpritePalette);
-            LoadSpriteSheet(&sBossRoomSpriteSheet);
-            CreateSprite(&sBossRoomSpriteTemplate, 8*(5 + x*2) + 9, 8*(2 + y*2) + 8, 0);
-            break;
-        case TREASURE_ROOM:
-            LoadSpritePalette(&sTreasureRoomSpritePalette);
-            LoadSpriteSheet(&sTreasureRoomSpriteSheet);
-            CreateSprite(&sTreasureRoomSpriteTemplate, 8*(5 + x*2) + 9, 8*(2 + y*2) + 8, 0);
-            break;
-    }
+    // Draw appropriate room icon.
+    DrawRoomIcon(x, y);
 }
 
 static void ShowRooms(void)
@@ -415,7 +487,6 @@ static void ShowRooms(void)
             if (DoesRoomExist(ROOM_COORD(x, y)))
             {
                 DrawRoomOnBg(x, y);
-                DrawRoomIcon(x, y);
             }
         }
     }
@@ -510,30 +581,3 @@ void ShowMapScreen(void)
 		SetMainCallback2(CB2_ReturnToField);
     }
 }
-
-// static void Task_MapScreenWarpYesNo(u8 taskId)
-// {
-//     CreateYesNoMenu(&sMapScreenWinTemplates[WIN_YESNO], 0x4F, 13, 0);
-//     gTasks[taskId].func = Task_HandleMapScreenWarpYesNoInput;
-// }
-
-// static void Task_HandleMapScreenWarpYesNoInput(u8 taskId)
-// {
-//     switch (Menu_ProcessInputNoWrapClearOnChoose())
-//     {
-//         case 0: // Yes
-//             BeginNormalPaletteFade(PALETTES_ALL, 0, 0, 16, RGB_BLACK);
-//             gTasks[taskId].func = Task_MapScreenFadeOutAndExit;
-//             break;
-//         case MENU_B_PRESSED:
-//             PlaySE(SE_SELECT);
-//         case 1: // No
-//             ClearStdWindowAndFrameToTransparent(WIN_YESNO, FALSE);
-//             ClearWindowTilemap(WIN_YESNO);
-//             if (MenuHelpers_IsLinkActive() == TRUE)
-//             {
-//                 gTasks[taskId].func = Task_MapScreenWaitForKeypress;
-//             }
-//             break;
-//     }
-// }

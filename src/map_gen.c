@@ -123,14 +123,23 @@ static void ShuffleArray(u8* array, u32 size)
 }
 
 // Assigns special room types.
-static void AssignSpecialRooms(struct Floorplan* floorplan)
+static void AssignSpecialRoomTypes(struct Floorplan* floorplan)
 {
     // The farthest room is first on the stack and will always be the boss room.
     floorplan->layout[Pop(&floorplan->endrooms)].type = BOSS_ROOM;
 
-    // Afterwards, we assign room types at random to the remaining rooms.
-    while (floorplan->endrooms.top > 0)
-        floorplan->layout[Pop(&floorplan->endrooms)].type = TREASURE_ROOM;
+    // Afterwards, we shuffle the remaining endrooms and assign room types.
+    ShuffleArray(floorplan->endrooms.arr, floorplan->endrooms.top);
+    
+    // There should always be a treasure room and shop room.
+    // We don't check to make sure something is popped because if
+    // the stack is empty, it will pop 0 which is an invalid room coord.
+    // This might be bad practice.
+    floorplan->layout[Pop(&floorplan->endrooms)].type = TREASURE_ROOM;
+    floorplan->layout[Pop(&floorplan->endrooms)].type = SHOP_ROOM;
+
+    // TODO: Add more special rooms.
+    floorplan->layout[Pop(&floorplan->endrooms)].type = CHALLENGE_ROOM;
 }
 
 
@@ -141,12 +150,12 @@ static void AssignRoomMapIds(struct Floorplan* floorplan)
     struct Room* room;
     const struct PrefabRules * const rules = &gPrefabRules[floorplan->mapGroup];
     const u8 *normalPool = rules->normalRoomIds;
-    u8 poolSize = rules->numNormalRooms;
+    u32 poolSize = rules->numNormalRooms;
     u8 *shuffled = AllocZeroed(sizeof(u8) * poolSize);
 
     // Assign special room types if it hasn't been done yet.
     if (floorplan->endrooms.top > 0)
-        AssignSpecialRooms(floorplan);
+        AssignSpecialRoomTypes(floorplan);
 
     // Shuffle the normal map pool.
     memcpy(shuffled, normalPool, sizeof(u8) * poolSize);
@@ -158,15 +167,18 @@ static void AssignRoomMapIds(struct Floorplan* floorplan)
         room = &floorplan->layout[floorplan->occupiedRooms[i]];
         switch (room->type)
         {
+            // special rooms have their room IDs in a table in gPrefabRules
+            default:
+                room->mapNum = rules->specialRoomIds[room->type];
+                if (room->mapNum != 0)
+                    break;
+            // fall-through in case special room doesn't have a map assigned to it
             case NORMAL_ROOM:
                 room->mapNum = shuffled[i % poolSize]; // in case numRooms > poolSize
                 break;
-            // special rooms
-            default:
-                room->mapNum = rules->specialRoomIds[room->type];
-                break;
         }
     }
+    Free(shuffled);
 }
 
 
@@ -192,10 +204,11 @@ void CreateDebugFloorplan(void)
     u32 attempts = 0;
     gSaveBlock1Ptr->currentRoom = STARTING_ROOM;
     do {
+        ZeroFloorplan(&gFloorplan);
         PopulateFloorplan(&gFloorplan);
     } while (gFloorplan.numRooms < MIN_ROOMS && ++attempts < 10);
     AssignRoomMapIds(&gFloorplan);
-    DebugPrintFloorplan(&gFloorplan);
+    // DebugPrintFloorplan(&gFloorplan);
 }
 
 bool32 DoesRoomExist(u8 i)

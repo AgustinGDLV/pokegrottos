@@ -19,6 +19,7 @@ enum RoomTypes {
     BOSS_ROOM,
     TREASURE_ROOM,
     SHOP_ROOM,
+    CHALLENGE_ROOM,
     NUM_ROOM_TYPES,
 };
 
