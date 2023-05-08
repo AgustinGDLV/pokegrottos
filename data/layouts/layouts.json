@@ -4444,12 +4444,92 @@
     {
       "id": "LAYOUT_CAVE_PREFABS_ROOM1",
       "name": "CavePrefabs_Room1_Layout",
-      "width": 9,
-      "height": 9,
+      "width": 15,
+      "height": 15,
       "primary_tileset": "gTileset_General",
       "secondary_tileset": "gTileset_Cave",
       "border_filepath": "data/layouts/CavePrefabs_Room1/border.bin",
       "blockdata_filepath": "data/layouts/CavePrefabs_Room1/map.bin"
+    },
+    {
+      "id": "LAYOUT_CAVE_PREFABS_ROOM2",
+      "name": "CavePrefabs_Room2_Layout",
+      "width": 9,
+      "height": 9,
+      "primary_tileset": "gTileset_General",
+      "secondary_tileset": "gTileset_Cave",
+      "border_filepath": "data/layouts/CavePrefabs_Room2/border.bin",
+      "blockdata_filepath": "data/layouts/CavePrefabs_Room2/map.bin"
+    },
+    {
+      "id": "LAYOUT_CAVE_PREFABS_ROOM3",
+      "name": "CavePrefabs_Room3_Layout",
+      "width": 20,
+      "height": 20,
+      "primary_tileset": "gTileset_General",
+      "secondary_tileset": "gTileset_Cave",
+      "border_filepath": "data/layouts/CavePrefabs_Room3/border.bin",
+      "blockdata_filepath": "data/layouts/CavePrefabs_Room3/map.bin"
+    },
+    {
+      "id": "LAYOUT_CAVE_PREFABS_ROOM4",
+      "name": "CavePrefabs_Room4_Layout",
+      "width": 15,
+      "height": 15,
+      "primary_tileset": "gTileset_General",
+      "secondary_tileset": "gTileset_Cave",
+      "border_filepath": "data/layouts/CavePrefabs_Room4/border.bin",
+      "blockdata_filepath": "data/layouts/CavePrefabs_Room4/map.bin"
+    },
+    {
+      "id": "LAYOUT_CAVE_PREFABS_ROOM5",
+      "name": "CavePrefabs_Room5_Layout",
+      "width": 20,
+      "height": 20,
+      "primary_tileset": "gTileset_General",
+      "secondary_tileset": "gTileset_Cave",
+      "border_filepath": "data/layouts/CavePrefabs_Room5/border.bin",
+      "blockdata_filepath": "data/layouts/CavePrefabs_Room5/map.bin"
+    },
+    {
+      "id": "LAYOUT_CAVE_PREFABS_ROOM7",
+      "name": "CavePrefabs_Room7_Layout",
+      "width": 20,
+      "height": 20,
+      "primary_tileset": "gTileset_General",
+      "secondary_tileset": "gTileset_Cave",
+      "border_filepath": "data/layouts/CavePrefabs_Room7/border.bin",
+      "blockdata_filepath": "data/layouts/CavePrefabs_Room7/map.bin"
+    },
+    {
+      "id": "LAYOUT_CAVE_PREFABS_BOSS_ROOM",
+      "name": "CavePrefabs_BossRoom_Layout",
+      "width": 9,
+      "height": 9,
+      "primary_tileset": "gTileset_General",
+      "secondary_tileset": "gTileset_Cave",
+      "border_filepath": "data/layouts/CavePrefabs_BossRoom/border.bin",
+      "blockdata_filepath": "data/layouts/CavePrefabs_BossRoom/map.bin"
+    },
+    {
+      "id": "LAYOUT_CAVE_PREFABS_TREASURE_ROOM",
+      "name": "CavePrefabs_TreasureRoom_Layout",
+      "width": 9,
+      "height": 9,
+      "primary_tileset": "gTileset_General",
+      "secondary_tileset": "gTileset_Cave",
+      "border_filepath": "data/layouts/CavePrefabs_TreasureRoom/border.bin",
+      "blockdata_filepath": "data/layouts/CavePrefabs_TreasureRoom/map.bin"
+    },
+    {
+      "id": "LAYOUT_CAVE_PREFABS_SHOP_ROOM",
+      "name": "CavePrefabs_ShopRoom_Layout",
+      "width": 9,
+      "height": 9,
+      "primary_tileset": "gTileset_General",
+      "secondary_tileset": "gTileset_Cave",
+      "border_filepath": "data/layouts/CavePrefabs_ShopRoom/border.bin",
+      "blockdata_filepath": "data/layouts/CavePrefabs_ShopRoom/map.bin"
     }
   ]
 }

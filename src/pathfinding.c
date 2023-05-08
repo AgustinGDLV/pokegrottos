@@ -23,6 +23,8 @@
 #include "constants/metatile_labels.h"
 #include "constants/maps.h"
 
+// Code from Doctor Juanjo at https://www.pokecommunity.com/showthread.php?t=445293.
+
 // apparently unrelated to the battle MOVES_COUNT
 #define MOVES_COUNT 4
 

@@ -309,8 +309,7 @@ static void Task_MapScreenWaitForKeypress(u8 taskId)
         target = GetRoomInDirection(DIR_WEST);
 
     #ifdef NDEBUG
-    if (target != gSaveBlock1Ptr->currentRoom && DoesRoomExist(target) && gFloorplan.layout[target].visited
-        && IsRoomMapIdValid(target))
+    if (target != gSaveBlock1Ptr->currentRoom && DoesRoomExist(target) && gFloorplan.layout[target].visited)
     {
         PlaySE(SE_SELECT);
         gSaveBlock1Ptr->currentRoom = target;
@@ -318,7 +317,7 @@ static void Task_MapScreenWaitForKeypress(u8 taskId)
     }
     #else
     // In Debug mode, you can reveal the map by navigating in this screen.
-    if (target != gSaveBlock1Ptr->currentRoom && DoesRoomExist(target) && IsRoomMapIdValid(target))
+    if (target != gSaveBlock1Ptr->currentRoom && DoesRoomExist(target))
     {
         PlaySE(SE_SELECT);
         gFloorplan.layout[target].visited = TRUE;

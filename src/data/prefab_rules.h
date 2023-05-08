@@ -1,8 +1,14 @@
-struct PrefabRules {
-    s8 offsets[5][2]; // (x, y) entrance cover offsets for each direction
+static const u8 sCavePrefabsNormalRooms[] =
+{
+    MAP_NUM(CAVE_PREFABS_ROOM1),
+    MAP_NUM(CAVE_PREFABS_ROOM2),
+    MAP_NUM(CAVE_PREFABS_ROOM3),
+    MAP_NUM(CAVE_PREFABS_ROOM4),
+    MAP_NUM(CAVE_PREFABS_ROOM5),
+    MAP_NUM(CAVE_PREFABS_ROOM7),
 };
 
-static const struct PrefabRules sPrefabRules[MAP_GROUPS_COUNT] = 
+const struct PrefabRules gPrefabRules[MAP_GROUPS_COUNT] = 
 {
     [MAP_GROUP(FOREST_PREFABS_BASES)] =
     {
@@ -21,6 +27,13 @@ static const struct PrefabRules sPrefabRules[MAP_GROUPS_COUNT] =
             [DIR_SOUTH] = {-1, -1},
             [DIR_EAST] = {-1, -1},
             [DIR_WEST] = {-1, -1},
+        },
+        .numNormalRooms = ARRAY_COUNT(sCavePrefabsNormalRooms),
+        .normalRoomIds = sCavePrefabsNormalRooms,
+        .specialRoomIds = {
+            [BOSS_ROOM] = MAP_NUM(CAVE_PREFABS_BOSS_ROOM),
+            [TREASURE_ROOM] = MAP_NUM(CAVE_PREFABS_TREASURE_ROOM),
+            [SHOP_ROOM] = MAP_NUM(CAVE_PREFABS_SHOP_ROOM),
         },
     },
 };

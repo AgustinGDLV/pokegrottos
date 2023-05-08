@@ -629,6 +629,14 @@
   ],
   "gMapGroup_CavePrefabs": [
     "CavePrefabs_Bases",
-    "CavePrefabs_Room1"
+    "CavePrefabs_Room1",
+    "CavePrefabs_Room2",
+    "CavePrefabs_Room3",
+    "CavePrefabs_Room4",
+    "CavePrefabs_Room5",
+    "CavePrefabs_Room7",
+    "CavePrefabs_BossRoom",
+    "CavePrefabs_TreasureRoom",
+    "CavePrefabs_ShopRoom"
   ]
 }

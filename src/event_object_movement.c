@@ -5736,8 +5736,8 @@ bool8 MovementType_TurnBasedEncounter_TrackStep7(struct ObjectEvent *objectEvent
 
 bool8 MovementType_TurnBasedEncounter_TrackStep8(struct ObjectEvent *objectEvent, struct Sprite *sprite)
 {
-    // Wait for player to finish a movement action to return to decision state.
-    if (gPlayerAvatar.tileTransitionState == T_TILE_CENTER)
+    // Wait for player to finish a movement action to return to decision state unless already adjacent.
+    if (gPlayerAvatar.tileTransitionState == T_TILE_CENTER || ObjectEventIsAdjacentToPlayer(objectEvent))
     {
         sprite->sTypeFuncId = 6;
         return TRUE;

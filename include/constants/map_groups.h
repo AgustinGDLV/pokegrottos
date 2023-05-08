@@ -596,8 +596,16 @@
 #define MAP_FOREST_PREFABS_ROOM1 (1 | (34 << 8))
 
 // gMapGroup_CavePrefabs
-#define MAP_CAVE_PREFABS_BASES (0 | (35 << 8))
-#define MAP_CAVE_PREFABS_ROOM1 (1 | (35 << 8))
+#define MAP_CAVE_PREFABS_BASES         (0 | (35 << 8))
+#define MAP_CAVE_PREFABS_ROOM1         (1 | (35 << 8))
+#define MAP_CAVE_PREFABS_ROOM2         (2 | (35 << 8))
+#define MAP_CAVE_PREFABS_ROOM3         (3 | (35 << 8))
+#define MAP_CAVE_PREFABS_ROOM4         (4 | (35 << 8))
+#define MAP_CAVE_PREFABS_ROOM5         (5 | (35 << 8))
+#define MAP_CAVE_PREFABS_ROOM7         (6 | (35 << 8))
+#define MAP_CAVE_PREFABS_BOSS_ROOM     (7 | (35 << 8))
+#define MAP_CAVE_PREFABS_TREASURE_ROOM (8 | (35 << 8))
+#define MAP_CAVE_PREFABS_SHOP_ROOM     (9 | (35 << 8))
 
 #define MAP_GROUPS_COUNT 36
 

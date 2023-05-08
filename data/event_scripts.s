@@ -1072,3 +1072,19 @@ Common_EventScript_LegendaryFlewAway::
 	.include "data/maps/CavePrefabs_Bases/scripts.inc"
 
 	.include "data/maps/CavePrefabs_Room1/scripts.inc"
+
+	.include "data/maps/CavePrefabs_Room2/scripts.inc"
+
+	.include "data/maps/CavePrefabs_Room3/scripts.inc"
+
+	.include "data/maps/CavePrefabs_Room4/scripts.inc"
+
+	.include "data/maps/CavePrefabs_Room5/scripts.inc"
+
+	.include "data/maps/CavePrefabs_Room7/scripts.inc"
+
+	.include "data/maps/CavePrefabs_BossRoom/scripts.inc"
+
+	.include "data/maps/CavePrefabs_TreasureRoom/scripts.inc"
+
+	.include "data/maps/CavePrefabs_ShopRoom/scripts.inc"

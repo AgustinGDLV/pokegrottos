@@ -1,7 +1,7 @@
 {
-  "id": "MAP_CAVE_PREFABS_ROOM1",
-  "name": "CavePrefabs_Room1",
-  "layout": "LAYOUT_CAVE_PREFABS_ROOM1",
+  "id": "MAP_CAVE_PREFABS_ROOM7",
+  "name": "CavePrefabs_Room7",
+  "layout": "LAYOUT_CAVE_PREFABS_ROOM7",
   "music": "MUS_RG_SEVII_CAVE",
   "region_map_section": "MAPSEC_NONE",
   "requires_flash": false,
@@ -15,9 +15,9 @@
   "connections": 0,
   "object_events": [
     {
-      "graphics_id": "586",
-      "x": 3,
-      "y": 11,
+      "graphics_id": "547",
+      "x": 4,
+      "y": 17,
       "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_TURN_BASED_ENCOUNTER",
       "movement_range_x": 0,
@@ -25,56 +25,43 @@
       "trainer_type": "TRAINER_TYPE_NONE",
       "trainer_sight_or_berry_tree_id": "3",
       "script": "NULL",
-      "flag": "FLAG_FLOOR_ENCOUNTER_2"
-    },
-    {
-      "graphics_id": "775",
-      "x": 10,
-      "y": 2,
-      "elevation": 0,
-      "movement_type": "MOVEMENT_TYPE_TURN_BASED_ENCOUNTER",
-      "movement_range_x": 0,
-      "movement_range_y": 0,
-      "trainer_type": "TRAINER_TYPE_NONE",
-      "trainer_sight_or_berry_tree_id": "4",
-      "script": "NULL",
-      "flag": "FLAG_FLOOR_ENCOUNTER_1"
+      "flag": "FLAG_FLOOR_ENCOUNTER_6"
     }
   ],
   "warp_events": [
     {
-      "x": 7,
-      "y": 6,
+      "x": 11,
+      "y": 16,
       "elevation": 0,
-      "dest_map": "MAP_CAVE_PREFABS_ROOM1",
+      "dest_map": "MAP_CAVE_PREFABS_ROOM7",
       "dest_warp_id": "0"
     },
     {
-      "x": 8,
+      "x": 9,
       "y": 1,
       "elevation": 0,
-      "dest_map": "MAP_CAVE_PREFABS_ROOM1",
-      "dest_warp_id": "0"
-    },
-    {
-      "x": 7,
-      "y": 13,
-      "elevation": 0,
-      "dest_map": "MAP_CAVE_PREFABS_ROOM1",
+      "dest_map": "MAP_CAVE_PREFABS_ROOM7",
       "dest_warp_id": "0"
     },
     {
       "x": 13,
-      "y": 6,
+      "y": 18,
       "elevation": 0,
-      "dest_map": "MAP_CAVE_PREFABS_ROOM1",
+      "dest_map": "MAP_CAVE_PREFABS_ROOM7",
       "dest_warp_id": "0"
     },
     {
-      "x": 1,
-      "y": 3,
+      "x": 17,
+      "y": 6,
       "elevation": 0,
-      "dest_map": "MAP_CAVE_PREFABS_ROOM1",
+      "dest_map": "MAP_CAVE_PREFABS_ROOM7",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 2,
+      "y": 9,
+      "elevation": 0,
+      "dest_map": "MAP_CAVE_PREFABS_ROOM7",
       "dest_warp_id": "0"
     }
   ],
