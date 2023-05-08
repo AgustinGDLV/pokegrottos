@@ -473,7 +473,6 @@ u8 MovementType_TurnBasedEncounter_WanderStep4(struct ObjectEvent *, struct Spri
 u8 MovementType_TurnBasedEncounter_WanderStep5(struct ObjectEvent *, struct Sprite *);
 u8 MovementType_TurnBasedEncounter_TrackStep6(struct ObjectEvent *, struct Sprite *);
 u8 MovementType_TurnBasedEncounter_TrackStep7(struct ObjectEvent *, struct Sprite *);
-u8 MovementType_TurnBasedEncounter_TrackStep8(struct ObjectEvent *, struct Sprite *);
 
 u8 CreateVirtualObject(u16 graphicsId, u8 virtualObjId, s16 x, s16 y, u8 elevation, u8 direction);
 void TurnVirtualObject(u8 virtualObjId, u8 direction);

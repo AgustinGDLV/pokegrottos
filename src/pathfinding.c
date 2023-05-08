@@ -297,7 +297,7 @@ static bool32 GetPathToCoord(struct ObjectEvent *objectEvent, s32 x, s32 y, s32 
         }
         InsertIntoSet(&explored, node.state);
 
-        if(node.cost > 4)
+        if(node.cost > 10)
             continue;
 
         for(i = 0; i < MOVES_COUNT; ++i)

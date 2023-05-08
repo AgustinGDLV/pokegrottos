@@ -466,5 +466,4 @@ u8 (*const gMovementTypeFuncs_TurnBasedEncounter[])(struct ObjectEvent *, struct
     MovementType_TurnBasedEncounter_WanderStep5,
     MovementType_TurnBasedEncounter_TrackStep6,
     MovementType_TurnBasedEncounter_TrackStep7,
-    MovementType_TurnBasedEncounter_TrackStep8,
 };

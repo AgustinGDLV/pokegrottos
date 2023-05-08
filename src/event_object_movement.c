@@ -5627,8 +5627,7 @@ bool8 MovementType_TurnBasedEncounter_WanderStep0(struct ObjectEvent *objectEven
 bool8 MovementType_TurnBasedEncounter_WanderStep1(struct ObjectEvent *objectEvent, struct Sprite *sprite)
 {
     // Check if we should start tracking the player.
-    if (ObjectEventIsWithinRangeOfPlayer(objectEvent, objectEvent->trainerRange_berryTreeId)
-        && !ObjectEventIsWithinRangeOfPlayer(objectEvent, 1))
+    if (ObjectEventIsWithinRangeOfPlayer(objectEvent, objectEvent->trainerRange_berryTreeId))
     {
         ObjectEventSetSingleMovement(objectEvent, sprite, MOVEMENT_ACTION_EMOTE_QUESTION_MARK);
         sprite->sTypeFuncId = 7;
@@ -5698,8 +5697,7 @@ bool8 MovementType_TurnBasedEncounter_TrackStep6(struct ObjectEvent *objectEvent
         gSpecialVar_0x8001 = objectEvent->localId;
         LockPlayerFieldControls();
         ScriptContext_SetupScript(EventScript_OverworldEncounterStart);
-        sprite->sTypeFuncId = 0;
-        return TRUE;
+        return FALSE;
     }
 
     // Go back to wandering in player leaves range.
@@ -5716,6 +5714,12 @@ bool8 MovementType_TurnBasedEncounter_TrackStep6(struct ObjectEvent *objectEvent
         return FALSE;
     }
 
+    // Wait for (to be speed-based) movement delay to expire.
+    if (!WaitForMovementDelay(sprite))
+    {
+        return FALSE;
+    }
+
     // Move towards player!
     ObjectEventSetSingleMovement(objectEvent, sprite, GetFirstMoveTowardsPlayer(objectEvent));
     sprite->sTypeFuncId = 7;
@@ -5728,17 +5732,7 @@ bool8 MovementType_TurnBasedEncounter_TrackStep7(struct ObjectEvent *objectEvent
     if (ObjectEventExecSingleMovementAction(objectEvent, sprite))
     {
         objectEvent->singleMovementActive = FALSE;
-        sprite->sTypeFuncId = 8;
-        return TRUE;
-    }
-    return FALSE;
-}
-
-bool8 MovementType_TurnBasedEncounter_TrackStep8(struct ObjectEvent *objectEvent, struct Sprite *sprite)
-{
-    // Wait for player to finish a movement action to return to decision state unless already adjacent.
-    if (gPlayerAvatar.tileTransitionState == T_TILE_CENTER || ObjectEventIsAdjacentToPlayer(objectEvent))
-    {
+        SetMovementDelay(sprite, 2); // 2 is enough to prevent double moves.
         sprite->sTypeFuncId = 6;
         return TRUE;
     }

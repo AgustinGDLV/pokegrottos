@@ -17,7 +17,7 @@
     {
       "graphics_id": "547",
       "x": 4,
-      "y": 17,
+      "y": 18,
       "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_TURN_BASED_ENCOUNTER",
       "movement_range_x": 0,
@@ -31,35 +31,35 @@
   "warp_events": [
     {
       "x": 11,
-      "y": 16,
+      "y": 17,
       "elevation": 0,
       "dest_map": "MAP_CAVE_PREFABS_ROOM7",
       "dest_warp_id": "0"
     },
     {
       "x": 9,
-      "y": 1,
+      "y": 3,
       "elevation": 0,
       "dest_map": "MAP_CAVE_PREFABS_ROOM7",
       "dest_warp_id": "0"
     },
     {
       "x": 13,
-      "y": 18,
+      "y": 19,
       "elevation": 0,
       "dest_map": "MAP_CAVE_PREFABS_ROOM7",
       "dest_warp_id": "0"
     },
     {
       "x": 17,
-      "y": 6,
+      "y": 7,
       "elevation": 0,
       "dest_map": "MAP_CAVE_PREFABS_ROOM7",
       "dest_warp_id": "0"
     },
     {
       "x": 2,
-      "y": 9,
+      "y": 10,
       "elevation": 0,
       "dest_map": "MAP_CAVE_PREFABS_ROOM7",
       "dest_warp_id": "0"

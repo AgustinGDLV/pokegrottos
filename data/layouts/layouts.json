@@ -4495,7 +4495,7 @@
       "id": "LAYOUT_CAVE_PREFABS_ROOM7",
       "name": "CavePrefabs_Room7_Layout",
       "width": 20,
-      "height": 20,
+      "height": 22,
       "primary_tileset": "gTileset_General",
       "secondary_tileset": "gTileset_Cave",
       "border_filepath": "data/layouts/CavePrefabs_Room7/border.bin",
