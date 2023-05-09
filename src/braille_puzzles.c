@@ -59,6 +59,15 @@ static void Task_SealedChamberShakingEffect(u8);
 static void DoBrailleRegirockEffect(void);
 static void DoBrailleRegisteelEffect(void);
 
+// I deleted these from the cave tileset.
+// #define METATILE_Cave_SealedChamberBraille_Mid           0
+#define METATILE_Cave_SealedChamberEntrance_BottomLeft   0
+// #define METATILE_Cave_SealedChamberEntrance_BottomMid    0
+// #define METATILE_Cave_SealedChamberEntrance_BottomRight  0
+// #define METATILE_Cave_SealedChamberEntrance_TopLeft      0
+#define METATILE_Cave_SealedChamberEntrance_TopMid       0
+#define METATILE_Cave_SealedChamberEntrance_TopRight     0
+
 bool8 ShouldDoBrailleDigEffect(void)
 {
     if (!FlagGet(FLAG_SYS_BRAILLE_DIG)

@@ -11,6 +11,7 @@
 #define MAX_ROOMS               20
 #define STARTING_ROOM           45
 #define PREFAB_MAP_GROUP_START  MAP_GROUP(FOREST_PREFABS_BASES)
+#define FLOOR_SHOP_ITEM_COUNT   7
 
 #define ROOM_COORD(x, y)    ((x+1) + (y+1)*10)  // gFloorplan.layout is not zero-indexed
 
@@ -33,11 +34,12 @@ struct Floorplan {
     u8 numRooms;
     u8 maxRooms;
     struct Room layout[LAYOUT_SIZE];
-    struct Queue queue;                 // the queue of rooms to visit during algorithm
-    struct Stack endrooms;              // stores the indices of endrooms in order of decr. distance
-    u8 occupiedRooms[20];               // stores the indices of occupied rooms
+    struct Queue queue;                     // the queue of rooms to visit during algorithm
+    struct Stack endrooms;                  // stores the indices of endrooms in order of decr. distance
+    u8 occupiedRooms[20];                   // stores the indices of occupied rooms
     u8 mapGroup;
     u16 nextFloorSeed;
+    u16 shopItems[FLOOR_SHOP_ITEM_COUNT];   // Kecleon Shop items
 };
 
 struct PrefabRules {
@@ -57,5 +59,7 @@ bool32 IsRoomAdjacentToVisited(u8 i);
 u32 GetRoomInDirection(u32 dir);
 void SetWarpDestinationToRoom(u8 i);
 void TryWarpToRoom(void);
+void GenerateKecleonShopList(void);
+u32 GetFloorShopItemCount(void);
 
 #endif

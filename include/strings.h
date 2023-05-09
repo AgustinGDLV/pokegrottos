@@ -1028,6 +1028,12 @@ extern const u8 gText_ShopSell[];
 extern const u8 gText_ShopQuit[];
 extern const u8 gText_ThatItemIsSoldOut[];
 extern const u8 gText_SoldOut[];
+extern const u8 gText_WelcomeToKecleonShop[];
+extern const u8 gText_AnythingElseICanHelp2[];
+extern const u8 gText_Var1CostsVar2[];
+extern const u8 gText_IShallPayVar2[];
+extern const u8 gText_ThankYouSoVeryMuch[];
+extern const u8 gText_LookingForwardToServing[];
 
 extern const u8 gText_OhABite[];
 extern const u8 gText_PokemonOnHook[];

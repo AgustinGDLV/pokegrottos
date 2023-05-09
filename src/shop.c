@@ -18,6 +18,7 @@
 #include "list_menu.h"
 #include "main.h"
 #include "malloc.h"
+#include "map_gen.h"
 #include "menu.h"
 #include "menu_helpers.h"
 #include "money.h"
@@ -69,6 +70,7 @@ enum {
     MART_TYPE_NORMAL,
     MART_TYPE_DECOR,
     MART_TYPE_DECOR2,
+    MART_TYPE_KECLEON,
 };
 
 // shop view window NPC info enum
@@ -155,6 +157,7 @@ static void Task_HandleShopMenuBuy(u8 taskId);
 static void Task_HandleShopMenuSell(u8 taskId);
 static void BuyMenuPrintItemDescriptionAndShowItemIcon(s32 item, bool8 onInit, struct ListMenu *list);
 static void BuyMenuPrintPriceInList(u8 windowId, u32 itemId, u8 y);
+static void Task_ReturnToItemListAfterKecleonShopPurchase(u8 taskId);
 
 static const struct YesNoFuncTable sShopPurchaseYesNoFuncs =
 {
@@ -344,7 +347,7 @@ static u8 CreateShopMenu(u8 martType)
     LockPlayerFieldControls();
     sMartInfo.martType = martType;
 
-    if (martType == MART_TYPE_NORMAL)
+    if (martType == MART_TYPE_NORMAL || martType == MART_TYPE_KECLEON)
     {
         struct WindowTemplate winTemplate = sShopMenuWindowTemplates[WIN_BUY_SELL_QUIT];
         winTemplate.width = GetMaxWidthInMenuTable(sShopMenuActions_BuySellQuit, ARRAY_COUNT(sShopMenuActions_BuySellQuit));
@@ -471,6 +474,8 @@ static void Task_ReturnToShopMenu(u8 taskId)
     {
         if (sMartInfo.martType == MART_TYPE_DECOR2)
             DisplayItemMessageOnField(taskId, gText_CanIHelpWithAnythingElse, ShowShopMenuAfterExitingBuyOrSellMenu);
+        else if (sMartInfo.martType == MART_TYPE_KECLEON)
+            DisplayItemMessageOnField(taskId, gText_AnythingElseICanHelp2, ShowShopMenuAfterExitingBuyOrSellMenu);
         else
             DisplayItemMessageOnField(taskId, gText_AnythingElseICanHelp, ShowShopMenuAfterExitingBuyOrSellMenu);
     }
@@ -555,12 +560,31 @@ static void BuyMenuFreeMemory(void)
 
 static void BuyMenuBuildListMenuTemplate(void)
 {
-    u16 i;
+    u32 i;
 
-    sListMenuItems = Alloc((sMartInfo.itemCount + 1) * sizeof(*sListMenuItems));
-    sItemNames = Alloc((sMartInfo.itemCount + 1) * sizeof(*sItemNames));
-    for (i = 0; i < sMartInfo.itemCount; i++)
-        BuyMenuSetListEntry(&sListMenuItems[i], sMartInfo.itemList[i], sItemNames[i]);
+    // Kecleon Shop's items are dependent on the floor seed.
+    if (sMartInfo.martType == MART_TYPE_KECLEON)
+    {
+        u32 itemCount = 0;
+        sListMenuItems = Alloc(sizeof(struct ListMenuItem) * (FLOOR_SHOP_ITEM_COUNT + 1));
+        sItemNames = Alloc(sizeof(*sItemNames) * (FLOOR_SHOP_ITEM_COUNT + 1));
+        for (i = 0; i < FLOOR_SHOP_ITEM_COUNT; ++i)
+        {
+            if (gFloorplan.shopItems[i] != ITEM_NONE)
+            {
+                BuyMenuSetListEntry(&sListMenuItems[i], gFloorplan.shopItems[i], sItemNames[i]);
+                ++itemCount;
+            }
+        }
+        sMartInfo.itemCount = i = itemCount;
+    }
+    else
+    {
+        sListMenuItems = Alloc((sMartInfo.itemCount + 1) * sizeof(*sListMenuItems));
+        sItemNames = Alloc((sMartInfo.itemCount + 1) * sizeof(*sItemNames));
+        for (i = 0; i < sMartInfo.itemCount; i++)
+            BuyMenuSetListEntry(&sListMenuItems[i], sMartInfo.itemList[i], sItemNames[i]);
+    }
 
     StringCopy(sItemNames[i], gText_Cancel2);
     sListMenuItems[i].name = sItemNames[i];
@@ -579,7 +603,7 @@ static void BuyMenuBuildListMenuTemplate(void)
 
 static void BuyMenuSetListEntry(struct ListMenuItem *menuItem, u16 item, u8 *name)
 {
-    if (sMartInfo.martType == MART_TYPE_NORMAL)
+    if (sMartInfo.martType == MART_TYPE_NORMAL || sMartInfo.martType == MART_TYPE_KECLEON)
         CopyItemName(item, name);
     else
         StringCopy(name, gDecorations[item].name);
@@ -603,7 +627,7 @@ static void BuyMenuPrintItemDescriptionAndShowItemIcon(s32 item, bool8 onInit, s
     sShopData->iconSlot ^= 1;
     if (item != LIST_CANCEL)
     {
-        if (sMartInfo.martType == MART_TYPE_NORMAL)
+        if (sMartInfo.martType == MART_TYPE_NORMAL || sMartInfo.martType == MART_TYPE_KECLEON)
             description = ItemId_GetDescription(item);
         else
             description = gDecorations[item].description;
@@ -623,7 +647,7 @@ static void BuyMenuPrintPriceInList(u8 windowId, u32 itemId, u8 y)
 
     if (itemId != LIST_CANCEL)
     {
-        if (sMartInfo.martType == MART_TYPE_NORMAL)
+        if (sMartInfo.martType == MART_TYPE_NORMAL || sMartInfo.martType == MART_TYPE_KECLEON)
         {
             ConvertIntToDecimalStringN(
                 gStringVar1,
@@ -687,7 +711,7 @@ static void BuyMenuAddItemIcon(u16 item, u8 iconSlot)
     if (*spriteIdPtr != SPRITE_NONE)
         return;
 
-    if (sMartInfo.martType == MART_TYPE_NORMAL || item == ITEM_LIST_END)
+    if (sMartInfo.martType == MART_TYPE_NORMAL || sMartInfo.martType == MART_TYPE_KECLEON || item == ITEM_LIST_END)
     {
         spriteId = AddItemIconSprite(iconSlot + TAG_ITEM_ICON_BASE, iconSlot + TAG_ITEM_ICON_BASE, item);
         if (spriteId != MAX_SPRITES)
@@ -870,7 +894,7 @@ static void BuyMenuCollectObjectEventData(void)
             u8 objEventId = GetObjectEventIdByXY(facingX - 4 + x, facingY - 2 + y);
 
             // skip if invalid or an overworld pokemon that is not following the player
-            if (objEventId != OBJECT_EVENTS_COUNT && !(gObjectEvents[objEventId].active && gObjectEvents[objEventId].graphicsId >= OBJ_EVENT_GFX_MON_BASE && gObjectEvents[objEventId].localId != OBJ_EVENT_ID_FOLLOWER))
+            if (objEventId != OBJECT_EVENTS_COUNT)
             {
                 sShopData->viewportObjects[numObjects][OBJ_EVENT_ID] = objEventId;
                 sShopData->viewportObjects[numObjects][X_COORD] = x;
@@ -997,7 +1021,7 @@ static void Task_BuyMenu(u8 taskId)
             BuyMenuRemoveScrollIndicatorArrows();
             BuyMenuPrintCursor(tListTaskId, COLORID_GRAY_CURSOR);
 
-            if (sMartInfo.martType == MART_TYPE_NORMAL)
+            if (sMartInfo.martType == MART_TYPE_NORMAL || sMartInfo.martType == MART_TYPE_KECLEON)
                 sShopData->totalCost = (ItemId_GetPrice(itemId) >> IsPokeNewsActive(POKENEWS_SLATEPORT));
             else
                 sShopData->totalCost = gDecorations[itemId].price;
@@ -1030,6 +1054,15 @@ static void Task_BuyMenu(u8 taskId)
                     {
                         BuyMenuDisplayMessage(taskId, gText_Var1CertainlyHowMany, Task_BuyHowManyDialogueInit);
                     }
+                }
+                else if (sMartInfo.martType == MART_TYPE_KECLEON)
+                {
+                    CopyItemName(itemId, gStringVar1);
+                    ConvertIntToDecimalStringN(gStringVar2, sShopData->totalCost, STR_CONV_MODE_LEFT_ALIGN, 6);
+                    StringExpandPlaceholders(gStringVar4, gText_Var1CostsVar2);
+                    tItemCount = 1;
+                    sShopData->totalCost = (ItemId_GetPrice(tItemId) >> IsPokeNewsActive(POKENEWS_SLATEPORT)) * tItemCount;
+                    BuyMenuDisplayMessage(taskId, gStringVar4, BuyMenuConfirmPurchase);
                 }
                 else
                 {
@@ -1134,6 +1167,18 @@ static void BuyMenuTryMakePurchase(u8 taskId)
             BuyMenuDisplayMessage(taskId, gText_NoMoreRoomForThis, BuyMenuReturnToItemList);
         }
     }
+    else if (sMartInfo.martType == MART_TYPE_KECLEON)
+    {
+        if (AddBagItem(tItemId, 1) == TRUE)
+        {
+            RecordItemPurchase(taskId);
+            BuyMenuDisplayMessage(taskId, gText_ThankYouSoVeryMuch, BuyMenuSubtractMoney);
+        }
+        else
+        {
+            BuyMenuDisplayMessage(taskId, gText_NoMoreRoomForThis, BuyMenuReturnToItemList);
+        }
+    }
     else
     {
         if (DecorationAdd(tItemId))
@@ -1159,6 +1204,8 @@ static void BuyMenuSubtractMoney(u8 taskId)
 
     if (sMartInfo.martType == MART_TYPE_NORMAL)
         gTasks[taskId].func = Task_ReturnToItemListAfterItemPurchase;
+    else if (sMartInfo.martType == MART_TYPE_KECLEON)
+        gTasks[taskId].func = Task_ReturnToItemListAfterKecleonShopPurchase;
     else
         gTasks[taskId].func = Task_ReturnToItemListAfterDecorationPurchase;
 }
@@ -1207,7 +1254,7 @@ static void BuyMenuPrintItemQuantityAndPrice(u8 taskId)
     s16 *data = gTasks[taskId].data;
 
     FillWindowPixelBuffer(WIN_QUANTITY_PRICE, PIXEL_FILL(1));
-    PrintMoneyAmount(WIN_QUANTITY_PRICE, 38, 1, sShopData->totalCost, TEXT_SKIP_DRAW);
+    PrintMoneyAmount(WIN_QUANTITY_PRICE, 35, 1, sShopData->totalCost, TEXT_SKIP_DRAW);
     ConvertIntToDecimalStringN(gStringVar1, tItemCount, STR_CONV_MODE_LEADING_ZEROS, BAG_ITEM_CAPACITY_DIGITS);
     StringExpandPlaceholders(gStringVar4, gText_xVar1);
     BuyMenuPrint(WIN_QUANTITY_PRICE, gStringVar4, 0, 1, 0, COLORID_NORMAL);
@@ -1263,6 +1310,43 @@ static void RecordItemPurchase(u8 taskId)
     }
 }
 
+// Removes an entry from the list and updates the floorplan shop items.
+static void BuyMenuRemoveListEntry(u8 taskId, u32 row, struct ListMenu *list)
+{
+    u32 i;
+    // Shift the floorplan shop list and list menu arrays.
+    for (i = row; i < sMartInfo.itemCount - 1; ++i)
+    {
+        gFloorplan.shopItems[i] = gFloorplan.shopItems[i + 1];
+        memcpy(&sListMenuItems[i], &sListMenuItems[i + 1], sizeof(sListMenuItems[i]));
+    }
+    // Zero the last element.
+    gFloorplan.shopItems[i] = ITEM_NONE;
+    memcpy(&sListMenuItems[i], &sListMenuItems[i + 1], sizeof(sListMenuItems[i]));
+    --sMartInfo.itemCount;
+
+    // Update list menu template.
+    list->template.totalItems = sMartInfo.itemCount + 1;
+    if (list->template.totalItems > MAX_ITEMS_SHOWN)
+        list->template.maxShowed = MAX_ITEMS_SHOWN;
+    else
+        list->template.maxShowed = list->template.totalItems;
+    sShopData->itemsShowed = list->template.maxShowed;
+}
+
+
+static void Task_ReturnToItemListAfterKecleonShopPurchase(u8 taskId)
+{
+    if (JOY_NEW(A_BUTTON | B_BUTTON))
+    {
+        struct ListMenu *list = (void *) gTasks[gTasks[taskId].tListTaskId].data;
+        PlaySE(SE_SELECT);
+        BuyMenuRemoveListEntry(taskId, sShopData->selectedRow, list);
+        BuyMenuPrintItemDescriptionAndShowItemIcon(sListMenuItems[sShopData->selectedRow].id, FALSE, list);
+        BuyMenuReturnToItemList(taskId);
+    }
+}
+
 #undef tItemCount
 #undef tItemId
 #undef tListTaskId
@@ -1289,4 +1373,13 @@ void CreateDecorationShop2Menu(const u16 *itemsForSale)
     CreateShopMenu(MART_TYPE_DECOR2);
     SetShopItemsForSale(itemsForSale);
     SetShopMenuCallback(ScriptContext_Enable);
+}
+
+// This is called using ScrCmd_CallFunc.
+bool8 CreateKecleonShopMenu(void)
+{
+    CreateShopMenu(MART_TYPE_KECLEON);
+    SetShopMenuCallback(ScriptContext_Enable);
+    ScriptContext_Stop();
+    return TRUE;
 }

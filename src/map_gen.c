@@ -22,6 +22,17 @@ EWRAM_DATA struct Floorplan gFloorplan = {0};
 
 #include "data/prefab_rules.h"
 
+// forward declarations
+static u32 CountNeighbors(struct Floorplan* floorplan, u8 i);
+static bool32 Visit(struct Floorplan* floorplan, u8 i);
+static void ZeroFloorplan(struct Floorplan* floorplan);
+static u8 GetMaxRooms(void);
+static void PopulateFloorplan(struct Floorplan* floorplan);
+static void ShuffleArray(u8* array, u32 size);
+static void AssignSpecialRoomTypes(struct Floorplan* floorplan);
+static void AssignRoomMapIds(struct Floorplan* floorplan);
+static void ClearFloorEventFlags(void);
+
 // Generation helper functions
 static u32 CountNeighbors(struct Floorplan* floorplan, u8 i)
 {
@@ -55,16 +66,8 @@ static void ZeroFloorplan(struct Floorplan* floorplan)
     ZeroQueue(&floorplan->queue);
     ZeroStack(&floorplan->endrooms);
     floorplan->mapGroup = 35;
-    for (i = 0; i < LAYOUT_SIZE; ++i)
-    {
-        floorplan->layout[i].type = 0;
-        floorplan->layout[i].visited = FALSE;
-        floorplan->layout[i].mapNum = 1;
-    }
-    for (i = 0; i < MAX_ROOMS; ++i)
-    {
-        floorplan->occupiedRooms[i] = 0;
-    }
+    memset(floorplan->layout, 0, sizeof(floorplan->layout));
+    memset(floorplan->occupiedRooms, 0, sizeof(floorplan->occupiedRooms));
 }
 
 // TODO: Take into account depth.
@@ -199,6 +202,8 @@ void DebugPrintFloorplan(struct Floorplan* floorplan)
     }
 }
 
+// This is the special I used to test before floor generation was
+// baked into the game more.
 void CreateDebugFloorplan(void)
 {
     u32 attempts = 0;
@@ -208,6 +213,7 @@ void CreateDebugFloorplan(void)
         PopulateFloorplan(&gFloorplan);
     } while (gFloorplan.numRooms < MIN_ROOMS && ++attempts < 10);
     AssignRoomMapIds(&gFloorplan);
+    GenerateKecleonShopList();
     // DebugPrintFloorplan(&gFloorplan);
 }
 
@@ -281,9 +287,21 @@ void TryWarpToRoom(void)
     SetMainCallback2(CB2_LoadMap);
 }
 
+// Clears all loot and encounter flags between floors.
 static void ClearFloorEventFlags(void)
 {
     u32 i;
     for (i = PREFAB_EVENT_FLAGS_START; i < PREFAB_EVENT_FLAGS_END + 1; ++i)
         FlagClear(i);
+}
+
+// Generates the list of items to sell in a floor.
+// This is called when the shop is refreshed, too.
+void GenerateKecleonShopList(void)
+{
+    u32 i;
+    for (i = 0; i < FLOOR_SHOP_ITEM_COUNT; ++i)
+    {
+        gFloorplan.shopItems[i] = i + 121;
+    }
 }

@@ -7,8 +7,7 @@ void ZeroQueue(struct Queue* queue)
     queue->size = 0;
     queue->front = 0;
     queue->rear = 0;
-    for (i = 0; i < MAX_QUEUE_SIZE; ++i)
-        queue->arr[i] = 0;
+    memset(queue->arr, 0, sizeof(queue->arr));
 }
 
 void Enqueue(struct Queue* queue, u8 item)
@@ -49,8 +48,7 @@ void ZeroStack(struct Stack* stack)
 {
     u32 i;
     stack->top = 0;
-    for (i = 0; i < MAX_STACK_SIZE; ++i)
-        stack->arr[i] = 0;
+    memset(stack->arr, 0, sizeof(stack->arr));
 }
 
 void Push(struct Stack* stack, u8 item)

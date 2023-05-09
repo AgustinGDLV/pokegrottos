@@ -17,3 +17,15 @@ EventScript_OverworldEncounterStart::
 	removeobject VAR_0x8001
 	releaseall
     end
+
+EventScript_KecleonShop::
+	lock
+	faceplayer
+	playmoncry SPECIES_KECLEON, CRY_MODE_NORMAL
+	message gText_WelcomeToKecleonShop
+	waitmessage
+	callfunc CreateKecleonShopMenu
+	playmoncry SPECIES_KECLEON, CRY_MODE_NORMAL
+	msgbox gText_LookingForwardToServing, MSGBOX_DEFAULT
+	release
+	end
