@@ -343,15 +343,11 @@ static void Task_MapScreenFadeOutAndWarp(u8 taskId)
 {
     if (!gPaletteFade.active && !IsSEPlaying())
 	{
-        SetWarpDestinationToRoom(gSaveBlock1Ptr->currentRoom, 0);
-        WarpIntoMap();
-        SetMainCallback2(CB2_LoadMap);
 		Free(sMapScreenTilemapPtr);
         sMapScreenTilemapPtr = NULL;
 		FreeAllWindowBuffers();
         ResetSpriteData();
-        UnlockPlayerFieldControls();
-        UnfreezeObjectEvents();
+        TryWarpToRoom(gSaveBlock1Ptr->currentRoom, 0);
 		DestroyTask(taskId);
 	}
 }
@@ -370,7 +366,7 @@ static void Task_MapScreenWaitForKeypress(u8 taskId)
         target = GetRoomInDirection(DIR_WEST);
 
     #ifdef NDEBUG
-    if (target != gSaveBlock1Ptr->currentRoom && DoesRoomExist(target) && gFloorplan.layout[target].visited)
+    if (target != gSaveBlock1Ptr->currentRoom && DoesRoomExist(target) && IsRoomVisited(target))
     {
         PlaySE(SE_SELECT);
         gSaveBlock1Ptr->currentRoom = target;
@@ -381,7 +377,7 @@ static void Task_MapScreenWaitForKeypress(u8 taskId)
     if (target != gSaveBlock1Ptr->currentRoom && DoesRoomExist(target))
     {
         PlaySE(SE_SELECT);
-        gFloorplan.layout[target].visited = TRUE;
+        SetRoomAsVisited(target);
         gSaveBlock1Ptr->currentRoom = target;
         ShowRooms();
     }
@@ -390,7 +386,6 @@ static void Task_MapScreenWaitForKeypress(u8 taskId)
     // Try to warp to new room.
     if (gMain.newKeys & A_BUTTON && gSaveBlock1Ptr->currentRoom != sRoomBuffer)
 	{
-        PlaySE(SE_WARP_OUT); // TODO: doesn't play audibly
 		BeginNormalPaletteFade(PALETTES_ALL, 0, 0, 16, RGB_BLACK);
 		gTasks[taskId].func = Task_MapScreenFadeOutAndWarp;
     }
@@ -456,7 +451,7 @@ static void DrawRoomOnBg(u32 x, u32 y)
 
     if (ROOM_COORD(x, y) == gSaveBlock1Ptr->currentRoom)
         tileId = 0x09;
-    else if (gFloorplan.layout[ROOM_COORD(x, y)].visited)
+    else if (IsRoomVisited(ROOM_COORD(x, y)))
         tileId = 0x05;
     else if (IsRoomAdjacentToVisited(ROOM_COORD(x, y)))
         tileId = 0x01;

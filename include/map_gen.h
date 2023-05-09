@@ -25,8 +25,7 @@ enum RoomTypes {
 };
 
 struct Room {
-    enum RoomTypes type:4;      // room type
-    u8 visited:4;               // has player visited this room
+    enum RoomTypes type:8;      // room type
     u8 mapNum;
 };
 
@@ -56,6 +55,8 @@ void DebugPrintFloorplan(struct Floorplan* floorplan);
 void CreateDebugFloorplan(void);
 void GenerateFloorplan(void);
 void GoToNextFloor(void);
+void SetRoomAsVisited(u8 i);
+bool32 IsRoomVisited(u8 i);
 bool32 DoesRoomExist(u8 i);
 bool32 IsRoomAdjacentToVisited(u8 i);
 u32 GetRoomInDirection(u32 dir);

@@ -40,6 +40,17 @@ static u32 CountNeighbors(struct Floorplan* floorplan, u8 i)
     + (floorplan->layout[i+1].type >= NORMAL_ROOM) + (floorplan->layout[i+10].type >= NORMAL_ROOM);
 }
 
+// The visited flags for a room are set in a saveblock bitfield.
+void SetRoomAsVisited(u8 i)
+{
+    gSaveBlock1Ptr->visitedRooms[i / 32] |= (1 << i % 32);
+}
+
+bool32 IsRoomVisited(u8 i)
+{
+    return gSaveBlock1Ptr->visitedRooms[i / 32] & (1 << i % 32);
+}
+
 // "Visits" a room during generation and marks it as occupied or ignores it.
 static bool32 Visit(struct Floorplan* floorplan, u8 i)
 {
@@ -70,6 +81,7 @@ static void ZeroFloorplan(struct Floorplan* floorplan)
     floorplan->mapGroup = 35;
     memset(floorplan->layout, 0, sizeof(floorplan->layout));
     memset(floorplan->occupiedRooms, 0, sizeof(floorplan->occupiedRooms));
+    memset(gSaveBlock1Ptr->visitedRooms, 0, sizeof(gSaveBlock1Ptr->visitedRooms));
 }
 
 // TODO: Take into account depth.
@@ -86,7 +98,7 @@ static void PopulateFloorplan(struct Floorplan* floorplan)
     Enqueue(&floorplan->queue, STARTING_ROOM);
     floorplan->numRooms = 1;
     floorplan->layout[STARTING_ROOM].type = NORMAL_ROOM;
-    floorplan->layout[STARTING_ROOM].visited = TRUE;
+    SetRoomAsVisited(STARTING_ROOM);
     floorplan->occupiedRooms[0] = STARTING_ROOM;
     floorplan->maxRooms = GetMaxRooms();
 
@@ -227,7 +239,6 @@ void CreateDebugFloorplan(void)
 void GenerateFloorplan(void)
 {
     u32 attempts = 0;
-    gSaveBlock1Ptr->currentRoom = STARTING_ROOM; // TODO: do in NewGame
     SeedRngFloor(gSaveBlock1Ptr->floorSeed);
 
     // Try to make sure that the floorplan isn't too small.
@@ -262,13 +273,13 @@ bool32 DoesRoomExist(u8 i)
 // Returns whether a room in the layout is adjacent to a visited room.
 bool32 IsRoomAdjacentToVisited(u8 i)
 {
-    if (gFloorplan.layout[i - 10].visited)
+    if (IsRoomVisited(i - 10))
         return TRUE;
-    if (gFloorplan.layout[i + 10].visited)
+    if (IsRoomVisited(i + 10))
         return TRUE;
-    if (gFloorplan.layout[i - 1].visited)
+    if (IsRoomVisited(i - 1))
         return TRUE;
-    if (gFloorplan.layout[i + 1].visited)
+    if (IsRoomVisited(i + 1))
         return TRUE;
     return FALSE;
 }
@@ -311,7 +322,7 @@ bool32 TryWarpToRoom(u32 target, u32 warpId)
 
     // Set appropriate variables and flags.
     gSaveBlock1Ptr->currentRoom = target;
-    gFloorplan.layout[target].visited = TRUE;
+    SetRoomAsVisited(target);
 
     // Do warp.
     StoreInitialPlayerAvatarState();
@@ -319,7 +330,10 @@ bool32 TryWarpToRoom(u32 target, u32 warpId)
     TryFadeOutOldMapMusic();
     WarpFadeOutScreen();
     PlayRainStoppingSoundEffect();
-    PlaySE(SE_EXIT);
+    if (warpId == 0)
+        PlaySE(SE_WARP_OUT);
+    else
+        PlaySE(SE_EXIT);
     SetWarpDestinationToRoom(target, warpId);
     WarpIntoMap();
     SetMainCallback2(CB2_LoadMap);

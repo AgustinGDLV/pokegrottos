@@ -1009,10 +1009,11 @@ struct SaveBlock1
     /*0x690*/ struct ItemSlot bagPocket_TMHM[BAG_TMHM_COUNT];
     /*0x790*/ struct ItemSlot bagPocket_Berries[BAG_BERRIES_COUNT];
     /*0x848*/ struct Pokeblock pokeblocks[POKEBLOCKS_COUNT];
-    /*0x988*/ u8 filler1[0x30]; // Previously Dex Flags, feel free to remove.
+    /*0x988*/ u8 filler1[0x14]; // Previously Dex Flags, feel free to remove.
               u8 currentRoom; // stores the currently occupied room
               u8 currentFloor; // stores the current floor depth
               u16 floorSeed; // stores the seed of the current floor
+              u32 visitedRooms[4]; // long bitfield
     /*0x9BC*/ u16 berryBlenderRecords[3];
     /*0x9C2*/ u8 unused_9C2[6];
     /*0x9C8*/ u16 trainerRematchStepCounter;
