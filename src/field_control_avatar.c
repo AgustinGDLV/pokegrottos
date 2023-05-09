@@ -768,11 +768,9 @@ static bool8 TryArrowWarp(struct MapPosition *position, u16 metatileBehavior, u8
             DoWarp();
             return TRUE;
         }
-        else // Do custom warp in prefab rooms.
+        else // Do custom warp in floor rooms.
         {
-            gSpecialVar_0x8000 = direction;
-            TryWarpToRoom();
-            return gSpecialVar_Result;
+            return TryWarpToRoom(GetRoomInDirection(direction), direction);
         }
     }
     return FALSE;

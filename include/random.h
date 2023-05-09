@@ -3,10 +3,12 @@
 
 extern u32 gRngValue;
 extern u32 gRng2Value;
+extern u32 gRngFloorValue;
 
 //Returns a 16-bit pseudorandom number
 u16 Random(void);
 u16 Random2(void);
+u16 RandomF(void);
 
 //Returns a 32-bit pseudorandom number
 #define Random32() (Random() | (Random() << 16))
@@ -19,6 +21,7 @@ u16 Random2(void);
 //Sets the initial seed value of the pseudorandom number generator
 void SeedRng(u16 seed);
 void SeedRng2(u16 seed);
+void SeedRngFloor(u16 seed);
 
 /* Structured random number generator.
  * Instead of the caller converting bits from Random() to a meaningful

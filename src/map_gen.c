@@ -33,13 +33,14 @@ static void AssignSpecialRoomTypes(struct Floorplan* floorplan);
 static void AssignRoomMapIds(struct Floorplan* floorplan);
 static void ClearFloorEventFlags(void);
 
-// Generation helper functions
+// Returns the number of occupied neighbors for a room index.
 static u32 CountNeighbors(struct Floorplan* floorplan, u8 i)
 {
     return (floorplan->layout[i-10].type >= NORMAL_ROOM) + (floorplan->layout[i-1].type >= NORMAL_ROOM) \
     + (floorplan->layout[i+1].type >= NORMAL_ROOM) + (floorplan->layout[i+10].type >= NORMAL_ROOM);
 }
 
+// "Visits" a room during generation and marks it as occupied or ignores it.
 static bool32 Visit(struct Floorplan* floorplan, u8 i)
 {
     if (floorplan->numRooms >= floorplan->maxRooms)
@@ -48,7 +49,7 @@ static bool32 Visit(struct Floorplan* floorplan, u8 i)
         return FALSE;
     if (CountNeighbors(floorplan, i) > 1)
         return FALSE;
-    if (i != STARTING_ROOM && (Random() % 2))
+    if (i != STARTING_ROOM && (RandomF() % 2))
         return FALSE;
 
     Enqueue(&floorplan->queue, i);
@@ -58,6 +59,7 @@ static bool32 Visit(struct Floorplan* floorplan, u8 i)
     return TRUE;
 }
 
+// Zeroes all the data in a Floorplan.
 static void ZeroFloorplan(struct Floorplan* floorplan)
 {
     u32 i;
@@ -76,7 +78,7 @@ static u8 GetMaxRooms(void)
     return 15;
 }
 
-// Populates an empty floorplan.
+// Creates rooms and endroom stack for an empty floorplan.
 static void PopulateFloorplan(struct Floorplan* floorplan)
 {
     // Set up floorplan.
@@ -85,6 +87,7 @@ static void PopulateFloorplan(struct Floorplan* floorplan)
     floorplan->numRooms = 1;
     floorplan->layout[STARTING_ROOM].type = NORMAL_ROOM;
     floorplan->layout[STARTING_ROOM].visited = TRUE;
+    floorplan->occupiedRooms[0] = STARTING_ROOM;
     floorplan->maxRooms = GetMaxRooms();
 
     // Generate rooms.
@@ -108,6 +111,7 @@ static void PopulateFloorplan(struct Floorplan* floorplan)
     }
 }
 
+// Shuffles an array in place.
 static void ShuffleArray(u8* array, u32 size)
 {
     u32 i, j, t;
@@ -118,7 +122,7 @@ static void ShuffleArray(u8* array, u32 size)
     // Code from https://stackoverflow.com/questions/6127503/shuffle-array-in-c.
     for (i = 0; i < size - 1; ++i) 
     {
-        j = i + Random() / (UINT16_MAX / (size - i) + 1);
+        j = i + RandomF() / (UINT16_MAX / (size - i) + 1);
         t = array[j];
         array[j] = array[i];
         array[i] = t;
@@ -206,22 +210,56 @@ void DebugPrintFloorplan(struct Floorplan* floorplan)
 // baked into the game more.
 void CreateDebugFloorplan(void)
 {
-    u32 attempts = 0;
-    gSaveBlock1Ptr->currentRoom = STARTING_ROOM;
-    do {
-        ZeroFloorplan(&gFloorplan);
-        PopulateFloorplan(&gFloorplan);
-    } while (gFloorplan.numRooms < MIN_ROOMS && ++attempts < 10);
-    AssignRoomMapIds(&gFloorplan);
-    GenerateKecleonShopList();
+    if (gFloorplan.nextFloorSeed == 0)
+        gFloorplan.nextFloorSeed = Random();
+    // u32 attempts = 0;
+    // gSaveBlock1Ptr->currentRoom = STARTING_ROOM;
+    // do {
+    //     PopulateFloorplan(&gFloorplan);
+    // } while (gFloorplan.numRooms < MIN_ROOMS && ++attempts < 10);
+    // AssignRoomMapIds(&gFloorplan);
+    // GenerateKecleonShopList();
     // DebugPrintFloorplan(&gFloorplan);
+    GoToNextFloor();
 }
 
+// Generates a floorplan using the saveblock seed.
+void GenerateFloorplan(void)
+{
+    u32 attempts = 0;
+    gSaveBlock1Ptr->currentRoom = STARTING_ROOM; // TODO: do in NewGame
+    SeedRngFloor(gSaveBlock1Ptr->floorSeed);
+
+    // Try to make sure that the floorplan isn't too small.
+    do {
+        PopulateFloorplan(&gFloorplan);
+    } while (gFloorplan.numRooms < MIN_ROOMS && ++attempts < 10);
+
+    // Handle the rest of the floorplan data.
+    AssignRoomMapIds(&gFloorplan);
+    GenerateKecleonShopList();
+    gFloorplan.nextFloorSeed = RandomF();
+}
+
+// Generates the next floor and warps to its starting room.
+void GoToNextFloor(void)
+{
+    // Update save fields.
+    ++gSaveBlock1Ptr->currentFloor;
+    gSaveBlock1Ptr->floorSeed = gFloorplan.nextFloorSeed;
+
+    // Generate the new floorplan and warp.
+    GenerateFloorplan();
+    TryWarpToRoom(STARTING_ROOM, 0);
+}
+
+// Returns whether a room in the layout exists.
 bool32 DoesRoomExist(u8 i)
 {
     return gFloorplan.layout[i].type >= NORMAL_ROOM;
 }
 
+// Returns whether a room in the layout is adjacent to a visited room.
 bool32 IsRoomAdjacentToVisited(u8 i)
 {
     if (gFloorplan.layout[i - 10].visited)
@@ -235,6 +273,7 @@ bool32 IsRoomAdjacentToVisited(u8 i)
     return FALSE;
 }
 
+// Returns the room index in the given DIR constant direction.
 u32 GetRoomInDirection(u32 dir)
 {
     u32 target = 0;
@@ -256,22 +295,21 @@ u32 GetRoomInDirection(u32 dir)
     return target;
 }
 
-void SetWarpDestinationToRoom(u8 i)
+// Sets the warp destination to the room's map ID (given by room index).
+void SetWarpDestinationToRoom(u32 index, u32 warpId)
 {
-    SetWarpDestination(gFloorplan.mapGroup, gFloorplan.layout[i].mapNum, gSpecialVar_0x8000, -1, -1);
+    SetWarpDestination(gFloorplan.mapGroup, gFloorplan.layout[index].mapNum, warpId, -1, -1);
 }
 
-void TryWarpToRoom(void)
+// Executes a warp to a given room.
+// Warp ID can be given using a directional constant.
+bool32 TryWarpToRoom(u32 target, u32 warpId)
 {
-    u32 target = GetRoomInDirection(gSpecialVar_0x8000);
-    gSpecialVar_Result = FALSE;
-
     // Don't warp if invalid room.
     if (!DoesRoomExist(target))
-        return;
+        return FALSE;
 
     // Set appropriate variables and flags.
-    gSpecialVar_Result = TRUE;
     gSaveBlock1Ptr->currentRoom = target;
     gFloorplan.layout[target].visited = TRUE;
 
@@ -282,9 +320,10 @@ void TryWarpToRoom(void)
     WarpFadeOutScreen();
     PlayRainStoppingSoundEffect();
     PlaySE(SE_EXIT);
-    SetWarpDestinationToRoom(target);
+    SetWarpDestinationToRoom(target, warpId);
     WarpIntoMap();
     SetMainCallback2(CB2_LoadMap);
+    return;
 }
 
 // Clears all loot and encounter flags between floors.
@@ -296,7 +335,7 @@ static void ClearFloorEventFlags(void)
 }
 
 // Generates the list of items to sell in a floor.
-// This is called when the shop is refreshed, too.
+// This can be called to refresh the shop, too.
 void GenerateKecleonShopList(void)
 {
     u32 i;

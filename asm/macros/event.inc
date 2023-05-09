@@ -2025,9 +2025,3 @@
 	setvar VAR_0x8002, \tryMultiple
 	special TrySpecialOverworldEvo
 	.endm
-
-	@ Tries to warp to a room in a given direction.
-	.macro trywarptoroom direction:req
-	setvar VAR_0x8000, \direction
-	special TryWarpToRoom
-	.endm

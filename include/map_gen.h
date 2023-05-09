@@ -54,11 +54,13 @@ extern const struct PrefabRules gPrefabRules[MAP_GROUPS_COUNT];
 
 void DebugPrintFloorplan(struct Floorplan* floorplan);
 void CreateDebugFloorplan(void);
+void GenerateFloorplan(void);
+void GoToNextFloor(void);
 bool32 DoesRoomExist(u8 i);
 bool32 IsRoomAdjacentToVisited(u8 i);
 u32 GetRoomInDirection(u32 dir);
-void SetWarpDestinationToRoom(u8 i);
-void TryWarpToRoom(void);
+void SetWarpDestinationToRoom(u32 index, u32 warpId);
+bool32 TryWarpToRoom(u32 target, u32 warpId);
 void GenerateKecleonShopList(void);
 u32 GetFloorShopItemCount(void);
 

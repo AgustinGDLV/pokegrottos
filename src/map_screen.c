@@ -343,8 +343,7 @@ static void Task_MapScreenFadeOutAndWarp(u8 taskId)
 {
     if (!gPaletteFade.active && !IsSEPlaying())
 	{
-        gSpecialVar_0x8000 = 0;
-        SetWarpDestinationToRoom(gSaveBlock1Ptr->currentRoom);
+        SetWarpDestinationToRoom(gSaveBlock1Ptr->currentRoom, 0);
         WarpIntoMap();
         SetMainCallback2(CB2_LoadMap);
 		Free(sMapScreenTilemapPtr);
@@ -419,7 +418,7 @@ static void PrintFloorText(void)
 {
 	const u8 colour[] = {TEXT_COLOR_TRANSPARENT, TEXT_COLOR_WHITE, TEXT_COLOR_DARK_GRAY};
 	StringCopy(gStringVar1, sText_Floor);
-	ConvertIntToDecimalStringN(gStringVar2, 1, STR_CONV_MODE_LEFT_ALIGN, 3);
+	ConvertIntToDecimalStringN(gStringVar2, gSaveBlock1Ptr->currentFloor, STR_CONV_MODE_LEFT_ALIGN, 3);
 	StringAppend(gStringVar1, gStringVar2);
 	AddTextPrinterParameterized3(WIN_FLOOR, 0, 4, 0, colour, 0, gStringVar1);
 }
@@ -570,7 +569,6 @@ void ShowMapScreen(void)
 {
     if (gFloorplan.numRooms != 0)
 	{
-        DebugPrintFloorplan(&gFloorplan);
         sRoomBuffer = gSaveBlock1Ptr->currentRoom;
         PlaySE(SE_RG_CARD_FLIPPING);
         PlayRainStoppingSoundEffect();

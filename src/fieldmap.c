@@ -85,8 +85,12 @@ void InitMapFromSavedGame(void)
     InitSecretBaseAppearance(FALSE);
     SetOccupiedSecretBaseEntranceMetatiles(gMapHeader.events);
     LoadSavedMapView();
+    // Generate the floorplan struct on a new save and cover exits properly.
     if (gSaveBlock1Ptr->location.mapGroup >= PREFAB_MAP_GROUP_START)
+    {
+        GenerateFloorplan();
         CoverInvalidRoomExits();
+    }
     RunOnLoadMapScript();
     UpdateTVScreensOnMap(gBackupMapLayout.width, gBackupMapLayout.height);
 }

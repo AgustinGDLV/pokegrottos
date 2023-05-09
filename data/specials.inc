@@ -538,4 +538,3 @@ gSpecials::
 	def_special TrySpecialOverworldEvo
 	def_special CreateDebugFloorplan
 	def_special ShowMapScreen
-	def_special TryWarpToRoom
