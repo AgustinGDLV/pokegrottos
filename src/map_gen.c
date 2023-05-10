@@ -10,6 +10,7 @@
 #include "map_gen.h"
 #include "overworld.h"
 #include "random.h"
+#include "save.h"
 #include "sound.h"
 #include "script.h"
 #include "strings.h"
@@ -81,7 +82,6 @@ static void ZeroFloorplan(struct Floorplan* floorplan)
     floorplan->mapGroup = 35;
     memset(floorplan->layout, 0, sizeof(floorplan->layout));
     memset(floorplan->occupiedRooms, 0, sizeof(floorplan->occupiedRooms));
-    memset(gSaveBlock1Ptr->visitedRooms, 0, sizeof(gSaveBlock1Ptr->visitedRooms));
 }
 
 // TODO: Take into account depth.
@@ -235,33 +235,13 @@ void CreateDebugFloorplan(void)
     GoToNextFloor();
 }
 
-// Generates a floorplan using the saveblock seed.
-void GenerateFloorplan(void)
+
+// Clears all loot and encounter flags between floors.
+static void ClearFloorEventFlags(void)
 {
-    u32 attempts = 0;
-    SeedRngFloor(gSaveBlock1Ptr->floorSeed);
-
-    // Try to make sure that the floorplan isn't too small.
-    do {
-        PopulateFloorplan(&gFloorplan);
-    } while (gFloorplan.numRooms < MIN_ROOMS && ++attempts < 10);
-
-    // Handle the rest of the floorplan data.
-    AssignRoomMapIds(&gFloorplan);
-    GenerateKecleonShopList();
-    gFloorplan.nextFloorSeed = RandomF();
-}
-
-// Generates the next floor and warps to its starting room.
-void GoToNextFloor(void)
-{
-    // Update save fields.
-    ++gSaveBlock1Ptr->currentFloor;
-    gSaveBlock1Ptr->floorSeed = gFloorplan.nextFloorSeed;
-
-    // Generate the new floorplan and warp.
-    GenerateFloorplan();
-    TryWarpToRoom(STARTING_ROOM, 0);
+    u32 i;
+    for (i = PREFAB_EVENT_FLAGS_START; i < PREFAB_EVENT_FLAGS_END + 1; ++i)
+        FlagClear(i);
 }
 
 // Returns whether a room in the layout exists.
@@ -340,14 +320,6 @@ bool32 TryWarpToRoom(u32 target, u32 warpId)
     return;
 }
 
-// Clears all loot and encounter flags between floors.
-static void ClearFloorEventFlags(void)
-{
-    u32 i;
-    for (i = PREFAB_EVENT_FLAGS_START; i < PREFAB_EVENT_FLAGS_END + 1; ++i)
-        FlagClear(i);
-}
-
 // Generates the list of items to sell in a floor.
 // This can be called to refresh the shop, too.
 void GenerateKecleonShopList(void)
@@ -357,4 +329,34 @@ void GenerateKecleonShopList(void)
     {
         gFloorplan.shopItems[i] = i + 121;
     }
+}
+
+// Generates a floorplan using the saveblock seed.
+void GenerateFloorplan(void)
+{
+    u32 attempts = 0;
+    SeedRngFloor(gSaveBlock1Ptr->floorSeed);
+
+    // Try to make sure that the floorplan isn't too small.
+    do {
+        PopulateFloorplan(&gFloorplan);
+    } while (gFloorplan.numRooms < MIN_ROOMS && ++attempts < 10);
+
+    // Handle the rest of the floorplan data.
+    AssignRoomMapIds(&gFloorplan);
+    GenerateKecleonShopList();
+    gFloorplan.nextFloorSeed = RandomF();
+}
+
+// Generates the next floor and warps to its starting room.
+void GoToNextFloor(void)
+{
+    // Update save fields.
+    ++gSaveBlock1Ptr->currentFloor;
+    gSaveBlock1Ptr->floorSeed = gFloorplan.nextFloorSeed;
+    memset(gSaveBlock1Ptr->visitedRooms, 0, sizeof(gSaveBlock1Ptr->visitedRooms));
+
+    // Generate the new floorplan and warp.
+    GenerateFloorplan();
+    TryWarpToRoom(STARTING_ROOM, 0);
 }

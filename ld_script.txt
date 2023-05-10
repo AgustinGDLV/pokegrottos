@@ -349,6 +349,7 @@ SECTIONS {
         src/map_screen.o(.text);
         src/pathfinding.o(.text);
         src/sound_check_menu.o(.text);
+        src/new_game_sequence.o(.text);
     } =0
 
     script_data :
@@ -721,6 +722,7 @@ SECTIONS {
         src/map_screen.o(.rodata);
         src/pathfinding.o(.rodata);
         src/sound_check_menu.o(.rodata);
+        src/new_game_sequence.o(.rodata);
     } =0
 
     song_data :

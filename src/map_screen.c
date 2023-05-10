@@ -40,6 +40,8 @@ enum {
 enum Windows
 {
 	WIN_FLOOR,
+    WIN_GENDER,
+    
 	WINDOW_COUNT,
 };
 

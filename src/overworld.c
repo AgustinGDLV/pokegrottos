@@ -30,6 +30,7 @@
 #include "main.h"
 #include "malloc.h"
 #include "m4a.h"
+#include "map_gen.h"
 #include "map_name_popup.h"
 #include "match_call.h"
 #include "menu.h"
@@ -1910,6 +1911,31 @@ void CB2_ContinueSavedGame(void)
         CB2_ReturnToField();
     }
 }
+
+void CB2_ContinueStartNewRun(void)
+{
+    FieldClearVBlankHBlankCallbacks();
+    StopMapMusic();
+    ResetSafariZoneFlag_();
+    if (gSaveFileStatus == SAVE_STATUS_ERROR)
+        ResetWinStreaks();
+
+    LoadSaveblockMapHeader();
+    ClearDiveAndHoleWarps();
+    LoadSaveblockObjEventScripts();
+    UnfreezeObjectEvents();
+    DoTimeBasedEvents();
+    UpdateMiscOverworldStates();
+    InitMapFromSavedGame();
+    PlayTimeCounter_Start();
+    ScriptContext_Init();
+    UnlockPlayerFieldControls();
+
+    gFloorplan.nextFloorSeed = gSaveBlock1Ptr->floorSeed;
+    gSaveBlock1Ptr->currentFloor = 0;
+    GoToNextFloor();
+}
+
 
 static void FieldClearVBlankHBlankCallbacks(void)
 {
