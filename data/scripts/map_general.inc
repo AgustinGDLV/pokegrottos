@@ -3,7 +3,6 @@
 @ Doesn't use VAR_LAST_TALKED because it misbehaves with Movement_FacePlayer
 EventScript_OverworldEncounterStart::
     lock
-	faceplayer
     playse SE_PIN
 	applymovement VAR_0x8001, Common_Movement_ExclamationMark
 	waitmovement 0
@@ -28,4 +27,9 @@ EventScript_KecleonShop::
 	playmoncry SPECIES_KECLEON, CRY_MODE_NORMAL
 	msgbox gText_LookingForwardToServing, MSGBOX_DEFAULT
 	release
+	end
+
+EventScript_ItemBall::
+	callfunc ChooseOverworldItem
+	finditem VAR_0x8000
 	end

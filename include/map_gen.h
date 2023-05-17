@@ -61,8 +61,8 @@ bool32 IsRoomAdjacentToVisited(u8 i);
 u32 GetRoomInDirection(u32 dir);
 void SetWarpDestinationToRoom(u32 index, u32 warpId);
 bool32 TryWarpToRoom(u32 target, u32 warpId);
-u16 GetRoomSeed(u32 index);
 u32 GetRoomType(u32 index);
+void SetRNGToRoomSeed(void);
 void GenerateFloorplan(void);
 void GoToNextFloor(void);
 

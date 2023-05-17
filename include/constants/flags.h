@@ -1220,7 +1220,7 @@
 // Prefab Event Flags
 
 #define PREFAB_EVENT_FLAGS_START    FLAG_FLOOR_ENCOUNTER_1
-#define PREFAB_EVENT_FLAGS_END      FLAG_FLOOR_LOOT_5
+#define PREFAB_EVENT_FLAGS_END      FLAG_FLOOR_LOOT_10
 
 #define FLAG_FLOOR_ENCOUNTER_1                                      0x493
 #define FLAG_FLOOR_ENCOUNTER_2                                      0x494
@@ -1243,10 +1243,10 @@
 #define FLAG_FLOOR_LOOT_3                                           0x4A5
 #define FLAG_FLOOR_LOOT_4                                           0x4A6
 #define FLAG_FLOOR_LOOT_5                                           0x4A7
-#define FLAG_UNUSED_0x4A8                                           0x4A8 // Unused Flag
-#define FLAG_UNUSED_0x4A9                                           0x4A9 // Unused Flag
-#define FLAG_UNUSED_0x4AA                                           0x4AA // Unused Flag
-#define FLAG_UNUSED_0x4AB                                           0x4AB // Unused Flag
+#define FLAG_FLOOR_LOOT_7                                           0x4A8
+#define FLAG_FLOOR_LOOT_8                                           0x4A9
+#define FLAG_FLOOR_LOOT_9                                           0x4AA
+#define FLAG_FLOOR_LOOT_10                                          0x4AB
 #define FLAG_UNUSED_0x4AC                                           0x4AC // Unused Flag
 #define FLAG_UNUSED_0x4AD                                           0x4AD // Unused Flag
 #define FLAG_UNUSED_0x4AE                                           0x4AE // Unused Flag

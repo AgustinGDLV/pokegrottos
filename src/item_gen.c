@@ -2,6 +2,7 @@
 #include "item_gen.h"
 #include "map_gen.h"
 #include "random.h"
+#include "event_data.h"
 
 // Returns the total weight of all items in an item pool.
 static u16 GetItemPoolTotalWeight(const struct WeightedItem *itemPool)
@@ -95,4 +96,19 @@ void GenerateKecleonShopList(void)
     {
         gSaveBlock1Ptr->shopItems[i] = ChooseItemFromPool(GetItemPool(TYPE_MEDICINE, ITEM_TIER_1));
     }
+}
+
+// Chooses an item for an item ball.
+void ChooseOverworldItem(void)
+{
+    u32 i;
+    u32 ballId = gObjectEvents[gSelectedObjectEvent].trainerRange_berryTreeId;
+
+    // Advance RNG to a repeatable state based on the ball ID.
+    // This is to allow for consistency between saves and seed.
+    SetRNGToRoomSeed();
+    for (i = 0; i < ballId; ++i)
+        RandomF();
+
+    gSpecialVar_0x8000 = ChooseItemFromPool(GetItemPool(TYPE_MEDICINE, ITEM_TIER_1));
 }

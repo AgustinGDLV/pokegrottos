@@ -323,9 +323,15 @@ bool32 TryWarpToRoom(u32 target, u32 warpId)
 
 // Random loot, shops, etc. are generated using a room seed.
 // This seed is currently just based off the room's unique index.
-u16 GetRoomSeed(u32 index)
+static u16 GetRoomSeed(u32 index)
 {
     return gSaveBlock1Ptr->floorSeed + index;
+}
+
+// Sets the floor RNG state to the room's RNG seed.
+void SetRNGToRoomSeed(void)
+{
+    SeedFloorRng(GetRoomSeed(gSaveBlock1Ptr->currentFloor));
 }
 
 // Returns the type of room at a given index.
