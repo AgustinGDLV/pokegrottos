@@ -566,13 +566,13 @@ static void BuyMenuBuildListMenuTemplate(void)
     if (sMartInfo.martType == MART_TYPE_KECLEON)
     {
         u32 itemCount = 0;
-        sListMenuItems = Alloc(sizeof(struct ListMenuItem) * (FLOOR_SHOP_ITEM_COUNT + 1));
-        sItemNames = Alloc(sizeof(*sItemNames) * (FLOOR_SHOP_ITEM_COUNT + 1));
-        for (i = 0; i < FLOOR_SHOP_ITEM_COUNT; ++i)
+        sListMenuItems = Alloc(sizeof(struct ListMenuItem) * (KECLEON_SHOP_ITEM_COUNT + 1));
+        sItemNames = Alloc(sizeof(*sItemNames) * (KECLEON_SHOP_ITEM_COUNT + 1));
+        for (i = 0; i < KECLEON_SHOP_ITEM_COUNT; ++i)
         {
-            if (gFloorplan.shopItems[i] != ITEM_NONE)
+            if (gSaveBlock1Ptr->shopItems[i] != ITEM_NONE)
             {
-                BuyMenuSetListEntry(&sListMenuItems[i], gFloorplan.shopItems[i], sItemNames[i]);
+                BuyMenuSetListEntry(&sListMenuItems[i], gSaveBlock1Ptr->shopItems[i], sItemNames[i]);
                 ++itemCount;
             }
         }
@@ -1317,11 +1317,11 @@ static void BuyMenuRemoveListEntry(u8 taskId, u32 row, struct ListMenu *list)
     // Shift the floorplan shop list and list menu arrays.
     for (i = row; i < sMartInfo.itemCount - 1; ++i)
     {
-        gFloorplan.shopItems[i] = gFloorplan.shopItems[i + 1];
+        gSaveBlock1Ptr->shopItems[i] = gSaveBlock1Ptr->shopItems[i + 1];
         memcpy(&sListMenuItems[i], &sListMenuItems[i + 1], sizeof(sListMenuItems[i]));
     }
     // Zero the last element.
-    gFloorplan.shopItems[i] = ITEM_NONE;
+    gSaveBlock1Ptr->shopItems[i] = ITEM_NONE;
     memcpy(&sListMenuItems[i], &sListMenuItems[i + 1], sizeof(sListMenuItems[i]));
     --sMartInfo.itemCount;
 

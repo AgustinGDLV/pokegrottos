@@ -27,7 +27,7 @@ void SeedRng2(u16 seed)
     gRng2Value = seed;
 }
 
-void SeedRngFloor(u16 seed)
+void SeedFloorRng(u16 seed)
 {
     gRngFloorValue = seed;
 }

@@ -150,6 +150,7 @@
 	.include "src/rayquaza_scene.o"
 	.include "src/debug.o"
 	.include "src/map_gen.o"
+	.include "src/item_gen.o"
 	.include "src/map_screen.o"
 	.include "src/pathfinding.o"
 	.include "src/sound_check_menu.o"

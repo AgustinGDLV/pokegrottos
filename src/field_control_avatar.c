@@ -761,7 +761,7 @@ static bool8 TryArrowWarp(struct MapPosition *position, u16 metatileBehavior, u8
 
     if (IsArrowWarpMetatileBehavior(metatileBehavior, direction) == TRUE && warpEventId != WARP_ID_NONE)
     {
-        if (gSaveBlock1Ptr->location.mapGroup < PREFAB_MAP_GROUP_START)
+        if (gSaveBlock1Ptr->location.mapGroup < TEMPLATE_MAP_GROUP_START)
         {
             StoreInitialPlayerAvatarState();
             SetupWarp(&gMapHeader, warpEventId, position);

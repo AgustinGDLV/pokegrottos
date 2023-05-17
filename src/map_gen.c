@@ -5,6 +5,7 @@
 #include "fieldmap.h"
 #include "field_screen_effect.h"
 #include "field_weather.h"
+#include "item_gen.h"
 #include "main.h"
 #include "malloc.h"
 #include "map_gen.h"
@@ -320,22 +321,24 @@ bool32 TryWarpToRoom(u32 target, u32 warpId)
     return;
 }
 
-// Generates the list of items to sell in a floor.
-// This can be called to refresh the shop, too.
-void GenerateKecleonShopList(void)
+// Random loot, shops, etc. are generated using a room seed.
+// This seed is currently just based off the room's unique index.
+u16 GetRoomSeed(u32 index)
 {
-    u32 i;
-    for (i = 0; i < FLOOR_SHOP_ITEM_COUNT; ++i)
-    {
-        gFloorplan.shopItems[i] = i + 121;
-    }
+    return gSaveBlock1Ptr->floorSeed + index;
+}
+
+// Returns the type of room at a given index.
+u32 GetRoomType(u32 index)
+{
+    return gFloorplan.layout[index].type;
 }
 
 // Generates a floorplan using the saveblock seed.
 void GenerateFloorplan(void)
 {
     u32 attempts = 0;
-    SeedRngFloor(gSaveBlock1Ptr->floorSeed);
+    SeedFloorRng(gSaveBlock1Ptr->floorSeed);
 
     // Try to make sure that the floorplan isn't too small.
     do {
@@ -345,6 +348,7 @@ void GenerateFloorplan(void)
     // Handle the rest of the floorplan data.
     AssignRoomMapIds(&gFloorplan);
     GenerateKecleonShopList();
+    ClearFloorEventFlags();
     gFloorplan.nextFloorSeed = RandomF();
 }
 

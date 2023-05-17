@@ -2,18 +2,19 @@
 #define GUARD_MAP_GEN_H
 
 #include "data_util.h"
+#include "item_gen.h"
 
-// Constants
-#define LAYOUT_SIZE             90
-#define MAX_LAYOUT_WIDTH        9
-#define MAX_LAYOUT_HEIGHT       8
-#define MIN_ROOMS               7
-#define MAX_ROOMS               20
-#define STARTING_ROOM           45
-#define PREFAB_MAP_GROUP_START  MAP_GROUP(FOREST_PREFABS_BASES)
-#define FLOOR_SHOP_ITEM_COUNT   7
+// Floor Constants
+#define LAYOUT_SIZE                 90
+#define MAX_LAYOUT_WIDTH            9
+#define MAX_LAYOUT_HEIGHT           8
+#define MIN_ROOMS                   7
+#define MAX_ROOMS                   20
+#define STARTING_ROOM               45
+#define TEMPLATE_MAP_GROUP_START    MAP_GROUP(FOREST_PREFABS_BASES)
 
-#define ROOM_COORD(x, y)    ((x+1) + (y+1)*10)  // gFloorplan.layout is not zero-indexed
+// Room Constants
+#define ROOM_COORD(x, y)            ((x+1) + (y+1)*10)  // gFloorplan.layout is not zero-indexed
 
 enum RoomTypes {
     NORMAL_ROOM = 1,
@@ -25,7 +26,7 @@ enum RoomTypes {
 };
 
 struct Room {
-    enum RoomTypes type:8;      // room type
+    enum RoomTypes type:8;
     u8 mapNum;
 };
 
@@ -38,7 +39,6 @@ struct Floorplan {
     u8 occupiedRooms[20];                   // stores the indices of occupied rooms
     u8 mapGroup;
     u16 nextFloorSeed;
-    u16 shopItems[FLOOR_SHOP_ITEM_COUNT];   // Kecleon Shop items
 };
 
 struct PrefabRules {
@@ -46,6 +46,7 @@ struct PrefabRules {
     u8 numNormalRooms;
     const u8* normalRoomIds;
     u8 specialRoomIds[NUM_ROOM_TYPES];
+    const struct ItemPoolTable * const kecleonShopPools;
 };
 
 extern struct Floorplan gFloorplan;
@@ -60,7 +61,8 @@ bool32 IsRoomAdjacentToVisited(u8 i);
 u32 GetRoomInDirection(u32 dir);
 void SetWarpDestinationToRoom(u32 index, u32 warpId);
 bool32 TryWarpToRoom(u32 target, u32 warpId);
-void GenerateKecleonShopList(void);
+u16 GetRoomSeed(u32 index);
+u32 GetRoomType(u32 index);
 void GenerateFloorplan(void);
 void GoToNextFloor(void);
 

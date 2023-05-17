@@ -21,7 +21,7 @@ u16 RandomF(void);
 //Sets the initial seed value of the pseudorandom number generator
 void SeedRng(u16 seed);
 void SeedRng2(u16 seed);
-void SeedRngFloor(u16 seed);
+void SeedFloorRng(u16 seed);
 
 /* Structured random number generator.
  * Instead of the caller converting bits from Random() to a meaningful
