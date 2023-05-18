@@ -8,6 +8,7 @@
 #include "field_effect_helpers.h"
 #include "field_player_avatar.h"
 #include "fieldmap.h"
+#include "map_gen.h"
 #include "menu.h"
 #include "metatile_behavior.h"
 #include "overworld.h"
@@ -1453,7 +1454,8 @@ static void HideShowWarpArrow(struct ObjectEvent *objectEvent)
 
     for (x = 0, direction = DIR_SOUTH; x < 4; x++, direction++)
     {
-        if (sArrowWarpMetatileBehaviorChecks2[x](metatileBehavior) && direction == objectEvent->movementDirection)
+        if (sArrowWarpMetatileBehaviorChecks2[x](metatileBehavior) && direction == objectEvent->movementDirection
+            && !(gSaveBlock1Ptr->location.mapGroup >= TEMPLATE_MAP_GROUP_START && !DoesRoomExist(GetRoomInDirection(direction))))
         {
             // Show warp arrow if applicable
             x = objectEvent->currentCoords.x;

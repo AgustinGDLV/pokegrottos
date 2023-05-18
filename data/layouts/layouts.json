@@ -4434,8 +4434,8 @@
     {
       "id": "LAYOUT_CAVE_PREFABS_BASES",
       "name": "CavePrefabs_Bases_Layout",
-      "width": 3,
-      "height": 12,
+      "width": 1,
+      "height": 4,
       "primary_tileset": "gTileset_General",
       "secondary_tileset": "gTileset_Cave",
       "border_filepath": "data/layouts/CavePrefabs_Bases/border.bin",

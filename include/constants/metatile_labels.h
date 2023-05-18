@@ -125,9 +125,7 @@
 #define METATILE_Cave_SealedChamberEntrance_BottomMid    0x233
 #define METATILE_Cave_SealedChamberEntrance_BottomRight  0x234
 #define METATILE_Cave_SealedChamberEntrance_TopLeft      0x22A
-#define METATILE_Cave_SealedChamberEntrance_BottomLeft   0
-#define METATILE_Cave_SealedChamberEntrance_TopMid       0
-#define METATILE_Cave_SealedChamberEntrance_TopRight     0
+#define METATILE_Cave_SealedChamberEntrance_TopRight     0x000
 #define METATILE_Cave_ShoalCave_BlueStone_Large          0x359
 #define METATILE_Cave_ShoalCave_BlueStone_Small          0x35B
 #define METATILE_Cave_ShoalCave_DirtPile_Large           0x358
