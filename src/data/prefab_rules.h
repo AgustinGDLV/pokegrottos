@@ -222,9 +222,9 @@ const struct PrefabRules gPrefabRules[MAP_GROUPS_COUNT] =
     [MAP_GROUP(CAVE_PREFABS_BASES)] =
     {
         .offsets = {
-            [DIR_NORTH] = {0, -1},
-            [DIR_SOUTH] = {0, 1},
-            [DIR_EAST] = {1, 0},
+            [DIR_NORTH] = {-1, -1},
+            [DIR_SOUTH] = {-1, 1},
+            [DIR_EAST] = {-1, 0},
             [DIR_WEST] = {-1, 0},
         },
         .numNormalRooms = ARRAY_COUNT(sCaveNormalRooms),

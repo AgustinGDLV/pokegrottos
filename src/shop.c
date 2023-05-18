@@ -5,6 +5,7 @@
 #include "decoration.h"
 #include "decoration_inventory.h"
 #include "event_object_movement.h"
+#include "field_effect_helpers.h"
 #include "field_player_avatar.h"
 #include "field_screen_effect.h"
 #include "field_weather.h"
@@ -36,6 +37,7 @@
 #include "tv.h"
 #include "constants/decorations.h"
 #include "constants/event_objects.h"
+#include "constants/field_effects.h"
 #include "constants/items.h"
 #include "constants/metatile_behaviors.h"
 #include "constants/rgb.h"
@@ -913,7 +915,7 @@ static void BuyMenuCollectObjectEventData(void)
         {
             u8 objEventId = GetObjectEventIdByXY(facingX - 4 + x, facingY - 2 + y);
 
-            // skip if invalid or an overworld pokemon that is not following the player
+            // skip if invalid
             if (objEventId != OBJECT_EVENTS_COUNT)
             {
                 sShopData->viewportObjects[numObjects][OBJ_EVENT_ID] = objEventId;
@@ -946,7 +948,7 @@ static void BuyMenuCollectObjectEventData(void)
 static void BuyMenuDrawObjectEvents(void)
 {
     u8 i;
-    u8 spriteId;
+    u8 spriteId, shadowSpriteId;
     const struct ObjectEventGraphicsInfo *graphicsInfo;
     u8 weatherTemp = gWeatherPtr->palProcessingState;
 
@@ -974,6 +976,7 @@ static void BuyMenuDrawObjectEvents(void)
             gSprites[spriteId].subspriteMode = SUBSPRITES_ON;
         }
 
+        StartFieldEffectForObjectEvent(FLDEFF_SHADOW, &gObjectEvents[sShopData->viewportObjects[i][OBJ_EVENT_ID]]);
         StartSpriteAnim(&gSprites[spriteId], sShopData->viewportObjects[i][ANIM_NUM]);
     }
 
