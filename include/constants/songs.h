@@ -952,7 +952,9 @@
 
 #define HG_MUSIC_END                      MUS_HG_WIN_MINIGAME
 
-#define SONGS_END                         HG_MUSIC_END
+#define MUS_DQ3_DARK_WORLD                899
+
+#define SONGS_END                         899
 #define END_MUS                           SONGS_END
 
 #define MUS_ROUTE118                      0x7FFF  // Map is split into 2 music sections. controlled by GetCurrLocationDefaultMusic().
