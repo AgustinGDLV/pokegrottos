@@ -42,7 +42,7 @@ static u16 ChooseItemFromPool(const struct WeightedItem* itemPool)
 // Returns the pool of items for a given tier and item type.
 static const struct WeightedItem* GetItemPool(enum ItemType type, enum ItemTier tier)
 {
-    const struct PrefabRules* rules = &gPrefabRules[gSaveBlock1Ptr->location.mapGroup];
+    const struct PrefabRules* rules = GetPrefabRules(gFloorplan.prefabType);
     const struct ItemPoolTable* tablePtr;
     const struct WeightedItem* pool;
 

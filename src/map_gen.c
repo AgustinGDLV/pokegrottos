@@ -80,7 +80,7 @@ static void ZeroFloorplan(struct Floorplan* floorplan)
     floorplan->maxRooms = 0;
     ZeroQueue(&floorplan->queue);
     ZeroStack(&floorplan->endrooms);
-    floorplan->mapGroup = 35;
+    floorplan->prefabType = PREFABS_CAVE;
     memset(floorplan->layout, 0, sizeof(floorplan->layout));
     memset(floorplan->occupiedRooms, 0, sizeof(floorplan->occupiedRooms));
 }
@@ -162,13 +162,17 @@ static void AssignSpecialRoomTypes(struct Floorplan* floorplan)
     floorplan->layout[Pop(&floorplan->endrooms)].type = CHALLENGE_ROOM;
 }
 
+const struct PrefabRules* GetPrefabRules(enum PrefabTypes prefabType)
+{
+    return &gPrefabRules[prefabType];
+}
 
 // Assigns each room a map ID.
 static void AssignRoomMapIds(struct Floorplan* floorplan)
 {
     u32 i;
     struct Room* room;
-    const struct PrefabRules * const rules = &gPrefabRules[floorplan->mapGroup];
+    const struct PrefabRules * const rules = GetPrefabRules(gFloorplan.prefabType);
     const u8 *normalPool = rules->normalRoomIds;
     u32 poolSize = rules->numNormalRooms;
     u8 *shuffled = AllocZeroed(sizeof(u8) * poolSize);
@@ -290,7 +294,7 @@ u32 GetRoomInDirection(u32 dir)
 // Sets the warp destination to the room's map ID (given by room index).
 void SetWarpDestinationToRoom(u32 index, u32 warpId)
 {
-    SetWarpDestination(gFloorplan.mapGroup, gFloorplan.layout[index].mapNum, warpId, -1, -1);
+    SetWarpDestination(GetPrefabRules(gFloorplan.prefabType)->mapGroup, gFloorplan.layout[index].mapNum, warpId, -1, -1);
 }
 
 // Executes a warp to a given room.

@@ -65,13 +65,13 @@ static void PasteMapChunk(u16 x, u16 y, struct MapChunk *chunk)
 static s32 GetCoverXOffset(u32 dir)
 {
     u32 mapGroup = gSaveBlock1Ptr->location.mapGroup;
-    return gPrefabRules[mapGroup].offsets[dir][0];
+    return GetPrefabRules(gFloorplan.prefabType)->offsets[dir][0];
 }
 
 static s32 GetCoverYOffset(u32 dir)
 {
     u32 mapGroup = gSaveBlock1Ptr->location.mapGroup;
-    return gPrefabRules[mapGroup].offsets[dir][1];
+    return GetPrefabRules(gFloorplan.prefabType)->offsets[dir][1];
 }
 
 static void CoverExitInDirection(u32 dir)

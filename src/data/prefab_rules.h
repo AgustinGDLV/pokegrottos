@@ -207,20 +207,11 @@ static const struct ItemPoolTable sCaveKecleonShopPools[ITEM_TIER_COUNT] =
     [ITEM_TIER_5] = {},
 };
 
-const struct PrefabRules gPrefabRules[MAP_GROUPS_COUNT] = 
+const struct PrefabRules gPrefabRules[PREFAB_TYPES_COUNT] = 
 {
-    [MAP_GROUP(FOREST_PREFABS_BASES)] =
+    [PREFABS_CAVE] =
     {
-        .offsets = {
-            [DIR_NORTH] = {0, -1},
-            [DIR_SOUTH] = {0, -1},
-            [DIR_EAST] = {-1, 0},
-            [DIR_WEST] = {-1, 0},
-        },
-    },
-
-    [MAP_GROUP(CAVE_PREFABS_BASES)] =
-    {
+        .mapGroup = MAP_GROUP(CAVE_PREFABS_BASES),
         .offsets = {
             [DIR_NORTH] = {-1, -1},
             [DIR_SOUTH] = {-1, 1},

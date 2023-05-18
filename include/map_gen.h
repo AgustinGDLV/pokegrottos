@@ -30,6 +30,12 @@ struct Room {
     u8 mapNum;
 };
 
+enum PrefabTypes {
+    PREFABS_CAVE,
+    PREFABS_DARK_CAVE,
+    PREFAB_TYPES_COUNT,
+};
+
 struct Floorplan {
     u8 numRooms;
     u8 maxRooms;
@@ -37,11 +43,12 @@ struct Floorplan {
     struct Queue queue;                     // the queue of rooms to visit during algorithm
     struct Stack endrooms;                  // stores the indices of endrooms in order of decr. distance
     u8 occupiedRooms[20];                   // stores the indices of occupied rooms
-    u8 mapGroup;
+    enum PrefabTypes prefabType;
     u16 nextFloorSeed;
 };
 
 struct PrefabRules {
+    u8 mapGroup;
     s8 offsets[5][2]; // (x, y) entrance cover offsets for each direction
     u8 numNormalRooms;
     const u8* normalRoomIds;
@@ -50,7 +57,7 @@ struct PrefabRules {
 };
 
 extern struct Floorplan gFloorplan;
-extern const struct PrefabRules gPrefabRules[MAP_GROUPS_COUNT];
+extern const struct PrefabRules gPrefabRules[PREFAB_TYPES_COUNT];
 
 void DebugPrintFloorplan(struct Floorplan* floorplan);
 void CreateDebugFloorplan(void);
@@ -62,6 +69,7 @@ u32 GetRoomInDirection(u32 dir);
 void SetWarpDestinationToRoom(u32 index, u32 warpId);
 bool32 TryWarpToRoom(u32 target, u32 warpId);
 u32 GetRoomType(u32 index);
+const struct PrefabRules* GetPrefabRules(enum PrefabTypes prefabType);
 void SetRNGToRoomSeed(void);
 void GenerateFloorplan(void);
 void GoToNextFloor(void);
