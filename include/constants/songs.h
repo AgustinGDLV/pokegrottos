@@ -956,8 +956,9 @@
 #define DQ_MUSIC_START                    (HG_MUSIC_END + 1)
 
 #define MUS_DQ3_DARK_WORLD                (DQ_MUSIC_START)
+#define MUS_DQ4_BATTLE                    (DQ_MUSIC_START + 1)
 
-#define DQ_MUSIC_END                      MUS_DQ3_DARK_WORLD
+#define DQ_MUSIC_END                      MUS_DQ4_BATTLE
 
 // Pokemon Mystery Dungeon Music
 #define PMD_MUSIC_START                   (DQ_MUSIC_END + 1)

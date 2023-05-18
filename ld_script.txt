@@ -1621,6 +1621,7 @@ SECTIONS {
         sound/songs/midi/mus_hg_obtain_b_points.o(.rodata);
         sound/songs/midi/mus_hg_win_minigame.o(.rodata);
         sound/songs/midi/mus_dq3_dark_world.o(.rodata);
+        sound/songs/midi/mus_dq4_battle.o(.rodata);
         sound/songs/midi/mus_pmd_kecleon_shop.o(.rodata);
     } =0
 

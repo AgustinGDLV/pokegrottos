@@ -2343,5 +2343,8 @@ $(MID_SUBDIR)/mus_hg_win_minigame.s: %.s: %.mid
 $(MID_SUBDIR)/mus_dq3_dark_world.s: %.s: %.mid
 	$(MID) $< $@ -E -R0 -G229 -V088
 
-$(MID_SUBDIR)/mus_pmd_kecleon_shop.s: %.s: %.mid
+$(MID_SUBDIR)/mus_dq4_battle.s: %.s: %.mid
 	$(MID) $< $@ -E -R0 -G229 -V088
+
+$(MID_SUBDIR)/mus_pmd_kecleon_shop.s: %.s: %.mid
+	$(MID) $< $@ -E -R0 -191 -V088
