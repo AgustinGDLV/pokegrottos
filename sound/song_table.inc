@@ -901,6 +901,7 @@ gSongTable::
 	song mus_hg_obtain_b_points, 2, 2
 	song mus_hg_win_minigame, 2, 2
 	song mus_dq3_dark_world, 0, 0
+	song mus_pmd_kecleon_shop, 0, 0
 
 	.align 2
 dummy_song_header:

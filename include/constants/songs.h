@@ -952,9 +952,23 @@
 
 #define HG_MUSIC_END                      MUS_HG_WIN_MINIGAME
 
-#define MUS_DQ3_DARK_WORLD                899
+// Dragon Quest Music
+#define DQ_MUSIC_START                    (HG_MUSIC_END + 1)
 
-#define SONGS_END                         899
+#define MUS_DQ3_DARK_WORLD                (DQ_MUSIC_START)
+
+#define DQ_MUSIC_END                      MUS_DQ3_DARK_WORLD
+
+// Pokemon Mystery Dungeon Music
+#define PMD_MUSIC_START                   (DQ_MUSIC_END + 1)
+
+#define MUS_PMD_KECLEON_SHOP              (PMD_MUSIC_START)
+
+#define PMD_MUSIC_END                     MUS_PMD_KECLEON_SHOP
+
+// Music End
+
+#define SONGS_END                         PMD_MUSIC_END
 #define END_MUS                           SONGS_END
 
 #define MUS_ROUTE118                      0x7FFF  // Map is split into 2 music sections. controlled by GetCurrLocationDefaultMusic().
