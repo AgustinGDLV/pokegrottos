@@ -8881,6 +8881,10 @@ extern const u32 gItemIconPalette_LustrousGlobe[];
 extern const u32 gItemIcon_BerserkGene[];
 extern const u32 gItemIconPalette_BerserkGene[];
 
+// Scrolls
+extern const u32 gItemIcon_Scroll[];
+extern const u32 gItemIconPalette_IcyScroll[];
+
 extern const u32 gItemIcon_ReturnToFieldArrow[];
 extern const u32 gItemIconPalette_ReturnToFieldArrow[];
 

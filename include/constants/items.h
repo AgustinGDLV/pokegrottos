@@ -974,7 +974,17 @@
 #define ITEM_PEAT_BLOCK 797
 #define ITEM_BERSERK_GENE 798
 
-#define ITEMS_COUNT 799
+#define ITEMS_END_EXPANSION 798
+
+// Scrolls
+#define SCROLLS_START   ITEMS_END_EXPANSION
+
+#define ITEM_ICY_SCROLL 799
+
+#define SCROLLS_END     ITEM_ICY_SCROLL + 1
+
+#define ITEMS_COUNT     SCROLLS_END
+
 #define ITEM_FIELD_ARROW ITEMS_COUNT
 
 // A special item id associated with "Cancel"/"Exit" etc. in a list of items or decorations
@@ -1050,6 +1060,10 @@
 #define EFFECT_ITEM_REVIVE                  9
 #define EFFECT_ITEM_RESTORE_PP              10
 #define EFFECT_ITEM_INCREASE_ALL_STATS      11
+
+#define ITEM_EFFECT_END_EXPANSION           11
+
+#define EFFECT_ITEM_ICY_SCROLL              ITEM_EFFECT_END_EXPANSION + 1
 
 // Enigma Berry dummy constant
 #define EFFECT_ITEM_ENIGMA_BERRY_EREADER    1

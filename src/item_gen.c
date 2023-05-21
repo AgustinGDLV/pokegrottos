@@ -1,8 +1,10 @@
 #include "global.h"
 #include "data_util.h"
+#include "item.h"
 #include "item_gen.h"
 #include "map_gen.h"
 #include "random.h"
+#include "util.h"
 #include "event_data.h"
 
 // Returns the pool of items for a given tier and item type.
@@ -77,4 +79,47 @@ void ChooseOverworldItem(void)
         RandomF();
 
     gSpecialVar_0x8000 = ChooseElementFromPool(GetItemPool(TYPE_MEDICINE, ITEM_TIER_1));
+}
+
+// Returns the effect of an unidentified scroll for a given run.
+u32 GetDynamicItemEffect(u32 itemId)
+{
+    return (gSaveBlock1Ptr->unidSeed + 7 * itemId) % ItemId_GetSecondaryId(itemId);
+}
+
+// Returns whether an item uses a dynamic description.
+bool32 DoesItemHaveDynamicEffect(u32 itemId)
+{
+    return (itemId > SCROLLS_START && itemId < SCROLLS_END);
+}
+
+// Returns whether an unidentified item has had its effect identified.
+static bool32 IsItemIdentified(u32 itemId)
+{
+    u32 i = itemId - SCROLLS_START;
+    return gSaveBlock1Ptr->identifiedItems[i / 32] & (1 << i % 32);
+}
+
+// Sets an unidentified item as identified.
+bool32 TryIdentifyItem(u32 itemId)
+{
+    if (!DoesItemHaveDynamicEffect(itemId) || IsItemIdentified(itemId))
+    {
+        return FALSE;
+    }
+    else
+    {
+        u32 i = itemId - SCROLLS_START;
+        gSaveBlock1Ptr->identifiedItems[i / 32] |= (1 << i % 32);
+        return TRUE;
+    }
+}
+
+// Returns the description of an identified item.
+const u8* GetDynamicItemDescription(u32 itemId)
+{
+    if (IsItemIdentified(itemId))
+        return sIdentifiedItemDescriptions[itemId - SCROLLS_START][GetDynamicItemEffect(itemId)];
+    else
+        return sUnidentifiedDescription;
 }

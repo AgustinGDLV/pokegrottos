@@ -1009,15 +1009,19 @@ struct SaveBlock1
     /*0x690*/ struct ItemSlot bagPocket_TMHM[BAG_TMHM_COUNT];
     /*0x790*/ struct ItemSlot bagPocket_Berries[BAG_BERRIES_COUNT];
     /*0x848*/ struct Pokeblock pokeblocks[POKEBLOCKS_COUNT];
-    /*0x988*/ u8 currentRoom;       // stores the currently occupied room
-              u8 currentFloor;      // stores the current floor depth
-              u16 floorSeed;        // stores the seed of the current floor
-              u32 visitedRooms[4];  // long bitfield
-              u16 shopItems[7];     // stores the current stock of the Kecleon Shop
-    /*0x9BC*/ u16 berryBlenderRecords[3];
-    /*0x9C2*/ u8 unused_9C2[6];
+
+    /*0x988*/ u8 currentRoom;           // stores the currently occupied room
+              u8 currentFloor;          // stores the current floor depth
+              u16 floorSeed;            // stores the seed of the current floor
+              u16 unidSeed;             // stores the seed for unidentified items
+              u32 visitedRooms[4];      // long bitfield
+              u32 identifiedItems[2];   // long bitfield
+              u16 shopItems[7];         // stores the current stock of the Kecleon Shop
+
+    /*0x9BE*/ u16 berryBlenderRecords[3];
+    /*0x9C4*/ u8 unused_9C2[4];
     /*0x9C8*/ u16 trainerRematchStepCounter;
-    /*0x9CA*/ u8 trainerRematches[MAX_REMATCH_ENTRIES];
+    /*0x9CA*/ u8 trainerRematches[78]; // originally 100, freed 22 bytes, 8 used
     /*0xA2E*/ //u8 padding3[2];
     /*0xA30*/ struct ObjectEvent objectEvents[OBJECT_EVENTS_COUNT];
     /*0xC70*/ struct ObjectEventTemplate objectEventTemplates[OBJECT_EVENT_TEMPLATES_COUNT];

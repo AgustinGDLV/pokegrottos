@@ -10350,4 +10350,19 @@ const struct Item gItems[] =
         .fieldUseFunc = ItemUseOutOfBattle_CannotUse,
         .flingPower = 10,
     },
+
+    // Scrolls
+    [ITEM_ICY_SCROLL] =
+    {
+        .name = _("Icy Scroll"),
+        .itemId = ITEM_ICY_SCROLL,
+        .price = 20,
+        .description = sBerserkGene,
+        .pocket = POCKET_ITEMS,
+        .type = ITEM_USE_BAG_MENU,
+        .fieldUseFunc = ItemUseOutOfBattle_CannotUse,
+        .battleUsage = EFFECT_ITEM_ICY_SCROLL,
+        .flingPower = 10,
+        .secondaryId = 3, // num of effects
+    },
 };

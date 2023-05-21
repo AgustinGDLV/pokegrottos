@@ -7,6 +7,7 @@
 #include "malloc.h"
 #include "secret_base.h"
 #include "item_menu.h"
+#include "item_gen.h"
 #include "party_menu.h"
 #include "strings.h"
 #include "load_save.h"
@@ -896,7 +897,10 @@ u8 ItemId_GetHoldEffectParam(u16 itemId)
 
 const u8 *ItemId_GetDescription(u16 itemId)
 {
-    return gItems[SanitizeItemId(itemId)].description;
+    if (DoesItemHaveDynamicEffect(itemId))
+        return GetDynamicItemDescription(itemId);
+    else
+        return gItems[SanitizeItemId(itemId)].description;
 }
 
 u8 ItemId_GetImportance(u16 itemId)

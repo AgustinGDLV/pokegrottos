@@ -25,6 +25,7 @@ gBattlescriptsForUsingItem::
     .4byte BattleScript_ItemRestoreHP                @ EFFECT_ITEM_REVIVE
     .4byte BattleScript_ItemRestorePP                @ EFFECT_ITEM_RESTORE_PP
     .4byte BattleScript_ItemIncreaseAllStats         @ EFFECT_ITEM_INCREASE_ALL_STATS
+    .4byte BattleScript_ItemIcyScroll                @ EFFECT_ITEM_ICY_SCROLL
 
     .align 2
 gBattlescriptsForSafariActions::
@@ -32,6 +33,35 @@ gBattlescriptsForSafariActions::
     .4byte BattleScript_ActionGetNear
     .4byte BattleScript_ActionThrowPokeblock
     .4byte BattleScript_ActionWallyThrow
+
+@ SCROLL EFFECTS
+
+BattleScript_ItemScrollFailed:
+    printstring STRINGID_BUTITFAILED
+    waitmessage B_WAIT_TIME_LONG
+    end
+
+BattleScript_ItemIcyScroll::
+    call BattleScript_UseItemMessage
+    callnative BS_ItemIcyScroll
+    jumpifbyte CMP_EQUAL, gBattleCommunication, 1, BattleScript_ItemIcyScrollSetSnow
+    jumpifbyte CMP_EQUAL, gBattleCommunication, 2, BattleScript_ItemScrollFailed
+BattleScript_ItemIcyScrollApplyStatus:
+	statusanimation BS_EFFECT_BATTLER
+    printstring STRINGID_PKMNWASFROZEN
+    waitmessage B_WAIT_TIME_LONG
+    updatestatusicon BS_EFFECT_BATTLER
+    waitstate
+    end
+
+BattleScript_ItemIcyScrollSetSnow:
+    playanimation BS_ATTACKER, B_ANIM_HAIL_CONTINUES
+    printstring STRINGID_STARTEDSNOW
+	waitmessage B_WAIT_TIME_LONG
+	call BattleScript_ActivateWeatherAbilities
+	end
+
+@ SCROLL EFFECTS END
 
 BattleScript_ItemEnd:
     end

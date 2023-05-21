@@ -558,7 +558,6 @@ static void Task_WaitForTextAndExit(u8 taskId)
         }
         else
         {
-            gSaveBlock1Ptr->floorSeed = Random();
             SetMainCallback2(CB2_ContinueStartNewRun);
         }
         DestroyTask(taskId);

@@ -8665,7 +8665,7 @@ BattleScript_ShedSkinActivates::
 	updatestatusicon BS_ATTACKER
 	end3
 
-BattleScript_ActivateWeatherAbilities:
+BattleScript_ActivateWeatherAbilities::
 	copybyte sBATTLER, gBattlerAttacker
 	setbyte gBattlerAttacker, 0
 BattleScript_ActivateWeatherAbilities_Loop:

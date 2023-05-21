@@ -22,6 +22,7 @@
 #include "item.h"
 #include "item_menu.h"
 #include "item_use.h"
+#include "item_gen.h"
 #include "mail.h"
 #include "main.h"
 #include "menu.h"
@@ -1229,6 +1230,7 @@ void ItemUseInBattle_BagMenu(u8 taskId)
     {
         PlaySE(SE_SELECT);
         RemoveUsedItem();
+        TryIdentifyItem(gSpecialVar_ItemId);
         ScheduleBgCopyTilemapToVram(2);
         if (!InBattlePyramid())
             gTasks[taskId].func = Task_FadeAndCloseBagMenu;

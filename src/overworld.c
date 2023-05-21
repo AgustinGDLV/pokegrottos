@@ -1952,11 +1952,12 @@ void CB2_ContinueStartNewRun(void)
     DoTimeBasedEvents();
     UpdateMiscOverworldStates();
     InitMapFromSavedGame();
-    PlayTimeCounter_Start();
+    PlayTimeCounter_Reset();
     ScriptContext_Init();
     UnlockPlayerFieldControls();
 
-    gFloorplan.nextFloorSeed = gSaveBlock1Ptr->floorSeed;
+    gFloorplan.nextFloorSeed = gSaveBlock1Ptr->floorSeed = Random();
+    gSaveBlock1Ptr->unidSeed = Random();
     gSaveBlock1Ptr->currentFloor = 0;
     GoToNextFloor();
 }

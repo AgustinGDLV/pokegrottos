@@ -298,6 +298,13 @@ u32 GetRoomInDirection(u32 dir)
     return target;
 }
 
+// Returns whether the player is inside a prefab floor.
+bool32 IsPlayerInFloorMap(void)
+{
+    return gSaveBlock1Ptr->location.mapGroup >= TEMPLATE_MAP_GROUP_START;
+}
+
+
 // Sets the warp destination to the room's map ID (given by room index).
 void SetWarpDestinationToRoom(u32 index, u32 warpId)
 {
@@ -380,9 +387,4 @@ void GoToNextFloor(void)
     // Generate the new floorplan and warp.
     GenerateFloorplan();
     TryWarpToRoom(STARTING_ROOM, 0);
-}
-
-bool32 IsPlayerInFloorMap(void)
-{
-    return gSaveBlock1Ptr->location.mapGroup >= TEMPLATE_MAP_GROUP_START;
 }

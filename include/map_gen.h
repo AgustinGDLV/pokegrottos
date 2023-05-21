@@ -69,6 +69,7 @@ bool32 IsRoomVisited(u8 i);
 bool32 DoesRoomExist(u8 i);
 bool32 IsRoomAdjacentToVisited(u8 i);
 u32 GetRoomInDirection(u32 dir);
+bool32 IsPlayerInFloorMap(void);
 void SetWarpDestinationToRoom(u32 index, u32 warpId);
 bool32 TryWarpToRoom(u32 target, u32 warpId);
 u32 GetRoomType(u32 index);
@@ -76,6 +77,5 @@ const struct PrefabRules* GetPrefabRules(enum PrefabTypes prefabType);
 void SetRNGToRoomSeed(void);
 void GenerateFloorplan(void);
 void GoToNextFloor(void);
-bool32 IsPlayerInFloorMap(void);
 
 #endif
