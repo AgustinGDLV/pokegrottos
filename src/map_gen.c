@@ -91,17 +91,24 @@ static u8 GetMaxRooms(void)
     return 15;
 }
 
+// TODO: Take into account depth.
+static u32 GetPrefabType(void)
+{
+    return RandomF() % PREFAB_TYPES_COUNT;
+}
+
 // Creates rooms and endroom stack for an empty floorplan.
 static void PopulateFloorplan(struct Floorplan* floorplan)
 {
     // Set up floorplan.
     ZeroFloorplan(floorplan);
+    floorplan->prefabType = GetPrefabType();
+    floorplan->maxRooms = GetMaxRooms();
     Enqueue(&floorplan->queue, STARTING_ROOM);
     floorplan->numRooms = 1;
     floorplan->layout[STARTING_ROOM].type = NORMAL_ROOM;
     SetRoomAsVisited(STARTING_ROOM);
     floorplan->occupiedRooms[0] = STARTING_ROOM;
-    floorplan->maxRooms = GetMaxRooms();
 
     // Generate rooms.
     while (floorplan->queue.size > 0)
@@ -373,4 +380,9 @@ void GoToNextFloor(void)
     // Generate the new floorplan and warp.
     GenerateFloorplan();
     TryWarpToRoom(STARTING_ROOM, 0);
+}
+
+bool32 IsPlayerInFloorMap(void)
+{
+    return gSaveBlock1Ptr->location.mapGroup >= TEMPLATE_MAP_GROUP_START;
 }

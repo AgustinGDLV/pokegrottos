@@ -54,6 +54,8 @@ struct PrefabRules {
     const u8* normalRoomIds;
     u8 specialRoomIds[NUM_ROOM_TYPES];
     const struct ItemPoolTable * const kecleonShopPools;
+    u16 bgm;
+    u8 lighting; // stored as hours
 };
 
 extern struct Floorplan gFloorplan;
@@ -73,5 +75,6 @@ const struct PrefabRules* GetPrefabRules(enum PrefabTypes prefabType);
 void SetRNGToRoomSeed(void);
 void GenerateFloorplan(void);
 void GoToNextFloor(void);
+bool32 IsPlayerInFloorMap(void);
 
 #endif

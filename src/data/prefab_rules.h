@@ -226,6 +226,28 @@ const struct PrefabRules gPrefabRules[PREFAB_TYPES_COUNT] =
             [SHOP_ROOM] = MAP_NUM(CAVE_PREFABS_SHOP_ROOM),
         },
         .kecleonShopPools = sCaveKecleonShopPools,
+        .bgm = MUS_RG_SEVII_CAVE,
+        .lighting = 12,
+    },
+    [PREFABS_DARK_CAVE] =
+    {
+        .mapGroup = MAP_GROUP(CAVE_PREFABS_BASES),
+        .offsets = {
+            [DIR_NORTH] = {-1, -1},
+            [DIR_SOUTH] = {-1, 1},
+            [DIR_EAST] = {-1, 0},
+            [DIR_WEST] = {-1, 0},
+        },
+        .numNormalRooms = ARRAY_COUNT(sCaveNormalRooms),
+        .normalRoomIds = sCaveNormalRooms,
+        .specialRoomIds = {
+            [BOSS_ROOM] = MAP_NUM(CAVE_PREFABS_BOSS_ROOM),
+            [TREASURE_ROOM] = MAP_NUM(CAVE_PREFABS_TREASURE_ROOM),
+            [SHOP_ROOM] = MAP_NUM(CAVE_PREFABS_SHOP_ROOM),
+        },
+        .kecleonShopPools = sCaveKecleonShopPools,
+        .bgm = MUS_DQ3_DARK_WORLD,
+        .lighting = 0,
     },
 };
 

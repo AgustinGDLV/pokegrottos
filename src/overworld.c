@@ -1115,7 +1115,10 @@ static bool16 IsInflitratedSpaceCenter(struct WarpData *warp)
 
 u16 GetLocationMusic(struct WarpData *warp)
 {
-    if (NoMusicInSotopolisWithLegendaries(warp) == TRUE)
+    // Allow for custom music inside a floor.
+    if (IsPlayerInFloorMap() && GetRoomType(gSaveBlock1Ptr->currentRoom) != SHOP_ROOM)
+        return GetPrefabRules(gFloorplan.prefabType)->bgm;
+    else if (NoMusicInSotopolisWithLegendaries(warp) == TRUE)
         return MUS_NONE;
     else if (ShouldLegendaryMusicPlayAtLocation(warp) == TRUE)
         return MUS_ABNORMAL_WEATHER;
@@ -1507,9 +1510,18 @@ const struct BlendSettings gTimeOfDayBlend[] =
 
 u8 UpdateTimeOfDay(void) {
     s32 hours, minutes;
-    RtcCalcLocalTime();
-    hours = gLocalTime.hours;
-    minutes = gLocalTime.minutes;
+    // Allow for custom lighting within a floor.
+    if (IsPlayerInFloorMap())
+    {
+        hours = GetPrefabRules(gFloorplan.prefabType)->lighting;
+        minutes = 0;
+    }
+    else
+    {
+        RtcCalcLocalTime();
+        hours = gLocalTime.hours;
+        minutes = gLocalTime.minutes;
+    }
     if (hours < 4) { // night
         currentTimeBlend.weight = 256;
         currentTimeBlend.altWeight = 0;
@@ -1550,8 +1562,8 @@ u8 UpdateTimeOfDay(void) {
 }
 
 bool8 MapHasNaturalLight(u8 mapType) { // Whether a map type is naturally lit/outside
-  return mapType == MAP_TYPE_TOWN || mapType == MAP_TYPE_CITY || mapType == MAP_TYPE_ROUTE
-      || mapType == MAP_TYPE_OCEAN_ROUTE;
+    return mapType == MAP_TYPE_TOWN || mapType == MAP_TYPE_CITY || mapType == MAP_TYPE_ROUTE
+        || mapType == MAP_TYPE_OCEAN_ROUTE || IsPlayerInFloorMap();
 }
 
 // Update & mix day / night bg palettes (into unfaded)
@@ -1629,19 +1641,19 @@ static void OverworldBasic(void)
     DoScheduledBgTilemapCopiesToVram();
     // Every minute if no palette fade is active, update TOD blending as needed
     if (!gPaletteFade.active && ++gTimeUpdateCounter >= 3600) {
-      struct TimeBlendSettings cachedBlend = {
-        .time0 = currentTimeBlend.time0,
-        .time1 = currentTimeBlend.time1,
-        .weight = currentTimeBlend.weight,
-      };
-      gTimeUpdateCounter = 0;
-      UpdateTimeOfDay();
-      if (cachedBlend.time0 != currentTimeBlend.time0
-       || cachedBlend.time1 != currentTimeBlend.time1
-       || cachedBlend.weight != currentTimeBlend.weight) {
-           UpdateAltBgPalettes(PALETTES_BG);
-           UpdatePalettesWithTime(PALETTES_ALL);
-       }
+        struct TimeBlendSettings cachedBlend = {
+            .time0 = currentTimeBlend.time0,
+            .time1 = currentTimeBlend.time1,
+            .weight = currentTimeBlend.weight,
+        };
+        gTimeUpdateCounter = 0;
+        UpdateTimeOfDay();
+        if (cachedBlend.time0 != currentTimeBlend.time0
+        || cachedBlend.time1 != currentTimeBlend.time1
+        || cachedBlend.weight != currentTimeBlend.weight) {
+            UpdateAltBgPalettes(PALETTES_BG);
+            UpdatePalettesWithTime(PALETTES_ALL);
+        }
     }
 }
 

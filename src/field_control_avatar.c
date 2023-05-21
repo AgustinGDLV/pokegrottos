@@ -761,16 +761,17 @@ static bool8 TryArrowWarp(struct MapPosition *position, u16 metatileBehavior, u8
 
     if (IsArrowWarpMetatileBehavior(metatileBehavior, direction) == TRUE && warpEventId != WARP_ID_NONE)
     {
-        if (gSaveBlock1Ptr->location.mapGroup < TEMPLATE_MAP_GROUP_START)
+        // Do custom warp in floor rooms.
+        if (IsPlayerInFloorMap())
+        {
+            return TryWarpToRoom(GetRoomInDirection(direction), direction);
+        }
+        else
         {
             StoreInitialPlayerAvatarState();
             SetupWarp(&gMapHeader, warpEventId, position);
             DoWarp();
             return TRUE;
-        }
-        else // Do custom warp in floor rooms.
-        {
-            return TryWarpToRoom(GetRoomInDirection(direction), direction);
         }
     }
     return FALSE;

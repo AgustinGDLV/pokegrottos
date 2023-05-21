@@ -1455,7 +1455,7 @@ static void HideShowWarpArrow(struct ObjectEvent *objectEvent)
     for (x = 0, direction = DIR_SOUTH; x < 4; x++, direction++)
     {
         if (sArrowWarpMetatileBehaviorChecks2[x](metatileBehavior) && direction == objectEvent->movementDirection
-            && !(gSaveBlock1Ptr->location.mapGroup >= TEMPLATE_MAP_GROUP_START && !DoesRoomExist(GetRoomInDirection(direction))))
+            && !(IsPlayerInFloorMap() && !DoesRoomExist(GetRoomInDirection(direction))))
         {
             // Show warp arrow if applicable
             x = objectEvent->currentCoords.x;

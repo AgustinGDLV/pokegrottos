@@ -74,7 +74,7 @@ void InitMap(void)
 {
     InitMapLayoutData(&gMapHeader);
     SetOccupiedSecretBaseEntranceMetatiles(gMapHeader.events);
-    if (gSaveBlock1Ptr->location.mapGroup >= TEMPLATE_MAP_GROUP_START)
+    if (IsPlayerInFloorMap())
         CoverInvalidRoomExits();
     RunOnLoadMapScript();
 }
@@ -86,7 +86,7 @@ void InitMapFromSavedGame(void)
     SetOccupiedSecretBaseEntranceMetatiles(gMapHeader.events);
     LoadSavedMapView();
     // Generate the floorplan struct on a new save and cover exits properly.
-    if (gSaveBlock1Ptr->location.mapGroup >= TEMPLATE_MAP_GROUP_START)
+    if (IsPlayerInFloorMap())
     {
         GenerateFloorplan();
         CoverInvalidRoomExits();
