@@ -1,56 +1,22 @@
 #include "global.h"
+#include "data_util.h"
 #include "item_gen.h"
 #include "map_gen.h"
 #include "random.h"
 #include "event_data.h"
 
-// Returns the total weight of all items in an item pool.
-static u16 GetItemPoolTotalWeight(const struct WeightedItem *itemPool)
-{
-    u32 i, weight = 0;
-    for (i = 0; i < ITEM_POOL_SIZE; ++i)
-    {
-        if (itemPool[i].item > ITEM_NONE && itemPool[i].item <= ITEMS_COUNT)
-            weight += itemPool[i].weight;
-        else
-            break;
-    }
-    return weight;
-}
-
-// Returns an item from a weighted item pool.
-static u16 ChooseItemFromPool(const struct WeightedItem* itemPool)
-{
-    u32 i;
-    u32 totalWeight = GetItemPoolTotalWeight(itemPool);
-    u16 rand;
-
-    // Generates a value within total weight and finds corresponding item.
-    rand = RandomF() % totalWeight;
-    for (i = 0; i < ITEM_POOL_SIZE; ++i)
-    {
-        if (rand > itemPool[i].weight)
-            rand -= itemPool[i].weight;
-        else
-            return itemPool[i].item;
-    }
-
-    // This shouldn't be reached, but just in case.
-    return ITEM_NONE;
-}
-
 // Returns the pool of items for a given tier and item type.
-static const struct WeightedItem* GetItemPool(enum ItemType type, enum ItemTier tier)
+static const struct WeightedElement* GetItemPool(enum ItemType type, enum ItemTier tier)
 {
     const struct PrefabRules* rules = GetPrefabRules(gFloorplan.prefabType);
     const struct ItemPoolTable* tablePtr;
-    const struct WeightedItem* pool;
+    const struct WeightedElement* pool;
 
     // Get the table from the map template rules.
     if (GetRoomType(gSaveBlock1Ptr->currentRoom) == SHOP_ROOM)
-        tablePtr = &rules->kecleonShopPools[tier];
+        tablePtr = &rules->itemPools[tier];
     else // TODO: overworld loot pool
-        tablePtr = &rules->kecleonShopPools[tier];
+        tablePtr = &rules->itemPools[tier];
     
     // Check to make sure it's a valid table.
     if (tablePtr == NULL)
@@ -94,11 +60,11 @@ void GenerateKecleonShopList(void)
     u32 i;
     for (i = 0; i < KECLEON_SHOP_ITEM_COUNT; ++i)
     {
-        gSaveBlock1Ptr->shopItems[i] = ChooseItemFromPool(GetItemPool(TYPE_MEDICINE, ITEM_TIER_1));
+        gSaveBlock1Ptr->shopItems[i] = ChooseElementFromPool(GetItemPool(TYPE_MEDICINE, ITEM_TIER_1));
     }
 }
 
-// Chooses an item for an item ball.
+// Chooses an item for an item ball. This is called within a script.
 void ChooseOverworldItem(void)
 {
     u32 i;
@@ -110,5 +76,5 @@ void ChooseOverworldItem(void)
     for (i = 0; i < ballId; ++i)
         RandomF();
 
-    gSpecialVar_0x8000 = ChooseItemFromPool(GetItemPool(TYPE_MEDICINE, ITEM_TIER_1));
+    gSpecialVar_0x8000 = ChooseElementFromPool(GetItemPool(TYPE_MEDICINE, ITEM_TIER_1));
 }

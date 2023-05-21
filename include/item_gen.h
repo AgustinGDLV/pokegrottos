@@ -3,13 +3,6 @@
 
 // Kecleon Shop and Other Item Constants
 #define KECLEON_SHOP_ITEM_COUNT     7
-#define ITEM_POOL_SIZE              10
-#define ITEM_TOTAL_WEIGHT           UINT8_MAX
-
-struct WeightedItem {
-    u16 item;
-    u8 weight;
-};
 
 enum ItemTier {
     ITEM_TIER_1,
@@ -29,11 +22,11 @@ enum ItemType {
 };
 
 struct ItemPoolTable {
-    const struct WeightedItem* medicines;
-    const struct WeightedItem* battleItems;
-    const struct WeightedItem* holdItems;
-    const struct WeightedItem* upgrades;
-    const struct WeightedItem* treasures;
+    const struct WeightedElement* medicines;
+    const struct WeightedElement* battleItems;
+    const struct WeightedElement* holdItems;
+    const struct WeightedElement* upgrades;
+    const struct WeightedElement* treasures;
 };
 
 void GenerateKecleonShopList(void);

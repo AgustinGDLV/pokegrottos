@@ -19,12 +19,14 @@
 #include "fieldmap.h"
 #include "follower_helper.h"
 #include "gpu_regs.h"
+#include "map_gen.h"
 #include "mauville_old_man.h"
 #include "metatile_behavior.h"
 #include "overworld.h"
 #include "palette.h"
 #include "pathfinding.h"
 #include "pokemon.h"
+#include "pokemon_gen.h"
 #include "random.h"
 #include "region_map.h"
 #include "script.h"
@@ -2425,6 +2427,10 @@ void TrySpawnObjectEvents(s16 cameraX, s16 cameraY)
             struct ObjectEventTemplate *template = &gSaveBlock1Ptr->objectEventTemplates[i];
             s16 npcX = template->x + MAP_OFFSET;
             s16 npcY = template->y + MAP_OFFSET;
+
+            // Assign species to random overworld encounters.
+            if (IsPlayerInFloorMap() && template->graphicsId == OBJ_EVENT_GFX_MON_BASE)
+                template->graphicsId = GetOverworldEncounterGraphicsId(template->localId);
 
             if (top <= npcY && bottom >= npcY && left <= npcX && right >= npcX && !FlagGet(template->flagId)) {
                 if (template->graphicsId == OBJ_EVENT_GFX_LIGHT_SPRITE) {  // light sprite instead

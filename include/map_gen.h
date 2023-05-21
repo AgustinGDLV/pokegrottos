@@ -49,13 +49,14 @@ struct Floorplan {
 
 struct PrefabRules {
     u8 mapGroup;
+    u16 bgm;
+    u8 lighting; // stored as hours
     s8 offsets[5][2]; // (x, y) entrance cover offsets for each direction
     u8 numNormalRooms;
     const u8* normalRoomIds;
     u8 specialRoomIds[NUM_ROOM_TYPES];
-    const struct ItemPoolTable * const kecleonShopPools;
-    u16 bgm;
-    u8 lighting; // stored as hours
+    const struct ItemPoolTable * const itemPools;
+    const struct WeightedElement encounterPool[MAX_WEIGHTED_POOL_SIZE];    
 };
 
 extern struct Floorplan gFloorplan;

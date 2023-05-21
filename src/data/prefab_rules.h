@@ -11,7 +11,7 @@
 
 // These item pools are usually used for all templates, but there is
 // more variability in holdItems and treasures.
-static const struct WeightedItem sDefaultMedicinePools[ITEM_TIER_COUNT][ITEM_POOL_SIZE] =
+static const struct WeightedElement sDefaultMedicinePools[ITEM_TIER_COUNT][MAX_WEIGHTED_POOL_SIZE] =
 {
     [ITEM_TIER_1] = {
         {ITEM_SUPER_POTION,     100},
@@ -44,7 +44,7 @@ static const struct WeightedItem sDefaultMedicinePools[ITEM_TIER_COUNT][ITEM_POO
     },
 };
 
-static const struct WeightedItem sDefaultBattleItemPools[ITEM_TIER_COUNT][ITEM_POOL_SIZE] =
+static const struct WeightedElement sDefaultBattleItemPools[ITEM_TIER_COUNT][MAX_WEIGHTED_POOL_SIZE] =
 {
     [ITEM_TIER_1] = {
         {ITEM_X_SP_DEF,         100},
@@ -77,7 +77,7 @@ static const struct WeightedItem sDefaultBattleItemPools[ITEM_TIER_COUNT][ITEM_P
     },
 };
 
-static const struct WeightedItem sDefaultHoldItemPools[ITEM_TIER_COUNT][ITEM_POOL_SIZE] =
+static const struct WeightedElement sDefaultHoldItemPools[ITEM_TIER_COUNT][MAX_WEIGHTED_POOL_SIZE] =
 {
     [ITEM_TIER_1] = {
         {ITEM_LEFTOVERS,        255},
@@ -96,7 +96,7 @@ static const struct WeightedItem sDefaultHoldItemPools[ITEM_TIER_COUNT][ITEM_POO
     },
 };
 
-static const struct WeightedItem sDefaultUpgradePools[ITEM_TIER_COUNT][ITEM_POOL_SIZE] =
+static const struct WeightedElement sDefaultUpgradePools[ITEM_TIER_COUNT][MAX_WEIGHTED_POOL_SIZE] =
 {
     [ITEM_TIER_1] = {
         {ITEM_ABILITY_PATCH,    100},
@@ -129,7 +129,7 @@ static const struct WeightedItem sDefaultUpgradePools[ITEM_TIER_COUNT][ITEM_POOL
     },
 };
 
-static const struct WeightedItem sDefaultTreasurePools[ITEM_TIER_COUNT][ITEM_POOL_SIZE] =
+static const struct WeightedElement sDefaultTreasurePools[ITEM_TIER_COUNT][MAX_WEIGHTED_POOL_SIZE] =
 {
     [ITEM_TIER_1] = {
         {ITEM_LEFTOVERS,        255},
@@ -198,7 +198,7 @@ static const u8 sCaveNormalRooms[] =
     MAP_NUM(CAVE_PREFABS_ROOM7),
 };
 
-static const struct ItemPoolTable sCaveKecleonShopPools[ITEM_TIER_COUNT] = 
+static const struct ItemPoolTable sCaveItemPools[ITEM_TIER_COUNT] = 
 {
     [ITEM_TIER_1] = {},
     [ITEM_TIER_2] = {},
@@ -212,6 +212,8 @@ const struct PrefabRules gPrefabRules[PREFAB_TYPES_COUNT] =
     [PREFABS_CAVE] =
     {
         .mapGroup = MAP_GROUP(CAVE_PREFABS_BASES),
+        .bgm = MUS_RG_SEVII_CAVE,
+        .lighting = 12,
         .offsets = {
             [DIR_NORTH] = {-1, -1},
             [DIR_SOUTH] = {-1, 1},
@@ -225,13 +227,16 @@ const struct PrefabRules gPrefabRules[PREFAB_TYPES_COUNT] =
             [TREASURE_ROOM] = MAP_NUM(CAVE_PREFABS_TREASURE_ROOM),
             [SHOP_ROOM] = MAP_NUM(CAVE_PREFABS_SHOP_ROOM),
         },
-        .kecleonShopPools = sCaveKecleonShopPools,
-        .bgm = MUS_RG_SEVII_CAVE,
-        .lighting = 12,
+        .itemPools = sCaveItemPools,
+        .encounterPool = {
+            {SPECIES_GEODUDE, 100},
+        }
     },
     [PREFABS_DARK_CAVE] =
     {
         .mapGroup = MAP_GROUP(CAVE_PREFABS_BASES),
+        .bgm = MUS_DQ3_DARK_WORLD,
+        .lighting = 0,
         .offsets = {
             [DIR_NORTH] = {-1, -1},
             [DIR_SOUTH] = {-1, 1},
@@ -245,9 +250,10 @@ const struct PrefabRules gPrefabRules[PREFAB_TYPES_COUNT] =
             [TREASURE_ROOM] = MAP_NUM(CAVE_PREFABS_TREASURE_ROOM),
             [SHOP_ROOM] = MAP_NUM(CAVE_PREFABS_SHOP_ROOM),
         },
-        .kecleonShopPools = sCaveKecleonShopPools,
-        .bgm = MUS_DQ3_DARK_WORLD,
-        .lighting = 0,
+        .itemPools = sCaveItemPools,
+        .encounterPool = {
+            {SPECIES_GASTLY, 100},
+        }
     },
 };
 

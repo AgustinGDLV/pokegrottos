@@ -6,6 +6,7 @@
 #include "main.h"
 #include "overworld.h"
 #include "pokemon.h"
+#include "pokemon_gen.h"
 #include "pokemon_storage_system.h"
 #include "random.h"
 #include "save_location.h"
