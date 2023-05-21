@@ -350,7 +350,7 @@ extern const u8 gText_Birch_AreYouReady[];
 extern const u8 gText_ContinueMenuPlayer[];
 extern const u8 gText_ContinueMenuTime[];
 extern const u8 gText_ContinueMenuPokedex[];
-extern const u8 gText_ContinueMenuBadges[];
+extern const u8 gText_ContinueMenuFloor[];
 extern const u8 gText_BirchBoy[];
 extern const u8 gText_BirchGirl[];
 extern const u8 gText_DefaultNameStu[];
