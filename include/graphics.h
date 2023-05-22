@@ -8884,6 +8884,10 @@ extern const u32 gItemIconPalette_BerserkGene[];
 // Scrolls
 extern const u32 gItemIcon_Scroll[];
 extern const u32 gItemIconPalette_IcyScroll[];
+extern const u32 gItemIconPalette_FieryScroll[];
+extern const u32 gItemIconPalette_WateryScroll[];
+extern const u32 gItemIconPalette_GrassyScroll[];
+extern const u32 gItemIconPalette_ElectricScroll[];
 
 extern const u32 gItemIcon_ReturnToFieldArrow[];
 extern const u32 gItemIconPalette_ReturnToFieldArrow[];

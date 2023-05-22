@@ -92,15 +92,15 @@ void BS_ItemIcyScroll(void)
     gBattleCommunication[MULTIUSE_STATE] = 0;
     switch (effect)
     {   
-        case 1: // Freeze available foe.
-            if (IsBattlerAlive(B_POSITION_OPPONENT_LEFT))
+        case 1: // Burn opposite foe, or partner if needed.
+            if (IsBattlerAlive(gBattlerAttacker ^ BIT_SIDE))
             {
-                gEffectBattler = GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT);
+                gEffectBattler = GetBattlerAtPosition(gBattlerAttacker ^ BIT_SIDE);
             }
             else if (gBattleTypeFlags & BATTLE_TYPE_DOUBLE
-                     && IsBattlerAlive(B_POSITION_OPPONENT_RIGHT))
+                     && IsBattlerAlive(gBattlerAttacker ^ BIT_SIDE ^ BIT_FLANK))
             {
-                gEffectBattler = GetBattlerAtPosition(B_POSITION_OPPONENT_RIGHT);
+                gEffectBattler = GetBattlerAtPosition(gBattlerAttacker ^ BIT_SIDE ^ BIT_FLANK);
             }
             else
             {
@@ -110,10 +110,10 @@ void BS_ItemIcyScroll(void)
         case 0: // Freeze user.
             if (CanBeFrozen(gEffectBattler))
             {
-                mon = &GetBattlerParty(gEffectBattler)[gBattlerPartyIndexes[gEffectBattler]];
                 gActiveBattler = gEffectBattler;
+                mon = &GetBattlerParty(gActiveBattler)[gBattlerPartyIndexes[gActiveBattler]];
                 gBattleMons[gActiveBattler].status1 = STATUS1_FREEZE;
-                BtlController_EmitSetMonData(BUFFER_A, REQUEST_STATUS_BATTLE, 0, sizeof(gBattleMons[gEffectBattler].status1), &gBattleMons[gEffectBattler].status1);
+                BtlController_EmitSetMonData(BUFFER_A, REQUEST_STATUS_BATTLE, 0, sizeof(gBattleMons[gActiveBattler].status1), &gBattleMons[gActiveBattler].status1);
                 MarkBattlerForControllerExec(gActiveBattler);
             }
             else
@@ -123,9 +123,236 @@ void BS_ItemIcyScroll(void)
             break;
         case 2: // Set snow.
             if (TryChangeBattleWeather(gBattlerAttacker, ENUM_WEATHER_SNOW, FALSE))
+            {
+                gWishFutureKnock.weatherDuration = 8;
                 gBattleCommunication[MULTIUSE_STATE] = 1; // Do snow animation.
+            }
             else
+            {
                 gBattleCommunication[MULTIUSE_STATE] = 2; // But it failed!
+            }
+            break;
+    }
+    gBattlescriptCurrInstr = cmd->nextInstr;
+}
+
+// The Fiery Scroll unpredictably burns a battler or sets sun.
+void BS_ItemFieryScroll(void)
+{
+    NATIVE_ARGS();
+    u32 effect = GetDynamicItemEffect(ITEM_FIERY_SCROLL);
+    struct Pokemon *mon;
+
+    gEffectBattler = gBattlerAttacker;
+    gBattleCommunication[MULTIUSE_STATE] = 0;
+    switch (effect)
+    {   
+        case 1: // Burn available foe.
+            if (IsBattlerAlive(gBattlerAttacker ^ BIT_SIDE))
+            {
+                gEffectBattler = GetBattlerAtPosition(gBattlerAttacker ^ BIT_SIDE);
+            }
+            else if (gBattleTypeFlags & BATTLE_TYPE_DOUBLE
+                     && IsBattlerAlive(gBattlerAttacker ^ BIT_SIDE ^ BIT_FLANK))
+            {
+                gEffectBattler = GetBattlerAtPosition(gBattlerAttacker ^ BIT_SIDE ^ BIT_FLANK);
+            }
+            else
+            {
+                gBattleCommunication[MULTIUSE_STATE] = 2; // But it failed!
+            }
+            // fall through
+        case 0: // Burn user.
+            if (CanBeBurned(gEffectBattler))
+            {
+                gActiveBattler = gEffectBattler;
+                mon = &GetBattlerParty(gActiveBattler)[gBattlerPartyIndexes[gActiveBattler]];
+                gBattleMons[gActiveBattler].status1 = STATUS1_BURN;
+                BtlController_EmitSetMonData(BUFFER_A, REQUEST_STATUS_BATTLE, 0, sizeof(gBattleMons[gActiveBattler].status1), &gBattleMons[gActiveBattler].status1);
+                MarkBattlerForControllerExec(gActiveBattler);
+            }
+            else
+            {
+                gBattleCommunication[MULTIUSE_STATE] = 2; // But it failed!
+            }
+            break;
+        case 2: // Set sun.
+            if (TryChangeBattleWeather(gBattlerAttacker, ENUM_WEATHER_SUN, FALSE))
+            {
+                gWishFutureKnock.weatherDuration = 8;
+                gBattleCommunication[MULTIUSE_STATE] = 1; // Do sun animation.
+            }
+            else
+            {
+                gBattleCommunication[MULTIUSE_STATE] = 2; // But it failed!
+            }
+            break;
+    }
+    gBattlescriptCurrInstr = cmd->nextInstr;
+}
+
+// The Watery Scroll unpredictably burns a battler or sets sun.
+void BS_ItemWateryScroll(void)
+{
+    NATIVE_ARGS();
+    u32 effect = GetDynamicItemEffect(ITEM_WATERY_SCROLL);
+    struct Pokemon *mon;
+
+    gBattlerTarget = gBattlerAttacker;
+    gBattleCommunication[MULTIUSE_STATE] = 0;
+    switch (effect)
+    {   
+        case 1: // Soak available foe.
+            if (IsBattlerAlive(gBattlerAttacker ^ BIT_SIDE))
+            {
+                gBattlerTarget = GetBattlerAtPosition(gBattlerAttacker ^ BIT_SIDE);
+            }
+            else if (gBattleTypeFlags & BATTLE_TYPE_DOUBLE
+                     && IsBattlerAlive(gBattlerAttacker ^ BIT_SIDE ^ BIT_FLANK))
+            {
+                gBattlerTarget = GetBattlerAtPosition(gBattlerAttacker ^ BIT_SIDE ^ BIT_FLANK);
+            }
+            else
+            {
+                gBattleCommunication[MULTIUSE_STATE] = 2; // But it failed!
+            }
+            // fall through
+        case 0: // Soak user.
+            if (gBattleMons[gBattlerTarget].type1 == TYPE_WATER
+                && gBattleMons[gBattlerTarget].type2 == TYPE_WATER)
+            {
+                gBattleCommunication[MULTIUSE_STATE] = 2; // But it failed!
+            }
+            else
+            {
+                SET_BATTLER_TYPE(gBattlerTarget, TYPE_WATER);
+                PREPARE_TYPE_BUFFER(gBattleTextBuff1, TYPE_WATER);
+            }
+            break;
+        case 2: // Set rain.
+            if (TryChangeBattleWeather(gBattlerAttacker, ENUM_WEATHER_RAIN, FALSE))
+            {
+                gWishFutureKnock.weatherDuration = 8;
+                gBattleCommunication[MULTIUSE_STATE] = 1; // Do rain animation.
+            }
+            else
+            {
+                gBattleCommunication[MULTIUSE_STATE] = 2; // But it failed!
+            }
+            break;
+    }
+    gBattlescriptCurrInstr = cmd->nextInstr;
+}
+
+// The Grassy Scroll unpredictably burns a battler or sets sun.
+void BS_ItemGrassyScroll(void)
+{
+    NATIVE_ARGS();
+    u32 effect = GetDynamicItemEffect(ITEM_GRASSY_SCROLL);
+    struct Pokemon *mon;
+
+    gEffectBattler = gBattlerAttacker;
+    gBattleCommunication[MULTIUSE_STATE] = 0;
+    switch (effect)
+    {   
+        case 1: // Sleep available foe.
+            if (IsBattlerAlive(gBattlerAttacker ^ BIT_SIDE))
+            {
+                gEffectBattler = GetBattlerAtPosition(gBattlerAttacker ^ BIT_SIDE);
+            }
+            else if (gBattleTypeFlags & BATTLE_TYPE_DOUBLE
+                     && IsBattlerAlive(gBattlerAttacker ^ BIT_SIDE ^ BIT_FLANK))
+            {
+                gEffectBattler = GetBattlerAtPosition(gBattlerAttacker ^ BIT_SIDE ^ BIT_FLANK);
+            }
+            else
+            {
+                gBattleCommunication[MULTIUSE_STATE] = 2; // But it failed!
+            }
+            // fall through
+        case 0: // Sleep user.
+            if (CanSleep(gEffectBattler))
+            {
+                gActiveBattler = gEffectBattler;
+                mon = &GetBattlerParty(gActiveBattler)[gBattlerPartyIndexes[gActiveBattler]];
+                gBattleMons[gActiveBattler].status1 = STATUS1_SLEEP_TURN(2);
+                BtlController_EmitSetMonData(BUFFER_A, REQUEST_STATUS_BATTLE, 0, sizeof(gBattleMons[gActiveBattler].status1), &gBattleMons[gActiveBattler].status1);
+                MarkBattlerForControllerExec(gActiveBattler);
+            }
+            else
+            {
+                gBattleCommunication[MULTIUSE_STATE] = 2; // But it failed!
+            }
+            break;
+        case 2: // Set grassy terrain.
+            if (gFieldStatuses & STATUS_FIELD_GRASSY_TERRAIN)
+            {
+                gBattleCommunication[MULTIUSE_STATE] = 2; // But it failed!
+            }
+            else
+            {
+                gFieldStatuses &= ~STATUS_FIELD_TERRAIN_ANY;
+                gFieldStatuses |= STATUS_FIELD_GRASSY_TERRAIN;
+                gFieldTimers.terrainTimer = 8;
+                gBattleCommunication[MULTIUSE_STATE] = 1; // Do terrain animation.
+            }
+            break;
+    }
+    gBattlescriptCurrInstr = cmd->nextInstr;
+}
+
+// The Electric Scroll unpredictably burns a battler or sets sun.
+void BS_ItemElectricScroll(void)
+{
+    NATIVE_ARGS();
+    u32 effect = GetDynamicItemEffect(ITEM_ELECTRIC_SCROLL);
+    struct Pokemon *mon;
+
+    gEffectBattler = gBattlerAttacker;
+    gBattleCommunication[MULTIUSE_STATE] = 0;
+    switch (effect)
+    {   
+        case 1: // Paralyze available foe.
+            if (IsBattlerAlive(gBattlerAttacker ^ BIT_SIDE))
+            {
+                gEffectBattler = GetBattlerAtPosition(gBattlerAttacker ^ BIT_SIDE);
+            }
+            else if (gBattleTypeFlags & BATTLE_TYPE_DOUBLE
+                     && IsBattlerAlive(gBattlerAttacker ^ BIT_SIDE ^ BIT_FLANK))
+            {
+                gEffectBattler = GetBattlerAtPosition(gBattlerAttacker ^ BIT_SIDE ^ BIT_FLANK);
+            }
+            else
+            {
+                gBattleCommunication[MULTIUSE_STATE] = 2; // But it failed!
+            }
+            // fall through
+        case 0: // Paralyze user.
+            if (CanBeParalyzed(gEffectBattler))
+            {
+                gActiveBattler = gEffectBattler;
+                mon = &GetBattlerParty(gActiveBattler)[gBattlerPartyIndexes[gActiveBattler]];
+                gBattleMons[gActiveBattler].status1 = STATUS1_PARALYSIS;
+                BtlController_EmitSetMonData(BUFFER_A, REQUEST_STATUS_BATTLE, 0, sizeof(gBattleMons[gActiveBattler].status1), &gBattleMons[gActiveBattler].status1);
+                MarkBattlerForControllerExec(gActiveBattler);
+            }
+            else
+            {
+                gBattleCommunication[MULTIUSE_STATE] = 2; // But it failed!
+            }
+            break;
+        case 2: // Set electric terrain.
+            if (gFieldStatuses & STATUS_FIELD_ELECTRIC_TERRAIN)
+            {
+                gBattleCommunication[MULTIUSE_STATE] = 2; // But it failed!
+            }
+            else
+            {
+                gFieldStatuses &= ~STATUS_FIELD_TERRAIN_ANY;
+                gFieldStatuses |= STATUS_FIELD_ELECTRIC_TERRAIN;
+                gFieldTimers.terrainTimer = 8;
+                gBattleCommunication[MULTIUSE_STATE] = 1; // Do terrain animation.
+            }
             break;
     }
     gBattlescriptCurrInstr = cmd->nextInstr;

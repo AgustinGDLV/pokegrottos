@@ -10357,11 +10357,62 @@ const struct Item gItems[] =
         .name = _("Icy Scroll"),
         .itemId = ITEM_ICY_SCROLL,
         .price = 20,
-        .description = sBerserkGene,
         .pocket = POCKET_ITEMS,
         .type = ITEM_USE_BAG_MENU,
         .fieldUseFunc = ItemUseOutOfBattle_CannotUse,
         .battleUsage = EFFECT_ITEM_ICY_SCROLL,
+        .flingPower = 10,
+        .secondaryId = 3, // num of effects
+    },
+
+    [ITEM_FIERY_SCROLL] =
+    {
+        .name = _("Fiery Scroll"),
+        .itemId = ITEM_FIERY_SCROLL,
+        .price = 20,
+        .pocket = POCKET_ITEMS,
+        .type = ITEM_USE_BAG_MENU,
+        .fieldUseFunc = ItemUseOutOfBattle_CannotUse,
+        .battleUsage = EFFECT_ITEM_FIERY_SCROLL,
+        .flingPower = 10,
+        .secondaryId = 3, // num of effects
+    },
+
+    [ITEM_WATERY_SCROLL] =
+    {
+        .name = _("Watery Scroll"),
+        .itemId = ITEM_WATERY_SCROLL,
+        .price = 20,
+        .pocket = POCKET_ITEMS,
+        .type = ITEM_USE_BAG_MENU,
+        .fieldUseFunc = ItemUseOutOfBattle_CannotUse,
+        .battleUsage = EFFECT_ITEM_WATERY_SCROLL,
+        .flingPower = 10,
+        .secondaryId = 3, // num of effects
+    },
+
+    [ITEM_GRASSY_SCROLL] =
+    {
+        .name = _("Grassy Scroll"),
+        .itemId = ITEM_GRASSY_SCROLL,
+        .price = 20,
+        .pocket = POCKET_ITEMS,
+        .type = ITEM_USE_BAG_MENU,
+        .fieldUseFunc = ItemUseOutOfBattle_CannotUse,
+        .battleUsage = EFFECT_ITEM_GRASSY_SCROLL,
+        .flingPower = 10,
+        .secondaryId = 3, // num of effects
+    },
+
+    [ITEM_ELECTRIC_SCROLL] =
+    {
+        .name = _("Thundr Scroll"),
+        .itemId = ITEM_ELECTRIC_SCROLL,
+        .price = 20,
+        .pocket = POCKET_ITEMS,
+        .type = ITEM_USE_BAG_MENU,
+        .fieldUseFunc = ItemUseOutOfBattle_CannotUse,
+        .battleUsage = EFFECT_ITEM_ELECTRIC_SCROLL,
         .flingPower = 10,
         .secondaryId = 3, // num of effects
     },

@@ -121,5 +121,5 @@ const u8* GetDynamicItemDescription(u32 itemId)
     if (IsItemIdentified(itemId))
         return sIdentifiedItemDescriptions[itemId - SCROLLS_START][GetDynamicItemEffect(itemId)];
     else
-        return sUnidentifiedDescription;
+        return sUnidentifiedScrollDescription;
 }

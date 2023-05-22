@@ -8886,7 +8886,7 @@ BattleScript_SnowWarningActivatesSnow::
 	call BattleScript_ActivateWeatherAbilities
 	end3
 
-BattleScript_ActivateTerrainEffects:
+BattleScript_ActivateTerrainEffects::
 	savetarget
 	setbyte gBattlerTarget, 0
 BattleScript_ActivateTerrainSeed:

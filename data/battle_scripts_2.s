@@ -26,6 +26,10 @@ gBattlescriptsForUsingItem::
     .4byte BattleScript_ItemRestorePP                @ EFFECT_ITEM_RESTORE_PP
     .4byte BattleScript_ItemIncreaseAllStats         @ EFFECT_ITEM_INCREASE_ALL_STATS
     .4byte BattleScript_ItemIcyScroll                @ EFFECT_ITEM_ICY_SCROLL
+    .4byte BattleScript_ItemFieryScroll              @ EFFECT_ITEM_FIERY_SCROLL
+    .4byte BattleScript_ItemWateryScroll             @ EFFECT_ITEM_WATERY_SCROLL
+    .4byte BattleScript_ItemGrassyScroll             @ EFFECT_ITEM_GRASSY_SCROLL
+    .4byte BattleScript_ItemElectricScroll           @ EFFECT_ITEM_ELECTRIC_SCROLL
 
     .align 2
 gBattlescriptsForSafariActions::
@@ -59,6 +63,83 @@ BattleScript_ItemIcyScrollSetSnow:
     printstring STRINGID_STARTEDSNOW
 	waitmessage B_WAIT_TIME_LONG
 	call BattleScript_ActivateWeatherAbilities
+	end
+
+BattleScript_ItemFieryScroll::
+    call BattleScript_UseItemMessage
+    callnative BS_ItemFieryScroll
+    jumpifbyte CMP_EQUAL, gBattleCommunication, 1, BattleScript_ItemFieryScrollSetSun
+    jumpifbyte CMP_EQUAL, gBattleCommunication, 2, BattleScript_ItemScrollFailed
+BattleScript_ItemFieryScrollApplyStatus:
+	statusanimation BS_EFFECT_BATTLER
+    printstring STRINGID_PKMNWASBURNED
+    waitmessage B_WAIT_TIME_LONG
+    updatestatusicon BS_EFFECT_BATTLER
+    waitstate
+    end
+
+BattleScript_ItemFieryScrollSetSun:
+    playanimation BS_ATTACKER, B_ANIM_SUN_CONTINUES
+    printstring STRINGID_SUNLIGHTGOTBRIGHT
+	waitmessage B_WAIT_TIME_LONG
+	call BattleScript_ActivateWeatherAbilities
+	end
+
+BattleScript_ItemGrassyScroll::
+    call BattleScript_UseItemMessage
+    callnative BS_ItemGrassyScroll
+    jumpifbyte CMP_EQUAL, gBattleCommunication, 1, BattleScript_ItemGrassyScrollSetTerrain
+    jumpifbyte CMP_EQUAL, gBattleCommunication, 2, BattleScript_ItemScrollFailed
+BattleScript_ItemGrassyScrollApplyStatus:
+	statusanimation BS_EFFECT_BATTLER
+    printstring STRINGID_PKMNFELLASLEEP
+    waitmessage B_WAIT_TIME_LONG
+    updatestatusicon BS_EFFECT_BATTLER
+    waitstate
+    end
+
+BattleScript_ItemGrassyScrollSetTerrain:
+	playanimation BS_ATTACKER, B_ANIM_RESTORE_BG
+    printstring STRINGID_TERRAINBECOMESGRASSY
+	waitmessage B_WAIT_TIME_LONG
+	call BattleScript_ActivateTerrainEffects
+	end
+
+BattleScript_ItemWateryScroll::
+    call BattleScript_UseItemMessage
+    callnative BS_ItemWateryScroll
+    jumpifbyte CMP_EQUAL, gBattleCommunication, 1, BattleScript_ItemWateryScrollSetRain
+    jumpifbyte CMP_EQUAL, gBattleCommunication, 2, BattleScript_ItemScrollFailed
+BattleScript_ItemWateryScrollApplySoak:
+    printstring STRINGID_TARGETCHANGEDTYPE
+    waitmessage B_WAIT_TIME_LONG
+    end
+
+BattleScript_ItemWateryScrollSetRain:
+    playanimation BS_ATTACKER, B_ANIM_RAIN_CONTINUES
+    printstring STRINGID_STARTEDTORAIN
+	waitmessage B_WAIT_TIME_LONG
+	call BattleScript_ActivateWeatherAbilities
+	end
+
+BattleScript_ItemElectricScroll::
+    call BattleScript_UseItemMessage
+    callnative BS_ItemElectricScroll
+    jumpifbyte CMP_EQUAL, gBattleCommunication, 1, BattleScript_ItemElectricScrollSetTerrain
+    jumpifbyte CMP_EQUAL, gBattleCommunication, 2, BattleScript_ItemScrollFailed
+BattleScript_ItemElectricScrollApplyStatus:
+	statusanimation BS_EFFECT_BATTLER
+    printstring STRINGID_PKMNWASPARALYZED
+    waitmessage B_WAIT_TIME_LONG
+    updatestatusicon BS_EFFECT_BATTLER
+    waitstate
+    end
+
+BattleScript_ItemElectricScrollSetTerrain:
+	playanimation BS_ATTACKER, B_ANIM_RESTORE_BG
+    printstring STRINGID_TERRAINBECOMESELECTRIC
+	waitmessage B_WAIT_TIME_LONG
+	call BattleScript_ActivateTerrainEffects
 	end
 
 @ SCROLL EFFECTS END

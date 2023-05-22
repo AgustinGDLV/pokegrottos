@@ -846,6 +846,10 @@ const u32 *const gItemIconTable[ITEMS_COUNT + 1][2] =
     [ITEM_BERSERK_GENE] = {gItemIcon_BerserkGene, gItemIconPalette_BerserkGene},
     // Scrolls
     [ITEM_ICY_SCROLL] = {gItemIcon_Scroll, gItemIconPalette_IcyScroll},
+    [ITEM_FIERY_SCROLL] = {gItemIcon_Scroll, gItemIconPalette_FieryScroll},
+    [ITEM_WATERY_SCROLL] = {gItemIcon_Scroll, gItemIconPalette_WateryScroll},
+    [ITEM_GRASSY_SCROLL] = {gItemIcon_Scroll, gItemIconPalette_GrassyScroll},
+    [ITEM_ELECTRIC_SCROLL] = {gItemIcon_Scroll, gItemIconPalette_ElectricScroll},
     // Return to field arrow
     [ITEMS_COUNT] = {gItemIcon_ReturnToFieldArrow, gItemIconPalette_ReturnToFieldArrow},
 };

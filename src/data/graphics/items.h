@@ -2005,3 +2005,7 @@ const u32 gItemIconPalette_BerserkGene[] = INCBIN_U32("graphics/items/icon_palet
 // Scrolls
 const u32 gItemIcon_Scroll[] = INCBIN_U32("graphics/items/icons/scroll.4bpp.lz");
 const u32 gItemIconPalette_IcyScroll[] = INCBIN_U32("graphics/items/icon_palettes/icy_scroll.gbapal.lz");
+const u32 gItemIconPalette_FieryScroll[] = INCBIN_U32("graphics/items/icon_palettes/fiery_scroll.gbapal.lz");
+const u32 gItemIconPalette_WateryScroll[] = INCBIN_U32("graphics/items/icon_palettes/watery_scroll.gbapal.lz");
+const u32 gItemIconPalette_GrassyScroll[] = INCBIN_U32("graphics/items/icon_palettes/grassy_scroll.gbapal.lz");
+const u32 gItemIconPalette_ElectricScroll[] = INCBIN_U32("graphics/items/icon_palettes/electric_scroll.gbapal.lz");
