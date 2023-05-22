@@ -40,6 +40,8 @@
 #include "new_game.h"
 #include "palette.h"
 #include "play_time.h"
+#include "pokedex.h"
+#include "item.h"
 #include "random.h"
 #include "roamer.h"
 #include "rotating_gate.h"
@@ -1718,17 +1720,48 @@ void CB2_NewGame(void)
     FieldClearVBlankHBlankCallbacks();
     StopMapMusic();
     ResetSafariZoneFlag_();
-    NewGameInitData();
+    // NewGameInitData();
     ResetInitialPlayerAvatarState();
     PlayTimeCounter_Start();
     ScriptContext_Init();
     UnlockPlayerFieldControls();
-    gFieldCallback = ExecuteTruckSequence;
-    gFieldCallback2 = NULL;
     DoMapLoadLoop(&gMain.state);
     SetFieldVBlankCallback();
     SetMainCallback1(CB1_Overworld);
     SetMainCallback2(CB2_Overworld);
+
+    // Clear lots of data.
+    ClearSav1();
+    ZeroPlayerPartyMons();
+    ZeroEnemyPartyMons();
+    ResetPokedex();
+    gPlayerPartyCount = 0;
+    ZeroPlayerPartyMons();
+    ResetPokemonStorageSystem();
+    gSaveBlock1Ptr->registeredItem = ITEM_NONE;
+    ClearBag();
+    SetMoney(&gSaveBlock1Ptr->money, 3000);
+    PlayTimeCounter_Reset();
+    ResetGameStats();
+
+    // Set appropriate flags.
+    FlagSet(FLAG_ADVENTURE_STARTED);
+    FlagSet(FLAG_RECEIVED_RUNNING_SHOES);
+    FlagSet(FLAG_SYS_B_DASH);
+    FlagSet(FLAG_SYS_POKEMON_GET);
+    FlagSet(FLAG_SYS_NATIONAL_DEX);
+    EnableNationalPokedex();
+    
+    // Give starter.
+    ScriptGiveMon(SPECIES_EEVEE, 50, ITEM_NONE, 0, 0, 0);
+
+    // Set up new seed and unidentified items seed.
+    gFloorplan.nextFloorSeed = gSaveBlock1Ptr->floorSeed = Random();
+    gSaveBlock1Ptr->unidSeed = Random();
+    gSaveBlock1Ptr->identifiedItems[0] = 0;
+    gSaveBlock1Ptr->identifiedItems[1] = 0;
+    gSaveBlock1Ptr->currentFloor = 0;
+    GoToNextFloor();
 }
 
 void CB2_WhiteOut(void)
@@ -1952,9 +1985,20 @@ void CB2_ContinueStartNewRun(void)
     DoTimeBasedEvents();
     UpdateMiscOverworldStates();
     InitMapFromSavedGame();
-    PlayTimeCounter_Reset();
     ScriptContext_Init();
     UnlockPlayerFieldControls();
+
+    // Clear some save data.
+    gPlayerPartyCount = 0;
+    ZeroPlayerPartyMons();
+    ResetPokemonStorageSystem();
+    gSaveBlock1Ptr->registeredItem = ITEM_NONE;
+    ClearBag();
+    SetMoney(&gSaveBlock1Ptr->money, 3000);
+    PlayTimeCounter_Reset();
+
+    // Give starter.
+    ScriptGiveMon(SPECIES_EEVEE, 50, ITEM_NONE, 0, 0, 0);
 
     // Set up new seed and unidentified items seed.
     gFloorplan.nextFloorSeed = gSaveBlock1Ptr->floorSeed = Random();

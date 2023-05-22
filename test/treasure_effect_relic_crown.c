@@ -1,4 +1,4 @@
-#include "global.h"
+U#include "global.h"
 #include "test_battle.h"
 
 // Outside tests that fail:
