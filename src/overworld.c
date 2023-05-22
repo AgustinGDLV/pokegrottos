@@ -1956,8 +1956,11 @@ void CB2_ContinueStartNewRun(void)
     ScriptContext_Init();
     UnlockPlayerFieldControls();
 
+    // Set up new seed and unidentified items seed.
     gFloorplan.nextFloorSeed = gSaveBlock1Ptr->floorSeed = Random();
     gSaveBlock1Ptr->unidSeed = Random();
+    gSaveBlock1Ptr->identifiedItems[0] = 0;
+    gSaveBlock1Ptr->identifiedItems[1] = 0;
     gSaveBlock1Ptr->currentFloor = 0;
     GoToNextFloor();
 }
