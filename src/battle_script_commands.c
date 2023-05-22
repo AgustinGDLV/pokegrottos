@@ -6,6 +6,7 @@
 #include "battle_ai_util.h"
 #include "battle_scripts.h"
 #include "battle_z_move.h"
+#include "battle_scripts_new.h"
 #include "constants/moves.h"
 #include "constants/abilities.h"
 #include "item.h"
@@ -5790,6 +5791,8 @@ static void Cmd_moveend(void)
         case MOVEEND_KINGSROCK: // King's rock
             // These effects will occur at each hit in a multi-strike move
             if (ItemBattleEffects(ITEMEFFECT_KINGSROCK, 0, FALSE))
+                effect = TRUE;
+            if (TrinketBattleEffects(ITEMEFFECT_KINGSROCK, 0, FALSE))
                 effect = TRUE;
             gBattleScripting.moveendState++;
             break;

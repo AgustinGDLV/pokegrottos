@@ -34,6 +34,7 @@ u32 GetDynamicItemEffect(u32 itemId);
 bool32 DoesItemHaveDynamicEffect(u32 itemId);
 const u8* GetDynamicItemDescription(u32 itemId);
 bool32 TryIdentifyItem(u32 itemId);
+bool32 IsTrinketEffectActive(u32 itemId);
 
 extern const struct ItemPoolTable gDefaultItemPools[ITEM_TIER_COUNT];
 

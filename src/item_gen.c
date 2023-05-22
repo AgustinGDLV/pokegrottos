@@ -5,6 +5,7 @@
 #include "map_gen.h"
 #include "random.h"
 #include "util.h"
+#include "test_runner.h"
 #include "event_data.h"
 
 // Returns the pool of items for a given tier and item type.
@@ -122,4 +123,13 @@ const u8* GetDynamicItemDescription(u32 itemId)
         return sIdentifiedItemDescriptions[itemId - SCROLLS_START][GetDynamicItemEffect(itemId)];
     else
         return sUnidentifiedScrollDescription;
+}
+
+// Returns whether a treasure effect is currently active.
+bool32 IsTrinketEffectActive(u32 itemId)
+{
+    if (gTestRunnerEnabled)
+        return TRUE;
+
+    return CheckBagHasItem(itemId, 1);
 }

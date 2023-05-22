@@ -10416,4 +10416,18 @@ const struct Item gItems[] =
         .flingPower = 10,
         .secondaryId = 3, // num of effects
     },
+    
+    // Trinkets
+    [ITEM_RELIC_CROWN_TRINKET] =
+    {
+        .name = _("Relic Crown"),
+        .itemId = ITEM_RELIC_CROWN_TRINKET,
+        .price = 0,
+        .importance = 1,
+        .description = sRelicCrownTrinketDesc,
+        .pocket = POCKET_KEY_ITEMS,
+        .type = ITEM_USE_BAG_MENU,
+        .fieldUseFunc = ItemUseOutOfBattle_CannotUse,
+        .flingPower = 10,
+    },
 };

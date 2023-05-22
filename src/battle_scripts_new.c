@@ -357,3 +357,34 @@ void BS_ItemElectricScroll(void)
     }
     gBattlescriptCurrInstr = cmd->nextInstr;
 }
+
+// Treasure Effects
+bool32 TrinketBattleEffects(u32 caseID, u32 battlerId, bool32 moveTurn)
+{
+    u32 i;
+    u32 effect = 0;
+
+    switch (caseID)
+    {
+        // Effects that apply with each hit of a move.
+        case ITEMEFFECT_KINGSROCK:
+            // Relic Crown effect
+            if (IsTrinketEffectActive(ITEM_RELIC_CROWN_TRINKET)
+                && gBattleMoveDamage != 0  // Need to have done damage
+                && !(gMoveResultFlags & MOVE_RESULT_NO_EFFECT)
+                && TARGET_TURN_DAMAGED
+                && RandomPercentage(RNG_FLINCH_RELIC_CROWN, 10 + 10*(GetBattlerAbility(gBattlerAttacker) == ABILITY_SERENE_GRACE))
+                && gBattleMoves[gCurrentMove].flags & FLAG_KINGS_ROCK_AFFECTED
+                && gBattleMons[gBattlerTarget].hp)
+            {
+                gBattleScripting.moveEffect = MOVE_EFFECT_FLINCH;
+                BattleScriptPushCursor();
+                SetMoveEffect(FALSE, 0);
+                BattleScriptPop();
+                effect = TRUE;
+            }
+            break;
+    }
+
+    return effect;
+}

@@ -3912,3 +3912,8 @@ static const u8 sBerserkGene[] = _(
     "Sharply boosts\n"
     "Attack, but causes\n"
     "lasting confusion.");
+
+static const u8 sRelicCrownTrinketDesc[] = _(
+    "Party gains a\n"
+    "chance to flinch\n"
+    "with attacks.");
