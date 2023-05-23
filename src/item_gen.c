@@ -68,7 +68,7 @@ void GenerateKecleonShopList(void)
     gSaveBlock1Ptr->shopItems[1] = ITEM_POKE_BALL;
 
     // Third item is a Super Evo Stone.
-    gSaveBlock1Ptr->shopItems[2] = ITEM_FIRE_STONE;
+    gSaveBlock1Ptr->shopItems[2] = ITEM_SUPER_EVO_STONE;
 
     // Fourth item is a trinket.
     nextSeed = RandomF();

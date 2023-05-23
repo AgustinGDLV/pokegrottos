@@ -10430,4 +10430,17 @@ const struct Item gItems[] =
         .fieldUseFunc = ItemUseOutOfBattle_CannotUse,
         .flingPower = 10,
     },
+
+    // Upgrades
+    [ITEM_SUPER_EVO_STONE] =
+    {
+        .name = _("Super Stone"),
+        .itemId = ITEM_SUPER_EVO_STONE,
+        .price = 500,
+        .description = sSuperEvoStoneDesc,
+        .pocket = POCKET_ITEMS,
+        .type = ITEM_USE_BAG_MENU,
+        .fieldUseFunc = ItemUseOutOfBattle_SuperEvolutionStone,
+        .flingPower = 10,
+    }
 };

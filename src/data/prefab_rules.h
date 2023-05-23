@@ -113,30 +113,30 @@ static const struct WeightedElement sDefaultUpgradePools[ITEM_TIER_COUNT][MAX_WE
         {ITEM_ABILITY_PATCH,    100},
         {ITEM_ABILITY_CAPSULE,  80},
         {ITEM_PP_MAX,           40},
-        {ITEM_FIRE_STONE,       35},
+        {ITEM_SUPER_EVO_STONE,       35},
     },
     [ITEM_TIER_2] = {
         {ITEM_ABILITY_PATCH,    80},
         {ITEM_ABILITY_CAPSULE,  80},
         {ITEM_PP_MAX,           50},
-        {ITEM_FIRE_STONE,       45},
+        {ITEM_SUPER_EVO_STONE,  45},
     },
     [ITEM_TIER_3] = {
         {ITEM_ABILITY_PATCH,    40},
         {ITEM_ABILITY_CAPSULE,  60},
         {ITEM_PP_MAX,           60},
-        {ITEM_FIRE_STONE,       95},
+        {ITEM_SUPER_EVO_STONE,  95},
     },
     [ITEM_TIER_4] = {
         {ITEM_ABILITY_PATCH,    20},
         {ITEM_ABILITY_CAPSULE,  60},
         {ITEM_PP_MAX,           80},
-        {ITEM_FIRE_STONE,       95},
+        {ITEM_SUPER_EVO_STONE,  95},
     },
     [ITEM_TIER_5] = {
         {ITEM_ABILITY_CAPSULE,  60},
         {ITEM_PP_MAX,           100},
-        {ITEM_FIRE_STONE,       95},
+        {ITEM_SUPER_EVO_STONE,  95},
     },
 };
 

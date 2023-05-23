@@ -3917,3 +3917,7 @@ static const u8 sRelicCrownTrinketDesc[] = _(
     "Party gains a\n"
     "chance to flinch\n"
     "with attacks.");
+
+static const u8 sSuperEvoStoneDesc[] = _(
+    "Makes any\n"
+    "Pokémon evolve.");

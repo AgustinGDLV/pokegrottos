@@ -994,9 +994,16 @@
 
 #define TRINKETS_END                ITEM_RELIC_CROWN_TRINKET + 1
 
-#define ITEMS_COUNT     TRINKETS_END
+// Upgrades
+#define UPGRADES_START              TRINKETS_END
 
-#define ITEM_FIELD_ARROW ITEMS_COUNT
+#define ITEM_SUPER_EVO_STONE        UPGRADES_START
+
+#define UPGRADES_END                ITEM_SUPER_EVO_STONE + 1
+
+#define ITEMS_COUNT                 UPGRADES_END
+
+#define ITEM_FIELD_ARROW            ITEMS_COUNT
 
 // A special item id associated with "Cancel"/"Exit" etc. in a list of items or decorations
 // Its icon is defined at ITEMS_COUNT as the "return to field" arrow
