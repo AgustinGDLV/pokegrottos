@@ -22,6 +22,7 @@
 #include "window.h"
 #include "reshow_battle_screen.h"
 #include "main.h"
+#include "map_gen.h"
 #include "palette.h"
 #include "money.h"
 #include "malloc.h"
@@ -15446,6 +15447,15 @@ static void Cmd_handleballthrow(void)
         BtlController_EmitBallThrowAnim(BUFFER_A, BALL_3_SHAKES_SUCCESS);
         MarkBattlerForControllerExec(gActiveBattler);
         gBattlescriptCurrInstr = BattleScript_WallyBallThrow;
+    }
+    // 100% catch rate during a run
+    else if (IsPlayerInFloorMap())
+    {
+        BtlController_EmitBallThrowAnim(BUFFER_A, BALL_3_SHAKES_SUCCESS);
+        MarkBattlerForControllerExec(gActiveBattler);
+        TryBattleFormChange(gBattlerTarget, FORM_CHANGE_END_BATTLE);
+        gBattlescriptCurrInstr = BattleScript_SuccessBallThrow;
+        SetMonData(&gEnemyParty[gBattlerPartyIndexes[gBattlerTarget]], MON_DATA_POKEBALL, &gLastUsedItem);
     }
     else
     {

@@ -48,7 +48,7 @@ static const struct WeightedElement* GetItemPool(enum ItemType type, enum ItemTi
             if (pool == NULL)
                 pool = gDefaultItemPools[tier].upgrades;
             break;
-        case TYPE_TREASURE:
+        case TYPE_TRINKET:
             pool = tablePtr->treasures;
             if (pool == NULL)
                 pool = gDefaultItemPools[tier].treasures;
@@ -60,17 +60,46 @@ static const struct WeightedElement* GetItemPool(enum ItemType type, enum ItemTi
 // Generates the list of items to sell in a floor.
 void GenerateKecleonShopList(void)
 {
-    u32 i;
-    for (i = 0; i < KECLEON_SHOP_ITEM_COUNT; ++i)
-    {
-        gSaveBlock1Ptr->shopItems[i] = ChooseElementFromPool(GetItemPool(TYPE_MEDICINE, ITEM_TIER_1));
-    }
+    u32 tier = ITEM_TIER_1;
+    u16 nextSeed, attempts;
+
+    // First two items are Poke Balls.
+    gSaveBlock1Ptr->shopItems[0] = ITEM_POKE_BALL;
+    gSaveBlock1Ptr->shopItems[1] = ITEM_POKE_BALL;
+
+    // Third item is a Super Evo Stone.
+    gSaveBlock1Ptr->shopItems[2] = ITEM_FIRE_STONE;
+
+    // Fourth item is a trinket.
+    nextSeed = RandomF();
+    do { // Make sure we're not giving a trinket the player already has, if possible.
+        gSaveBlock1Ptr->shopItems[3] = ChooseElementFromPool(GetItemPool(TYPE_TRINKET, tier));
+    } while (CheckBagHasItem(gSaveBlock1Ptr->shopItems[3], 1) && ++attempts < 10);
+    SeedFloorRng(nextSeed);
+
+    // Fifth and sixth items are held items.
+    gSaveBlock1Ptr->shopItems[4] = ChooseElementFromPool(GetItemPool(TYPE_HOLD_ITEM, tier));
+    gSaveBlock1Ptr->shopItems[5] = ChooseElementFromPool(GetItemPool(TYPE_HOLD_ITEM, tier));
+
+    // Seventh and eigth items is a battle item.
+    gSaveBlock1Ptr->shopItems[6] = ChooseElementFromPool(GetItemPool(TYPE_BATTLE_ITEM, tier));
+    gSaveBlock1Ptr->shopItems[7] = ChooseElementFromPool(GetItemPool(TYPE_BATTLE_ITEM, tier));
+
+    // Ninth and tenth items are upgrades.
+    gSaveBlock1Ptr->shopItems[8] = ChooseElementFromPool(GetItemPool(TYPE_UPGRADE, tier));
+    gSaveBlock1Ptr->shopItems[9] = ChooseElementFromPool(GetItemPool(TYPE_UPGRADE, tier));
+
+    // Last four items are medicines.
+    gSaveBlock1Ptr->shopItems[10] = ChooseElementFromPool(GetItemPool(TYPE_MEDICINE, tier));
+    gSaveBlock1Ptr->shopItems[11] = ChooseElementFromPool(GetItemPool(TYPE_MEDICINE, tier));
+    gSaveBlock1Ptr->shopItems[12] = ChooseElementFromPool(GetItemPool(TYPE_MEDICINE, tier));
+    gSaveBlock1Ptr->shopItems[13] = ChooseElementFromPool(GetItemPool(TYPE_MEDICINE, tier));
 }
 
 // Chooses an item for an item ball. This is called within a script.
 void ChooseOverworldItem(void)
 {
-    u32 i;
+    u32 i, rand, tier;
     u32 ballId = gObjectEvents[gSelectedObjectEvent].trainerRange_berryTreeId;
 
     // Advance RNG to a repeatable state based on the ball ID.
@@ -79,7 +108,23 @@ void ChooseOverworldItem(void)
     for (i = 0; i < ballId; ++i)
         RandomF();
 
-    gSpecialVar_0x8000 = ChooseElementFromPool(GetItemPool(TYPE_MEDICINE, ITEM_TIER_1));
+    rand = RandomF();
+    tier = ITEM_TIER_1;
+    // 30% chance of item being a Poke Ball
+    if (rand % 100 < 30)
+        gSpecialVar_0x8000 = ITEM_POKE_BALL;
+    // 30% chance of item being Medicine
+    else if (rand % 10 < 60)
+        gSpecialVar_0x8000 = ChooseElementFromPool(GetItemPool(TYPE_MEDICINE, tier));
+    // 10% chance of item being Battle Item
+    else if (rand % 10 < 70)
+        gSpecialVar_0x8000 = ChooseElementFromPool(GetItemPool(TYPE_BATTLE_ITEM, tier));
+    // 10% chance of item being Hold Item
+    else if (rand % 10 < 80)
+        gSpecialVar_0x8000 = ChooseElementFromPool(GetItemPool(TYPE_HOLD_ITEM, tier));
+    // 20% chance of item being Upgrade
+    else
+        gSpecialVar_0x8000 = ChooseElementFromPool(GetItemPool(TYPE_UPGRADE, tier));
 }
 
 // Returns the effect of an unidentified scroll for a given run.

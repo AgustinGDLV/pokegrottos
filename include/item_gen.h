@@ -2,7 +2,7 @@
 #define GUARD_ITEM_GEN_H
 
 // Kecleon Shop and Other Item Constants
-#define KECLEON_SHOP_ITEM_COUNT     7
+#define KECLEON_SHOP_ITEM_COUNT     14
 
 enum ItemTier {
     ITEM_TIER_1,
@@ -18,7 +18,7 @@ enum ItemType {
     TYPE_BATTLE_ITEM,
     TYPE_HOLD_ITEM,
     TYPE_UPGRADE,
-    TYPE_TREASURE,
+    TYPE_TRINKET,
 };
 
 struct ItemPoolTable {

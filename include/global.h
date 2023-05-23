@@ -1016,12 +1016,12 @@ struct SaveBlock1
               u16 unidSeed;             // stores the seed for unidentified items
               u32 visitedRooms[4];      // long bitfield
               u32 identifiedItems[2];   // long bitfield
-              u16 shopItems[7];         // stores the current stock of the Kecleon Shop
+              u16 shopItems[14];         // stores the current stock of the Kecleon Shop
 
     /*0x9BE*/ u16 berryBlenderRecords[3];
     /*0x9C4*/ u8 unused_9C2[4];
     /*0x9C8*/ u16 trainerRematchStepCounter;
-    /*0x9CA*/ u8 trainerRematches[78]; // originally 100, freed 22 bytes, 8 used
+    /*0x9CA*/ u8 trainerRematches[78]; // originally 100, freed 22 bytes, 22 used
     /*0xA2E*/ //u8 padding3[2];
     /*0xA30*/ struct ObjectEvent objectEvents[OBJECT_EVENTS_COUNT];
     /*0xC70*/ struct ObjectEventTemplate objectEventTemplates[OBJECT_EVENT_TEMPLATES_COUNT];

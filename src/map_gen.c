@@ -371,8 +371,6 @@ void GenerateFloorplan(void)
 
     // Handle the rest of the floorplan data.
     AssignRoomMapIds(&gFloorplan);
-    GenerateKecleonShopList();
-    ClearFloorEventFlags();
     gFloorplan.nextFloorSeed = RandomF();
 }
 
@@ -386,5 +384,7 @@ void GoToNextFloor(void)
 
     // Generate the new floorplan and warp.
     GenerateFloorplan();
+    GenerateKecleonShopList();
+    ClearFloorEventFlags();
     TryWarpToRoom(STARTING_ROOM, 0);
 }

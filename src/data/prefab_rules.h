@@ -47,33 +47,44 @@ static const struct WeightedElement sDefaultMedicinePools[ITEM_TIER_COUNT][MAX_W
 static const struct WeightedElement sDefaultBattleItemPools[ITEM_TIER_COUNT][MAX_WEIGHTED_POOL_SIZE] =
 {
     [ITEM_TIER_1] = {
-        {ITEM_X_SP_DEF,         100},
-        {ITEM_X_DEFENSE,        80},
-        {ITEM_X_SPEED,          40},
-        {ITEM_MAX_MUSHROOMS,    35},
+        {ITEM_ICY_SCROLL,       10},
+        {ITEM_FIERY_SCROLL,     10},
+        {ITEM_WATERY_SCROLL,    10},
+        {ITEM_GRASSY_SCROLL,    10},
+        {ITEM_ELECTRIC_SCROLL,  10},
+        {ITEM_MAX_MUSHROOMS,    5},
     },
     [ITEM_TIER_2] = {
-        {ITEM_X_SP_DEF,         80},
-        {ITEM_X_DEFENSE,        80},
-        {ITEM_X_SPEED,          50},
-        {ITEM_MAX_MUSHROOMS,    45},
+        {ITEM_ICY_SCROLL,       10},
+        {ITEM_FIERY_SCROLL,     10},
+        {ITEM_WATERY_SCROLL,    10},
+        {ITEM_GRASSY_SCROLL,    10},
+        {ITEM_ELECTRIC_SCROLL,  10},
+        {ITEM_MAX_MUSHROOMS,    5},
     },
     [ITEM_TIER_3] = {
-        {ITEM_X_SP_DEF,         40},
-        {ITEM_X_DEFENSE,        60},
-        {ITEM_X_SPEED,          60},
-        {ITEM_MAX_MUSHROOMS,    95},
+        {ITEM_ICY_SCROLL,       10},
+        {ITEM_FIERY_SCROLL,     10},
+        {ITEM_WATERY_SCROLL,    10},
+        {ITEM_GRASSY_SCROLL,    10},
+        {ITEM_ELECTRIC_SCROLL,  10},
+        {ITEM_MAX_MUSHROOMS,    5},
     },
     [ITEM_TIER_4] = {
-        {ITEM_X_SP_DEF,         20},
-        {ITEM_X_DEFENSE,        60},
-        {ITEM_X_SPEED,          80},
-        {ITEM_MAX_MUSHROOMS,    95},
+        {ITEM_ICY_SCROLL,       10},
+        {ITEM_FIERY_SCROLL,     10},
+        {ITEM_WATERY_SCROLL,    10},
+        {ITEM_GRASSY_SCROLL,    10},
+        {ITEM_ELECTRIC_SCROLL,  10},
+        {ITEM_MAX_MUSHROOMS,    5},
     },
     [ITEM_TIER_5] = {
-        {ITEM_X_ATTACK,         60},
-        {ITEM_X_SPEED,          100},
-        {ITEM_MAX_MUSHROOMS,    95},
+        {ITEM_ICY_SCROLL,       10},
+        {ITEM_FIERY_SCROLL,     10},
+        {ITEM_WATERY_SCROLL,    10},
+        {ITEM_GRASSY_SCROLL,    10},
+        {ITEM_ELECTRIC_SCROLL,  10},
+        {ITEM_MAX_MUSHROOMS,    5},
     },
 };
 
@@ -132,19 +143,19 @@ static const struct WeightedElement sDefaultUpgradePools[ITEM_TIER_COUNT][MAX_WE
 static const struct WeightedElement sDefaultTreasurePools[ITEM_TIER_COUNT][MAX_WEIGHTED_POOL_SIZE] =
 {
     [ITEM_TIER_1] = {
-        {ITEM_LEFTOVERS,        255},
+        {ITEM_RELIC_CROWN_TRINKET,        1},
     },
     [ITEM_TIER_2] = {
-        {ITEM_LEFTOVERS,        255},
+        {ITEM_RELIC_CROWN_TRINKET,        1},
     },
     [ITEM_TIER_3] = {
-        {ITEM_LEFTOVERS,        255},
+        {ITEM_RELIC_CROWN_TRINKET,        1},
     },
     [ITEM_TIER_4] = {
-        {ITEM_LEFTOVERS,        255},
+        {ITEM_RELIC_CROWN_TRINKET,        1},
     },
     [ITEM_TIER_5] = {
-        {ITEM_LEFTOVERS,        255},
+        {ITEM_RELIC_CROWN_TRINKET,        1},
     },
 };
 
