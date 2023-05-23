@@ -6569,8 +6569,14 @@ BattleScript_LocalBattleWonReward::
 	waitmessage B_WAIT_TIME_LONG
 BattleScript_PayDayMoneyAndPickUpItems::
 	givepaydaymoney
+	callnative BS_GiveDroppedItems
 	pickup
 	end2
+
+BattleScript_ItemDropped::
+	playse SE_BALL_BOUNCE_1
+	printfromtable gItemDroppedStringIds
+	return
 
 BattleScript_LocalBattleLost::
 	jumpifbattletype BATTLE_TYPE_INGAME_PARTNER, BattleScript_LocalBattleLostPrintWhiteOut

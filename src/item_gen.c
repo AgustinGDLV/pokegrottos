@@ -9,7 +9,7 @@
 #include "event_data.h"
 
 // Returns the pool of items for a given tier and item type.
-static const struct WeightedElement* GetItemPool(enum ItemType type, enum ItemTier tier)
+const struct WeightedElement* GetItemPool(enum ItemType type, enum ItemTier tier)
 {
     const struct PrefabRules* rules = GetPrefabRules(gFloorplan.prefabType);
     const struct ItemPoolTable* tablePtr;

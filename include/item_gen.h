@@ -29,6 +29,7 @@ struct ItemPoolTable {
     const struct WeightedElement* treasures;
 };
 
+const struct WeightedElement* GetItemPool(enum ItemType type, enum ItemTier tier);
 void GenerateKecleonShopList(void);
 u32 GetDynamicItemEffect(u32 itemId);
 bool32 DoesItemHaveDynamicEffect(u32 itemId);

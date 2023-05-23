@@ -9,6 +9,7 @@
 #include "constants/moves.h"
 #include "constants/abilities.h"
 #include "item.h"
+#include "item_gen.h"
 #include "util.h"
 #include "pokemon.h"
 #include "random.h"
@@ -387,4 +388,44 @@ bool32 TrinketBattleEffects(u32 caseID, u32 battlerId, bool32 moveTurn)
     }
 
     return effect;
+}
+
+void BS_GiveDroppedItems(void)
+{
+    NATIVE_ARGS();
+    u32 i;
+    u32 battlers[] = { GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT), 
+                        GetBattlerAtPosition(B_POSITION_OPPONENT_RIGHT) };
+    
+    // Drop held items.
+    for (i = 0; i < 1 + IsDoubleBattle(); ++i)
+    {
+        gLastUsedItem = gBattleResources->battleHistory->heldItems[battlers[i]];
+        gBattleResources->battleHistory->heldItems[battlers[i]] = ITEM_NONE;
+        if (gLastUsedItem && !(gBattleTypeFlags & (BATTLE_TYPE_TRAINER | BATTLE_TYPE_FIRST_BATTLE | BATTLE_TYPE_WALLY_TUTORIAL)))
+        {
+            if(AddBagItem(gLastUsedItem, 1))
+                gBattleCommunication[MULTISTRING_CHOOSER] = B_MSG_ITEM_DROPPED;
+            else
+                gBattleCommunication[MULTISTRING_CHOOSER] = B_MSG_BAG_IS_FULL;
+            BattleScriptPushCursor();
+            gBattlescriptCurrInstr = BattleScript_ItemDropped;
+            return;
+        }
+    }
+
+    // Try giving medicine.
+    if (Random() % 2)
+    {
+        gLastUsedItem = ChooseElementFromPool(GetItemPool(TYPE_MEDICINE, ITEM_TIER_1));
+        if(AddBagItem(gLastUsedItem, 1))
+            gBattleCommunication[MULTISTRING_CHOOSER] = B_MSG_ITEM_DROPPED;
+        else
+            gBattleCommunication[MULTISTRING_CHOOSER] = B_MSG_BAG_IS_FULL;
+        BattleScriptPush(cmd->nextInstr);
+        gBattlescriptCurrInstr = BattleScript_ItemDropped;
+        return;
+    }
+
+    gBattlescriptCurrInstr = cmd->nextInstr;
 }

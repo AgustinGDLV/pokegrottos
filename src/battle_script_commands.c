@@ -12538,6 +12538,16 @@ static void Cmd_givepaydaymoney(void)
         BattleScriptPush(cmd->nextInstr);
         gBattlescriptCurrInstr = BattleScript_PrintPayDayMoneyString;
     }
+    else if (IsPlayerInFloorMap())
+    {
+        u32 bonusMoney = (1 + Random() % 4) * 100 * gBattleStruct->moneyMultiplier;
+        AddMoney(&gSaveBlock1Ptr->money, bonusMoney);
+
+        PREPARE_HWORD_NUMBER_BUFFER(gBattleTextBuff1, 5, bonusMoney)
+
+        BattleScriptPush(cmd->nextInstr);
+        gBattlescriptCurrInstr = BattleScript_PrintPayDayMoneyString;
+    }
     else
     {
         gBattlescriptCurrInstr = cmd->nextInstr;
