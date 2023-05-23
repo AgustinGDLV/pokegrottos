@@ -1341,7 +1341,7 @@ static void BuyMenuRemoveListEntry(u8 taskId, u32 row, struct ListMenu *list)
     // Shift the floorplan shop list and list menu arrays.
     for (i = row; i < sMartInfo.itemCount - 1; ++i)
     {
-        gSaveBlock1Ptr->shopItems[i] = gSaveBlock1Ptr->shopItems[i + 1];
+        gSaveBlock1Ptr->shopItems[i + sShopData->scrollOffset] = gSaveBlock1Ptr->shopItems[i + sShopData->scrollOffset + 1];
         memcpy(&sListMenuItems[i], &sListMenuItems[i + 1], sizeof(sListMenuItems[i]));
     }
     // Zero the last element.
