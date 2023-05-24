@@ -125,7 +125,7 @@ $(TILESETGFXDIR)/secondary/pokemon_center/tiles.4bpp: %.4bpp: %.png
 	$(GFX) $< $@ -num_tiles 478 -Wnum_tiles
 
 $(TILESETGFXDIR)/secondary/cave/tiles.4bpp: %.4bpp: %.png
-	$(GFX) $< $@ -num_tiles 425 -Wnum_tiles
+	$(GFX) $< $@ -Wnum_tiles
 
 $(TILESETGFXDIR)/secondary/pokemon_school/tiles.4bpp: %.4bpp: %.png
 	$(GFX) $< $@ -num_tiles 278 -Wnum_tiles
@@ -133,8 +133,8 @@ $(TILESETGFXDIR)/secondary/pokemon_school/tiles.4bpp: %.4bpp: %.png
 $(TILESETGFXDIR)/secondary/pokemon_fan_club/tiles.4bpp: %.4bpp: %.png
 	$(GFX) $< $@ -num_tiles 319 -Wnum_tiles
 
-$(TILESETGFXDIR)/secondary/unused_1/tiles.4bpp: %.4bpp: %.png
-	$(GFX) $< $@ -num_tiles 17 -Wnum_tiles
+$(TILESETGFXDIR)/secondary/ice_cave/tiles.4bpp: %.4bpp: %.png
+	$(GFX) $< $@ -Wnum_tiles
 
 $(TILESETGFXDIR)/secondary/meteor_falls/tiles.4bpp: %.4bpp: %.png
 	$(GFX) $< $@ -num_tiles 460 -Wnum_tiles

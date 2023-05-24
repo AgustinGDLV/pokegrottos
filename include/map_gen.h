@@ -33,6 +33,7 @@ struct Room {
 enum PrefabTypes {
     PREFABS_CAVE,
     PREFABS_DARK_CAVE,
+    PREFABS_ICE_CAVE,
     PREFAB_TYPES_COUNT,
 };
 

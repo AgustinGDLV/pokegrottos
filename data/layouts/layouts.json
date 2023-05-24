@@ -4530,6 +4530,216 @@
       "secondary_tileset": "gTileset_Cave",
       "border_filepath": "data/layouts/CavePrefabs_ShopRoom/border.bin",
       "blockdata_filepath": "data/layouts/CavePrefabs_ShopRoom/map.bin"
+    },
+    {
+      "id": "LAYOUT_ICE_CAVE_PREFABS_BASE",
+      "name": "IceCavePrefabs_Base_Layout",
+      "width": 3,
+      "height": 4,
+      "primary_tileset": "gTileset_General",
+      "secondary_tileset": "gTileset_IceCave",
+      "border_filepath": "data/layouts/IceCavePrefabs_Base/border.bin",
+      "blockdata_filepath": "data/layouts/IceCavePrefabs_Base/map.bin"
+    },
+    {
+      "id": "LAYOUT_ICE_CAVE_PREFABS_ROOM1",
+      "name": "IceCavePrefabs_Room1_Layout",
+      "width": 11,
+      "height": 10,
+      "primary_tileset": "gTileset_General",
+      "secondary_tileset": "gTileset_IceCave",
+      "border_filepath": "data/layouts/IceCavePrefabs_Room1/border.bin",
+      "blockdata_filepath": "data/layouts/IceCavePrefabs_Room1/map.bin"
+    },
+    {
+      "id": "LAYOUT_ICE_CAVE_PREFABS_ROOM2",
+      "name": "IceCavePrefabs_Room2_Layout",
+      "width": 14,
+      "height": 17,
+      "primary_tileset": "gTileset_General",
+      "secondary_tileset": "gTileset_IceCave",
+      "border_filepath": "data/layouts/IceCavePrefabs_Room2/border.bin",
+      "blockdata_filepath": "data/layouts/IceCavePrefabs_Room2/map.bin"
+    },
+    {
+      "id": "LAYOUT_ICE_CAVE_PREFABS_ROOM3",
+      "name": "IceCavePrefabs_Room3_Layout",
+      "width": 17,
+      "height": 12,
+      "primary_tileset": "gTileset_General",
+      "secondary_tileset": "gTileset_IceCave",
+      "border_filepath": "data/layouts/IceCavePrefabs_Room3/border.bin",
+      "blockdata_filepath": "data/layouts/IceCavePrefabs_Room3/map.bin"
+    },
+    {
+      "id": "LAYOUT_ICE_CAVE_PREFABS_ROOM4",
+      "name": "IceCavePrefabs_Room4_Layout",
+      "width": 24,
+      "height": 27,
+      "primary_tileset": "gTileset_General",
+      "secondary_tileset": "gTileset_IceCave",
+      "border_filepath": "data/layouts/IceCavePrefabs_Room4/border.bin",
+      "blockdata_filepath": "data/layouts/IceCavePrefabs_Room4/map.bin"
+    },
+    {
+      "id": "LAYOUT_ICE_CAVE_PREFABS_ROOM5",
+      "name": "IceCavePrefabs_Room5_Layout",
+      "width": 10,
+      "height": 10,
+      "primary_tileset": "gTileset_General",
+      "secondary_tileset": "gTileset_IceCave",
+      "border_filepath": "data/layouts/IceCavePrefabs_Room5/border.bin",
+      "blockdata_filepath": "data/layouts/IceCavePrefabs_Room5/map.bin"
+    },
+    {
+      "id": "LAYOUT_ICE_CAVE_PREFABS_ROOM6",
+      "name": "IceCavePrefabs_Room6_Layout",
+      "width": 10,
+      "height": 10,
+      "primary_tileset": "gTileset_General",
+      "secondary_tileset": "gTileset_IceCave",
+      "border_filepath": "data/layouts/IceCavePrefabs_Room6/border.bin",
+      "blockdata_filepath": "data/layouts/IceCavePrefabs_Room6/map.bin"
+    },
+    {
+      "id": "LAYOUT_ICE_CAVE_PREFABS_ROOM7",
+      "name": "IceCavePrefabs_Room7_Layout",
+      "width": 10,
+      "height": 10,
+      "primary_tileset": "gTileset_General",
+      "secondary_tileset": "gTileset_IceCave",
+      "border_filepath": "data/layouts/IceCavePrefabs_Room7/border.bin",
+      "blockdata_filepath": "data/layouts/IceCavePrefabs_Room7/map.bin"
+    },
+    {
+      "id": "LAYOUT_ICE_CAVE_PREFABS_ROOM8",
+      "name": "IceCavePrefabs_Room8_Layout",
+      "width": 10,
+      "height": 10,
+      "primary_tileset": "gTileset_General",
+      "secondary_tileset": "gTileset_IceCave",
+      "border_filepath": "data/layouts/IceCavePrefabs_Room8/border.bin",
+      "blockdata_filepath": "data/layouts/IceCavePrefabs_Room8/map.bin"
+    },
+    {
+      "id": "LAYOUT_ICE_CAVE_PREFABS_ROOM9",
+      "name": "IceCavePrefabs_Room9_Layout",
+      "width": 10,
+      "height": 10,
+      "primary_tileset": "gTileset_General",
+      "secondary_tileset": "gTileset_IceCave",
+      "border_filepath": "data/layouts/IceCavePrefabs_Room9/border.bin",
+      "blockdata_filepath": "data/layouts/IceCavePrefabs_Room9/map.bin"
+    },
+    {
+      "id": "LAYOUT_ICE_CAVE_PREFABS_ROOM10",
+      "name": "IceCavePrefabs_Room10_Layout",
+      "width": 10,
+      "height": 10,
+      "primary_tileset": "gTileset_General",
+      "secondary_tileset": "gTileset_IceCave",
+      "border_filepath": "data/layouts/IceCavePrefabs_Room10/border.bin",
+      "blockdata_filepath": "data/layouts/IceCavePrefabs_Room10/map.bin"
+    },
+    {
+      "id": "LAYOUT_ICE_CAVE_PREFABS_ROOM11",
+      "name": "IceCavePrefabs_Room11_Layout",
+      "width": 10,
+      "height": 10,
+      "primary_tileset": "gTileset_General",
+      "secondary_tileset": "gTileset_IceCave",
+      "border_filepath": "data/layouts/IceCavePrefabs_Room11/border.bin",
+      "blockdata_filepath": "data/layouts/IceCavePrefabs_Room11/map.bin"
+    },
+    {
+      "id": "LAYOUT_ICE_CAVE_PREFABS_ROOM12",
+      "name": "IceCavePrefabs_Room12_Layout",
+      "width": 10,
+      "height": 10,
+      "primary_tileset": "gTileset_General",
+      "secondary_tileset": "gTileset_IceCave",
+      "border_filepath": "data/layouts/IceCavePrefabs_Room12/border.bin",
+      "blockdata_filepath": "data/layouts/IceCavePrefabs_Room12/map.bin"
+    },
+    {
+      "id": "LAYOUT_ICE_CAVE_PREFABS_ROOM13",
+      "name": "IceCavePrefabs_Room13_Layout",
+      "width": 10,
+      "height": 10,
+      "primary_tileset": "gTileset_General",
+      "secondary_tileset": "gTileset_IceCave",
+      "border_filepath": "data/layouts/IceCavePrefabs_Room13/border.bin",
+      "blockdata_filepath": "data/layouts/IceCavePrefabs_Room13/map.bin"
+    },
+    {
+      "id": "LAYOUT_ICE_CAVE_PREFABS_ROOM14",
+      "name": "IceCavePrefabs_Room14_Layout",
+      "width": 10,
+      "height": 10,
+      "primary_tileset": "gTileset_General",
+      "secondary_tileset": "gTileset_IceCave",
+      "border_filepath": "data/layouts/IceCavePrefabs_Room14/border.bin",
+      "blockdata_filepath": "data/layouts/IceCavePrefabs_Room14/map.bin"
+    },
+    {
+      "id": "LAYOUT_ICE_CAVE_PREFABS_ROOM15",
+      "name": "IceCavePrefabs_Room15_Layout",
+      "width": 10,
+      "height": 10,
+      "primary_tileset": "gTileset_General",
+      "secondary_tileset": "gTileset_IceCave",
+      "border_filepath": "data/layouts/IceCavePrefabs_Room15/border.bin",
+      "blockdata_filepath": "data/layouts/IceCavePrefabs_Room15/map.bin"
+    },
+    {
+      "id": "LAYOUT_ICE_CAVE_PREFABS_ROOM16",
+      "name": "IceCavePrefabs_Room16_Layout",
+      "width": 10,
+      "height": 10,
+      "primary_tileset": "gTileset_General",
+      "secondary_tileset": "gTileset_IceCave",
+      "border_filepath": "data/layouts/IceCavePrefabs_Room16/border.bin",
+      "blockdata_filepath": "data/layouts/IceCavePrefabs_Room16/map.bin"
+    },
+    {
+      "id": "LAYOUT_ICE_CAVE_PREFABS_ROOM17",
+      "name": "IceCavePrefabs_Room17_Layout",
+      "width": 10,
+      "height": 10,
+      "primary_tileset": "gTileset_General",
+      "secondary_tileset": "gTileset_IceCave",
+      "border_filepath": "data/layouts/IceCavePrefabs_Room17/border.bin",
+      "blockdata_filepath": "data/layouts/IceCavePrefabs_Room17/map.bin"
+    },
+    {
+      "id": "LAYOUT_ICE_CAVE_PREFABS_ROOM18",
+      "name": "IceCavePrefabs_Room18_Layout",
+      "width": 10,
+      "height": 10,
+      "primary_tileset": "gTileset_General",
+      "secondary_tileset": "gTileset_IceCave",
+      "border_filepath": "data/layouts/IceCavePrefabs_Room18/border.bin",
+      "blockdata_filepath": "data/layouts/IceCavePrefabs_Room18/map.bin"
+    },
+    {
+      "id": "LAYOUT_ICE_CAVE_PREFABS_ROOM19",
+      "name": "IceCavePrefabs_Room19_Layout",
+      "width": 10,
+      "height": 10,
+      "primary_tileset": "gTileset_General",
+      "secondary_tileset": "gTileset_IceCave",
+      "border_filepath": "data/layouts/IceCavePrefabs_Room19/border.bin",
+      "blockdata_filepath": "data/layouts/IceCavePrefabs_Room19/map.bin"
+    },
+    {
+      "id": "LAYOUT_ICE_CAVE_PREFABS_ROOM20",
+      "name": "IceCavePrefabs_Room20_Layout",
+      "width": 10,
+      "height": 10,
+      "primary_tileset": "gTileset_General",
+      "secondary_tileset": "gTileset_IceCave",
+      "border_filepath": "data/layouts/IceCavePrefabs_Room20/border.bin",
+      "blockdata_filepath": "data/layouts/IceCavePrefabs_Room20/map.bin"
     }
   ]
 }

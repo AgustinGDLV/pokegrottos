@@ -1088,3 +1088,45 @@ Common_EventScript_LegendaryFlewAway::
 	.include "data/maps/CavePrefabs_TreasureRoom/scripts.inc"
 
 	.include "data/maps/CavePrefabs_ShopRoom/scripts.inc"
+
+	.include "data/maps/IceCavePrefabs_Base/scripts.inc"
+
+	.include "data/maps/IceCavePrefabs_Room1/scripts.inc"
+
+	.include "data/maps/IceCavePrefabs_Room2/scripts.inc"
+
+	.include "data/maps/IceCavePrefabs_Room3/scripts.inc"
+
+	.include "data/maps/IceCavePrefabs_Room4/scripts.inc"
+
+	.include "data/maps/IceCavePrefabs_Room5/scripts.inc"
+
+	.include "data/maps/IceCavePrefabs_Room6/scripts.inc"
+
+	.include "data/maps/IceCavePrefabs_Room7/scripts.inc"
+
+	.include "data/maps/IceCavePrefabs_Room8/scripts.inc"
+
+	.include "data/maps/IceCavePrefabs_Room9/scripts.inc"
+
+	.include "data/maps/IceCavePrefabs_Room10/scripts.inc"
+
+	.include "data/maps/IceCavePrefabs_Room11/scripts.inc"
+
+	.include "data/maps/IceCavePrefabs_Room12/scripts.inc"
+
+	.include "data/maps/IceCavePrefabs_Room13/scripts.inc"
+
+	.include "data/maps/IceCavePrefabs_Room14/scripts.inc"
+
+	.include "data/maps/IceCavePrefabs_Room15/scripts.inc"
+
+	.include "data/maps/IceCavePrefabs_Room16/scripts.inc"
+
+	.include "data/maps/IceCavePrefabs_Room17/scripts.inc"
+
+	.include "data/maps/IceCavePrefabs_Room18/scripts.inc"
+
+	.include "data/maps/IceCavePrefabs_Room19/scripts.inc"
+
+	.include "data/maps/IceCavePrefabs_Room20/scripts.inc"

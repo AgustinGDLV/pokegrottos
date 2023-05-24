@@ -94,7 +94,8 @@ static u8 GetMaxRooms(void)
 // TODO: Take into account depth.
 static u32 GetPrefabType(void)
 {
-    return RandomF() % PREFAB_TYPES_COUNT;
+    // return RandomF() % PREFAB_TYPES_COUNT;
+    return PREFABS_ICE_CAVE;
 }
 
 // Creates rooms and endroom stack for an empty floorplan.

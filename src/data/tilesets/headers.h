@@ -273,14 +273,14 @@ const struct Tileset gTileset_PokemonFanClub =
     .callback = NULL,
 };
 
-const struct Tileset gTileset_Unused1 =
+const struct Tileset gTileset_IceCave =
 {
     .isCompressed = TRUE,
     .isSecondary = TRUE,
-    .tiles = gTilesetTiles_Unused1,
-    .palettes = gTilesetPalettes_Unused1,
-    .metatiles = gMetatiles_Unused1,
-    .metatileAttributes = gMetatileAttributes_Unused1,
+    .tiles = gTilesetTiles_IceCave,
+    .palettes = gTilesetPalettes_IceCave,
+    .metatiles = gMetatiles_IceCave,
+    .metatileAttributes = gMetatileAttributes_IceCave,
     .callback = NULL,
 };
 

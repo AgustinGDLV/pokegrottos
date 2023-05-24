@@ -35,7 +35,11 @@
     "gMapGroup_IndoorRoute119",
     "gMapGroup_IndoorRoute124",
     "gMapGroup_ForestPrefabs",
-    "gMapGroup_CavePrefabs"
+    "gMapGroup_CavePrefabs",
+    "gMapGroup_MountainPrefabs",
+    "gMapGroup_DesertPrefabs",
+    "gMapGroup_IceCavePrefabs",
+    "gMapGroup_PowerPlantPrefabs"
   ],
   "gMapGroup_TownsAndRoutes": [
     "PetalburgCity",
@@ -638,5 +642,37 @@
     "CavePrefabs_BossRoom",
     "CavePrefabs_TreasureRoom",
     "CavePrefabs_ShopRoom"
+  ],
+  "gMapGroup_MountainPrefabs": [
+
+  ],
+  "gMapGroup_DesertPrefabs": [
+
+  ],
+  "gMapGroup_IceCavePrefabs": [
+    "IceCavePrefabs_Base",
+    "IceCavePrefabs_Room1",
+    "IceCavePrefabs_Room2",
+    "IceCavePrefabs_Room3",
+    "IceCavePrefabs_Room4",
+    "IceCavePrefabs_Room5",
+    "IceCavePrefabs_Room6",
+    "IceCavePrefabs_Room7",
+    "IceCavePrefabs_Room8",
+    "IceCavePrefabs_Room9",
+    "IceCavePrefabs_Room10",
+    "IceCavePrefabs_Room11",
+    "IceCavePrefabs_Room12",
+    "IceCavePrefabs_Room13",
+    "IceCavePrefabs_Room14",
+    "IceCavePrefabs_Room15",
+    "IceCavePrefabs_Room16",
+    "IceCavePrefabs_Room17",
+    "IceCavePrefabs_Room18",
+    "IceCavePrefabs_Room19",
+    "IceCavePrefabs_Room20"
+  ],
+  "gMapGroup_PowerPlantPrefabs": [
+
   ]
 }

@@ -218,6 +218,15 @@ static const struct ItemPoolTable sCaveItemPools[ITEM_TIER_COUNT] =
     [ITEM_TIER_5] = {},
 };
 
+// Ice Cave Template Pools
+static const u8 sIceCaveNormalRooms[] =
+{
+    MAP_NUM(ICE_CAVE_PREFABS_ROOM1),
+    MAP_NUM(ICE_CAVE_PREFABS_ROOM2),
+    MAP_NUM(ICE_CAVE_PREFABS_ROOM3),
+    MAP_NUM(ICE_CAVE_PREFABS_ROOM4),
+};
+
 const struct PrefabRules gPrefabRules[PREFAB_TYPES_COUNT] = 
 {
     [PREFABS_CAVE] =
@@ -264,6 +273,29 @@ const struct PrefabRules gPrefabRules[PREFAB_TYPES_COUNT] =
         .itemPools = sCaveItemPools,
         .encounterPool = {
             {SPECIES_GASTLY, 100},
+        }
+    },
+    [PREFABS_ICE_CAVE] =
+    {
+        .mapGroup = MAP_GROUP(ICE_CAVE_PREFABS_BASE),
+        .bgm = MUS_HG_ICE_PATH,
+        .lighting = 12,
+        .offsets = {
+            [DIR_NORTH] = {-1, -1},
+            [DIR_SOUTH] = {-1, 1},
+            [DIR_EAST] = {-1, 0},
+            [DIR_WEST] = {-1, 0},
+        },
+        .numNormalRooms = ARRAY_COUNT(sIceCaveNormalRooms),
+        .normalRoomIds = sIceCaveNormalRooms,
+        .specialRoomIds = {
+            [BOSS_ROOM] = MAP_NUM(CAVE_PREFABS_BOSS_ROOM),
+            [TREASURE_ROOM] = MAP_NUM(CAVE_PREFABS_TREASURE_ROOM),
+            [SHOP_ROOM] = MAP_NUM(CAVE_PREFABS_SHOP_ROOM),
+        },
+        .itemPools = sCaveItemPools,
+        .encounterPool = {
+            {SPECIES_SPHEAL, 100},
         }
     },
 };

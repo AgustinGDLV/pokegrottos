@@ -607,6 +607,35 @@
 #define MAP_CAVE_PREFABS_TREASURE_ROOM (8 | (35 << 8))
 #define MAP_CAVE_PREFABS_SHOP_ROOM     (9 | (35 << 8))
 
-#define MAP_GROUPS_COUNT 36
+// gMapGroup_MountainPrefabs
+
+// gMapGroup_DesertPrefabs
+
+// gMapGroup_IceCavePrefabs
+#define MAP_ICE_CAVE_PREFABS_BASE   (0 | (38 << 8))
+#define MAP_ICE_CAVE_PREFABS_ROOM1  (1 | (38 << 8))
+#define MAP_ICE_CAVE_PREFABS_ROOM2  (2 | (38 << 8))
+#define MAP_ICE_CAVE_PREFABS_ROOM3  (3 | (38 << 8))
+#define MAP_ICE_CAVE_PREFABS_ROOM4  (4 | (38 << 8))
+#define MAP_ICE_CAVE_PREFABS_ROOM5  (5 | (38 << 8))
+#define MAP_ICE_CAVE_PREFABS_ROOM6  (6 | (38 << 8))
+#define MAP_ICE_CAVE_PREFABS_ROOM7  (7 | (38 << 8))
+#define MAP_ICE_CAVE_PREFABS_ROOM8  (8 | (38 << 8))
+#define MAP_ICE_CAVE_PREFABS_ROOM9  (9 | (38 << 8))
+#define MAP_ICE_CAVE_PREFABS_ROOM10 (10 | (38 << 8))
+#define MAP_ICE_CAVE_PREFABS_ROOM11 (11 | (38 << 8))
+#define MAP_ICE_CAVE_PREFABS_ROOM12 (12 | (38 << 8))
+#define MAP_ICE_CAVE_PREFABS_ROOM13 (13 | (38 << 8))
+#define MAP_ICE_CAVE_PREFABS_ROOM14 (14 | (38 << 8))
+#define MAP_ICE_CAVE_PREFABS_ROOM15 (15 | (38 << 8))
+#define MAP_ICE_CAVE_PREFABS_ROOM16 (16 | (38 << 8))
+#define MAP_ICE_CAVE_PREFABS_ROOM17 (17 | (38 << 8))
+#define MAP_ICE_CAVE_PREFABS_ROOM18 (18 | (38 << 8))
+#define MAP_ICE_CAVE_PREFABS_ROOM19 (19 | (38 << 8))
+#define MAP_ICE_CAVE_PREFABS_ROOM20 (20 | (38 << 8))
+
+// gMapGroup_PowerPlantPrefabs
+
+#define MAP_GROUPS_COUNT 40
 
 #endif // GUARD_CONSTANTS_MAP_GROUPS_H
