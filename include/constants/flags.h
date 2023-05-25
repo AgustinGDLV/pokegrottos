@@ -1220,7 +1220,7 @@
 // Prefab Event Flags
 
 #define PREFAB_EVENT_FLAGS_START    FLAG_FLOOR_ENCOUNTER_1
-#define PREFAB_EVENT_FLAGS_END      FLAG_FLOOR_LOOT_10
+#define PREFAB_EVENT_FLAGS_END      FLAG_FLOOR_LOOT_22
 
 #define FLAG_FLOOR_ENCOUNTER_1                                      0x493
 #define FLAG_FLOOR_ENCOUNTER_2                                      0x494
@@ -1243,23 +1243,23 @@
 #define FLAG_FLOOR_LOOT_3                                           0x4A5
 #define FLAG_FLOOR_LOOT_4                                           0x4A6
 #define FLAG_FLOOR_LOOT_5                                           0x4A7
-#define FLAG_FLOOR_LOOT_7                                           0x4A8
-#define FLAG_FLOOR_LOOT_8                                           0x4A9
-#define FLAG_FLOOR_LOOT_9                                           0x4AA
-#define FLAG_FLOOR_LOOT_10                                          0x4AB
-#define FLAG_UNUSED_0x4AC                                           0x4AC // Unused Flag
-#define FLAG_UNUSED_0x4AD                                           0x4AD // Unused Flag
-#define FLAG_UNUSED_0x4AE                                           0x4AE // Unused Flag
-#define FLAG_UNUSED_0x4AF                                           0x4AF // Unused Flag
-#define FLAG_UNUSED_0x4B0                                           0x4B0 // Unused Flag
-#define FLAG_UNUSED_0x4B1                                           0x4B1 // Unused Flag
-#define FLAG_UNUSED_0x4B2                                           0x4B2 // Unused Flag
-#define FLAG_UNUSED_0x4B3                                           0x4B3 // Unused Flag
-#define FLAG_UNUSED_0x4B4                                           0x4B4 // Unused Flag
-#define FLAG_UNUSED_0x4B5                                           0x4B5 // Unused Flag
-#define FLAG_UNUSED_0x4B6                                           0x4B6 // Unused Flag
-#define FLAG_UNUSED_0x4B7                                           0x4B7 // Unused Flag
-#define FLAG_UNUSED_0x4B8                                           0x4B8 // Unused Flag
+#define FLAG_FLOOR_LOOT_6                                           0x4A8
+#define FLAG_FLOOR_LOOT_7                                           0x4A9
+#define FLAG_FLOOR_LOOT_8                                           0x4AA
+#define FLAG_FLOOR_LOOT_9                                           0x4AB
+#define FLAG_FLOOR_LOOT_10                                          0x4AC // Unused Flag
+#define FLAG_FLOOR_LOOT_11                                          0x4AD // Unused Flag
+#define FLAG_FLOOR_LOOT_12                                          0x4AE // Unused Flag
+#define FLAG_FLOOR_LOOT_13                                          0x4AF // Unused Flag
+#define FLAG_FLOOR_LOOT_14                                          0x4B0 // Unused Flag
+#define FLAG_FLOOR_LOOT_15                                          0x4B1 // Unused Flag
+#define FLAG_FLOOR_LOOT_16                                          0x4B2 // Unused Flag
+#define FLAG_FLOOR_LOOT_17                                          0x4B3 // Unused Flag
+#define FLAG_FLOOR_LOOT_18                                          0x4B4 // Unused Flag
+#define FLAG_FLOOR_LOOT_19                                          0x4B5 // Unused Flag
+#define FLAG_FLOOR_LOOT_20                                          0x4B6 // Unused Flag
+#define FLAG_FLOOR_LOOT_21                                          0x4B7 // Unused Flag
+#define FLAG_FLOOR_LOOT_22                                          0x4B8 // Unused Flag
 #define FLAG_UNUSED_0x4B9                                           0x4B9 // Unused Flag
 #define FLAG_UNUSED_0x4BA                                           0x4BA // Unused Flag
 #define FLAG_UNUSED_0x4BB                                           0x4BB // Unused Flag

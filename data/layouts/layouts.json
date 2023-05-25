@@ -4584,8 +4584,8 @@
     {
       "id": "LAYOUT_ICE_CAVE_PREFABS_ROOM5",
       "name": "IceCavePrefabs_Room5_Layout",
-      "width": 10,
-      "height": 10,
+      "width": 20,
+      "height": 20,
       "primary_tileset": "gTileset_General",
       "secondary_tileset": "gTileset_IceCave",
       "border_filepath": "data/layouts/IceCavePrefabs_Room5/border.bin",
@@ -4594,8 +4594,8 @@
     {
       "id": "LAYOUT_ICE_CAVE_PREFABS_ROOM6",
       "name": "IceCavePrefabs_Room6_Layout",
-      "width": 10,
-      "height": 10,
+      "width": 30,
+      "height": 15,
       "primary_tileset": "gTileset_General",
       "secondary_tileset": "gTileset_IceCave",
       "border_filepath": "data/layouts/IceCavePrefabs_Room6/border.bin",

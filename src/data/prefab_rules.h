@@ -225,6 +225,8 @@ static const u8 sIceCaveNormalRooms[] =
     MAP_NUM(ICE_CAVE_PREFABS_ROOM2),
     MAP_NUM(ICE_CAVE_PREFABS_ROOM3),
     MAP_NUM(ICE_CAVE_PREFABS_ROOM4),
+    MAP_NUM(ICE_CAVE_PREFABS_ROOM5),
+    MAP_NUM(ICE_CAVE_PREFABS_ROOM6),
 };
 
 const struct PrefabRules gPrefabRules[PREFAB_TYPES_COUNT] = 
