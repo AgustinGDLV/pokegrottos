@@ -6568,13 +6568,14 @@ BattleScript_LocalBattleWonReward::
 	printstring STRINGID_PLAYERGOTMONEY
 	waitmessage B_WAIT_TIME_LONG
 BattleScript_PayDayMoneyAndPickUpItems::
+	playse SE_BALL_BOUNCE_1
 	givepaydaymoney
 	callnative BS_GiveDroppedItems
 	pickup
 	end2
 
 BattleScript_ItemDropped::
-	playse SE_BALL_BOUNCE_1
+	playse MUS_OBTAIN_ITEM
 	printfromtable gItemDroppedStringIds
 	return
 
