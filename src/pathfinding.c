@@ -231,7 +231,7 @@ static void GetChild(struct Node parent, int move, struct Node *child)
         child->path[i] = parent.path[i];
     }
     child->path[parent.cost] = move;
-    child->currentElevation = GetElevation(parent.currentElevation, parent.coords.x, parent.coords.y);
+    child->currentElevation = GetElevation(parent.currentElevation, child->coords.x, child->coords.y);
 }
 
 static void GetSolution(struct Node *node)
@@ -278,7 +278,7 @@ static bool32 GetPathToCoord(struct ObjectEvent *objectEvent, s32 x, s32 y, s32 
     startNode.coords.y = objectEvent->currentCoords.y - MAP_OFFSET;
     startNode.state = startNode.coords.x + MapWidth * startNode.coords.y;
     startNode.cost = 0;
-    startNode.currentElevation = GetElevation(objectEvent->currentElevation,startNode.coords.x,startNode.coords.y);
+    startNode.currentElevation = GetElevation(objectEvent->currentElevation, startNode.coords.x, startNode.coords.y);
 
     InsertIntoPriorityQueue(&frontier, startNode, CalcHeuristic(&child, x, y));
 
@@ -297,7 +297,7 @@ static bool32 GetPathToCoord(struct ObjectEvent *objectEvent, s32 x, s32 y, s32 
         }
         InsertIntoSet(&explored, node.state);
 
-        if(node.cost > 10)
+        if(node.cost > 15)
             continue;
 
         for(i = 0; i < MOVES_COUNT; ++i)
@@ -326,7 +326,6 @@ static bool32 GetPathToCoord(struct ObjectEvent *objectEvent, s32 x, s32 y, s32 
             }
         }
     }
-    DebugPrintf("No path found :(");
     return FALSE;
 }
 
@@ -345,7 +344,6 @@ u8 GetFirstMoveTowardsPlayer(struct ObjectEvent *objectEvent)
             retVal = MOVEMENT_ACTION_WALK_NORMAL_DOWN + Random() % 3;
         } while (GetCollisionInDirection(objectEvent, retVal - MOVEMENT_ACTION_WALK_NORMAL_DOWN + 1));
     }
-    DebugPrintf("Pathfinding!");
     return retVal;
 }
 
