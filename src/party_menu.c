@@ -7065,5 +7065,6 @@ void ItemUseCB_SuperEvolutionStone(u8 taskId, TaskFunc task)
         u16 targetSpecies = gEvolutionTable[species][0].targetSpecies;
         RemoveBagItem(gSpecialVar_ItemId, 1);
         BeginEvolutionScene(mon, targetSpecies, FALSE, gPartyMenu.slotId);
+        FreePartyPointers();
     }
 }
