@@ -1,5 +1,6 @@
 #include "map_gen.h"
 #include "item_gen.h"
+#include "battle.h"
 
 // This file contains all the data for shop, loot, Pokemon, and room pools
 // for each template map group. It also contains offsets for exit covers.
@@ -235,6 +236,7 @@ const struct PrefabRules gPrefabRules[PREFAB_TYPES_COUNT] =
     {
         .mapGroup = MAP_GROUP(CAVE_PREFABS_BASES),
         .bgm = MUS_RG_SEVII_CAVE,
+        .battleTerrain = BATTLE_TERRAIN_CAVE,
         .lighting = 12,
         .offsets = {
             [DIR_NORTH] = {-1, -1},
@@ -258,6 +260,7 @@ const struct PrefabRules gPrefabRules[PREFAB_TYPES_COUNT] =
     {
         .mapGroup = MAP_GROUP(CAVE_PREFABS_BASES),
         .bgm = MUS_DQ3_DARK_WORLD,
+        .battleTerrain = BATTLE_TERRAIN_CAVE,
         .lighting = 0,
         .offsets = {
             [DIR_NORTH] = {-1, -1},
@@ -281,6 +284,7 @@ const struct PrefabRules gPrefabRules[PREFAB_TYPES_COUNT] =
     {
         .mapGroup = MAP_GROUP(ICE_CAVE_PREFABS_BASE),
         .bgm = MUS_HG_ICE_PATH,
+        .battleTerrain = BATTLE_TERRAIN_CAVE,
         .lighting = 12,
         .offsets = {
             [DIR_NORTH] = {-1, -1},

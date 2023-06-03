@@ -51,6 +51,7 @@ struct Floorplan {
 struct PrefabRules {
     u8 mapGroup;
     u16 bgm;
+    u8 battleTerrain;
     u8 lighting; // stored as hours
     s8 offsets[5][2]; // (x, y) entrance cover offsets for each direction
     u8 numNormalRooms;

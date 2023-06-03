@@ -7,6 +7,7 @@
 #include "safari_zone.h"
 #include "script.h"
 #include "event_data.h"
+#include "map_gen.h"
 #include "metatile_behavior.h"
 #include "field_player_avatar.h"
 #include "fieldmap.h"
@@ -663,6 +664,9 @@ u8 BattleSetup_GetTerrainId(void)
         return BATTLE_TERRAIN_LONG_GRASS;
     if (MetatileBehavior_IsSandOrDeepSand(tileBehavior))
         return BATTLE_TERRAIN_SAND;
+
+    if (IsPlayerInFloorMap())
+        return GetPrefabRules(gFloorplan.prefabType)->battleTerrain;
 
     switch (gMapHeader.mapType)
     {
