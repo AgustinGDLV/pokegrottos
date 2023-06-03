@@ -1617,10 +1617,7 @@ u8 LoadSpritePalette(const struct SpritePalette *palette)
     else
     {
         sSpritePaletteTags[index] = palette->tag;
-        for (i = 0; i < 16; i++) {
-          debugPtr[i] = sSpritePaletteTags[i];
-        }
-        DoLoadSpritePalette(palette->data, index * 16);
+        DoLoadSpritePalette(palette->data, PLTT_ID(index));
         return index;
     }
 }
