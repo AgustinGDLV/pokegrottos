@@ -44,7 +44,7 @@
   "warp_events": [
     {
       "x": 5,
-      "y": 8,
+      "y": 7,
       "elevation": 0,
       "dest_map": "MAP_ICE_CAVE_PREFABS_ROOM3",
       "dest_warp_id": "0"
@@ -58,7 +58,7 @@
     },
     {
       "x": 4,
-      "y": 10,
+      "y": 9,
       "elevation": 0,
       "dest_map": "MAP_ICE_CAVE_PREFABS_ROOM3",
       "dest_warp_id": "0"
@@ -71,7 +71,7 @@
       "dest_warp_id": "0"
     },
     {
-      "x": 1,
+      "x": 2,
       "y": 7,
       "elevation": 0,
       "dest_map": "MAP_ICE_CAVE_PREFABS_ROOM3",
