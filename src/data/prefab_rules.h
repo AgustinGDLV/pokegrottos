@@ -295,9 +295,9 @@ const struct PrefabRules gPrefabRules[PREFAB_TYPES_COUNT] =
         .numNormalRooms = ARRAY_COUNT(sIceCaveNormalRooms),
         .normalRoomIds = sIceCaveNormalRooms,
         .specialRoomIds = {
-            [BOSS_ROOM] = MAP_NUM(CAVE_PREFABS_BOSS_ROOM),
-            [TREASURE_ROOM] = MAP_NUM(CAVE_PREFABS_TREASURE_ROOM),
-            [SHOP_ROOM] = MAP_NUM(CAVE_PREFABS_SHOP_ROOM),
+            [BOSS_ROOM] = MAP_NUM(ICE_CAVE_PREFABS_BOSS_ROOM),
+            [TREASURE_ROOM] = MAP_NUM(ICE_CAVE_PREFABS_TREASURE_ROOM1),
+            [SHOP_ROOM] = MAP_NUM(ICE_CAVE_PREFABS_SHOP_ROOM),
         },
         .itemPools = sCaveItemPools,
         .encounterPool = {

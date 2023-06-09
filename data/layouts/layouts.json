@@ -4545,7 +4545,7 @@
       "id": "LAYOUT_ICE_CAVE_PREFABS_ROOM1",
       "name": "IceCavePrefabs_Room1_Layout",
       "width": 11,
-      "height": 10,
+      "height": 9,
       "primary_tileset": "gTileset_General",
       "secondary_tileset": "gTileset_IceCave",
       "border_filepath": "data/layouts/IceCavePrefabs_Room1/border.bin",
@@ -4740,6 +4740,36 @@
       "secondary_tileset": "gTileset_IceCave",
       "border_filepath": "data/layouts/IceCavePrefabs_Room20/border.bin",
       "blockdata_filepath": "data/layouts/IceCavePrefabs_Room20/map.bin"
+    },
+    {
+      "id": "LAYOUT_ICE_CAVE_PREFABS_SHOP_ROOM",
+      "name": "IceCavePrefabs_ShopRoom_Layout",
+      "width": 11,
+      "height": 9,
+      "primary_tileset": "gTileset_General",
+      "secondary_tileset": "gTileset_IceCave",
+      "border_filepath": "data/layouts/IceCavePrefabs_ShopRoom/border.bin",
+      "blockdata_filepath": "data/layouts/IceCavePrefabs_ShopRoom/map.bin"
+    },
+    {
+      "id": "LAYOUT_ICE_CAVE_PREFABS_TREASURE_ROOM1",
+      "name": "IceCavePrefabs_TreasureRoom1_Layout",
+      "width": 11,
+      "height": 9,
+      "primary_tileset": "gTileset_General",
+      "secondary_tileset": "gTileset_IceCave",
+      "border_filepath": "data/layouts/IceCavePrefabs_TreasureRoom1/border.bin",
+      "blockdata_filepath": "data/layouts/IceCavePrefabs_TreasureRoom1/map.bin"
+    },
+    {
+      "id": "LAYOUT_ICE_CAVE_PREFABS_BOSS_ROOM",
+      "name": "IceCavePrefabs_BossRoom_Layout",
+      "width": 11,
+      "height": 9,
+      "primary_tileset": "gTileset_General",
+      "secondary_tileset": "gTileset_IceCave",
+      "border_filepath": "data/layouts/IceCavePrefabs_BossRoom/border.bin",
+      "blockdata_filepath": "data/layouts/IceCavePrefabs_BossRoom/map.bin"
     }
   ]
 }

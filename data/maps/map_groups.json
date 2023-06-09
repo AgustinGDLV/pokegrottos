@@ -670,7 +670,10 @@
     "IceCavePrefabs_Room17",
     "IceCavePrefabs_Room18",
     "IceCavePrefabs_Room19",
-    "IceCavePrefabs_Room20"
+    "IceCavePrefabs_Room20",
+    "IceCavePrefabs_ShopRoom",
+    "IceCavePrefabs_TreasureRoom1",
+    "IceCavePrefabs_BossRoom"
   ],
   "gMapGroup_PowerPlantPrefabs": [
 

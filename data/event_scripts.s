@@ -1130,3 +1130,9 @@ Common_EventScript_LegendaryFlewAway::
 	.include "data/maps/IceCavePrefabs_Room19/scripts.inc"
 
 	.include "data/maps/IceCavePrefabs_Room20/scripts.inc"
+
+	.include "data/maps/IceCavePrefabs_ShopRoom/scripts.inc"
+
+	.include "data/maps/IceCavePrefabs_TreasureRoom1/scripts.inc"
+
+	.include "data/maps/IceCavePrefabs_BossRoom/scripts.inc"
