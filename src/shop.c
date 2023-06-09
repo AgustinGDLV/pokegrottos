@@ -1339,14 +1339,14 @@ static void BuyMenuRemoveListEntry(u8 taskId, u32 row, struct ListMenu *list)
 {
     u32 i;
     // Shift the floorplan shop list and list menu arrays.
-    for (i = row; i < sMartInfo.itemCount - 1; ++i)
+    for (i = row + sShopData->scrollOffset; i < sMartInfo.itemCount - 1; ++i)
     {
-        gSaveBlock1Ptr->shopItems[i + sShopData->scrollOffset] = gSaveBlock1Ptr->shopItems[i + sShopData->scrollOffset + 1];
-        memcpy(&sListMenuItems[i], &sListMenuItems[i + 1], sizeof(sListMenuItems[i]));
+        gSaveBlock1Ptr->shopItems[i] = gSaveBlock1Ptr->shopItems[i + 1];
+        sListMenuItems[i] = sListMenuItems[i + 1];
     }
     // Zero the last element.
-    gSaveBlock1Ptr->shopItems[i] = ITEM_NONE;
-    memcpy(&sListMenuItems[i], &sListMenuItems[i + 1], sizeof(sListMenuItems[i]));
+    gSaveBlock1Ptr->shopItems[i + sShopData->scrollOffset] = ITEM_NONE;
+    sListMenuItems[i] = sListMenuItems[i + 1];
     --sMartInfo.itemCount;
 
     // Update list menu template.
@@ -1356,6 +1356,8 @@ static void BuyMenuRemoveListEntry(u8 taskId, u32 row, struct ListMenu *list)
     else
         list->template.maxShowed = list->template.totalItems;
     sShopData->itemsShowed = list->template.maxShowed;
+    --list->scrollOffset;
+    --sShopData->scrollOffset;
 }
 
 
@@ -1366,7 +1368,7 @@ static void Task_ReturnToItemListAfterKecleonShopPurchase(u8 taskId)
         struct ListMenu *list = (void *) gTasks[gTasks[taskId].tListTaskId].data;
         PlaySE(SE_SELECT);
         BuyMenuRemoveListEntry(taskId, sShopData->selectedRow, list);
-        BuyMenuPrintItemDescriptionAndShowItemIcon(sListMenuItems[sShopData->selectedRow].id, FALSE, list);
+        BuyMenuPrintItemDescriptionAndShowItemIcon(sListMenuItems[sShopData->selectedRow + sShopData->scrollOffset].id, FALSE, list);
         BuyMenuReturnToItemList(taskId);
     }
 }

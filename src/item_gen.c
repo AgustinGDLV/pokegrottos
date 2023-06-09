@@ -57,6 +57,24 @@ const struct WeightedElement* GetItemPool(enum ItemType type, enum ItemTier tier
     return pool;
 }
 
+// Shuffle an array in place.
+static void ShuffleArrayU16(u16* array, u32 size)
+{
+    u32 i, j, t;
+    // Safety check.
+    if (size == 0)
+        return;
+
+    // Code from https://stackoverflow.com/questions/6127503/shuffle-array-in-c.
+    for (i = 0; i < size - 1; ++i) 
+    {
+        j = i + RandomF() / (UINT16_MAX / (size - i) + 1);
+        t = array[j];
+        array[j] = array[i];
+        array[i] = t;
+    }
+}
+
 // Generates the list of items to sell in a floor.
 void GenerateKecleonShopList(void)
 {
@@ -94,6 +112,9 @@ void GenerateKecleonShopList(void)
     gSaveBlock1Ptr->shopItems[11] = ChooseElementFromPool(GetItemPool(TYPE_MEDICINE, tier));
     gSaveBlock1Ptr->shopItems[12] = ChooseElementFromPool(GetItemPool(TYPE_MEDICINE, tier));
     gSaveBlock1Ptr->shopItems[13] = ChooseElementFromPool(GetItemPool(TYPE_MEDICINE, tier));
+
+    // Shuffle array.
+    ShuffleArrayU16(gSaveBlock1Ptr->shopItems, KECLEON_SHOP_ITEM_COUNT);
 }
 
 // Chooses an item for an item ball. This is called within a script.
