@@ -717,7 +717,7 @@ static void Task_MainMenuCheckSaveFile(u8 taskId)
                 tItemCount = 2;
                 break;
             case HAS_SAVED_GAME_NO_RUN:
-                sCurrItemAndOptionMenuCheck = 3;
+                tItemCount = 3;
                 break;
             case HAS_SAVED_GAME:
                 tItemCount = 4;
@@ -832,9 +832,9 @@ static void Task_DisplayMainMenu(u8 taskId)
                 FillWindowPixelBuffer(6, PIXEL_FILL(0xA));
                 FillWindowPixelBuffer(7, PIXEL_FILL(0xA));
                 FillWindowPixelBuffer(8, PIXEL_FILL(0xA));
-                AddTextPrinterParameterized3(5, FONT_NORMAL, 0, 1, sTextColor_Headers, TEXT_SKIP_DRAW, gText_MainMenuNewRun);
-                AddTextPrinterParameterized3(6, FONT_NORMAL, 0, 1, sTextColor_Headers, TEXT_SKIP_DRAW, gText_MainMenuNewGame);
-                AddTextPrinterParameterized3(7, FONT_NORMAL, 0, 1, sTextColor_Headers, TEXT_SKIP_DRAW, gText_MainMenuOption);
+                AddTextPrinterParameterized3(6, FONT_NORMAL, 0, 1, sTextColor_Headers, TEXT_SKIP_DRAW, gText_MainMenuNewRun);
+                AddTextPrinterParameterized3(7, FONT_NORMAL, 0, 1, sTextColor_Headers, TEXT_SKIP_DRAW, gText_MainMenuNewGame);
+                AddTextPrinterParameterized3(8, FONT_NORMAL, 0, 1, sTextColor_Headers, TEXT_SKIP_DRAW, gText_MainMenuOption);
                 PutWindowTilemap(6);
                 PutWindowTilemap(7);
                 PutWindowTilemap(8);

@@ -1768,7 +1768,14 @@ void CB2_WhiteOut(void)
 {
     u8 state;
 
-    if (++gMain.state >= 120)
+    // Send to main menu on death.
+    if (IsPlayerInFloorMap())
+    {
+        gSaveBlock1Ptr->currentFloor = 0;
+        TrySavingData(SAVE_NORMAL);
+        DoSoftReset();
+    }
+    else if (++gMain.state >= 120)
     {
         FieldClearVBlankHBlankCallbacks();
         StopMapMusic();

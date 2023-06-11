@@ -22,6 +22,7 @@
 #include "link.h"
 #include "load_save.h"
 #include "main.h"
+#include "main_menu.h"
 #include "menu.h"
 #include "new_game.h"
 #include "option_menu.h"
@@ -854,6 +855,7 @@ static bool8 SaveCallback(void)
         ScriptUnfreezeObjectEvents();
         UnlockPlayerFieldControls();
         SoftResetInBattlePyramid();
+        DoSoftReset();
         return TRUE;
     }
 
