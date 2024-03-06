@@ -7,6 +7,7 @@
 // IWRAM common
 rng_value_t gRngValue;
 rng_value_t gRng2Value;
+rng_value_t gRngFValue;
 
 #if HQ_RANDOM == TRUE
 
@@ -75,6 +76,11 @@ u32 Random2_32(void)
     return _SFC32_Next_Stream(&gRng2Value, STREAM2);
 }
 
+u32 RandomF(void)
+{
+    return _SFC32_Next_Stream(&gRngFValue, STREAM1);
+}
+
 void SeedRng(u32 seed)
 {
     struct Sfc32State state;
@@ -88,6 +94,11 @@ void SeedRng(u32 seed)
 void SeedRng2(u32 seed)
 {
     SFC32_Seed(&gRng2Value, seed, STREAM2);
+}
+
+void SeedFloorRng(u32 seed)
+{
+    SFC32_Seed(&gRngFValue, seed, STREAM1);
 }
 
 void AdvanceRandom(void)

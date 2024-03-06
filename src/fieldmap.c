@@ -5,6 +5,8 @@
 #include "fldeff.h"
 #include "fldeff_misc.h"
 #include "frontier_util.h"
+#include "map_gen.h"
+#include "map_stitch.h"
 #include "menu.h"
 #include "mirage_tower.h"
 #include "overworld.h"
@@ -68,6 +70,8 @@ void InitMap(void)
 {
     InitMapLayoutData(&gMapHeader);
     SetOccupiedSecretBaseEntranceMetatiles(gMapHeader.events);
+    if (IsPlayerInFloorMap())
+        CoverInvalidRoomExits();
     RunOnLoadMapScript();
 }
 
@@ -77,6 +81,12 @@ void InitMapFromSavedGame(void)
     InitSecretBaseAppearance(FALSE);
     SetOccupiedSecretBaseEntranceMetatiles(gMapHeader.events);
     LoadSavedMapView();
+    // Generate the floorplan struct on a new save and cover exits properly.
+    if (IsPlayerInFloorMap())
+    {
+        GenerateFloorplan();
+        CoverInvalidRoomExits();
+    }
     RunOnLoadMapScript();
     UpdateTVScreensOnMap(gBackupMapLayout.width, gBackupMapLayout.height);
 }

@@ -53,6 +53,7 @@ static inline u16 LocalRandom(rng_value_t *val)
 
 u32 Random32(void);
 u32 Random2_32(void);
+u32 RandomF(void);
 
 static inline u16 Random(void)
 {
@@ -61,6 +62,7 @@ static inline u16 Random(void)
 
 void SeedRng(u32 seed);
 void SeedRng2(u32 seed);
+void SeedFloorRng(u32 seed);
 
 static inline u16 Random2(void)
 {
