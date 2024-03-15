@@ -25,7 +25,9 @@
 #include "metatile_behavior.h"
 #include "overworld.h"
 #include "palette.h"
+#include "pathfinding.h"
 #include "pokemon.h"
+#include "pokemon_gen.h"
 #include "pokeball.h"
 #include "random.h"
 #include "region_map.h"
@@ -106,7 +108,6 @@ static void MoveCoordsInDirection(u32, s16 *, s16 *, s16, s16);
 static bool8 ObjectEventExecSingleMovementAction(struct ObjectEvent *, struct Sprite *);
 static void SetMovementDelay(struct Sprite *, s16);
 static bool8 WaitForMovementDelay(struct Sprite *);
-static u8 GetCollisionInDirection(struct ObjectEvent *, u8);
 static u32 GetCopyDirection(u8, u32, u32);
 static void TryEnableObjectEventAnim(struct ObjectEvent *, struct Sprite *);
 static void ObjectEventExecHeldMovementAction(struct ObjectEvent *, struct Sprite *);
@@ -319,6 +320,7 @@ static void (*const sMovementTypeCallbacks[])(struct Sprite *) =
     [MOVEMENT_TYPE_WALK_SLOWLY_IN_PLACE_LEFT] = MovementType_WalkSlowlyInPlace,
     [MOVEMENT_TYPE_WALK_SLOWLY_IN_PLACE_RIGHT] = MovementType_WalkSlowlyInPlace,
     [MOVEMENT_TYPE_FOLLOW_PLAYER] = MovementType_FollowPlayer,
+    [MOVEMENT_TYPE_ENCOUNTER_TRACK_PLAYER] = MovementType_EncounterTrackPlayer,
 };
 
 static const bool8 sMovementTypeHasRange[NUM_MOVEMENT_TYPES] = {
@@ -2435,6 +2437,10 @@ void TrySpawnObjectEvents(s16 cameraX, s16 cameraY)
             struct ObjectEventTemplate *template = &gSaveBlock1Ptr->objectEventTemplates[i];
             s16 npcX = template->x + MAP_OFFSET;
             s16 npcY = template->y + MAP_OFFSET;
+
+            // Assign species to random overworld encounters.
+            if (IsPlayerInFloorMap() && template->graphicsId == OBJ_EVENT_GFX_MON_BASE)
+                template->graphicsId = GetOverworldEncounterGraphicsId(template->localId);
 
             if (top <= npcY && bottom >= npcY && left <= npcX && right >= npcX
                 && !FlagGet(template->flagId))
@@ -5702,6 +5708,149 @@ bool8 MovementType_Invisible_Step2(struct ObjectEvent *objectEvent, struct Sprit
     return FALSE;
 }
 
+movement_type_def(MovementType_EncounterTrackPlayer, gMovementTypeFuncs_EncounterTrackPlayer)
+
+bool8 MovementType_EncounterTrackPlayer_Search(struct ObjectEvent *objectEvent, struct Sprite *sprite)
+{
+    // If player is in range, start tracking. Otherwise, wander.
+    if (IsObjectEventInRangeOfPlayer(objectEvent))
+    {
+        ObjectEventSetSingleMovement(objectEvent, sprite, MOVEMENT_ACTION_EMOTE_QUESTION_MARK);
+        sprite->sTypeFuncId = 4;
+        return TRUE;
+    }
+    else
+    {
+        sprite->sTypeFuncId = 1;
+        return TRUE;
+    }
+}
+
+bool8 MovementType_EncounterTrackPlayer_WanderMove(struct ObjectEvent *objectEvent, struct Sprite *sprite)
+{
+    u8 directions[4];
+    u8 chosenDirection;
+
+    // If the player is still, wait to move.
+    if (gObjectEvents[gPlayerAvatar.objectEventId].movementActionId <= MOVEMENT_ACTION_FACE_RIGHT
+        || gPlayerAvatar.tileTransitionState == T_NOT_MOVING)
+    {
+        return FALSE;
+    }
+
+    // Choose a random direction.
+    memcpy(directions, gStandardDirections, sizeof directions);
+    chosenDirection = directions[Random() & 3];
+    SetObjectEventDirection(objectEvent, chosenDirection);
+
+    // If the direction is blocked, don't proceed.
+    if (GetCollisionInDirection(objectEvent, chosenDirection))
+    {
+        return FALSE;
+    }
+
+    ObjectEventSetSingleMovement(objectEvent, sprite, GetWalkNormalMovementAction(chosenDirection));
+    sprite->sTypeFuncId = 2;
+    return TRUE;
+}
+
+bool8 MovementType_EncounterTrackPlayer_WanderExec(struct ObjectEvent *objectEvent, struct Sprite *sprite)
+{
+    // Execute the movement action.
+    if (ObjectEventExecSingleMovementAction(objectEvent, sprite))
+    {
+        ClearObjectEventMovement(objectEvent, sprite);
+        SetMovementDelay(sprite, 2); // 2 is enough to prevent double moves.
+        sprite->sTypeFuncId = 3;
+        return TRUE;
+    }
+    return FALSE;
+}
+
+bool8 MovementType_EncounterTrackPlayer_WanderPause(struct ObjectEvent *objectEvent, struct Sprite *sprite)
+{
+    // Wait for movement delay to expire.
+    if (WaitForMovementDelay(sprite))
+    {
+        sprite->sTypeFuncId = 0;
+        return TRUE;
+    }
+    return FALSE;
+}
+
+bool8 MovementType_EncounterTrackPlayer_TrackEmote(struct ObjectEvent *objectEvent, struct Sprite *sprite)
+{
+    // Execute the movement action.
+    if (ObjectEventExecSingleMovementAction(objectEvent, sprite))
+    {
+        ClearObjectEventMovement(objectEvent, sprite);
+        sprite->sTypeFuncId = 5;
+        return TRUE;
+    }
+    return FALSE;
+}
+
+bool8 MovementType_EncounterTrackPlayer_TrackMove(struct ObjectEvent *objectEvent, struct Sprite *sprite)
+{
+    u32 dir = GetDirectionTowardsPlayer(objectEvent);
+
+    // Return to search if player is out of range.
+    if (!IsObjectEventInRangeOfPlayer(objectEvent))
+    {
+        sprite->sTypeFuncId = 0;
+        return TRUE;
+    }
+
+    // Trigger an encounter if the player is adjacent.
+    if (IsObjectEventAdjacentToPlayer(objectEvent))
+    {
+        if (objectEvent->graphicsId > OBJ_EVENT_GFX_MON_BASE)
+            gSpecialVar_0x8000 = OW_SPECIES(objectEvent);
+        else
+            gSpecialVar_0x8000 = SPECIES_PORYGON;
+        gSpecialVar_0x8001 = objectEvent->localId;
+        LockPlayerFieldControls();
+        ScriptContext_SetupScript(EventScript_OverworldEncounterStart);
+        return FALSE;
+    }
+
+    // If the player is still, wait to move.
+    if (gObjectEvents[gPlayerAvatar.objectEventId].movementActionId <= MOVEMENT_ACTION_FACE_RIGHT
+        || gPlayerAvatar.tileTransitionState == T_NOT_MOVING)
+    {
+        return FALSE;
+    }
+
+    // Select movement action in the direction of the player.
+    ObjectEventSetSingleMovement(objectEvent, sprite, GetWalkNormalMovementAction(dir));
+    sprite->sTypeFuncId = 6;
+    return TRUE;
+}
+
+bool8 MovementType_EncounterTrackPlayer_TrackExec(struct ObjectEvent *objectEvent, struct Sprite *sprite)
+{
+    // Execute the movement action.
+    if (ObjectEventExecSingleMovementAction(objectEvent, sprite))
+    {
+        ClearObjectEventMovement(objectEvent, sprite);
+        SetMovementDelay(sprite, 2); // 2 is enough to prevent double moves.
+        sprite->sTypeFuncId = 7;
+        return TRUE;
+    }
+    return FALSE;
+}
+
+bool8 MovementType_EncounterTrackPlayer_TrackPause(struct ObjectEvent *objectEvent, struct Sprite *sprite)
+{
+    // Wait for movement delay to expire.
+    if (WaitForMovementDelay(sprite))
+    {
+        sprite->sTypeFuncId = 5;
+        return TRUE;
+    }
+    return FALSE;
+}
+
 void ClearObjectEventMovement(struct ObjectEvent *objectEvent, struct Sprite *sprite)
 {
     objectEvent->singleMovementActive = FALSE;
@@ -5904,7 +6053,7 @@ u8 GetTrainerFacingDirectionMovementType(u8 direction)
     return gTrainerFacingDirectionMovementTypes[direction];
 }
 
-static u8 GetCollisionInDirection(struct ObjectEvent *objectEvent, u8 direction)
+u8 GetCollisionInDirection(struct ObjectEvent *objectEvent, u8 direction)
 {
     s16 x = objectEvent->currentCoords.x;
     s16 y = objectEvent->currentCoords.y;

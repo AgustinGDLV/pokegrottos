@@ -644,4 +644,7 @@ extern const u8 VSSeeker_Text_NoTrainersWithinRange[];
 extern const u8 VSSeeker_Text_TrainersNotReady[];
 extern const u8 EventScript_VsSeekerChargingDone[];
 
+// general map scripts
+extern const u8 EventScript_OverworldEncounterStart[];
+
 #endif // GUARD_EVENT_SCRIPTS_H
