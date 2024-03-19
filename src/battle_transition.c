@@ -97,6 +97,7 @@ static bool8 Transition_WaitForMain(struct Task *);
 static void LaunchBattleTransitionTask(u8);
 static void Task_BattleTransition(u8);
 static void Task_Intro(u8);
+static void Task_Fade(u8);
 static void Task_Blur(u8);
 static void Task_Swirl(u8);
 static void Task_Shuffle(u8);
@@ -147,6 +148,8 @@ static void VBlankCB_WhiteBarsFade_Blend(void);
 static void HBlankCB_WhiteBarsFade(void);
 static void VBlankCB_AngledWipes(void);
 static void VBlankCB_Rayquaza(void);
+static bool8 Fade_Init(struct Task *);
+static bool8 Fade_End(struct Task *);
 static bool8 Blur_Init(struct Task *);
 static bool8 Blur_Main(struct Task *);
 static bool8 Blur_End(struct Task *);
@@ -381,6 +384,7 @@ static const TaskFunc sTasks_Main[B_TRANSITION_COUNT] =
     [B_TRANSITION_FRONTIER_CIRCLES_CROSS_IN_SEQ] = Task_FrontierCirclesCrossInSeq,
     [B_TRANSITION_FRONTIER_CIRCLES_ASYMMETRIC_SPIRAL_IN_SEQ] = Task_FrontierCirclesAsymmetricSpiralInSeq,
     [B_TRANSITION_FRONTIER_CIRCLES_SYMMETRIC_SPIRAL_IN_SEQ] = Task_FrontierCirclesSymmetricSpiralInSeq,
+    [B_TRANSITION_FADE] = Task_Fade,
 };
 
 static const TransitionStateFunc sTaskHandlers[] =
@@ -389,6 +393,12 @@ static const TransitionStateFunc sTaskHandlers[] =
     &Transition_WaitForIntro,
     &Transition_StartMain,
     &Transition_WaitForMain
+};
+
+static const TransitionStateFunc sFade_Funcs[] =
+{
+    Fade_Init,
+    Fade_End
 };
 
 static const TransitionStateFunc sBlur_Funcs[] =
@@ -1092,6 +1102,32 @@ static void Task_Intro(u8 taskId)
     {
         DestroyTask(taskId);
     }
+}
+
+//--------------------
+// B_TRANSITION_FADE
+//--------------------
+
+static void Task_Fade(u8 taskId)
+{
+    while (sFade_Funcs[gTasks[taskId].tState](&gTasks[taskId]));
+}
+
+static bool8 Fade_Init(struct Task *task)
+{
+    BeginNormalPaletteFade(PALETTES_ALL, 0, 0, 16, RGB_BLACK);
+    task->tState++;
+    return TRUE;
+}
+
+static bool8 Fade_End(struct Task *task)
+{
+    if (!gPaletteFade.active)
+    {
+        u8 taskId = FindTaskIdByFunc(Task_Fade);
+        DestroyTask(taskId);
+    }
+    return FALSE;
 }
 
 //--------------------
