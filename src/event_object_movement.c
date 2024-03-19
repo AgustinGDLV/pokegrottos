@@ -531,6 +531,7 @@ static const struct SpritePalette sObjectEventSpritePalettes[] = {
 #endif
     {gObjectEventPal_Substitute,            OBJ_EVENT_PAL_TAG_SUBSTITUTE},
     {gObjectEventPaletteEmotes,             OBJ_EVENT_PAL_TAG_EMOTES},
+    {gObjectEventPal_Flannery,              OBJ_EVENT_PAL_TAG_FLANNERY},
 #ifdef BUGFIX
     {NULL,                                  OBJ_EVENT_PAL_TAG_NONE},
 #else

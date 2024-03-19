@@ -577,18 +577,6 @@ static const struct SpriteFrameImage sPicTable_Wattson[] = {
     overworld_frame(gObjectEventPic_Wattson, 2, 4, 2),
 };
 
-static const struct SpriteFrameImage sPicTable_Flannery[] = {
-    overworld_frame(gObjectEventPic_Flannery, 2, 4, 0),
-    overworld_frame(gObjectEventPic_Flannery, 2, 4, 1),
-    overworld_frame(gObjectEventPic_Flannery, 2, 4, 2),
-    overworld_frame(gObjectEventPic_Flannery, 2, 4, 0),
-    overworld_frame(gObjectEventPic_Flannery, 2, 4, 0),
-    overworld_frame(gObjectEventPic_Flannery, 2, 4, 1),
-    overworld_frame(gObjectEventPic_Flannery, 2, 4, 1),
-    overworld_frame(gObjectEventPic_Flannery, 2, 4, 2),
-    overworld_frame(gObjectEventPic_Flannery, 2, 4, 2),
-};
-
 static const struct SpriteFrameImage sPicTable_Norman[] = {
     overworld_ascending_frames(gObjectEventPic_Norman, 2, 4),
     overworld_frame(gObjectEventPic_Norman, 2, 4, 6),
@@ -1358,4 +1346,9 @@ static const struct SpriteFrameImage sPicTable_KirliaOld[] = {
 
 static const struct SpriteFrameImage sPicTable_RubySapphireMay[] = {
     overworld_ascending_frames(gObjectEventPic_RubySapphireMayNormal, 2, 4),
+};
+
+// Characters
+static const struct SpriteFrameImage sPicTable_Flannery[] = {
+    overworld_ascending_frames(gObjectEventPic_Flannery, 2, 4),
 };

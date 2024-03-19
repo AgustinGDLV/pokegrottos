@@ -76,8 +76,22 @@ struct TemplateRules {
     const struct WeightedElement encounterPool[MAX_WEIGHTED_POOL_SIZE];    
 };
 
+enum Character
+{
+    CHAR_FLANNERY,
+    CHARACTERS_COUNT,
+};
+
+struct CharacterInfo {
+    u16 graphicsId;
+    const struct SpriteTemplate * mugshotTemplate;
+    const struct CompressedSpriteSheet mugshotSheet;
+    const struct SpritePalette mugshotPal;
+};
+
 extern struct Floorplan gFloorplan;
 extern const struct TemplateRules gTemplateRules[TEMPLATE_TYPES_COUNT];
+extern const struct CharacterInfo gCharacterInfos[CHARACTERS_COUNT];
 
 void DebugPrintFloorplan(struct Floorplan* floorplan);
 void CreateDebugFloorplan(void);

@@ -17,11 +17,13 @@
 #include "string_util.h"
 #include "text.h"
 #include "constants/songs.h"
+#include "constants/event_objects.h"
 
 // global floorplan
 EWRAM_DATA struct Floorplan gFloorplan = {0};
 
 #include "data/template_rules.h"
+#include "data/character_infos.h"
 
 // forward declarations
 static u32 CountNeighbors(struct Floorplan* floorplan, u8 i);
