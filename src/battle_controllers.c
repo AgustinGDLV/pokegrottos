@@ -2522,7 +2522,7 @@ void BtlController_HandleDrawTrainerPic(u32 battler, u32 trainerPicId, bool32 is
             if (subpriority == -1)
                 subpriority = GetBattlerSpriteSubpriority(battler);
             gBattlerSpriteIds[battler] = CreateSprite(&gMultiuseSpriteTemplate,
-                                                             xPos,
+                                                             -32,
                                                              yPos,
                                                              subpriority);
 
