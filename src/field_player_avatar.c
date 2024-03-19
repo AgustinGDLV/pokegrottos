@@ -8,6 +8,7 @@
 #include "field_effect_helpers.h"
 #include "field_player_avatar.h"
 #include "fieldmap.h"
+#include "map_gen.h"
 #include "menu.h"
 #include "metatile_behavior.h"
 #include "overworld.h"
@@ -975,7 +976,7 @@ void PlayerWalkFaster(u8 direction)
 
 static void PlayerRun(u8 direction)
 {
-    PlayerSetAnimId(GetPlayerRunMovementAction(direction), COPY_MOVE_WALK);
+    PlayerSetAnimId(GetWalkFastMovementAction(direction), COPY_MOVE_WALK);
 }
 
 void PlayerOnBikeCollide(u8 direction)
@@ -1221,7 +1222,7 @@ u16 GetRivalAvatarGraphicsIdByStateIdAndGender(u8 state, u8 gender)
 
 u16 GetPlayerAvatarGraphicsIdByStateIdAndGender(u8 state, u8 gender)
 {
-    return sPlayerAvatarGfxIds[state][gender];
+    return gCharacterInfos[gSaveBlock1Ptr->characterId].graphicsId;
 }
 
 u16 GetFRLGAvatarGraphicsIdByGender(u8 gender)

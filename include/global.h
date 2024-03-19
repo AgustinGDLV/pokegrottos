@@ -1006,7 +1006,8 @@ struct SaveBlock1
     /*0x988*/ u8 filler1[0x34]; // Previously Dex Flags, feel free to remove.
 #endif //FREE_EXTRA_SEEN_FLAGS_SAVEBLOCK1
 
-    /*0x988*/ u8 currentRoom;           // stores the currently occupied room
+    /*0x988*/ u16 characterId;          // stores the chosen character ID
+              u8 currentRoom;           // stores the currently occupied room
               u8 currentFloor;          // stores the current floor depth
               u16 floorSeed;            // stores the seed of the current floor
               u16 unidSeed;             // stores the seed for unidentified items
