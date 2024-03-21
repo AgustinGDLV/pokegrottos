@@ -15,11 +15,13 @@
   "connections": [
     {
       "map": "MAP_ROUTE128",
-      "offset": 40,
+      "offset": 7,
       "direction": "left"
     }
   ],
-  "object_events": [],
+  "object_events": [
+
+  ],
   "warp_events": [
     {
       "x": 18,
