@@ -64,6 +64,10 @@ bool32 IsObjectEventAdjacentToPlayer(struct ObjectEvent* objectEvent)
     struct Coords16* objCoords = &objectEvent->currentCoords;
     struct Coords16* playerCoords = &gObjectEvents[gPlayerAvatar.objectEventId].currentCoords;
 
+    // Avoid seeing across elevations.
+    if (objectEvent->currentElevation != gObjectEvents[gPlayerAvatar.objectEventId].currentElevation)
+        return FALSE;
+
     return GetManhattanDistance(objCoords, playerCoords) <= 1;
 }
 
