@@ -1074,3 +1074,15 @@ EventScript_VsSeekerChargingDone::
 	.include "data/text/frontier_brain.inc"
 	.include "data/text/save.inc"
 	.include "data/text/birch_speech.inc"
+
+	.include "data/maps/CaveTemplates_Connections/scripts.inc"
+
+	.include "data/maps/CaveTemplates_BossRoom/scripts.inc"
+
+	.include "data/maps/CaveTemplates_ShopRoom/scripts.inc"
+
+	.include "data/maps/CaveTemplates_TreasureRoom/scripts.inc"
+
+	.include "data/maps/CaveTemplates_ChallengeRoom/scripts.inc"
+
+	.include "data/maps/CaveTemplates_Room1/scripts.inc"

@@ -29,6 +29,7 @@
 #include "load_save.h"
 #include "main.h"
 #include "malloc.h"
+#include "map_gen.h"
 #include "m4a.h"
 #include "map_name_popup.h"
 #include "match_call.h"
@@ -1120,7 +1121,10 @@ static bool16 IsInflitratedSpaceCenter(struct WarpData *warp)
 
 u16 GetLocationMusic(struct WarpData *warp)
 {
-    if (NoMusicInSotopolisWithLegendaries(warp) == TRUE)
+    // Allow for custom music inside a floor.
+    if (IsPlayerInFloorMap() && GetRoomType(gSaveBlock1Ptr->currentRoom) != SHOP_ROOM)
+        return GetTemplateRules(gFloorplan.templateType)->bgm;
+    else if (NoMusicInSotopolisWithLegendaries(warp) == TRUE)
         return MUS_NONE;
     else if (ShouldLegendaryMusicPlayAtLocation(warp) == TRUE)
         return MUS_ABNORMAL_WEATHER;

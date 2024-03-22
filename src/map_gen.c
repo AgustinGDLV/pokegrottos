@@ -94,7 +94,7 @@ static u8 GetMaxRooms(void)
 static u32 GetTemplateType(void)
 {
     // return RandomF() % TEMPLATE_TYPES_COUNT;
-    return TEMPLATES_ICE_CAVE;
+    return TEMPLATES_CAVE;
 }
 
 // Creates rooms and endroom stack for an empty floorplan.
@@ -344,7 +344,6 @@ u32 GetRoomType(u32 index)
 void GenerateFloorplan(void)
 {
     u32 attempts = 0;
-    gSaveBlock1Ptr->currentRoom = STARTING_ROOM; // temp
     SeedFloorRng(gSaveBlock1Ptr->floorSeed);
 
     // Try to make sure that the floorplan isn't too small.
@@ -368,5 +367,5 @@ void GoToNextFloor(void)
     // Generate the new floorplan and warp.
     GenerateFloorplan();
     ClearFloorEventFlags();
-    // TryWarpToRoom(STARTING_ROOM, 0);
+    TryWarpToRoom(STARTING_ROOM, 0);
 }

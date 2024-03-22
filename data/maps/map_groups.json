@@ -33,7 +33,8 @@
     "gMapGroup_IndoorRoute113",
     "gMapGroup_IndoorRoute123",
     "gMapGroup_IndoorRoute119",
-    "gMapGroup_IndoorRoute124"
+    "gMapGroup_IndoorRoute124",
+    "gMapGroup_CaveTemplates"
   ],
   "gMapGroup_TownsAndRoutes": [
     "PetalburgCity",
@@ -620,5 +621,13 @@
   ],
   "gMapGroup_IndoorRoute124": [
     "Route124_DivingTreasureHuntersHouse"
+  ],
+  "gMapGroup_CaveTemplates": [
+    "CaveTemplates_Connections",
+    "CaveTemplates_BossRoom",
+    "CaveTemplates_ShopRoom",
+    "CaveTemplates_TreasureRoom",
+    "CaveTemplates_ChallengeRoom",
+    "CaveTemplates_Room1"
   ]
 }

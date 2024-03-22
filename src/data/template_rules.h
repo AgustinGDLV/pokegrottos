@@ -174,36 +174,36 @@ const struct ItemPoolTable gDefaultItemPools[ITEM_TIER_COUNT] =
     },
 };
 
-// Ice Cave Template Pools
-static const u8 sIceCaveNormalRooms[] =
+// Cave Template Pools
+static const u8 sCaveNormalRooms[] =
 {
-    0,
+    MAP_NUM(CAVE_TEMPLATES_ROOM1),
 };
 
 const struct TemplateRules gTemplateRules[TEMPLATE_TYPES_COUNT] = 
 {
-    [TEMPLATES_ICE_CAVE] =
+    [TEMPLATES_CAVE] =
     {
-        .mapGroup = 0,
+        .mapGroup = MAP_GROUP(CAVE_TEMPLATES_ROOM1),
         .bgm = MUS_RG_SEVII_CAVE,
         .battleTerrain = BATTLE_TERRAIN_CAVE,
         .lighting = 12,
         .offsets = {
             [DIR_NORTH] = {-1, -1},
             [DIR_SOUTH] = {-1, 1},
-            [DIR_EAST] = {-1, 0},
-            [DIR_WEST] = {-1, 0},
+            [DIR_EAST] = {0, 0},
+            [DIR_WEST] = {-2, 0},
         },
-        .numNormalRooms = ARRAY_COUNT(sIceCaveNormalRooms),
-        .normalRoomIds = sIceCaveNormalRooms,
+        .numNormalRooms = ARRAY_COUNT(sCaveNormalRooms),
+        .normalRoomIds = sCaveNormalRooms,
         .specialRoomIds = {
-            [BOSS_ROOM] = 0,
-            [TREASURE_ROOM] = 0,
-            [SHOP_ROOM] = 0,
+            [BOSS_ROOM] = MAP_NUM(CAVE_TEMPLATES_BOSS_ROOM),
+            [TREASURE_ROOM] = MAP_NUM(CAVE_TEMPLATES_TREASURE_ROOM),
+            [SHOP_ROOM] = MAP_NUM(CAVE_TEMPLATES_SHOP_ROOM),
         },
         .itemPools = gDefaultItemPools,
         .encounterPool = {
-            {SPECIES_SPHEAL, 100},
+            {SPECIES_WHISMUR, 100},
         }
     },
 };

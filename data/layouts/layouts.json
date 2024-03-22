@@ -4410,6 +4410,66 @@
       "secondary_tileset": "gTileset_MysteryEventsHouse",
       "border_filepath": "data/layouts/SootopolisCity_MysteryEventsHouse_1F_StairsUnblocked/border.bin",
       "blockdata_filepath": "data/layouts/SootopolisCity_MysteryEventsHouse_1F_StairsUnblocked/map.bin"
+    },
+    {
+      "id": "LAYOUT_CAVE_TEMPLATES_CONNECTIONS",
+      "name": "CaveTemplates_Connections_Layout",
+      "width": 3,
+      "height": 4,
+      "primary_tileset": "gTileset_General",
+      "secondary_tileset": "gTileset_Cave",
+      "border_filepath": "data/layouts/CaveTemplates_Connections/border.bin",
+      "blockdata_filepath": "data/layouts/CaveTemplates_Connections/map.bin"
+    },
+    {
+      "id": "LAYOUT_CAVE_TEMPLATES_BOSS_ROOM",
+      "name": "CaveTemplates_BossRoom_Layout",
+      "width": 12,
+      "height": 11,
+      "primary_tileset": "gTileset_General",
+      "secondary_tileset": "gTileset_Cave",
+      "border_filepath": "data/layouts/CaveTemplates_BossRoom/border.bin",
+      "blockdata_filepath": "data/layouts/CaveTemplates_BossRoom/map.bin"
+    },
+    {
+      "id": "LAYOUT_CAVE_TEMPLATES_SHOP_ROOM",
+      "name": "CaveTemplates_ShopRoom_Layout",
+      "width": 12,
+      "height": 11,
+      "primary_tileset": "gTileset_General",
+      "secondary_tileset": "gTileset_Cave",
+      "border_filepath": "data/layouts/CaveTemplates_ShopRoom/border.bin",
+      "blockdata_filepath": "data/layouts/CaveTemplates_ShopRoom/map.bin"
+    },
+    {
+      "id": "LAYOUT_CAVE_TEMPLATES_TREASURE_ROOM",
+      "name": "CaveTemplates_TreasureRoom_Layout",
+      "width": 12,
+      "height": 11,
+      "primary_tileset": "gTileset_General",
+      "secondary_tileset": "gTileset_Cave",
+      "border_filepath": "data/layouts/CaveTemplates_TreasureRoom/border.bin",
+      "blockdata_filepath": "data/layouts/CaveTemplates_TreasureRoom/map.bin"
+    },
+    {
+      "id": "LAYOUT_CAVE_TEMPLATES_CHALLENGE_ROOM",
+      "name": "CaveTemplates_ChallengeRoom_Layout",
+      "width": 12,
+      "height": 11,
+      "primary_tileset": "gTileset_General",
+      "secondary_tileset": "gTileset_Cave",
+      "border_filepath": "data/layouts/CaveTemplates_ChallengeRoom/border.bin",
+      "blockdata_filepath": "data/layouts/CaveTemplates_ChallengeRoom/map.bin"
+    },
+    {
+      "id": "LAYOUT_CAVE_TEMPLATES_ROOM1",
+      "name": "CaveTemplates_Room1_Layout",
+      "width": 12,
+      "height": 11,
+      "primary_tileset": "gTileset_General",
+      "secondary_tileset": "gTileset_Cave",
+      "border_filepath": "data/layouts/CaveTemplates_Room1/border.bin",
+      "blockdata_filepath": "data/layouts/CaveTemplates_Room1/map.bin"
     }
   ]
 }
