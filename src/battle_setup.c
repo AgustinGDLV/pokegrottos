@@ -4,6 +4,7 @@
 #include "battle_setup.h"
 #include "battle_transition.h"
 #include "main.h"
+#include "map_gen.h"
 #include "task.h"
 #include "safari_zone.h"
 #include "script.h"
@@ -736,6 +737,9 @@ u8 BattleSetup_GetTerrainId(void)
     PlayerGetDestCoords(&x, &y);
     tileBehavior = MapGridGetMetatileBehaviorAt(x, y);
 
+    if (IsPlayerInFloorMap())
+        return GetTemplateRules(gFloorplan.templateType)->battleTerrain;
+
     if (MetatileBehavior_IsTallGrass(tileBehavior))
         return BATTLE_TERRAIN_GRASS;
     if (MetatileBehavior_IsLongGrass(tileBehavior))
@@ -856,6 +860,9 @@ u8 GetWildBattleTransition(void)
     u8 transitionType = GetBattleTransitionTypeByMap();
     u8 enemyLevel = GetMonData(&gEnemyParty[0], MON_DATA_LEVEL);
     u8 playerLevel = GetSumOfPlayerPartyLevel(1);
+
+    if (IsPlayerInFloorMap())
+        return B_TRANSITION_FADE;
 
     if (enemyLevel < playerLevel)
     {
