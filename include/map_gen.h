@@ -83,6 +83,8 @@ enum Character
 };
 
 struct CharacterInfo {
+    const u8 * name;
+    const u16 color;
     u16 graphicsId;
     const struct SpriteTemplate * mugshotTemplate;
     const struct CompressedSpriteSheet mugshotSheet;
@@ -94,7 +96,6 @@ extern const struct TemplateRules gTemplateRules[TEMPLATE_TYPES_COUNT];
 extern const struct CharacterInfo gCharacterInfos[CHARACTERS_COUNT];
 
 void DebugPrintFloorplan(struct Floorplan* floorplan);
-void CreateDebugFloorplan(void);
 void SetRoomAsVisited(u8 i);
 bool32 IsRoomVisited(u8 i);
 bool32 DoesRoomExist(u8 i);

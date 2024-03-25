@@ -18,6 +18,7 @@
 #include "text.h"
 #include "constants/songs.h"
 #include "constants/event_objects.h"
+#include "constants/rgb.h"
 
 // global floorplan
 EWRAM_DATA struct Floorplan gFloorplan = {0};
