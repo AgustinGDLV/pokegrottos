@@ -4002,3 +4002,6 @@ graphics/door_anims/battle_tower_multi_corridor.4bpp: %.4bpp: %.png
 # Characters
 $(OBJEVENTGFXDIR)/characters/flannery.4bpp: %.4bpp: %.png
 	$(GFX) $< $@ -mwidth 2 -mheight 4
+
+$(OBJEVENTGFXDIR)/characters/wallace.4bpp: %.4bpp: %.png
+	$(GFX) $< $@ -mwidth 2 -mheight 4

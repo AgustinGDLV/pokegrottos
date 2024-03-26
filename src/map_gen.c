@@ -370,3 +370,11 @@ void GoToNextFloor(void)
     ClearFloorEventFlags();
     TryWarpToRoom(STARTING_ROOM, 0);
 }
+
+// Debugging function called by menu scripts.
+void FloorDebugFunc(void)
+{
+    gSaveBlock1Ptr->characterId++;
+    if (gSaveBlock1Ptr->characterId >= CHARACTERS_COUNT)
+        gSaveBlock1Ptr->characterId = 0;
+}

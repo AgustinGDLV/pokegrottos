@@ -419,6 +419,7 @@
 #define OBJ_EVENT_PAL_TAG_EMOTES                  0x8002
 // Characters
 #define OBJ_EVENT_PAL_TAG_FLANNERY                0x116B
+#define OBJ_EVENT_PAL_TAG_WALLACE                 0x116C
 // Not a real OW palette tag; used for the white flash applied to followers
 #define OBJ_EVENT_PAL_TAG_WHITE                   (OBJ_EVENT_PAL_TAG_NONE - 1)
 #define OBJ_EVENT_PAL_TAG_NONE 0x11FF

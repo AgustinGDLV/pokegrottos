@@ -79,6 +79,7 @@ struct TemplateRules {
 enum Character
 {
     CHAR_FLANNERY,
+    CHAR_WALLACE,
     CHARACTERS_COUNT,
 };
 
@@ -109,5 +110,6 @@ const struct TemplateRules* GetTemplateRules(enum TemplateTypes templateType);
 void SetRNGToRoomSeed(void);
 void GenerateFloorplan(void);
 void GoToNextFloor(void);
+void FloorDebugFunc(void);
 
 #endif

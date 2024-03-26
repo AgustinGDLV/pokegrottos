@@ -150,7 +150,6 @@ const u32 gObjectEventPic_Norman[] = INCBIN_U32("graphics/object_events/pics/peo
 const u32 gObjectEventPic_Winona[] = INCBIN_U32("graphics/object_events/pics/people/gym_leaders/winona.4bpp");
 const u32 gObjectEventPic_Liza[] = INCBIN_U32("graphics/object_events/pics/people/gym_leaders/liza.4bpp");
 const u32 gObjectEventPic_Tate[] = INCBIN_U32("graphics/object_events/pics/people/gym_leaders/tate.4bpp");
-const u32 gObjectEventPic_Wallace[] = INCBIN_U32("graphics/object_events/pics/people/wallace.4bpp");
 const u32 gObjectEventPic_Steven[] = INCBIN_U32("graphics/object_events/pics/people/steven.4bpp");
 const u32 gObjectEventPic_Wally[] = INCBIN_U32("graphics/object_events/pics/people/wally.4bpp");
 const u32 gObjectEventPic_RubySapphireLittleBoy[] = INCBIN_U32("graphics/object_events/pics/people/rs_little_boy.4bpp");
@@ -456,3 +455,5 @@ const u16 gObjectEventPal_StrangeBall[] = INCBIN_U16("graphics/object_events/pic
 // Characters
 const u32 gObjectEventPic_Flannery[] = INCBIN_U32("graphics/object_events/pics/characters/flannery.4bpp");
 const u16 gObjectEventPal_Flannery[] = INCBIN_U16("graphics/object_events/pics/characters/flannery.gbapal");
+const u32 gObjectEventPic_Wallace[] = INCBIN_U32("graphics/object_events/pics/characters/wallace.4bpp");
+const u16 gObjectEventPal_Wallace[] = INCBIN_U16("graphics/object_events/pics/characters/wallace.gbapal");
