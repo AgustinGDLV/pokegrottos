@@ -10,7 +10,7 @@
 u16 GetOverworldEncounterGraphicsId(u32 localId)
 {
     u32 i;
-    const struct TemplateRules * rules = GetTemplateRules(gFloorplan.templateType);
+    const struct TemplateRules * rules = GetTemplateRules(gSaveBlock1Ptr->currentTemplateType);
 
     // Advance RNG to a repeatable state based on the local ID.
     // This is to allow for consistency between saves and seed.

@@ -1,6 +1,7 @@
 #include "global.h"
 #include "battle.h"
 #include "bg.h"
+#include "continue_screen.h"
 #include "decompress.h"
 #include "event_data.h"
 #include "event_object_movement.h"
@@ -41,11 +42,6 @@ enum Windows
 	WINDOW_COUNT,
 };
 
-enum {
-    PREVIEW_MT_MOON,
-    PREVIEW_COUNT,
-};
-
 struct MapPreview {
     const u16 * palette;
     const u32 * tiles;
@@ -56,12 +52,21 @@ static const u16 sMtMoonMapPreviewPalette[] = INCBIN_U16("graphics/map_preview/m
 static const u32 sMtMoonMapPreviewTiles[] = INCBIN_U32("graphics/map_preview/mt_moon/tiles.4bpp.lz");
 static const u32 sMtMoonMapPreviewTilemap[] = INCBIN_U32("graphics/map_preview/mt_moon/tilemap.bin.lz");
 
+static const u16 sPowerPlantMapPreviewPalette[] = INCBIN_U16("graphics/map_preview/power_plant/tiles.gbapal");
+static const u32 sPowerPlantMapPreviewTiles[] = INCBIN_U32("graphics/map_preview/power_plant/tiles.4bpp.lz");
+static const u32 sPowerPlantMapPreviewTilemap[] = INCBIN_U32("graphics/map_preview/power_plant/tilemap.bin.lz");
+
 const struct MapPreview sMapPreviewData[PREVIEW_COUNT] =
 {
     [PREVIEW_MT_MOON] = {
         .palette = sMtMoonMapPreviewPalette,
         .tiles = sMtMoonMapPreviewTiles,
         .map = sMtMoonMapPreviewTilemap,
+    },
+    [PREVIEW_POWER_PLANT] = {
+        .palette = sPowerPlantMapPreviewPalette,
+        .tiles = sPowerPlantMapPreviewTiles,
+        .map = sPowerPlantMapPreviewTilemap,
     },
 };
 
@@ -372,9 +377,10 @@ static void LoadContinueScreenGfx(void)
 
 static void LoadMapPreviewGfx(void)
 {   
-    DecompressAndCopyTileDataToVram(2, sMapPreviewData[PREVIEW_MT_MOON].tiles, 0, 0, 0);
-	LZDecompressWram(sMapPreviewData[PREVIEW_MT_MOON].map, sMapPreviewTilemapPtr);
-	LoadPalette(sMapPreviewData[PREVIEW_MT_MOON].palette, BG_PLTT_ID(13), PLTT_SIZE_4BPP);
+    struct MapPreview data = sMapPreviewData[GetTemplateRules(gSaveBlock1Ptr->currentTemplateType)->previewId];
+    DecompressAndCopyTileDataToVram(2, data.tiles, 0, 0, 0);
+	LZDecompressWram(data.map, sMapPreviewTilemapPtr);
+	LoadPalette(data.palette, BG_PLTT_ID(13), PLTT_SIZE_4BPP);
 	Menu_LoadStdPalAt(BG_PLTT_ID(15));
 }
 

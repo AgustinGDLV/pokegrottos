@@ -34,7 +34,8 @@
     "gMapGroup_IndoorRoute123",
     "gMapGroup_IndoorRoute119",
     "gMapGroup_IndoorRoute124",
-    "gMapGroup_CaveTemplates"
+    "gMapGroup_CaveTemplates",
+    "gMapGroup_PowerPlantTemplates"
   ],
   "gMapGroup_TownsAndRoutes": [
     "PetalburgCity",
@@ -629,5 +630,9 @@
     "CaveTemplates_TreasureRoom",
     "CaveTemplates_ChallengeRoom",
     "CaveTemplates_Room1"
+  ],
+  "gMapGroup_PowerPlantTemplates": [
+    "PowerPlantTemplates_Connections",
+    "PowerPlantTemplates_BossRoom"
   ]
 }

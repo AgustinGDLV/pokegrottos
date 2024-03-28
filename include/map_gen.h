@@ -34,21 +34,7 @@ struct Room {
 
 enum TemplateTypes {
     TEMPLATES_CAVE,
-    TEMPLATES_DARK_CAVE,
-    TEMPLATES_ICE_CAVE,
-    TEMPLATES_HOT_CAVE,
-    TEMPLATES_DAMP_CAVE,
-    TEMPLATES_FOREST,
-    TEMPLATES_DARK_FOREST,
-    TEMPLATES_SNOW_FOREST,
-    TEMPLATES_DARK_SNOW_FOREST,
-    TEMPLATES_BERRY_FOREST,
     TEMPLATES_POWER_PLANT,
-    TEMPLATES_MANSION,
-    TEMPLATES_MUSEUM,
-    TEMPLATES_CEMETERY,
-    TEMPLATES_ROCKET_HIDEOUT,
-    TEMPLATES_RUINS,
     TEMPLATE_TYPES_COUNT,
 };
 
@@ -66,6 +52,7 @@ struct Floorplan {
 struct TemplateRules {
     u8 mapGroup;
     u16 bgm;
+    u8 previewId;
     u8 battleTerrain;
     u8 lighting; // stored as hours
     s8 offsets[5][2]; // (x, y) entrance cover offsets for each direction

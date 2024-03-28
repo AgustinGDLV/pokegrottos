@@ -1123,7 +1123,7 @@ u16 GetLocationMusic(struct WarpData *warp)
 {
     // Allow for custom music inside a floor.
     if (IsPlayerInFloorMap() && GetRoomType(gSaveBlock1Ptr->currentRoom) != SHOP_ROOM)
-        return GetTemplateRules(gFloorplan.templateType)->bgm;
+        return GetTemplateRules(gSaveBlock1Ptr->currentTemplateType)->bgm;
     else if (NoMusicInSotopolisWithLegendaries(warp) == TRUE)
         return MUS_NONE;
     else if (ShouldLegendaryMusicPlayAtLocation(warp) == TRUE)

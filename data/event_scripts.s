@@ -1086,3 +1086,7 @@ EventScript_VsSeekerChargingDone::
 	.include "data/maps/CaveTemplates_ChallengeRoom/scripts.inc"
 
 	.include "data/maps/CaveTemplates_Room1/scripts.inc"
+
+	.include "data/maps/PowerPlantTemplates_Connections/scripts.inc"
+
+	.include "data/maps/PowerPlantTemplates_BossRoom/scripts.inc"

@@ -4470,6 +4470,26 @@
       "secondary_tileset": "gTileset_Cave",
       "border_filepath": "data/layouts/CaveTemplates_Room1/border.bin",
       "blockdata_filepath": "data/layouts/CaveTemplates_Room1/map.bin"
+    },
+    {
+      "id": "LAYOUT_POWER_PLANT_TEMPLATES_CONNECTIONS",
+      "name": "PowerPlantTemplates_Connections_Layout",
+      "width": 5,
+      "height": 20,
+      "primary_tileset": "gTileset_General",
+      "secondary_tileset": "gTileset_PowerPlant",
+      "border_filepath": "data/layouts/PowerPlantTemplates_Connections/border.bin",
+      "blockdata_filepath": "data/layouts/PowerPlantTemplates_Connections/map.bin"
+    },
+    {
+      "id": "LAYOUT_POWER_PLANT_TEMPLATES_BOSS_ROOM",
+      "name": "PowerPlantTemplates_BossRoom_Layout",
+      "width": 16,
+      "height": 14,
+      "primary_tileset": "gTileset_General",
+      "secondary_tileset": "gTileset_PowerPlant",
+      "border_filepath": "data/layouts/PowerPlantTemplates_BossRoom/border.bin",
+      "blockdata_filepath": "data/layouts/PowerPlantTemplates_BossRoom/map.bin"
     }
   ]
 }

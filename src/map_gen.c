@@ -1,4 +1,5 @@
 #include "global.h"
+#include "continue_screen.h"
 #include "data_util.h"
 #include "event_data.h"
 #include "event_object_movement.h"
@@ -94,8 +95,7 @@ static u8 GetMaxRooms(void)
 // TODO: Take into account depth.
 static u32 GetTemplateType(void)
 {
-    // return RandomF() % TEMPLATE_TYPES_COUNT;
-    return TEMPLATES_CAVE;
+    return RandomF() % TEMPLATE_TYPES_COUNT;
 }
 
 // Creates rooms and endroom stack for an empty floorplan.
@@ -180,7 +180,7 @@ static void AssignRoomMapIds(struct Floorplan* floorplan)
 {
     u32 i;
     struct Room* room;
-    const struct TemplateRules * const rules = GetTemplateRules(gFloorplan.templateType);
+    const struct TemplateRules * const rules = GetTemplateRules(gSaveBlock1Ptr->currentTemplateType);
     const u8 *normalPool = rules->normalRoomIds;
     u32 poolSize = rules->numNormalRooms;
     u8 *shuffled = AllocZeroed(sizeof(u8) * poolSize);
@@ -291,7 +291,7 @@ bool32 IsPlayerInFloorMap(void)
 // Sets the warp destination to the room's map ID (given by room index).
 void SetWarpDestinationToRoom(u32 index, u32 warpId)
 {
-    SetWarpDestination(GetTemplateRules(gFloorplan.templateType)->mapGroup, gFloorplan.layout[index].mapNum, warpId, -1, -1);
+    SetWarpDestination(GetTemplateRules(gSaveBlock1Ptr->currentTemplateType)->mapGroup, gFloorplan.layout[index].mapNum, warpId, -1, -1);
 }
 
 // Executes a warp to a given room.
@@ -353,6 +353,7 @@ void GenerateFloorplan(void)
     } while (gFloorplan.numRooms < MIN_ROOMS && ++attempts < 10);
 
     // Handle the rest of the floorplan data.
+    gSaveBlock1Ptr->currentTemplateType = gFloorplan.templateType;
     AssignRoomMapIds(&gFloorplan);
     gFloorplan.nextFloorSeed = RandomF();
 }

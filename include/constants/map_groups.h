@@ -599,6 +599,10 @@
 #define MAP_CAVE_TEMPLATES_CHALLENGE_ROOM (4 | (34 << 8))
 #define MAP_CAVE_TEMPLATES_ROOM1          (5 | (34 << 8))
 
-#define MAP_GROUPS_COUNT 35
+// gMapGroup_PowerPlantTemplates
+#define MAP_POWER_PLANT_TEMPLATES_CONNECTIONS (0 | (35 << 8))
+#define MAP_POWER_PLANT_TEMPLATES_BOSS_ROOM   (1 | (35 << 8))
+
+#define MAP_GROUPS_COUNT 36
 
 #endif // GUARD_CONSTANTS_MAP_GROUPS_H
