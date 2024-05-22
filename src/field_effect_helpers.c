@@ -338,7 +338,7 @@ u32 FldEff_Shadow(void)
     spriteId = CreateSpriteAtEnd(gFieldEffectObjectTemplatePointers[sShadowEffectTemplateIds[graphicsInfo->shadowSize]], 0, 0, 0x94);
     if (spriteId != MAX_SPRITES)
     {
-        // SetGpuReg(REG_OFFSET_BLDALPHA, BLDALPHA_BLEND(8, 12));
+        SetGpuReg(REG_OFFSET_BLDALPHA, BLDALPHA_BLEND(8, 12));
         gSprites[spriteId].oam.objMode = 1; // BLEND
         gSprites[spriteId].coordOffsetEnabled = TRUE;
         gSprites[spriteId].sLocalId = gFieldEffectArguments[0];
