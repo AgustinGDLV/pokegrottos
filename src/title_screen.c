@@ -31,12 +31,13 @@ enum {
     TAG_LOGO_SHINE,
 };
 
-#define VERSION_BANNER_RIGHT_TILEOFFSET 64
-#define VERSION_BANNER_LEFT_X 98
-#define VERSION_BANNER_RIGHT_X 162
+#define VERSION_BANNER_RIGHT_TILEOFFSET 128
+#define VERSION_BANNER_LEFT_X 104
+#define VERSION_BANNER_RIGHT_X 168
 #define VERSION_BANNER_Y 2
-#define VERSION_BANNER_Y_GOAL 66
-#define START_BANNER_X 128
+#define VERSION_BANNER_Y_GOAL 80
+#define START_BANNER_X 124
+#define COPYRIGHT_BANNER_X  88
 
 #define CLEAR_SAVE_BUTTON_COMBO (B_BUTTON | SELECT_BUTTON | DPAD_UP)
 #define RESET_RTC_BUTTON_COMBO (B_BUTTON | SELECT_BUTTON | DPAD_LEFT)
@@ -54,7 +55,6 @@ static void CB2_GoToResetRtcScreen(void);
 static void CB2_GoToSoundCheckScreen(void);
 static void CB2_GoToBerryFixScreen(void);
 static void CB2_GoToCopyrightScreen(void);
-static void UpdateLegendaryMarkingColor(u8);
 
 static void SpriteCB_VersionBannerLeft(struct Sprite *sprite);
 static void SpriteCB_VersionBannerRight(struct Sprite *sprite);
@@ -64,12 +64,18 @@ static void SpriteCB_PokemonLogoShine(struct Sprite *sprite);
 // const rom data
 static const u16 sUnusedUnknownPal[] = INCBIN_U16("graphics/title_screen/unused.gbapal");
 
-static const u32 sTitleScreenRayquazaGfx[] = INCBIN_U32("graphics/title_screen/rayquaza.4bpp.lz");
-static const u32 sTitleScreenRayquazaTilemap[] = INCBIN_U32("graphics/title_screen/rayquaza.bin.lz");
+static const u16 gTitleScreenBgPalettes[]         = INCBIN_U16("graphics/title_screen/pokemon_logo.gbapal");
+static const u16 gTitleScreenGrottosVersionPal[]  = INCBIN_U16("graphics/title_screen/grottos_version.gbapal");
+static const u32 gTitleScreenPokemonLogoGfx[]     = INCBIN_U32("graphics/title_screen/pokemon_logo.8bpp.lz");
+static const u32 gTitleScreenGrottosVersionGfx[]  = INCBIN_U32("graphics/title_screen/grottos_version.8bpp.lz");
+static const u16 gTitleScreenPressStartPal[]      = INCBIN_U16("graphics/title_screen/press_start.gbapal");
+static const u32 gTitleScreenPressStartGfx[]      = INCBIN_U32("graphics/title_screen/press_start.4bpp.lz");
+static const u32 gTitleScreenPokemonLogoTilemap[] = INCBIN_U32("graphics/title_screen/pokemon_logo.bin.lz");
+
+static const u32 sTitleScreenSlowpokeWellGfx[] = INCBIN_U32("graphics/title_screen/slowpoke_well.4bpp.lz");
+static const u32 sTitleScreenSlowpokeWellTilemap[] = INCBIN_U32("graphics/title_screen/slowpoke_well.bin.lz");
+static const u16 sSlowpokeWellTitleScreenWellPalettes[] = INCBIN_U16("graphics/title_screen/slowpoke_well.gbapal");
 static const u32 sTitleScreenLogoShineGfx[] = INCBIN_U32("graphics/title_screen/logo_shine.4bpp.lz");
-static const u32 sTitleScreenCloudsGfx[] = INCBIN_U32("graphics/title_screen/clouds.4bpp.lz");
-
-
 
 // Used to blend "Emerald Version" as it passes over over the Pokémon banner.
 // Also used by the intro to blend the Game Freak name/logo in and out as they appear and disappear
@@ -117,10 +123,10 @@ static const struct OamData sVersionBannerLeftOamData =
     .objMode = ST_OAM_OBJ_NORMAL,
     .mosaic = FALSE,
     .bpp = ST_OAM_8BPP,
-    .shape = SPRITE_SHAPE(64x32),
+    .shape = SPRITE_SHAPE(64x64),
     .x = 0,
     .matrixNum = 0,
-    .size = SPRITE_SIZE(64x32),
+    .size = SPRITE_SIZE(64x64),
     .tileNum = 0,
     .priority = 0,
     .paletteNum = 0,
@@ -134,10 +140,10 @@ static const struct OamData sVersionBannerRightOamData =
     .objMode = ST_OAM_OBJ_NORMAL,
     .mosaic = FALSE,
     .bpp = ST_OAM_8BPP,
-    .shape = SPRITE_SHAPE(64x32),
+    .shape = SPRITE_SHAPE(64x64),
     .x = 0,
     .matrixNum = 0,
-    .size = SPRITE_SIZE(64x32),
+    .size = SPRITE_SIZE(64x64),
     .tileNum = 0,
     .priority = 0,
     .paletteNum = 0,
@@ -188,11 +194,11 @@ static const struct SpriteTemplate sVersionBannerRightSpriteTemplate =
     .callback = SpriteCB_VersionBannerRight,
 };
 
-static const struct CompressedSpriteSheet sSpriteSheet_EmeraldVersion[] =
+static const struct CompressedSpriteSheet sSpriteSheet_GrottosVersion[] =
 {
     {
-        .data = gTitleScreenEmeraldVersionGfx,
-        .size = 0x1000,
+        .data = gTitleScreenGrottosVersionGfx,
+        .size = 0x2000,
         .tag = TAG_VERSION
     },
     {},
@@ -217,58 +223,48 @@ static const struct OamData sOamData_CopyrightBanner =
 
 static const union AnimCmd sAnim_PressStart_0[] =
 {
-    ANIMCMD_FRAME(1, 4),
+    ANIMCMD_FRAME(0, 4),
     ANIMCMD_END,
 };
 static const union AnimCmd sAnim_PressStart_1[] =
 {
-    ANIMCMD_FRAME(5, 4),
+    ANIMCMD_FRAME(4, 4),
     ANIMCMD_END,
 };
 static const union AnimCmd sAnim_PressStart_2[] =
 {
-    ANIMCMD_FRAME(9, 4),
+    ANIMCMD_FRAME(8, 4),
     ANIMCMD_END,
 };
 static const union AnimCmd sAnim_PressStart_3[] =
 {
-    ANIMCMD_FRAME(13, 4),
+    ANIMCMD_FRAME(12, 4),
     ANIMCMD_END,
 };
 static const union AnimCmd sAnim_PressStart_4[] =
 {
-    ANIMCMD_FRAME(17, 4),
+    ANIMCMD_FRAME(16, 4),
     ANIMCMD_END,
 };
 static const union AnimCmd sAnim_Copyright_0[] =
 {
-    ANIMCMD_FRAME(21, 4),
+    ANIMCMD_FRAME(20, 4),
     ANIMCMD_END,
 };
 static const union AnimCmd sAnim_Copyright_1[] =
 {
-    ANIMCMD_FRAME(25, 4),
+    ANIMCMD_FRAME(24, 4),
     ANIMCMD_END,
 };
 static const union AnimCmd sAnim_Copyright_2[] =
 {
-    ANIMCMD_FRAME(29, 4),
-    ANIMCMD_END,
-};
-static const union AnimCmd sAnim_Copyright_3[] =
-{
-    ANIMCMD_FRAME(33, 4),
-    ANIMCMD_END,
-};
-static const union AnimCmd sAnim_Copyright_4[] =
-{
-    ANIMCMD_FRAME(37, 4),
+    ANIMCMD_FRAME(28, 4),
     ANIMCMD_END,
 };
 
 // The "Press Start" and copyright graphics are each 5 32x8 segments long
 #define NUM_PRESS_START_FRAMES 5
-#define NUM_COPYRIGHT_FRAMES 5
+#define NUM_COPYRIGHT_FRAMES 3
 
 static const union AnimCmd *const sStartCopyrightBannerAnimTable[NUM_PRESS_START_FRAMES + NUM_COPYRIGHT_FRAMES] =
 {
@@ -281,8 +277,6 @@ static const union AnimCmd *const sStartCopyrightBannerAnimTable[NUM_PRESS_START
     sAnim_Copyright_0,
     sAnim_Copyright_1,
     sAnim_Copyright_2,
-    sAnim_Copyright_3,
-    sAnim_Copyright_4,
 };
 
 static const struct SpriteTemplate sStartCopyrightBannerSpriteTemplate =
@@ -445,7 +439,6 @@ static void CreateCopyrightBanner(s16 x, s16 y)
     u8 i;
     u8 spriteId;
 
-    x -= 64;
     for (i = 0; i < NUM_COPYRIGHT_FRAMES; i++, x += 32)
     {
         spriteId = CreateSprite(&sStartCopyrightBannerSpriteTemplate, x, y, 0);
@@ -604,20 +597,19 @@ void CB2_InitTitleScreen(void)
         LZ77UnCompVram(gTitleScreenPokemonLogoTilemap, (void *)(BG_SCREEN_ADDR(9)));
         LoadPalette(gTitleScreenBgPalettes, BG_PLTT_ID(0), 15 * PLTT_SIZE_4BPP);
         // bg3
-        LZ77UnCompVram(sTitleScreenRayquazaGfx, (void *)(BG_CHAR_ADDR(2)));
-        LZ77UnCompVram(sTitleScreenRayquazaTilemap, (void *)(BG_SCREEN_ADDR(26)));
-        // bg1
-        LZ77UnCompVram(sTitleScreenCloudsGfx, (void *)(BG_CHAR_ADDR(3)));
-        LZ77UnCompVram(gTitleScreenCloudsTilemap, (void *)(BG_SCREEN_ADDR(27)));
+        LZ77UnCompVram(sTitleScreenSlowpokeWellGfx, (void *)(BG_CHAR_ADDR(2)));
+        LZ77UnCompVram(sTitleScreenSlowpokeWellTilemap, (void *)(BG_SCREEN_ADDR(26)));
+        LoadPalette(sSlowpokeWellTitleScreenWellPalettes, BG_PLTT_ID(14), 2 * PLTT_SIZE_4BPP);
+
         ScanlineEffect_Stop();
         ResetTasks();
         ResetSpriteData();
         FreeAllSpritePalettes();
         gReservedSpritePaletteCount = 9;
-        LoadCompressedSpriteSheet(&sSpriteSheet_EmeraldVersion[0]);
+        LoadCompressedSpriteSheet(&sSpriteSheet_GrottosVersion[0]);
         LoadCompressedSpriteSheet(&sSpriteSheet_PressStart[0]);
         LoadCompressedSpriteSheet(&sPokemonLogoShineSpriteSheet[0]);
-        LoadPalette(gTitleScreenEmeraldVersionPal, OBJ_PLTT_ID(0), PLTT_SIZE_4BPP);
+        LoadPalette(gTitleScreenGrottosVersionPal, OBJ_PLTT_ID(0), PLTT_SIZE_4BPP);
         LoadSpritePalette(&sSpritePalette_PressStart[0]);
         gMain.state = 2;
         break;
@@ -662,7 +654,7 @@ void CB2_InitTitleScreen(void)
                                     | DISPCNT_OBJ_ON
                                     | DISPCNT_WIN0_ON
                                     | DISPCNT_OBJWIN_ON);
-        m4aSongNumStart(MUS_TITLE);
+        m4aSongNumStart(MUS_AQUA_MAGMA_HIDEOUT);
         gMain.state = 5;
         break;
     case 5:
@@ -761,7 +753,7 @@ static void Task_TitleScreenPhase2(u8 taskId)
                                     | DISPCNT_BG2_ON
                                     | DISPCNT_OBJ_ON);
         CreatePressStartBanner(START_BANNER_X, 108);
-        CreateCopyrightBanner(START_BANNER_X, 148);
+        CreateCopyrightBanner(COPYRIGHT_BANNER_X, 148);
         gTasks[taskId].tBg1Y = 0;
         gTasks[taskId].func = Task_TitleScreenPhase3;
     }
@@ -816,13 +808,6 @@ static void Task_TitleScreenPhase3(u8 taskId)
     {
         SetGpuReg(REG_OFFSET_BG2Y_L, 0);
         SetGpuReg(REG_OFFSET_BG2Y_H, 0);
-        if (++gTasks[taskId].tCounter & 1)
-        {
-            gTasks[taskId].tBg1Y++;
-            gBattle_BG1_Y = gTasks[taskId].tBg1Y / 2;
-            gBattle_BG1_X = 0;
-        }
-        UpdateLegendaryMarkingColor(gTasks[taskId].tCounter);
         if ((gMPlayInfo_BGM.status & 0xFFFF) == 0)
         {
             BeginNormalPaletteFade(PALETTES_ALL, 0, 0, 16, RGB_WHITEALPHA);
@@ -870,18 +855,4 @@ static void CB2_GoToBerryFixScreen(void)
         m4aMPlayAllStop();
         SetMainCallback2(CB2_InitBerryFixProgram);
     }
-}
-
-static void UpdateLegendaryMarkingColor(u8 frameNum)
-{
-    if ((frameNum % 4) == 0) // Change color every 4th frame
-    {
-        s32 intensity = Cos(frameNum, 128) + 128;
-        s32 r = 31 - ((intensity * 32 - intensity) / 256);
-        s32 g = 31 - (intensity * 22 / 256);
-        s32 b = 12;
-
-        u16 color = RGB(r, g, b);
-        LoadPalette(&color, BG_PLTT_ID(14) + 15, sizeof(color));
-   }
 }
