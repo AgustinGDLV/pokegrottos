@@ -13,7 +13,9 @@
 #define MIN_ROOMS                   7
 #define MAX_ROOMS                   20
 #define STARTING_ROOM               45
-#define TEMPLATE_MAP_GROUP_START    1
+
+// Template Constants
+#define TEMPLATE_MAP_GROUP_START    34
 
 // Room Constants
 #define ROOM_COORD(x, y)            ((x+1) + (y+1)*10)  // gFloorplan.layout is not zero-indexed
@@ -38,6 +40,11 @@ enum TemplateTypes {
     TEMPLATE_TYPES_COUNT,
 };
 
+enum ConnectionTypes {
+    CONNECTION_TYPE_WARP,
+    CONNECTION_TYPE_SEAMLESS,
+};
+
 struct Floorplan {
     u8 numRooms;
     u8 maxRooms;
@@ -54,7 +61,7 @@ struct TemplateRules {
     u16 bgm;
     u8 previewId;
     u8 battleTerrain;
-    u8 lighting; // stored as hours
+    u8 connectionType;
     s8 offsets[5][2]; // (x, y) entrance cover offsets for each direction
     u8 numNormalRooms;
     const u8* normalRoomIds;
@@ -83,17 +90,17 @@ extern struct Floorplan gFloorplan;
 extern const struct TemplateRules gTemplateRules[TEMPLATE_TYPES_COUNT];
 extern const struct CharacterInfo gCharacterInfos[CHARACTERS_COUNT];
 
-void DebugPrintFloorplan(struct Floorplan* floorplan);
-void SetRoomAsVisited(u8 i);
-bool32 IsRoomVisited(u8 i);
-bool32 DoesRoomExist(u8 i);
-bool32 IsRoomAdjacentToVisited(u8 i);
+void SetRoomAsVisited(u32 i);
+bool32 IsRoomVisited(u32 i);
+bool32 DoesRoomExist(u32 i);
+bool32 IsRoomAdjacentToVisited(u32 i);
 u32 GetRoomInDirection(u32 dir);
 bool32 IsPlayerInFloorMap(void);
 void SetWarpDestinationToRoom(u32 index, u32 warpId);
 bool32 TryWarpToRoom(u32 target, u32 warpId);
 u32 GetRoomType(u32 index);
-const struct TemplateRules* GetTemplateRules(enum TemplateTypes templateType);
+const struct TemplateRules* GetCurrentTemplateRules(void);
+const struct MapHeader * const GetRoomMapHeader(u32 i);
 u16 GetRoomSeed(u32 index);
 void SetRNGToRoomSeed(void);
 void GenerateFloorplan(void);

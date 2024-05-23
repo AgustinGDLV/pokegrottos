@@ -25,13 +25,14 @@
 
 // global floorplan
 EWRAM_DATA struct Floorplan gFloorplan = {0};
+EWRAM_DATA struct MapConnections gRoomMapConnections = {0};
 
 #include "data/template_rules.h"
 #include "data/character_infos.h"
 
 // forward declarations
-static u32 CountNeighbors(struct Floorplan* floorplan, u8 i);
-static bool32 Visit(struct Floorplan* floorplan, u8 i);
+static u32 CountNeighbors(struct Floorplan* floorplan, u32 i);
+static bool32 Visit(struct Floorplan* floorplan, u32 i);
 static void ZeroFloorplan(struct Floorplan* floorplan);
 static u8 GetMaxRooms(void);
 static void PopulateFloorplan(struct Floorplan* floorplan);
@@ -40,25 +41,25 @@ static void AssignRoomMapIds(struct Floorplan* floorplan);
 static void ClearFloorEventFlags(void);
 
 // Returns the number of occupied neighbors for a room index.
-static u32 CountNeighbors(struct Floorplan* floorplan, u8 i)
+static u32 CountNeighbors(struct Floorplan* floorplan, u32 i)
 {
     return (floorplan->layout[i-10].type >= NORMAL_ROOM) + (floorplan->layout[i-1].type >= NORMAL_ROOM) \
     + (floorplan->layout[i+1].type >= NORMAL_ROOM) + (floorplan->layout[i+10].type >= NORMAL_ROOM);
 }
 
 // The visited flags for a room are set in a saveblock bitfield.
-void SetRoomAsVisited(u8 i)
+void SetRoomAsVisited(u32 i)
 {
     gSaveBlock1Ptr->visitedRooms[i / 32] |= (1 << i % 32);
 }
 
-bool32 IsRoomVisited(u8 i)
+bool32 IsRoomVisited(u32 i)
 {
     return gSaveBlock1Ptr->visitedRooms[i / 32] & (1 << i % 32);
 }
 
 // "Visits" a room during generation and marks it as occupied or ignores it.
-static bool32 Visit(struct Floorplan* floorplan, u8 i)
+static bool32 Visit(struct Floorplan* floorplan, u32 i)
 {
     if (floorplan->numRooms >= floorplan->maxRooms)
         return FALSE;
@@ -172,9 +173,9 @@ static void AssignSpecialRoomTypes(struct Floorplan* floorplan)
     floorplan->layout[Pop(&floorplan->endrooms)].type = CHALLENGE_ROOM;
 }
 
-const struct TemplateRules* GetTemplateRules(enum TemplateTypes templateType)
+const struct TemplateRules* GetCurrentTemplateRules(void)
 {
-    return &gTemplateRules[templateType];
+    return &gTemplateRules[gSaveBlock1Ptr->currentTemplateType];
 }
 
 // Assigns each room a map ID.
@@ -182,7 +183,7 @@ static void AssignRoomMapIds(struct Floorplan* floorplan)
 {
     u32 i;
     struct Room* room;
-    const struct TemplateRules * const rules = GetTemplateRules(gSaveBlock1Ptr->currentTemplateType);
+    const struct TemplateRules * const rules = GetCurrentTemplateRules();
     const u8 *normalPool = rules->normalRoomIds;
     u32 poolSize = rules->numNormalRooms;
     u8 *shuffled = AllocZeroed(sizeof(u8) * poolSize);
@@ -215,24 +216,6 @@ static void AssignRoomMapIds(struct Floorplan* floorplan)
     Free(shuffled);
 }
 
-
-// This prints the floor layout backwards. (it is janky)
-void DebugPrintFloorplan(struct Floorplan* floorplan)
-{
-    u32 x, y, row, exponent;
-    for (y = 0; y < MAX_LAYOUT_HEIGHT; ++y)
-    {
-        row = 2000000000;
-        exponent = 1;
-        for(x = 0; x < MAX_LAYOUT_WIDTH; ++x)
-        {
-            row += floorplan->layout[ROOM_COORD(x, y)].type * exponent;
-            exponent *= 10;
-        }
-        DebugPrintf("%d", row);
-    }
-}
-
 // Clears all loot and encounter flags between floors.
 static void ClearFloorEventFlags(void)
 {
@@ -242,13 +225,13 @@ static void ClearFloorEventFlags(void)
 }
 
 // Returns whether a room in the layout exists.
-bool32 DoesRoomExist(u8 i)
+bool32 DoesRoomExist(u32 i)
 {
     return gFloorplan.layout[i].type >= NORMAL_ROOM;
 }
 
 // Returns whether a room in the layout is adjacent to a visited room.
-bool32 IsRoomAdjacentToVisited(u8 i)
+bool32 IsRoomAdjacentToVisited(u32 i)
 {
     if (IsRoomVisited(i - 10))
         return TRUE;
@@ -293,7 +276,7 @@ bool32 IsPlayerInFloorMap(void)
 // Sets the warp destination to the room's map ID (given by room index).
 void SetWarpDestinationToRoom(u32 index, u32 warpId)
 {
-    SetWarpDestination(GetTemplateRules(gSaveBlock1Ptr->currentTemplateType)->mapGroup, gFloorplan.layout[index].mapNum, warpId, -1, -1);
+    SetWarpDestination(GetCurrentTemplateRules()->mapGroup, gFloorplan.layout[index].mapNum, warpId, -1, -1);
 }
 
 // Executes a warp to a given room.
@@ -373,6 +356,12 @@ void GoToNextFloor(void)
     ClearFloorEventFlags();
     FadeOutMapMusic(GetMapMusicFadeoutSpeed());
     SetMainCallback2(CB2_FloorPreview);
+}
+
+const struct MapHeader * const GetRoomMapHeader(u32 i)
+{
+    return Overworld_GetMapHeaderByGroupAndId(GetCurrentTemplateRules()->mapGroup,
+                                              gFloorplan.layout[i].mapNum);
 }
 
 // Debugging function called by menu scripts.

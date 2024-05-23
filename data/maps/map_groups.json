@@ -633,6 +633,10 @@
   ],
   "gMapGroup_PowerPlantTemplates": [
     "PowerPlantTemplates_Connections",
-    "PowerPlantTemplates_BossRoom"
+    "PowerPlantTemplates_BossRoom",
+    "PowerPlantTemplates_ShopRoom",
+    "PowerPlantTemplates_TreasureRoom",
+    "PowerPlantTemplates_ChallengeRoom",
+    "PowerPlantTemplates_Room1"
   ]
 }

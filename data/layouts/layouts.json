@@ -4475,7 +4475,7 @@
       "id": "LAYOUT_POWER_PLANT_TEMPLATES_CONNECTIONS",
       "name": "PowerPlantTemplates_Connections_Layout",
       "width": 5,
-      "height": 20,
+      "height": 28,
       "primary_tileset": "gTileset_General",
       "secondary_tileset": "gTileset_PowerPlant",
       "border_filepath": "data/layouts/PowerPlantTemplates_Connections/border.bin",
@@ -4484,12 +4484,52 @@
     {
       "id": "LAYOUT_POWER_PLANT_TEMPLATES_BOSS_ROOM",
       "name": "PowerPlantTemplates_BossRoom_Layout",
-      "width": 16,
-      "height": 14,
+      "width": 17,
+      "height": 21,
       "primary_tileset": "gTileset_General",
       "secondary_tileset": "gTileset_PowerPlant",
       "border_filepath": "data/layouts/PowerPlantTemplates_BossRoom/border.bin",
       "blockdata_filepath": "data/layouts/PowerPlantTemplates_BossRoom/map.bin"
+    },
+    {
+      "id": "LAYOUT_POWER_PLANT_TEMPLATES_SHOP_ROOM",
+      "name": "PowerPlantTemplates_ShopRoom_Layout",
+      "width": 17,
+      "height": 21,
+      "primary_tileset": "gTileset_General",
+      "secondary_tileset": "gTileset_PowerPlant",
+      "border_filepath": "data/layouts/PowerPlantTemplates_ShopRoom/border.bin",
+      "blockdata_filepath": "data/layouts/PowerPlantTemplates_ShopRoom/map.bin"
+    },
+    {
+      "id": "LAYOUT_POWER_PLANT_TEMPLATES_TREASURE_ROOM",
+      "name": "PowerPlantTemplates_TreasureRoom_Layout",
+      "width": 17,
+      "height": 21,
+      "primary_tileset": "gTileset_General",
+      "secondary_tileset": "gTileset_PowerPlant",
+      "border_filepath": "data/layouts/PowerPlantTemplates_TreasureRoom/border.bin",
+      "blockdata_filepath": "data/layouts/PowerPlantTemplates_TreasureRoom/map.bin"
+    },
+    {
+      "id": "LAYOUT_POWER_PLANT_TEMPLATES_CHALLENGE_ROOM",
+      "name": "PowerPlantTemplates_ChallengeRoom_Layout",
+      "width": 17,
+      "height": 21,
+      "primary_tileset": "gTileset_General",
+      "secondary_tileset": "gTileset_PowerPlant",
+      "border_filepath": "data/layouts/PowerPlantTemplates_ChallengeRoom/border.bin",
+      "blockdata_filepath": "data/layouts/PowerPlantTemplates_ChallengeRoom/map.bin"
+    },
+    {
+      "id": "LAYOUT_POWER_PLANT_TEMPLATES_ROOM1",
+      "name": "PowerPlantTemplates_Room1_Layout",
+      "width": 17,
+      "height": 21,
+      "primary_tileset": "gTileset_General",
+      "secondary_tileset": "gTileset_PowerPlant",
+      "border_filepath": "data/layouts/PowerPlantTemplates_Room1/border.bin",
+      "blockdata_filepath": "data/layouts/PowerPlantTemplates_Room1/map.bin"
     }
   ]
 }

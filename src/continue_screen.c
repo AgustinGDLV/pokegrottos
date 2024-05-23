@@ -341,7 +341,7 @@ static void LoadContinueScreenGfx(void)
 
 static void LoadMapPreviewGfx(void)
 {   
-    struct MapPreview data = gMapPreviewData[GetTemplateRules(gSaveBlock1Ptr->currentTemplateType)->previewId];
+    struct MapPreview data = gMapPreviewData[GetCurrentTemplateRules()->previewId];
     DecompressAndCopyTileDataToVram(2, data.tiles, 0, 0, 0);
 	LZDecompressWram(data.map, sMapPreviewTilemapPtr);
 	LoadPalette(data.palette, BG_PLTT_ID(13), PLTT_SIZE_4BPP);

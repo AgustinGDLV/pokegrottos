@@ -428,7 +428,7 @@ static bool8 IsHiddenItemPresentAtCoords(const struct MapEvents *events, s16 x, 
     return FALSE;
 }
 
-static bool8 IsHiddenItemPresentInConnection(const struct MapConnection *connection, int x, int y)
+static bool8 IsHiddenItemPresentInConnection(struct MapConnection connection, int x, int y)
 {
 
     u16 localX, localY;
@@ -437,17 +437,17 @@ static bool8 IsHiddenItemPresentInConnection(const struct MapConnection *connect
 
     struct MapHeader const *const mapHeader = GetMapHeaderFromConnection(connection);
 
-    switch (connection->direction)
+    switch (connection.direction)
     {
     // same weird temp variable behavior seen in IsHiddenItemPresentAtCoords
     case CONNECTION_NORTH:
-        localOffset = connection->offset + MAP_OFFSET;
+        localOffset = connection.offset + MAP_OFFSET;
         localX = x - localOffset;
         localLength = mapHeader->mapLayout->height - MAP_OFFSET;
         localY = localLength + y; // additions are reversed for some reason
         break;
     case CONNECTION_SOUTH:
-        localOffset = connection->offset + MAP_OFFSET;
+        localOffset = connection.offset + MAP_OFFSET;
         localX = x - localOffset;
         localLength = gMapHeader.mapLayout->height + MAP_OFFSET;
         localY = y - localLength;
@@ -455,13 +455,13 @@ static bool8 IsHiddenItemPresentInConnection(const struct MapConnection *connect
     case CONNECTION_WEST:
         localLength = mapHeader->mapLayout->width - MAP_OFFSET;
         localX = localLength + x; // additions are reversed for some reason
-        localOffset = connection->offset + MAP_OFFSET;
+        localOffset = connection.offset + MAP_OFFSET;
         localY = y - localOffset;
         break;
     case CONNECTION_EAST:
         localLength = gMapHeader.mapLayout->width + MAP_OFFSET;
         localX = x - localLength;
-        localOffset = connection->offset + MAP_OFFSET;
+        localOffset = connection.offset + MAP_OFFSET;
         localY = y - localOffset;
         break;
     default:
@@ -493,8 +493,8 @@ static void CheckForHiddenItemsInMapConnection(u8 taskId)
              || var2 > y
              || y >= height)
             {
-                const struct MapConnection *conn = GetMapConnectionAtPos(x, y);
-                if (conn && IsHiddenItemPresentInConnection(conn, x, y) == TRUE)
+                struct MapConnection conn = GetMapConnectionAtPos(x, y);
+                if (conn.direction != 0xFF && IsHiddenItemPresentInConnection(conn, x, y))
                     SetDistanceOfClosestHiddenItem(taskId, x - playerX, y - playerY);
             }
         }

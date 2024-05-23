@@ -183,7 +183,7 @@ static const u8 sCaveNormalRooms[] =
 // Power Plant Template Pools
 static const u8 sPowerPlantNormalRooms[] =
 {
-    MAP_NUM(POWER_PLANT_TEMPLATES_BOSS_ROOM),
+    MAP_NUM(POWER_PLANT_TEMPLATES_ROOM1),
 };
 
 const struct TemplateRules gTemplateRules[TEMPLATE_TYPES_COUNT] = 
@@ -194,7 +194,7 @@ const struct TemplateRules gTemplateRules[TEMPLATE_TYPES_COUNT] =
         .bgm = MUS_RG_SEVII_CAVE,
         .previewId = PREVIEW_MT_MOON,
         .battleTerrain = BATTLE_TERRAIN_CAVE,
-        .lighting = 12,
+        .connectionType = CONNECTION_TYPE_WARP,
         .offsets = {
             [DIR_NORTH] = {-1, -1},
             [DIR_SOUTH] = {-1, 1},
@@ -227,12 +227,12 @@ const struct TemplateRules gTemplateRules[TEMPLATE_TYPES_COUNT] =
         .bgm = MUS_RG_POKE_MANSION,
         .previewId = PREVIEW_POWER_PLANT,
         .battleTerrain = BATTLE_TERRAIN_CAVE,
-        .lighting = 12,
+        .connectionType = CONNECTION_TYPE_SEAMLESS,
         .offsets = {
             [DIR_NORTH] = {-2, -1},
-            [DIR_SOUTH] = {-2, -3},
-            [DIR_EAST] = {-2, -2},
-            [DIR_WEST] = {-2, -2},
+            [DIR_SOUTH] = {-2, -5},
+            [DIR_EAST] = {-3, -4},
+            [DIR_WEST] = {-1, -4},
         },
         .numNormalRooms = ARRAY_COUNT(sPowerPlantNormalRooms),
         .normalRoomIds = sPowerPlantNormalRooms,
@@ -244,6 +244,12 @@ const struct TemplateRules gTemplateRules[TEMPLATE_TYPES_COUNT] =
         .itemPools = gDefaultItemPools,
         .encounterPool = {
             {SPECIES_MAGNEMITE, 100},
+            {SPECIES_MAGNETON, 100},
+            {SPECIES_VOLTORB, 100},
+            {SPECIES_PLUSLE, 100},
+            {SPECIES_MINUN, 100},
+            {SPECIES_ZIGZAGOON, 100},
+            {SPECIES_GRIMER, 100},
         }
     },
 };

@@ -46,8 +46,8 @@ static void FillEastConnection(struct MapHeader const *mapHeader, struct MapHead
 static void InitBackupMapLayoutConnections(struct MapHeader *mapHeader);
 static void LoadSavedMapView(void);
 static bool8 SkipCopyingMetatileFromSavedMap(u16 *mapBlock, u16 mapWidth, u8 yMode);
-static const struct MapConnection *GetIncomingConnection(u8 direction, int x, int y);
-static bool8 IsPosInIncomingConnectingMap(u8 direction, int x, int y, const struct MapConnection *connection);
+static struct MapConnection GetIncomingConnection(u8 direction, int x, int y);
+static bool8 IsPosInIncomingConnectingMap(u8 direction, int x, int y, struct MapConnection connection);
 static bool8 IsCoordInIncomingConnectingMap(int coord, int srcMax, int destMax, int offset);
 
 static inline u16 GetBorderBlockAt(int x, int y)
@@ -61,9 +61,9 @@ static inline u16 GetBorderBlockAt(int x, int y)
 
 #define GetMapGridBlockAt(x, y) (AreCoordsWithinMapGridBounds(x, y) ? gBackupMapLayout.map[x + gBackupMapLayout.width * y] : GetBorderBlockAt(x, y))
 
-const struct MapHeader *const GetMapHeaderFromConnection(const struct MapConnection *connection)
+const struct MapHeader *const GetMapHeaderFromConnection(struct MapConnection connection)
 {
-    return Overworld_GetMapHeaderByGroupAndId(connection->mapGroup, connection->mapNum);
+    return Overworld_GetMapHeaderByGroupAndId(connection.mapGroup, connection.mapNum);
 }
 
 void InitMap(void)
@@ -139,19 +139,19 @@ static void InitBackupMapLayoutData(const u16 *map, u16 width, u16 height)
 static void InitBackupMapLayoutConnections(struct MapHeader *mapHeader)
 {
     int count;
-    const struct MapConnection *connection;
+    struct MapConnection connection;
     int i;
 
     if (mapHeader->connections)
     {
         count = mapHeader->connections->count;
-        connection = mapHeader->connections->connections;
         sMapConnectionFlags = sDummyConnectionFlags;
-        for (i = 0; i < count; i++, connection++)
+        for (i = 0; i < count; ++i)
         {
+            connection = mapHeader->connections->connections[i];
             struct MapHeader const *cMap = GetMapHeaderFromConnection(connection);
-            u32 offset = connection->offset;
-            switch (connection->direction)
+            u32 offset = connection.offset;
+            switch (connection.direction)
             {
             case CONNECTION_SOUTH:
                 FillSouthConnection(mapHeader, cMap, offset);
@@ -169,6 +169,37 @@ static void InitBackupMapLayoutConnections(struct MapHeader *mapHeader)
                 FillEastConnection(mapHeader, cMap, offset);
                 sMapConnectionFlags.east = TRUE;
                 break;
+            }
+        }
+    }
+    // Fill dynamic connections for floors with seamless connections.
+    else if (IsPlayerInFloorMap() && GetCurrentTemplateRules()->connectionType == CONNECTION_TYPE_SEAMLESS)
+    {
+        for (i = DIR_SOUTH; i <= DIR_EAST; ++i)
+        {
+            if (DoesRoomExist(GetRoomInDirection(i)))
+            {
+                struct MapHeader const *cMap = GetRoomMapHeader(GetRoomInDirection(i));
+                switch (i)
+                {
+                    case DIR_SOUTH:
+                        FillSouthConnection(mapHeader, cMap, 0);
+                        sMapConnectionFlags.south = TRUE;
+                        break;
+                    case DIR_NORTH:
+                        FillNorthConnection(mapHeader, cMap, 0);
+                        sMapConnectionFlags.north = TRUE;
+                        break;
+                    case DIR_WEST:
+                        FillWestConnection(mapHeader, cMap, 0);
+                        sMapConnectionFlags.west = TRUE;
+                        break;
+                    case DIR_EAST:
+                        FillEastConnection(mapHeader, cMap, 0);
+                        sMapConnectionFlags.east = TRUE;
+                        break;
+                }
+                
             }
         }
     }
@@ -625,7 +656,7 @@ bool32 CanCameraMoveInDirection(int direction)
     return TRUE;
 }
 
-static void SetPositionFromConnection(const struct MapConnection *connection, int direction, int x, int y)
+static void SetPositionFromConnection(struct MapConnection connection, int direction, int x, int y)
 {
     struct MapHeader const *mapHeader = GetMapHeaderFromConnection(connection);
 
@@ -633,18 +664,18 @@ static void SetPositionFromConnection(const struct MapConnection *connection, in
     {
     case CONNECTION_EAST:
         gSaveBlock1Ptr->pos.x = -x;
-        gSaveBlock1Ptr->pos.y -= connection->offset;
+        gSaveBlock1Ptr->pos.y -= connection.offset;
         break;
     case CONNECTION_WEST:
         gSaveBlock1Ptr->pos.x = mapHeader->mapLayout->width;
-        gSaveBlock1Ptr->pos.y -= connection->offset;
+        gSaveBlock1Ptr->pos.y -= connection.offset;
         break;
     case CONNECTION_SOUTH:
-        gSaveBlock1Ptr->pos.x -= connection->offset;
+        gSaveBlock1Ptr->pos.x -= connection.offset;
         gSaveBlock1Ptr->pos.y = -y;
         break;
     case CONNECTION_NORTH:
-        gSaveBlock1Ptr->pos.x -= connection->offset;
+        gSaveBlock1Ptr->pos.x -= connection.offset;
         gSaveBlock1Ptr->pos.y = mapHeader->mapLayout->height;
         break;
     default:
@@ -656,7 +687,7 @@ static void SetPositionFromConnection(const struct MapConnection *connection, in
 bool8 CameraMove(int x, int y)
 {
     int direction;
-    const struct MapConnection *connection;
+    struct MapConnection connection;
     int old_x, old_y;
     gCamera.active = FALSE;
     direction = GetPostCameraMoveMapBorderId(x, y);
@@ -672,10 +703,12 @@ bool8 CameraMove(int x, int y)
         old_x = gSaveBlock1Ptr->pos.x;
         old_y = gSaveBlock1Ptr->pos.y;
         connection = GetIncomingConnection(direction, gSaveBlock1Ptr->pos.x, gSaveBlock1Ptr->pos.y);
-        if (connection)
+        if (connection.direction != 0xFF)
         {
             SetPositionFromConnection(connection, direction, x, y);
-            LoadMapFromCameraTransition(connection->mapGroup, connection->mapNum);
+            gSaveBlock1Ptr->currentRoom = GetRoomInDirection(direction);
+            SetRoomAsVisited(GetRoomInDirection(direction));
+            LoadMapFromCameraTransition(connection.mapGroup, connection.mapNum);
             gCamera.active = TRUE;
             gCamera.x = old_x - gSaveBlock1Ptr->pos.x;
             gCamera.y = old_y - gSaveBlock1Ptr->pos.y;
@@ -692,28 +725,39 @@ bool8 CameraMove(int x, int y)
     return gCamera.active;
 }
 
-static const struct MapConnection *GetIncomingConnection(u8 direction, int x, int y)
+static struct MapConnection GetIncomingConnection(u8 direction, int x, int y)
 {
     int count;
     int i;
-    const struct MapConnection *connection;
+    struct MapConnection connection = {0}, empty = {0xFF};
     const struct MapConnections *connections = gMapHeader.connections;
 
-#ifdef UBFIX // UB: Multiple possible null dereferences
-    if (connections == NULL || connections->connections == NULL)
-        return NULL;
-#endif
-    count = connections->count;
-    connection = connections->connections;
-    for (i = 0; i < count; i++, connection++)
+    if (IsPlayerInFloorMap() && DoesRoomExist(GetRoomInDirection(direction)))
     {
-        if (connection->direction == direction && IsPosInIncomingConnectingMap(direction, x, y, connection) == TRUE)
-            return connection;
+        connection.direction = direction;
+        connection.mapGroup = GetCurrentTemplateRules()->mapGroup;
+        connection.mapNum = gFloorplan.layout[GetRoomInDirection(direction)].mapNum;
+        connection.offset = 0;
+        return connection;
     }
-    return NULL;
+#ifdef UBFIX // UB: Multiple possible null dereferences
+    else if (connections == NULL || connections->connections == NULL)
+        return empty;
+#endif
+    else
+    {
+        count = connections->count;
+        for (i = 0; i < count; ++i)
+        {
+            connection = connections->connections[i];
+            if (connection.direction == direction && IsPosInIncomingConnectingMap(direction, x, y, connection) == TRUE)
+                return connection;
+        }
+    }
+    return empty;
 }
 
-static bool8 IsPosInIncomingConnectingMap(u8 direction, int x, int y, const struct MapConnection *connection)
+static bool8 IsPosInIncomingConnectingMap(u8 direction, int x, int y, struct MapConnection connection)
 {
     struct MapHeader const *mapHeader;
     mapHeader = GetMapHeaderFromConnection(connection);
@@ -721,10 +765,10 @@ static bool8 IsPosInIncomingConnectingMap(u8 direction, int x, int y, const stru
     {
     case CONNECTION_SOUTH:
     case CONNECTION_NORTH:
-        return IsCoordInIncomingConnectingMap(x, gMapHeader.mapLayout->width, mapHeader->mapLayout->width, connection->offset);
+        return IsCoordInIncomingConnectingMap(x, gMapHeader.mapLayout->width, mapHeader->mapLayout->width, connection.offset);
     case CONNECTION_WEST:
     case CONNECTION_EAST:
-        return IsCoordInIncomingConnectingMap(y, gMapHeader.mapLayout->height, mapHeader->mapLayout->height, connection->offset);
+        return IsCoordInIncomingConnectingMap(y, gMapHeader.mapLayout->height, mapHeader->mapLayout->height, connection.offset);
     }
     return FALSE;
 }
@@ -754,39 +798,39 @@ static int IsCoordInConnectingMap(int coord, int max)
     return FALSE;
 }
 
-static int IsPosInConnectingMap(const struct MapConnection *connection, int x, int y)
+static int IsPosInConnectingMap(struct MapConnection connection, int x, int y)
 {
     struct MapHeader const *mapHeader;
     mapHeader = GetMapHeaderFromConnection(connection);
-    switch (connection->direction)
+    switch (connection.direction)
     {
     case CONNECTION_SOUTH:
     case CONNECTION_NORTH:
-        return IsCoordInConnectingMap(x - connection->offset, mapHeader->mapLayout->width);
+        return IsCoordInConnectingMap(x - connection.offset, mapHeader->mapLayout->width);
     case CONNECTION_WEST:
     case CONNECTION_EAST:
-        return IsCoordInConnectingMap(y - connection->offset, mapHeader->mapLayout->height);
+        return IsCoordInConnectingMap(y - connection.offset, mapHeader->mapLayout->height);
     }
     return FALSE;
 }
 
-const struct MapConnection *GetMapConnectionAtPos(s16 x, s16 y)
+struct MapConnection GetMapConnectionAtPos(s16 x, s16 y)
 {
     int count;
-    const struct MapConnection *connection;
+    struct MapConnection connection, empty = {0xFF};
     int i;
     u8 direction;
     if (!gMapHeader.connections)
     {
-        return NULL;
+        return empty;
     }
     else
     {
         count = gMapHeader.connections->count;
-        connection = gMapHeader.connections->connections;
-        for (i = 0; i < count; i++, connection++)
+        for (i = 0; i < count; i++)
         {
-            direction = connection->direction;
+            connection = gMapHeader.connections->connections[i];
+            direction = connection.direction;
             if ((direction == CONNECTION_DIVE || direction == CONNECTION_EMERGE)
              || (direction == CONNECTION_NORTH && y > MAP_OFFSET - 1)
              || (direction == CONNECTION_SOUTH && y < gMapHeader.mapLayout->height + MAP_OFFSET)
@@ -801,7 +845,7 @@ const struct MapConnection *GetMapConnectionAtPos(s16 x, s16 y)
             }
         }
     }
-    return NULL;
+    return empty;
 }
 
 void SetCameraFocusCoords(u16 x, u16 y)

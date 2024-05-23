@@ -220,7 +220,7 @@ static void Task_FloorPreviewFadeIn(u8 taskId)
 
 static void LoadMapPreviewGfx(void)
 {   
-    struct MapPreview data = gMapPreviewData[GetTemplateRules(gSaveBlock1Ptr->currentTemplateType)->previewId];
+    struct MapPreview data = gMapPreviewData[GetCurrentTemplateRules()->previewId];
 
     DecompressAndCopyTileDataToVram(2, data.tiles, 0, 0, 0);
 	LZDecompressWram(data.map, sMapPreviewTilemapPtr);
@@ -321,7 +321,7 @@ static void DrawText(void)
     ptr = StringCopy(gStringVar4, sText_Floor);
     ptr = ConvertIntToDecimalStringN(ptr, gSaveBlock1Ptr->currentFloor, STR_CONV_MODE_LEFT_ALIGN, 1+(gSaveBlock1Ptr->currentFloor/10));
     ptr = StringAppend(ptr, sText_Continue);
-    ptr = StringAppend(ptr, gMapPreviewData[GetTemplateRules(gSaveBlock1Ptr->currentTemplateType)->previewId].name);
+    ptr = StringAppend(ptr, gMapPreviewData[GetCurrentTemplateRules()->previewId].name);
     *ptr = CHAR_ELLIPSIS;
     *(++ptr) = EOS;
     AddTextPrinterParameterized3(WIN_CONTINUE, FONT_NORMAL, 2, 2, sTextColor_Instructions, TEXT_SKIP_DRAW, gStringVar4);
@@ -367,8 +367,7 @@ static void PopulateSpeciesList(void)
     {
         for (y = 0; y < MAX_LAYOUT_HEIGHT; ++y)
         {
-            header = Overworld_GetMapHeaderByGroupAndId(GetTemplateRules(gSaveBlock1Ptr->currentTemplateType)->mapGroup,
-                                                        gFloorplan.layout[ROOM_COORD(x, y)].mapNum);
+            header = GetRoomMapHeader(ROOM_COORD(x, y));
             for (i = 0; i < header->events->objectEventCount; ++i)
             {
                 if (header->events->objectEvents[i].graphicsId == OBJ_EVENT_GFX_MON_BASE)
@@ -404,7 +403,7 @@ static void Task_FloorPreviewSaveAndExit(u8 taskId)
             break;
         case 1:
             SetContinueGameWarpStatus();
-            SetWarpData(&gSaveBlock1Ptr->continueGameWarp, GetTemplateRules(gSaveBlock1Ptr->currentTemplateType)->mapGroup,
+            SetWarpData(&gSaveBlock1Ptr->continueGameWarp, GetCurrentTemplateRules()->mapGroup,
                         gFloorplan.layout[STARTING_ROOM].mapNum, 0, -1, -1);
             TrySavingData(SAVE_NORMAL);
             ++(*state);

@@ -64,12 +64,12 @@ static void PasteMapChunk(u16 x, u16 y, struct MapChunk *chunk)
 
 static s32 GetCoverXOffset(u32 dir)
 {
-    return GetTemplateRules(gSaveBlock1Ptr->currentTemplateType)->offsets[dir][0];
+    return GetCurrentTemplateRules()->offsets[dir][0];
 }
 
 static s32 GetCoverYOffset(u32 dir)
 {
-    return GetTemplateRules(gSaveBlock1Ptr->currentTemplateType)->offsets[dir][1];
+    return GetCurrentTemplateRules()->offsets[dir][1];
 }
 
 static void CoverExitInDirection(u32 dir)

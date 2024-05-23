@@ -14,5 +14,5 @@ u16 GetOverworldSpeciesInRoom(u32 index, u32 localId)
     for (i = 0; i < localId; ++i)
         RandomF();
 
-    return ChooseElementFromPool(GetTemplateRules(gSaveBlock1Ptr->currentTemplateType)->encounterPool);
+    return ChooseElementFromPool(GetCurrentTemplateRules()->encounterPool);
 }

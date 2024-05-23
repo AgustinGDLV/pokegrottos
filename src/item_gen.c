@@ -11,7 +11,7 @@
 // Returns the pool of items for a given tier and item type.
 const struct WeightedElement* GetItemPool(enum ItemType type, enum ItemTier tier)
 {
-    const struct TemplateRules* rules = GetTemplateRules(gSaveBlock1Ptr->currentTemplateType);
+    const struct TemplateRules* rules = GetCurrentTemplateRules();
     const struct ItemPoolTable* tablePtr;
     const struct WeightedElement* pool;
 
