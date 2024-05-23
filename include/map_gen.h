@@ -94,6 +94,7 @@ void SetWarpDestinationToRoom(u32 index, u32 warpId);
 bool32 TryWarpToRoom(u32 target, u32 warpId);
 u32 GetRoomType(u32 index);
 const struct TemplateRules* GetTemplateRules(enum TemplateTypes templateType);
+u16 GetRoomSeed(u32 index);
 void SetRNGToRoomSeed(void);
 void GenerateFloorplan(void);
 void GoToNextFloor(void);

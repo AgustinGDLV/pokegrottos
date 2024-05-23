@@ -5,6 +5,7 @@
 #include "decompress.h"
 #include "event_data.h"
 #include "event_object_movement.h"
+#include "map_preview.h"
 #include "field_screen_effect.h"
 #include "field_weather.h"
 #include "gpu_regs.h"
@@ -40,34 +41,6 @@ enum Windows
 	WIN_CONTINUE,
     WIN_BUTTONS,
 	WINDOW_COUNT,
-};
-
-struct MapPreview {
-    const u16 * palette;
-    const u32 * tiles;
-    const u32 * map;
-};
-
-static const u16 sMtMoonMapPreviewPalette[] = INCBIN_U16("graphics/map_preview/mt_moon/tiles.gbapal");
-static const u32 sMtMoonMapPreviewTiles[] = INCBIN_U32("graphics/map_preview/mt_moon/tiles.4bpp.lz");
-static const u32 sMtMoonMapPreviewTilemap[] = INCBIN_U32("graphics/map_preview/mt_moon/tilemap.bin.lz");
-
-static const u16 sPowerPlantMapPreviewPalette[] = INCBIN_U16("graphics/map_preview/power_plant/tiles.gbapal");
-static const u32 sPowerPlantMapPreviewTiles[] = INCBIN_U32("graphics/map_preview/power_plant/tiles.4bpp.lz");
-static const u32 sPowerPlantMapPreviewTilemap[] = INCBIN_U32("graphics/map_preview/power_plant/tilemap.bin.lz");
-
-const struct MapPreview sMapPreviewData[PREVIEW_COUNT] =
-{
-    [PREVIEW_MT_MOON] = {
-        .palette = sMtMoonMapPreviewPalette,
-        .tiles = sMtMoonMapPreviewTiles,
-        .map = sMtMoonMapPreviewTilemap,
-    },
-    [PREVIEW_POWER_PLANT] = {
-        .palette = sPowerPlantMapPreviewPalette,
-        .tiles = sPowerPlantMapPreviewTiles,
-        .map = sPowerPlantMapPreviewTilemap,
-    },
 };
 
 static const struct WindowTemplate sContinueScreenWinTemplates[WINDOW_COUNT + 1] =
@@ -135,15 +108,6 @@ static const struct BgTemplate sContinueScreenBgTemplates[] =
 		.priority = 1,
 		.baseTile = 0,
 	},
-	// { // Floor
-	// 	.bg = 0,
-	// 	.charBaseIndex = 1,
-	// 	.mapBaseIndex = 24,
-	// 	.screenSize = 0,
-	// 	.paletteMode = 0,
-	// 	.priority = 0,
-	// 	.baseTile = 0,
-	// }
 };
 
 // functions
@@ -293,7 +257,7 @@ static void DrawWindows(void)
     u32 i, windowId;
     LoadMessageBoxAndBorderGfx();
     // Load graphics for windows with border graphics and fill.
-    for (i = WIN_MUGSHOT; i <= WIN_CONTINUE; ++i)
+    for (i = WIN_MUGSHOT; i < WIN_CONTINUE; ++i)
     {
         windowId = AddWindow(&sContinueScreenWinTemplates[i]);
         FillWindowPixelBuffer(i, PIXEL_FILL(1));
@@ -358,7 +322,7 @@ static void DrawText(void)
     CopyWindowToVram(WIN_STATS, COPYWIN_FULL);
 
     // Load text into continue window.
-    AddTextPrinterParameterized3(WIN_CONTINUE, FONT_NORMAL, 2, 0, sTextColor_Info, TEXT_SKIP_DRAW, sText_Continue);
+    AddTextPrinterParameterized3(WIN_CONTINUE, FONT_NORMAL, 2, 2, sTextColor_Instructions, TEXT_SKIP_DRAW, sText_Continue);
     CopyWindowToVram(WIN_CONTINUE, COPYWIN_FULL);
 
     // Load instructions into button window.
@@ -377,7 +341,7 @@ static void LoadContinueScreenGfx(void)
 
 static void LoadMapPreviewGfx(void)
 {   
-    struct MapPreview data = sMapPreviewData[GetTemplateRules(gSaveBlock1Ptr->currentTemplateType)->previewId];
+    struct MapPreview data = gMapPreviewData[GetTemplateRules(gSaveBlock1Ptr->currentTemplateType)->previewId];
     DecompressAndCopyTileDataToVram(2, data.tiles, 0, 0, 0);
 	LZDecompressWram(data.map, sMapPreviewTilemapPtr);
 	LoadPalette(data.palette, BG_PLTT_ID(13), PLTT_SIZE_4BPP);

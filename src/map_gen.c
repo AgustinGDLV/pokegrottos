@@ -1,15 +1,17 @@
 #include "global.h"
-#include "continue_screen.h"
 #include "data_util.h"
 #include "event_data.h"
 #include "event_object_movement.h"
 #include "fieldmap.h"
 #include "field_screen_effect.h"
 #include "field_weather.h"
+#include "floor_preview.h"
 #include "main.h"
 #include "malloc.h"
 #include "map_gen.h"
+#include "map_preview.h"
 #include "overworld.h"
+#include "pokemon_gen.h"
 #include "random.h"
 #include "save.h"
 #include "sound.h"
@@ -324,7 +326,7 @@ bool32 TryWarpToRoom(u32 target, u32 warpId)
 
 // Random loot, shops, etc. are generated using a room seed.
 // This seed is currently just based off the room's unique index.
-static u16 GetRoomSeed(u32 index)
+u16 GetRoomSeed(u32 index)
 {
     return gSaveBlock1Ptr->floorSeed + index;
 }
@@ -369,13 +371,12 @@ void GoToNextFloor(void)
     // Generate the new floorplan and warp.
     GenerateFloorplan();
     ClearFloorEventFlags();
-    TryWarpToRoom(STARTING_ROOM, 0);
+    FadeOutMapMusic(GetMapMusicFadeoutSpeed());
+    SetMainCallback2(CB2_FloorPreview);
 }
 
 // Debugging function called by menu scripts.
 void FloorDebugFunc(void)
 {
-    gSaveBlock1Ptr->characterId++;
-    if (gSaveBlock1Ptr->characterId >= CHARACTERS_COUNT)
-        gSaveBlock1Ptr->characterId = 0;
+    SetMainCallback2(CB2_FloorPreview);
 }

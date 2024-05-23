@@ -2443,7 +2443,7 @@ void TrySpawnObjectEvents(s16 cameraX, s16 cameraY)
 
             // Assign species to random overworld encounters.
             if (IsPlayerInFloorMap() && template->graphicsId == OBJ_EVENT_GFX_MON_BASE)
-                template->graphicsId = GetOverworldEncounterGraphicsId(template->localId);
+                template->graphicsId = GetOverworldSpeciesInRoom(gSaveBlock1Ptr->currentRoom, template->localId) + OBJ_EVENT_GFX_MON_BASE;
 
             if (top <= npcY && bottom >= npcY && left <= npcX && right >= npcX
                 && !FlagGet(template->flagId))
