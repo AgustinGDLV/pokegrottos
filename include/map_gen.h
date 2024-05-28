@@ -79,6 +79,9 @@ enum Character
 
 struct CharacterInfo {
     const u8 * name;
+    const u8 * desc;
+    u16 item;
+    u16 starters[3];
     const u16 color;
     u16 graphicsId;
     const struct SpriteTemplate * mugshotTemplate;

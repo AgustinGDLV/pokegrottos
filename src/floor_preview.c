@@ -99,8 +99,6 @@ static void Task_FloorPreviewWaitForKeypress(u8 taskId);
 static void Task_FloorPreviewFadeIn(u8 taskId);
 static void Task_FloorPreviewSaveAndExit(u8 taskId);
 static void LoadMapPreviewGfx(void);
-static void ClearTasksAndGraphicalStructs(void);
-static void ClearVramOamPlttRegs(void);
 static void DrawSpeciesIcons(void);
 static void DrawText(void);
 static void DrawWindows(void);
@@ -137,6 +135,7 @@ void CB2_FloorPreview(void)
         case 1:
             SetVBlankCallback(NULL); 
             ClearVramOamPlttRegs();
+            SetGpuReg(REG_OFFSET_DISPCNT, DISPCNT_OBJ_ON | DISPCNT_OBJ_1D_MAP);
             gMain.state++;
             break;
         case 2:
@@ -203,7 +202,7 @@ static void Task_FloorPreviewWaitForKeypress(u8 taskId)
         PlaySE(SE_SELECT);
 		gTasks[taskId].func = Task_FloorPreviewExitAndWarp;
     }
-    if (gMain.newKeys & B_BUTTON)
+    if ((gMain.newKeys & B_BUTTON) && gSaveBlock1Ptr->currentFloor > 1)
 	{
         PlaySE(SE_SELECT);
 		gTasks[taskId].func = Task_FloorPreviewSaveAndExit;
@@ -226,43 +225,6 @@ static void LoadMapPreviewGfx(void)
 	LZDecompressWram(data.map, sMapPreviewTilemapPtr);
 	LoadPalette(data.palette, BG_PLTT_ID(13), PLTT_SIZE_4BPP);
 	Menu_LoadStdPalAt(BG_PLTT_ID(15));
-}
-
-static void ClearTasksAndGraphicalStructs(void)
-{
-	ScanlineEffect_Stop();
-	ResetTasks();
-	ResetSpriteData();
-	ResetTempTileDataBuffers();
-	ResetPaletteFade();
-	FreeAllSpritePalettes();
-}
-
-static void ClearVramOamPlttRegs(void)
-{
-	DmaFill16(3, 0, VRAM, VRAM_SIZE);
-	DmaFill32(3, 0, OAM, OAM_SIZE);
-	DmaFill16(3, 0, PLTT, PLTT_SIZE);
-	SetGpuReg(REG_OFFSET_DISPCNT, DISPCNT_OBJ_ON | DISPCNT_OBJ_1D_MAP);
-	SetGpuReg(REG_OFFSET_BG3CNT, DISPCNT_MODE_0);
-	SetGpuReg(REG_OFFSET_BG2CNT, DISPCNT_MODE_0);
-	SetGpuReg(REG_OFFSET_BG1CNT, DISPCNT_MODE_0);
-	SetGpuReg(REG_OFFSET_BG0CNT, DISPCNT_MODE_0);
-	SetGpuReg(REG_OFFSET_BG3HOFS, DISPCNT_MODE_0);
-	SetGpuReg(REG_OFFSET_BG3VOFS, DISPCNT_MODE_0);
-	SetGpuReg(REG_OFFSET_BG2HOFS, DISPCNT_MODE_0);
-	SetGpuReg(REG_OFFSET_BG2VOFS, DISPCNT_MODE_0);
-	SetGpuReg(REG_OFFSET_BG1HOFS, DISPCNT_MODE_0);
-	SetGpuReg(REG_OFFSET_BG1VOFS, DISPCNT_MODE_0);
-	SetGpuReg(REG_OFFSET_BG0HOFS, DISPCNT_MODE_0);
-	SetGpuReg(REG_OFFSET_BG0VOFS, DISPCNT_MODE_0);
-    SetGpuReg(REG_OFFSET_WIN0H, 0);
-    SetGpuReg(REG_OFFSET_WIN0V, 0);
-    SetGpuReg(REG_OFFSET_WININ, 0);
-    SetGpuReg(REG_OFFSET_WINOUT, 0);
-    SetGpuReg(REG_OFFSET_BLDCNT, 0);
-    SetGpuReg(REG_OFFSET_BLDALPHA, 0);
-    SetGpuReg(REG_OFFSET_BLDY, 0);
 }
 
 // Draw species icons into preview screen.
@@ -329,7 +291,8 @@ static void DrawText(void)
 
     // Load instructions into button window.
     AddTextPrinterParameterized3(WIN_BUTTONS, FONT_SMALL, 4, 0, sTextColor_Instructions, TEXT_SKIP_DRAW, sText_PressA);
-    AddTextPrinterParameterized3(WIN_BUTTONS, FONT_SMALL, GetStringRightAlignXOffset(FONT_SMALL, sText_PressB, 236), 0, sTextColor_Instructions, TEXT_SKIP_DRAW, sText_PressB);
+    if (gSaveBlock1Ptr->currentFloor > 1)
+        AddTextPrinterParameterized3(WIN_BUTTONS, FONT_SMALL, GetStringRightAlignXOffset(FONT_SMALL, sText_PressB, 236), 0, sTextColor_Instructions, TEXT_SKIP_DRAW, sText_PressB);
     CopyWindowToVram(WIN_BUTTONS, COPYWIN_FULL);
 }
 

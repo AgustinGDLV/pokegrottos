@@ -238,8 +238,6 @@ static void PrintFloorText(void);
 static void CleanWindows(void);
 static void CommitWindows(void);
 static void LoadMapScreenGfx(void);
-static void ClearTasksAndGraphicalStructs(void);
-static void ClearVramOamPlttRegs(void);
 static void Task_MapScreenFadeOutAndExit(u8 taskId);
 static void Task_MapScreenWaitForKeypress(u8 taskId);
 static void Task_MapScreenFadeIn(u8 taskId);
@@ -278,6 +276,7 @@ void CB2_MapScreen(void)
         case 1:
             SetVBlankCallback(NULL); 
             ClearVramOamPlttRegs();
+            SetGpuReg(REG_OFFSET_DISPCNT, DISPCNT_OBJ_ON | DISPCNT_OBJ_1D_MAP);
             gMain.state++;
             break;
         case 2:
@@ -528,36 +527,6 @@ static void LoadMapScreenGfx(void)
 	LoadCompressedPalette(sMapScreenBgPal, 0, 0x20);
 	ListMenuLoadStdPalAt(0xC0, 1);
 	Menu_LoadStdPalAt(0xF0);
-}
-
-static void ClearTasksAndGraphicalStructs(void)
-{
-	ScanlineEffect_Stop();
-	ResetTasks();
-	ResetSpriteData();
-	ResetTempTileDataBuffers();
-	ResetPaletteFade();
-	FreeAllSpritePalettes();
-}
-
-static void ClearVramOamPlttRegs(void)
-{
-	DmaFill16(3, 0, VRAM, VRAM_SIZE);
-	DmaFill32(3, 0, OAM, OAM_SIZE);
-	DmaFill16(3, 0, PLTT, PLTT_SIZE);
-	SetGpuReg(REG_OFFSET_DISPCNT, DISPCNT_OBJ_ON | DISPCNT_OBJ_1D_MAP);
-	SetGpuReg(REG_OFFSET_BG3CNT, DISPCNT_MODE_0);
-	SetGpuReg(REG_OFFSET_BG2CNT, DISPCNT_MODE_0);
-	SetGpuReg(REG_OFFSET_BG1CNT, DISPCNT_MODE_0);
-	SetGpuReg(REG_OFFSET_BG0CNT, DISPCNT_MODE_0);
-	SetGpuReg(REG_OFFSET_BG3HOFS, DISPCNT_MODE_0);
-	SetGpuReg(REG_OFFSET_BG3VOFS, DISPCNT_MODE_0);
-	SetGpuReg(REG_OFFSET_BG2HOFS, DISPCNT_MODE_0);
-	SetGpuReg(REG_OFFSET_BG2VOFS, DISPCNT_MODE_0);
-	SetGpuReg(REG_OFFSET_BG1HOFS, DISPCNT_MODE_0);
-	SetGpuReg(REG_OFFSET_BG1VOFS, DISPCNT_MODE_0);
-	SetGpuReg(REG_OFFSET_BG0HOFS, DISPCNT_MODE_0);
-	SetGpuReg(REG_OFFSET_BG0VOFS, DISPCNT_MODE_0);
 }
 
 void ShowMapScreen(void)

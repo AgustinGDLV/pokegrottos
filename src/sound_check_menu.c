@@ -162,7 +162,6 @@ static void Task_DrawPanTestMenu(u8);
 static void Task_ProcessPanTestInput(u8);
 static void PrintPanTestMenuText(void);
 static void InitGpuRegs(void);
-static void ClearTasksAndGraphicalStructs(void);
 static void SetupDispcnt(void);
 static void DestroyWindow(u8 windowId);
 static void PutWindowTilemapAndCopyWindowToVram(u8 windowId);
@@ -977,16 +976,6 @@ static void InitGpuRegs(void) // sub_080E9560
     SetGpuReg(REG_OFFSET_BLDCNT, 0);
     SetGpuReg(REG_OFFSET_BLDALPHA, 0);
     SetGpuReg(REG_OFFSET_BLDY, 0);
-}
-
-static void ClearTasksAndGraphicalStructs(void) // sub_080E96A8
-{
-    ScanlineEffect_Stop();
-    ResetTasks();
-    ResetSpriteData();
-    ResetAllPicSprites();
-    ResetPaletteFade();
-    FreeAllSpritePalettes();
 }
 
 static void SetupDispcnt(void) // sub_080E96C8

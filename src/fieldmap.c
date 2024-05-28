@@ -707,7 +707,7 @@ bool8 CameraMove(int x, int y)
         {
             SetPositionFromConnection(connection, direction, x, y);
             gSaveBlock1Ptr->currentRoom = GetRoomInDirection(direction);
-            SetRoomAsVisited(GetRoomInDirection(direction));
+            SetRoomAsVisited(gSaveBlock1Ptr->currentRoom);
             LoadMapFromCameraTransition(connection.mapGroup, connection.mapNum);
             gCamera.active = TRUE;
             gCamera.x = old_x - gSaveBlock1Ptr->pos.x;

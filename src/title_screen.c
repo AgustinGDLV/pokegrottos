@@ -22,7 +22,7 @@
 #include "graphics.h"
 #include "constants/rgb.h"
 #include "constants/songs.h"
-#include "continue_screen.h"
+#include "start_screen.h"
 #include "sound_check_menu.h"
 
 enum {
@@ -819,7 +819,7 @@ static void Task_TitleScreenPhase3(u8 taskId)
 static void CB2_GoToMainMenu(void)
 {
     if (!UpdatePaletteFade())
-        SetMainCallback2(CB2_ContinueScreen);
+        SetMainCallback2(CB2_StartScreen);
 }
 
 static void CB2_GoToCopyrightScreen(void)

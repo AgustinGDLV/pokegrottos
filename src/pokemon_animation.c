@@ -672,7 +672,7 @@ static u8 AddNewAnim(void)
     return sAnimIdx;
 }
 
-static void ResetSpriteAfterAnim(struct Sprite *sprite)
+void ResetSpriteAfterAnim(struct Sprite *sprite)
 {
     sprite->oam.affineMode = ST_OAM_AFFINE_NORMAL;
     CalcCenterToCornerVec(sprite, sprite->oam.shape, sprite->oam.size, sprite->oam.affineMode);
