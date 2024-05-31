@@ -33,7 +33,7 @@ EventScript_PkmnCenterNurse_IllTakeYourPkmn2::
 	return
 
 EventScript_PkmnCenterNurse_TakeAndHealPkmn::
-	applymovement VAR_0x800B, Common_Movement_WalkInPlaceFasterLeft @ TODO: Make follower disappear here
+	applymovement VAR_0x800B, Movement_PkmnCenterNurse_Turn @ Changed from Common_Movement_WalkInPlaceFasterLeft to force the follower to enter their Poké Ball
 	waitmovement 0
 	dofieldeffect FLDEFF_POKECENTER_HEAL
 	waitfieldeffect FLDEFF_POKECENTER_HEAL
@@ -120,4 +120,8 @@ EventScript_PkmnCenterNurse_GoldCardHealPkmn::
 Movement_PkmnCenterNurse_Bow:
 	nurse_joy_bow
 	delay_4
+	step_end
+
+Movement_PkmnCenterNurse_Turn:
+	walk_in_place_faster_left
 	step_end

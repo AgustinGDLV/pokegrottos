@@ -18,6 +18,7 @@
 #include "tv.h"
 #include "constants/rgb.h"
 #include "constants/metatile_behaviors.h"
+#include "wild_encounter.h"
 
 struct ConnectionFlags
 {
@@ -68,6 +69,7 @@ const struct MapHeader *const GetMapHeaderFromConnection(struct MapConnection co
 
 void InitMap(void)
 {
+    ResetChainFishingDexNavStreak();
     InitMapLayoutData(&gMapHeader);
     SetOccupiedSecretBaseEntranceMetatiles(gMapHeader.events);
     if (IsPlayerInFloorMap())
