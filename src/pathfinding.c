@@ -61,14 +61,37 @@ bool32 IsObjectEventInRangeOfPlayer(struct ObjectEvent* objectEvent)
 // Returns whether an object event is cardinally adjacent to the player.
 bool32 IsObjectEventAdjacentToPlayer(struct ObjectEvent* objectEvent)
 {
-    struct Coords16* objCoords = &objectEvent->currentCoords;
-    struct Coords16* playerCoords = &gObjectEvents[gPlayerAvatar.objectEventId].currentCoords;
-
     // Avoid seeing across elevations.
     if (objectEvent->currentElevation != gObjectEvents[gPlayerAvatar.objectEventId].currentElevation)
+    {
         return FALSE;
+    }
+    else // Otherwise, compare player and obj positions.
+    {
+        struct Coords16* objCoords = &objectEvent->currentCoords;
+        struct Coords16* playerCoords = &gObjectEvents[gPlayerAvatar.objectEventId].currentCoords;
+        u32 dist = GetManhattanDistance(objCoords, playerCoords);
 
-    return GetManhattanDistance(objCoords, playerCoords) <= 1;
+        s32 xDiff = abs((gSprites[objectEvent->spriteId].x + gSprites[objectEvent->spriteId].x2) - (gSprites[gPlayerAvatar.spriteId].x + gSprites[gPlayerAvatar.spriteId].x2));
+        s32 yDiff = abs((gSprites[objectEvent->spriteId].y + gSprites[objectEvent->spriteId].y2) - (gSprites[gPlayerAvatar.spriteId].y + gSprites[gPlayerAvatar.spriteId].y2));
+
+        // If the player is actively moving, use pixel coordinates to check adjacency.
+        if (!gObjectEvents[gPlayerAvatar.objectEventId].heldMovementFinished
+            && gPlayerAvatar.tileTransitionState == T_TILE_TRANSITION
+            && ((xDiff <= 4 && yDiff <= 20) || (xDiff <= 20 && yDiff <= 4))
+            && dist <= 2)
+        {
+            return TRUE;
+        }
+        else if (dist <= 1) // Otherwise, just check the player is on an adjacent tile.
+        {
+            return TRUE;
+        }
+        else
+        {
+            return FALSE;
+        }
+    }
 }
 
 // Gets the greater direction of the vector from p1 to p2.
