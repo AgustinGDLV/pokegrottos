@@ -153,7 +153,6 @@ static void TeleportWarpOutFieldEffect_SpinGround(struct Task *);
 static void TeleportWarpOutFieldEffect_SpinExit(struct Task *);
 static void TeleportWarpOutFieldEffect_End(struct Task *);
 
-static void FieldCallback_TeleportWarpIn(void);
 static void Task_TeleportWarpIn(u8);
 static void TeleportWarpInFieldEffect_Init(struct Task *);
 static void TeleportWarpInFieldEffect_SpinEnter(struct Task *);
@@ -2464,13 +2463,13 @@ static void TeleportWarpOutFieldEffect_End(struct Task *task)
             SetWarpDestinationToLastHealLocation();
             WarpIntoMap();
             SetMainCallback2(CB2_LoadMap);
-            gFieldCallback = FieldCallback_TeleportWarpIn;
+            gFieldCallback = FieldCB_TeleportWarpIn;
             DestroyTask(FindTaskIdByFunc(Task_TeleportWarpOut));
         }
     }
 }
 
-static void FieldCallback_TeleportWarpIn(void)
+void FieldCB_TeleportWarpIn(void)
 {
     Overworld_PlaySpecialMapMusic();
     WarpFadeInScreen();

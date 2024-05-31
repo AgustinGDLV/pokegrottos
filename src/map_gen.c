@@ -3,6 +3,7 @@
 #include "event_data.h"
 #include "event_object_movement.h"
 #include "fieldmap.h"
+#include "field_effect.h"
 #include "field_screen_effect.h"
 #include "field_weather.h"
 #include "floor_preview.h"
@@ -297,13 +298,13 @@ bool32 TryWarpToRoom(u32 target, u32 warpId)
     TryFadeOutOldMapMusic();
     WarpFadeOutScreen();
     PlayRainStoppingSoundEffect();
-    if (warpId == 0)
-        PlaySE(SE_WARP_OUT);
-    else
-        PlaySE(SE_EXIT);
     SetWarpDestinationToRoom(target, warpId);
     WarpIntoMap();
     SetMainCallback2(CB2_LoadMap);
+    if (warpId == 0)
+        gFieldCallback = FieldCB_TeleportWarpIn;
+    else
+        PlaySE(SE_EXIT);
     return TRUE;
 }
 
