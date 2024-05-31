@@ -599,14 +599,30 @@
 #define MAP_CAVE_TEMPLATES_CHALLENGE_ROOM (4 | (34 << 8))
 #define MAP_CAVE_TEMPLATES_ROOM1          (5 | (34 << 8))
 
-// gMapGroup_PowerPlantTemplates
-#define MAP_POWER_PLANT_TEMPLATES_CONNECTIONS    (0 | (35 << 8))
-#define MAP_POWER_PLANT_TEMPLATES_BOSS_ROOM      (1 | (35 << 8))
-#define MAP_POWER_PLANT_TEMPLATES_SHOP_ROOM      (2 | (35 << 8))
-#define MAP_POWER_PLANT_TEMPLATES_TREASURE_ROOM  (3 | (35 << 8))
-#define MAP_POWER_PLANT_TEMPLATES_CHALLENGE_ROOM (4 | (35 << 8))
-#define MAP_POWER_PLANT_TEMPLATES_ROOM1          (5 | (35 << 8))
+// gMapGroup_IceCaveTemplates
+#define MAP_ICE_CAVE_TEMPLATES_CONNECTIONS    (0 | (35 << 8))
+#define MAP_ICE_CAVE_TEMPLATES_BOSS_ROOM      (1 | (35 << 8))
+#define MAP_ICE_CAVE_TEMPLATES_SHOP_ROOM      (2 | (35 << 8))
+#define MAP_ICE_CAVE_TEMPLATES_TREASURE_ROOM  (3 | (35 << 8))
+#define MAP_ICE_CAVE_TEMPLATES_CHALLENGE_ROOM (4 | (35 << 8))
+#define MAP_ICE_CAVE_TEMPLATES_ROOM1          (5 | (35 << 8))
 
-#define MAP_GROUPS_COUNT 36
+// gMapGroup_HotCaveTemplates
+#define MAP_HOT_CAVE_TEMPLATES_CONNECTIONS    (0 | (36 << 8))
+#define MAP_HOT_CAVE_TEMPLATES_BOSS_ROOM      (1 | (36 << 8))
+#define MAP_HOT_CAVE_TEMPLATES_SHOP_ROOM      (2 | (36 << 8))
+#define MAP_HOT_CAVE_TEMPLATES_TREASURE_ROOM  (3 | (36 << 8))
+#define MAP_HOT_CAVE_TEMPLATES_CHALLENGE_ROOM (4 | (36 << 8))
+#define MAP_HOT_CAVE_TEMPLATES_ROOM1          (5 | (36 << 8))
+
+// gMapGroup_PowerPlantTemplates
+#define MAP_POWER_PLANT_TEMPLATES_CONNECTIONS    (0 | (37 << 8))
+#define MAP_POWER_PLANT_TEMPLATES_BOSS_ROOM      (1 | (37 << 8))
+#define MAP_POWER_PLANT_TEMPLATES_SHOP_ROOM      (2 | (37 << 8))
+#define MAP_POWER_PLANT_TEMPLATES_TREASURE_ROOM  (3 | (37 << 8))
+#define MAP_POWER_PLANT_TEMPLATES_CHALLENGE_ROOM (4 | (37 << 8))
+#define MAP_POWER_PLANT_TEMPLATES_ROOM1          (5 | (37 << 8))
+
+#define MAP_GROUPS_COUNT 38
 
 #endif // GUARD_CONSTANTS_MAP_GROUPS_H

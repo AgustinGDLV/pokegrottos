@@ -1087,6 +1087,30 @@ EventScript_VsSeekerChargingDone::
 
 	.include "data/maps/CaveTemplates_Room1/scripts.inc"
 
+	.include "data/maps/IceCaveTemplates_Connections/scripts.inc"
+
+	.include "data/maps/IceCaveTemplates_BossRoom/scripts.inc"
+
+	.include "data/maps/IceCaveTemplates_ShopRoom/scripts.inc"
+
+	.include "data/maps/IceCaveTemplates_TreasureRoom/scripts.inc"
+
+	.include "data/maps/IceCaveTemplates_ChallengeRoom/scripts.inc"
+
+	.include "data/maps/IceCaveTemplates_Room1/scripts.inc"
+
+	.include "data/maps/HotCaveTemplates_Connections/scripts.inc"
+
+	.include "data/maps/HotCaveTemplates_BossRoom/scripts.inc"
+
+	.include "data/maps/HotCaveTemplates_ShopRoom/scripts.inc"
+
+	.include "data/maps/HotCaveTemplates_TreasureRoom/scripts.inc"
+
+	.include "data/maps/HotCaveTemplates_ChallengeRoom/scripts.inc"
+
+	.include "data/maps/HotCaveTemplates_Room1/scripts.inc"
+
 	.include "data/maps/PowerPlantTemplates_Connections/scripts.inc"
 
 	.include "data/maps/PowerPlantTemplates_BossRoom/scripts.inc"

@@ -36,6 +36,8 @@ struct Room {
 
 enum TemplateTypes {
     TEMPLATES_CAVE,
+    TEMPLATES_ICE_PATH,
+    TEMPLATES_VOLCANO,
     TEMPLATES_POWER_PLANT,
     TEMPLATE_TYPES_COUNT,
 };

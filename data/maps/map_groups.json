@@ -35,6 +35,8 @@
     "gMapGroup_IndoorRoute119",
     "gMapGroup_IndoorRoute124",
     "gMapGroup_CaveTemplates",
+    "gMapGroup_IceCaveTemplates",
+    "gMapGroup_HotCaveTemplates",
     "gMapGroup_PowerPlantTemplates"
   ],
   "gMapGroup_TownsAndRoutes": [
@@ -630,6 +632,22 @@
     "CaveTemplates_TreasureRoom",
     "CaveTemplates_ChallengeRoom",
     "CaveTemplates_Room1"
+  ],
+  "gMapGroup_IceCaveTemplates": [
+    "IceCaveTemplates_Connections",
+    "IceCaveTemplates_BossRoom",
+    "IceCaveTemplates_ShopRoom",
+    "IceCaveTemplates_TreasureRoom",
+    "IceCaveTemplates_ChallengeRoom",
+    "IceCaveTemplates_Room1"
+  ],
+  "gMapGroup_HotCaveTemplates": [
+    "HotCaveTemplates_Connections",
+    "HotCaveTemplates_BossRoom",
+    "HotCaveTemplates_ShopRoom",
+    "HotCaveTemplates_TreasureRoom",
+    "HotCaveTemplates_ChallengeRoom",
+    "HotCaveTemplates_Room1"
   ],
   "gMapGroup_PowerPlantTemplates": [
     "PowerPlantTemplates_Connections",

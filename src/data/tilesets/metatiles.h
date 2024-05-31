@@ -210,3 +210,9 @@ const u16 gMetatileAttributes_UnionRoom[] = INCBIN_U16("data/tilesets/secondary/
 
 const u16 gMetatiles_PowerPlant[] = INCBIN_U16("data/tilesets/secondary/power_plant/metatiles.bin");
 const u16 gMetatileAttributes_PowerPlant[] = INCBIN_U16("data/tilesets/secondary/power_plant/metatile_attributes.bin");
+
+const u16 gMetatiles_IceCave[] = INCBIN_U16("data/tilesets/secondary/ice_cave/metatiles.bin");
+const u16 gMetatileAttributes_IceCave[] = INCBIN_U16("data/tilesets/secondary/ice_cave/metatile_attributes.bin");
+
+const u16 gMetatiles_HotCave[] = INCBIN_U16("data/tilesets/secondary/hot_cave/metatiles.bin");
+const u16 gMetatileAttributes_HotCave[] = INCBIN_U16("data/tilesets/secondary/hot_cave/metatile_attributes.bin");

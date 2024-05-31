@@ -836,3 +836,25 @@ const struct Tileset gTileset_PowerPlant =
     .metatileAttributes = gMetatileAttributes_PowerPlant,
     .callback = NULL,
 };
+
+const struct Tileset gTileset_IceCave =
+{
+    .isCompressed = TRUE,
+    .isSecondary = TRUE,
+    .tiles = gTilesetTiles_IceCave,
+    .palettes = gTilesetPalettes_IceCave,
+    .metatiles = gMetatiles_IceCave,
+    .metatileAttributes = gMetatileAttributes_IceCave,
+    .callback = NULL,
+};
+
+const struct Tileset gTileset_HotCave =
+{
+    .isCompressed = TRUE,
+    .isSecondary = TRUE,
+    .tiles = gTilesetTiles_HotCave,
+    .palettes = gTilesetPalettes_HotCave,
+    .metatiles = gMetatiles_HotCave,
+    .metatileAttributes = gMetatileAttributes_HotCave,
+    .callback = NULL,
+};

@@ -4472,6 +4472,126 @@
       "blockdata_filepath": "data/layouts/CaveTemplates_Room1/map.bin"
     },
     {
+      "id": "LAYOUT_ICE_CAVE_TEMPLATES_CONNECTIONS",
+      "name": "IceCaveTemplates_Connections_Layout",
+      "width": 3,
+      "height": 4,
+      "primary_tileset": "gTileset_General",
+      "secondary_tileset": "gTileset_IceCave",
+      "border_filepath": "data/layouts/IceCaveTemplates_Connections/border.bin",
+      "blockdata_filepath": "data/layouts/IceCaveTemplates_Connections/map.bin"
+    },
+    {
+      "id": "LAYOUT_ICE_CAVE_TEMPLATES_BOSS_ROOM",
+      "name": "IceCaveTemplates_BossRoom_Layout",
+      "width": 12,
+      "height": 11,
+      "primary_tileset": "gTileset_General",
+      "secondary_tileset": "gTileset_IceCave",
+      "border_filepath": "data/layouts/IceCaveTemplates_BossRoom/border.bin",
+      "blockdata_filepath": "data/layouts/IceCaveTemplates_BossRoom/map.bin"
+    },
+    {
+      "id": "LAYOUT_ICE_CAVE_TEMPLATES_SHOP_ROOM",
+      "name": "IceCaveTemplates_ShopRoom_Layout",
+      "width": 12,
+      "height": 11,
+      "primary_tileset": "gTileset_General",
+      "secondary_tileset": "gTileset_IceCave",
+      "border_filepath": "data/layouts/IceCaveTemplates_ShopRoom/border.bin",
+      "blockdata_filepath": "data/layouts/IceCaveTemplates_ShopRoom/map.bin"
+    },
+    {
+      "id": "LAYOUT_ICE_CAVE_TEMPLATES_TREASURE_ROOM",
+      "name": "IceCaveTemplates_TreasureRoom_Layout",
+      "width": 12,
+      "height": 11,
+      "primary_tileset": "gTileset_General",
+      "secondary_tileset": "gTileset_IceCave",
+      "border_filepath": "data/layouts/IceCaveTemplates_TreasureRoom/border.bin",
+      "blockdata_filepath": "data/layouts/IceCaveTemplates_TreasureRoom/map.bin"
+    },
+    {
+      "id": "LAYOUT_ICE_CAVE_TEMPLATES_CHALLENGE_ROOM",
+      "name": "IceCaveTemplates_ChallengeRoom_Layout",
+      "width": 12,
+      "height": 11,
+      "primary_tileset": "gTileset_General",
+      "secondary_tileset": "gTileset_IceCave",
+      "border_filepath": "data/layouts/IceCaveTemplates_ChallengeRoom/border.bin",
+      "blockdata_filepath": "data/layouts/IceCaveTemplates_ChallengeRoom/map.bin"
+    },
+    {
+      "id": "LAYOUT_ICE_CAVE_TEMPLATES_ROOM1",
+      "name": "IceCaveTemplates_Room1_Layout",
+      "width": 12,
+      "height": 11,
+      "primary_tileset": "gTileset_General",
+      "secondary_tileset": "gTileset_IceCave",
+      "border_filepath": "data/layouts/IceCaveTemplates_Room1/border.bin",
+      "blockdata_filepath": "data/layouts/IceCaveTemplates_Room1/map.bin"
+    },
+    {
+      "id": "LAYOUT_HOT_CAVE_TEMPLATES_CONNECTIONS",
+      "name": "HotCaveTemplates_Connections_Layout",
+      "width": 3,
+      "height": 4,
+      "primary_tileset": "gTileset_General",
+      "secondary_tileset": "gTileset_HotCave",
+      "border_filepath": "data/layouts/HotCaveTemplates_Connections/border.bin",
+      "blockdata_filepath": "data/layouts/HotCaveTemplates_Connections/map.bin"
+    },
+    {
+      "id": "LAYOUT_HOT_CAVE_TEMPLATES_BOSS_ROOM",
+      "name": "HotCaveTemplates_BossRoom_Layout",
+      "width": 12,
+      "height": 11,
+      "primary_tileset": "gTileset_General",
+      "secondary_tileset": "gTileset_HotCave",
+      "border_filepath": "data/layouts/HotCaveTemplates_BossRoom/border.bin",
+      "blockdata_filepath": "data/layouts/HotCaveTemplates_BossRoom/map.bin"
+    },
+    {
+      "id": "LAYOUT_HOT_CAVE_TEMPLATES_SHOP_ROOM",
+      "name": "HotCaveTemplates_ShopRoom_Layout",
+      "width": 12,
+      "height": 11,
+      "primary_tileset": "gTileset_General",
+      "secondary_tileset": "gTileset_HotCave",
+      "border_filepath": "data/layouts/HotCaveTemplates_ShopRoom/border.bin",
+      "blockdata_filepath": "data/layouts/HotCaveTemplates_ShopRoom/map.bin"
+    },
+    {
+      "id": "LAYOUT_HOT_CAVE_TEMPLATES_TREASURE_ROOM",
+      "name": "HotCaveTemplates_TreasureRoom_Layout",
+      "width": 12,
+      "height": 11,
+      "primary_tileset": "gTileset_General",
+      "secondary_tileset": "gTileset_HotCave",
+      "border_filepath": "data/layouts/HotCaveTemplates_TreasureRoom/border.bin",
+      "blockdata_filepath": "data/layouts/HotCaveTemplates_TreasureRoom/map.bin"
+    },
+    {
+      "id": "LAYOUT_HOT_CAVE_TEMPLATES_CHALLENGE_ROOM",
+      "name": "HotCaveTemplates_ChallengeRoom_Layout",
+      "width": 12,
+      "height": 11,
+      "primary_tileset": "gTileset_General",
+      "secondary_tileset": "gTileset_HotCave",
+      "border_filepath": "data/layouts/HotCaveTemplates_ChallengeRoom/border.bin",
+      "blockdata_filepath": "data/layouts/HotCaveTemplates_ChallengeRoom/map.bin"
+    },
+    {
+      "id": "LAYOUT_HOT_CAVE_TEMPLATES_ROOM1",
+      "name": "HotCaveTemplates_Room1_Layout",
+      "width": 12,
+      "height": 11,
+      "primary_tileset": "gTileset_General",
+      "secondary_tileset": "gTileset_HotCave",
+      "border_filepath": "data/layouts/HotCaveTemplates_Room1/border.bin",
+      "blockdata_filepath": "data/layouts/HotCaveTemplates_Room1/map.bin"
+    },
+    {
       "id": "LAYOUT_POWER_PLANT_TEMPLATES_CONNECTIONS",
       "name": "PowerPlantTemplates_Connections_Layout",
       "width": 5,

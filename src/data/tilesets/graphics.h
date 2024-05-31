@@ -1635,7 +1635,6 @@ const u16 gTilesetPalettes_UnionRoom[][16] =
 
 const u32 gTilesetTiles_UnionRoom[] = INCBIN_U32("data/tilesets/secondary/union_room/tiles.4bpp.lz");
 
-
 const u16 gTilesetPalettes_PowerPlant[][16] =
 {
 	INCBIN_U16("data/tilesets/secondary/power_plant/palettes/00.gbapal"),
@@ -1654,3 +1653,41 @@ const u16 gTilesetPalettes_PowerPlant[][16] =
 };
 
 const u32 gTilesetTiles_PowerPlant[] = INCBIN_U32("data/tilesets/secondary/power_plant/tiles.4bpp.lz");
+
+const u16 gTilesetPalettes_IceCave[][16] =
+{
+	INCBIN_U16("data/tilesets/secondary/ice_cave/palettes/00.gbapal"),
+	INCBIN_U16("data/tilesets/secondary/ice_cave/palettes/01.gbapal"),
+	INCBIN_U16("data/tilesets/secondary/ice_cave/palettes/02.gbapal"),
+	INCBIN_U16("data/tilesets/secondary/ice_cave/palettes/03.gbapal"),
+	INCBIN_U16("data/tilesets/secondary/ice_cave/palettes/04.gbapal"),
+	INCBIN_U16("data/tilesets/secondary/ice_cave/palettes/05.gbapal"),
+	INCBIN_U16("data/tilesets/secondary/ice_cave/palettes/06.gbapal"),
+	INCBIN_U16("data/tilesets/secondary/ice_cave/palettes/07.gbapal"),
+	INCBIN_U16("data/tilesets/secondary/ice_cave/palettes/08.gbapal"),
+	INCBIN_U16("data/tilesets/secondary/ice_cave/palettes/09.gbapal"),
+	INCBIN_U16("data/tilesets/secondary/ice_cave/palettes/10.gbapal"),
+	INCBIN_U16("data/tilesets/secondary/ice_cave/palettes/11.gbapal"),
+	INCBIN_U16("data/tilesets/secondary/ice_cave/palettes/12.gbapal"),
+};
+
+const u32 gTilesetTiles_IceCave[] = INCBIN_U32("data/tilesets/secondary/ice_cave/tiles.4bpp.lz");
+
+const u16 gTilesetPalettes_HotCave[][16] =
+{
+	INCBIN_U16("data/tilesets/secondary/hot_cave/palettes/00.gbapal"),
+	INCBIN_U16("data/tilesets/secondary/hot_cave/palettes/01.gbapal"),
+	INCBIN_U16("data/tilesets/secondary/hot_cave/palettes/02.gbapal"),
+	INCBIN_U16("data/tilesets/secondary/hot_cave/palettes/03.gbapal"),
+	INCBIN_U16("data/tilesets/secondary/hot_cave/palettes/04.gbapal"),
+	INCBIN_U16("data/tilesets/secondary/hot_cave/palettes/05.gbapal"),
+	INCBIN_U16("data/tilesets/secondary/hot_cave/palettes/06.gbapal"),
+	INCBIN_U16("data/tilesets/secondary/hot_cave/palettes/07.gbapal"),
+	INCBIN_U16("data/tilesets/secondary/hot_cave/palettes/08.gbapal"),
+	INCBIN_U16("data/tilesets/secondary/hot_cave/palettes/09.gbapal"),
+	INCBIN_U16("data/tilesets/secondary/hot_cave/palettes/10.gbapal"),
+	INCBIN_U16("data/tilesets/secondary/hot_cave/palettes/11.gbapal"),
+	INCBIN_U16("data/tilesets/secondary/hot_cave/palettes/12.gbapal"),
+};
+
+const u32 gTilesetTiles_HotCave[] = INCBIN_U32("data/tilesets/secondary/hot_cave/tiles.4bpp.lz");

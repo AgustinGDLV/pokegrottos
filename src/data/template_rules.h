@@ -180,6 +180,18 @@ static const u8 sCaveNormalRooms[] =
     MAP_NUM(CAVE_TEMPLATES_ROOM1),
 };
 
+// Volcano Template Pools
+static const u8 sHotCaveNormalRooms[] =
+{
+    MAP_NUM(ICE_CAVE_TEMPLATES_ROOM1),
+};
+
+// Ice Path Template Pools
+static const u8 sIceCaveNormalRooms[] =
+{
+    MAP_NUM(ICE_CAVE_TEMPLATES_ROOM1),
+};
+
 // Power Plant Template Pools
 static const u8 sPowerPlantNormalRooms[] =
 {
@@ -211,13 +223,76 @@ const struct TemplateRules gTemplateRules[TEMPLATE_TYPES_COUNT] =
         .itemPools = gDefaultItemPools,
         .encounterPool = {
             {SPECIES_WHISMUR, 100},
-            {SPECIES_LOUDRED, 100},
-            {SPECIES_EXPLOUD, 100},
             {SPECIES_POOCHYENA, 100},
-            {SPECIES_MIGHTYENA, 100},
             {SPECIES_GEODUDE, 100},
-            {SPECIES_WOOBAT, 100},
+            {SPECIES_ZUBAT, 100},
+            {SPECIES_ONIX, 100},
+            {SPECIES_ARON, 100},
+            {SPECIES_DIGLETT, 100},
+        }
+    },
+
+    [TEMPLATES_ICE_PATH] =
+    {
+        .mapGroup = MAP_GROUP(ICE_CAVE_TEMPLATES_ROOM1),
+        .bgm = MUS_HG_ICE_PATH,
+        .previewId = PREVIEW_ICE_PATH,
+        .battleTerrain = BATTLE_TERRAIN_CAVE,
+        .connectionType = CONNECTION_TYPE_WARP,
+        .offsets = {
+            [DIR_NORTH] = {-1, -1},
+            [DIR_SOUTH] = {-1, 1},
+            [DIR_EAST] = {0, 0},
+            [DIR_WEST] = {-2, 0},
+        },
+        .numNormalRooms = ARRAY_COUNT(sIceCaveNormalRooms),
+        .normalRoomIds = sIceCaveNormalRooms,
+        .specialRoomIds = {
+            [BOSS_ROOM] = MAP_NUM(ICE_CAVE_TEMPLATES_BOSS_ROOM),
+            [TREASURE_ROOM] = MAP_NUM(ICE_CAVE_TEMPLATES_TREASURE_ROOM),
+            [SHOP_ROOM] = MAP_NUM(ICE_CAVE_TEMPLATES_SHOP_ROOM),
+        },
+        .itemPools = gDefaultItemPools,
+        .encounterPool = {
+            {SPECIES_SNOVER, 100},
+            {SPECIES_POOCHYENA, 100},
+            {SPECIES_GEODUDE, 100},
+            {SPECIES_ZUBAT, 100},
+            {SPECIES_SNEASEL, 100},
+            {SPECIES_SPHEAL, 100},
+            {SPECIES_DIGLETT, 100},
+        }
+    },
+
+    [TEMPLATES_VOLCANO] =
+    {
+        .mapGroup = MAP_GROUP(HOT_CAVE_TEMPLATES_ROOM1),
+        .bgm = MUS_DP_STARK_MOUNTAIN,
+        .previewId = PREVIEW_MT_EMBER,
+        .battleTerrain = BATTLE_TERRAIN_CAVE,
+        .connectionType = CONNECTION_TYPE_WARP,
+        .offsets = {
+            [DIR_NORTH] = {-1, -1},
+            [DIR_SOUTH] = {-1, 1},
+            [DIR_EAST] = {0, 0},
+            [DIR_WEST] = {-2, 0},
+        },
+        .numNormalRooms = ARRAY_COUNT(sHotCaveNormalRooms),
+        .normalRoomIds = sHotCaveNormalRooms,
+        .specialRoomIds = {
+            [BOSS_ROOM] = MAP_NUM(HOT_CAVE_TEMPLATES_BOSS_ROOM),
+            [TREASURE_ROOM] = MAP_NUM(HOT_CAVE_TEMPLATES_TREASURE_ROOM),
+            [SHOP_ROOM] = MAP_NUM(HOT_CAVE_TEMPLATES_SHOP_ROOM),
+        },
+        .itemPools = gDefaultItemPools,
+        .encounterPool = {
             {SPECIES_SLUGMA, 100},
+            {SPECIES_HOUNDOUR, 100},
+            {SPECIES_GEODUDE, 100},
+            {SPECIES_ZUBAT, 100},
+            {SPECIES_MAGBY, 100},
+            {SPECIES_DROWZEE, 100},
+            {SPECIES_DIGLETT, 100},
         }
     },
 
