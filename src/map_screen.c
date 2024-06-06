@@ -35,6 +35,9 @@ enum {
     TAG_TREASURE_ROOM,
     TAG_SHOP_ROOM,
     TAG_CHALLENGE_ROOM,
+    TAG_CURRENT_ROOM,
+    TAG_VISITED_ROOM,
+    TAG_UNVISITED_ROOM,
 };
 
 enum Windows
@@ -53,14 +56,20 @@ enum Windows
 static const u32 sMapScreenBgGfx[]      = INCBIN_U32("graphics/interface/map_screen.4bpp.lz");
 static const u32 sMapScreenBgPal[]      = INCBIN_U32("graphics/interface/map_screen.gbapal.lz");
 static const u32 sMapScreenBgMap[]      = INCBIN_U32("graphics/interface/map_screen.bin.lz");
+// shared
 static const u8 sBossRoomGfx[]          = INCBIN_U8("graphics/interface/boss_room.4bpp");
 static const u16 sBossRoomPal[]         = INCBIN_U16("graphics/interface/boss_room.gbapal");
-static const u8 sTreasureRoomGfx[]          = INCBIN_U8("graphics/interface/treasure_room.4bpp");
-static const u16 sTreasureRoomPal[]         = INCBIN_U16("graphics/interface/treasure_room.gbapal");
+static const u8 sTreasureRoomGfx[]      = INCBIN_U8("graphics/interface/treasure_room.4bpp");
+static const u16 sTreasureRoomPal[]     = INCBIN_U16("graphics/interface/treasure_room.gbapal");
 static const u8 sShopRoomGfx[]          = INCBIN_U8("graphics/interface/shop_room.4bpp");
 static const u16 sShopRoomPal[]         = INCBIN_U16("graphics/interface/shop_room.gbapal");
-static const u8 sChallengeRoomGfx[]          = INCBIN_U8("graphics/interface/challenge_room.4bpp");
-static const u16 sChallengeRoomPal[]         = INCBIN_U16("graphics/interface/challenge_room.gbapal");
+static const u8 sChallengeRoomGfx[]     = INCBIN_U8("graphics/interface/challenge_room.4bpp");
+static const u16 sChallengeRoomPal[]    = INCBIN_U16("graphics/interface/challenge_room.gbapal");
+// minimap
+static const u8 sCurrentRoomGfx[]       = INCBIN_U8("graphics/interface/current_room.4bpp");
+static const u8 sVisitedRoomGfx[]       = INCBIN_U8("graphics/interface/visited_room.4bpp");
+static const u8 sUnvisitedRoomGfx[]     = INCBIN_U8("graphics/interface/unvisited_room.4bpp");
+static const u16 sMinimapPal[]          = INCBIN_U16("graphics/interface/unvisited_room.gbapal");
 
 static const struct WindowTemplate sMapScreenWinTemplates[WINDOW_COUNT + 1] =
 {
@@ -233,6 +242,89 @@ static const struct SpritePalette sChallengeRoomSpritePalette =
     sChallengeRoomPal, TAG_CHALLENGE_ROOM
 };
 
+// Current Room sprite data
+static const struct OamData sCurrentRoomOAM =
+{
+	.affineMode = ST_OAM_AFFINE_OFF,
+	.objMode = ST_OAM_OBJ_NORMAL,
+	.shape = SPRITE_SHAPE(8x8),
+	.size = SPRITE_SIZE(8x8),
+	.priority = 0,
+};
+
+static const struct SpriteTemplate sCurrentRoomSpriteTemplate =
+{
+	.tileTag = TAG_CURRENT_ROOM,
+	.paletteTag = TAG_CURRENT_ROOM,
+	.oam = &sCurrentRoomOAM,
+	.anims = gDummySpriteAnimTable,
+	.images = NULL,
+	.affineAnims = gDummySpriteAffineAnimTable,
+	.callback = SpriteCB_Dummy,
+};
+
+static const struct SpriteSheet sCurrentRoomSpriteSheet = 
+{
+    sCurrentRoomGfx, sizeof(sCurrentRoomGfx), TAG_CURRENT_ROOM
+};
+
+static const struct SpritePalette sMinimapSpritePalette = 
+{
+    sMinimapPal, TAG_CURRENT_ROOM
+};
+
+// Visited Room sprite data
+static const struct OamData sVisitedRoomOAM =
+{
+	.affineMode = ST_OAM_AFFINE_OFF,
+	.objMode = ST_OAM_OBJ_NORMAL,
+	.shape = SPRITE_SHAPE(8x8),
+	.size = SPRITE_SIZE(8x8),
+	.priority = 0,
+};
+
+static const struct SpriteTemplate sVisitedRoomSpriteTemplate =
+{
+	.tileTag = TAG_VISITED_ROOM,
+	.paletteTag = TAG_CURRENT_ROOM,
+	.oam = &sVisitedRoomOAM,
+	.anims = gDummySpriteAnimTable,
+	.images = NULL,
+	.affineAnims = gDummySpriteAffineAnimTable,
+	.callback = SpriteCB_Dummy,
+};
+
+static const struct SpriteSheet sVisitedRoomSpriteSheet = 
+{
+    sVisitedRoomGfx, sizeof(sVisitedRoomGfx), TAG_VISITED_ROOM
+};
+
+// Unvisited Room sprite data
+static const struct OamData sUnvisitedRoomOAM =
+{
+	.affineMode = ST_OAM_AFFINE_OFF,
+	.objMode = ST_OAM_OBJ_NORMAL,
+	.shape = SPRITE_SHAPE(8x8),
+	.size = SPRITE_SIZE(8x8),
+	.priority = 0,
+};
+
+static const struct SpriteTemplate sUnvisitedRoomSpriteTemplate =
+{
+	.tileTag = TAG_UNVISITED_ROOM,
+	.paletteTag = TAG_CURRENT_ROOM,
+	.oam = &sUnvisitedRoomOAM,
+	.anims = gDummySpriteAnimTable,
+	.images = NULL,
+	.affineAnims = gDummySpriteAffineAnimTable,
+	.callback = SpriteCB_Dummy,
+};
+
+static const struct SpriteSheet sUnvisitedRoomSpriteSheet = 
+{
+    sUnvisitedRoomGfx, sizeof(sUnvisitedRoomGfx), TAG_UNVISITED_ROOM
+};
+
 // functions
 static void PrintFloorText(void);
 static void CleanWindows(void);
@@ -246,6 +338,7 @@ static void ShowRooms(void);
 
 EWRAM_DATA static u32 sRoomBuffer = 0;
 EWRAM_DATA static u32* sMapScreenTilemapPtr = NULL;
+EWRAM_DATA static u8 sMinimapSpriteIds[9] = {0};
 
 // code
 static void MainCB2_MapScreen(void)
@@ -542,4 +635,38 @@ void ShowMapScreen(void)
     {
 		SetMainCallback2(CB2_ReturnToField);
     }
+}
+
+
+void DrawMinimap(void)
+{
+    u32 i, room;
+    s32 xOffset, yOffset;
+
+    // Load graphics data
+    LoadSpritePalette(&sMinimapSpritePalette);
+    LoadSpriteSheet(&sCurrentRoomSpriteSheet);
+    LoadSpriteSheet(&sVisitedRoomSpriteSheet);
+    LoadSpriteSheet(&sUnvisitedRoomSpriteSheet);
+
+    for (i = 0; i < 9; ++i)
+    {
+        xOffset = (i%3)-1;
+        yOffset = (i/3)-1;
+        room = gSaveBlock1Ptr->currentRoom + xOffset + 10*yOffset;
+        if (room == gSaveBlock1Ptr->currentRoom)
+            sMinimapSpriteIds[i] = CreateSprite(&sCurrentRoomSpriteTemplate, 24 + 8*xOffset, 24 + 8*yOffset, 0);
+        else if (IsRoomVisited(room))
+            sMinimapSpriteIds[i] = CreateSprite(&sVisitedRoomSpriteTemplate, 24 + 8*xOffset, 24 + 8*yOffset, 0);
+        else if (DoesRoomExist(room))
+            sMinimapSpriteIds[i] = CreateSprite(&sUnvisitedRoomSpriteTemplate, 24 + 8*xOffset, 24 + 8*yOffset, 0);
+    }
+}
+
+void HideMinimap(void)
+{
+    u32 i;
+    for (i = 0; i < 9; ++i)
+        DestroySprite(&gSprites[sMinimapSpriteIds[i]]);
+    FreeSpritePaletteByTag(TAG_CURRENT_ROOM);
 }
