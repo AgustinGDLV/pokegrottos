@@ -1130,6 +1130,8 @@ static u8 SaveSavingMessageCallback(void)
     return SAVE_IN_PROGRESS;
 }
 
+#include "map_gen.h"
+
 static u8 SaveDoSaveCallback(void)
 {
     u8 saveStatus;
@@ -1144,6 +1146,9 @@ static u8 SaveDoSaveCallback(void)
     }
     else
     {
+        SetContinueGameWarpStatus();
+        SetWarpData(&gSaveBlock1Ptr->continueGameWarp, GetCurrentTemplateRules()->mapGroup,
+                        gFloorplan.layout[gSaveBlock1Ptr->currentRoom].mapNum, WARP_ID_NONE, gSaveBlock1Ptr->pos.x, gSaveBlock1Ptr->pos.y);
         saveStatus = TrySavingData(SAVE_NORMAL);
     }
 
@@ -1172,6 +1177,7 @@ static u8 SaveReturnSuccessCallback(void)
     if (!IsSEPlaying() && SaveSuccesTimer())
     {
         HideSaveInfoWindow();
+        DoSoftReset();
         return SAVE_SUCCESS;
     }
     else

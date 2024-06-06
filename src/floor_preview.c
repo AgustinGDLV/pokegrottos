@@ -368,6 +368,7 @@ static void Task_FloorPreviewSaveAndExit(u8 taskId)
             SetContinueGameWarpStatus();
             SetWarpData(&gSaveBlock1Ptr->continueGameWarp, GetCurrentTemplateRules()->mapGroup,
                         gFloorplan.layout[STARTING_ROOM].mapNum, 0, -1, -1);
+            gSaveBlock1Ptr->currentRoom = STARTING_ROOM;
             TrySavingData(SAVE_NORMAL);
             ++(*state);
             break;
