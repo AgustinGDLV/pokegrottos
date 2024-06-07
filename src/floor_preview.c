@@ -97,7 +97,7 @@ static void VBlankCB_FloorPreview(void);
 static void Task_FloorPreviewExitAndWarp(u8 taskId);
 static void Task_FloorPreviewWaitForKeypress(u8 taskId);
 static void Task_FloorPreviewFadeIn(u8 taskId);
-static void Task_FloorPreviewSaveAndExit(u8 taskId);
+static void Task_FloorPreviewAutosave(u8 taskId);
 static void LoadMapPreviewGfx(void);
 static void DrawSpeciesIcons(void);
 static void DrawText(void);
@@ -202,18 +202,16 @@ static void Task_FloorPreviewWaitForKeypress(u8 taskId)
         PlaySE(SE_SELECT);
 		gTasks[taskId].func = Task_FloorPreviewExitAndWarp;
     }
-    if ((gMain.newKeys & B_BUTTON) && gSaveBlock1Ptr->currentFloor > 1)
-	{
-        PlaySE(SE_SELECT);
-		gTasks[taskId].func = Task_FloorPreviewSaveAndExit;
-    }
 }
 
 static void Task_FloorPreviewFadeIn(u8 taskId)
 {
 	if (!gPaletteFade.active)
 	{
-		gTasks[taskId].func = Task_FloorPreviewWaitForKeypress;
+        if (gSaveBlock1Ptr->currentFloor > 1)
+		    gTasks[taskId].func = Task_FloorPreviewAutosave;
+        else
+            gTasks[taskId].func = Task_FloorPreviewWaitForKeypress;
 	}
 }
 
@@ -269,7 +267,6 @@ static const u8 sTextColor_Instructions[] = {TEXT_COLOR_TRANSPARENT, TEXT_COLOR_
 static const u8 sText_Floor[] = _("Floor ");
 static const u8 sText_Continue[] = _(":  Entering ");
 static const u8 sText_PressA[] = _("{A_BUTTON} Continue");
-static const u8 sText_PressB[] = _("{B_BUTTON} Save and Exit");
 
 // Draw text.
 static void DrawText(void)
@@ -291,8 +288,6 @@ static void DrawText(void)
 
     // Load instructions into button window.
     AddTextPrinterParameterized3(WIN_BUTTONS, FONT_SMALL, 4, 0, sTextColor_Instructions, TEXT_SKIP_DRAW, sText_PressA);
-    if (gSaveBlock1Ptr->currentFloor > 1)
-        AddTextPrinterParameterized3(WIN_BUTTONS, FONT_SMALL, GetStringRightAlignXOffset(FONT_SMALL, sText_PressB, 236), 0, sTextColor_Instructions, TEXT_SKIP_DRAW, sText_PressB);
     CopyWindowToVram(WIN_BUTTONS, COPYWIN_FULL);
 }
 
@@ -347,9 +342,9 @@ static void PopulateSpeciesList(void)
     }
 }
 
-static const u8 sText_Saving[] = _("Saving… Don't turn off the power.");
+static const u8 sText_Saving[] = _("Saving...");
 
-static void Task_FloorPreviewSaveAndExit(u8 taskId)
+static void Task_FloorPreviewAutosave(u8 taskId)
 {
     s16 *state = gTasks[taskId].data;
 
@@ -358,9 +353,8 @@ static void Task_FloorPreviewSaveAndExit(u8 taskId)
         switch (*state)
         {
         case 0:
-            FillWindowPixelBuffer(WIN_CONTINUE, PIXEL_FILL(0));
-            AddTextPrinterParameterized3(WIN_CONTINUE, FONT_NORMAL, 2, 2, sTextColor_Instructions, TEXT_SKIP_DRAW, sText_Saving);
-            CopyWindowToVram(WIN_CONTINUE, COPYWIN_FULL);
+            AddTextPrinterParameterized3(WIN_BUTTONS, FONT_SMALL, GetStringRightAlignXOffset(FONT_SMALL, sText_Saving, 236), 0, sTextColor_Instructions, TEXT_SKIP_DRAW, sText_Saving);
+            CopyWindowToVram(WIN_BUTTONS, COPYWIN_FULL);
             gSoftResetDisabled = TRUE;
             ++(*state);
             break;
@@ -369,30 +363,18 @@ static void Task_FloorPreviewSaveAndExit(u8 taskId)
             SetWarpData(&gSaveBlock1Ptr->continueGameWarp, GetCurrentTemplateRules()->mapGroup,
                         gFloorplan.layout[STARTING_ROOM].mapNum, 0, -1, -1);
             gSaveBlock1Ptr->currentRoom = STARTING_ROOM;
-            TrySavingData(SAVE_NORMAL);
+            TrySavingData(SAVE_LINK);
             ++(*state);
             break;
         case 2:
             PlaySE(SE_SAVE);
-            FillWindowPixelBuffer(WIN_CONTINUE, PIXEL_FILL(0));
-            AddTextPrinterParameterized3(WIN_CONTINUE, FONT_NORMAL, 2, 2, sTextColor_Instructions, TEXT_SKIP_DRAW, gText_SaveCompleted);
-            CopyWindowToVram(WIN_CONTINUE, COPYWIN_FULL);
+            FillWindowPixelBuffer(WIN_BUTTONS, PIXEL_FILL(0));
+            AddTextPrinterParameterized3(WIN_BUTTONS, FONT_SMALL, 4, 0, sTextColor_Instructions, TEXT_SKIP_DRAW, sText_PressA);
+            CopyWindowToVram(WIN_BUTTONS, COPYWIN_FULL);
             ++(*state);
             break;
         case 3:
-            if (gMain.newKeys & A_BUTTON)
-                ++(*state);
-            break;
-        case 4:
-            if (!IsSEPlaying())
-            {
-                BeginNormalPaletteFade(PALETTES_ALL, 0, 0, 16, RGB_BLACK);
-                ++(*state);
-            }
-            break;
-        case 5:
-            if (!gPaletteFade.active)
-                DoSoftReset();
+            gTasks[taskId].func = Task_FloorPreviewWaitForKeypress;
             break;
         }
     }
