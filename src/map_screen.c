@@ -13,6 +13,7 @@
 #include "item_menu.h"
 #include "sound.h"
 #include "map_gen.h"
+#include "map_screen.h"
 #include "malloc.h"
 #include "menu.h"
 #include "overworld.h"
@@ -38,7 +39,10 @@ enum {
     TAG_CURRENT_ROOM,
     TAG_VISITED_ROOM,
     TAG_UNVISITED_ROOM,
+    TAG_MINIMAP_BORDER,
 };
+
+#define TAG_ROOM_PAL 10000
 
 enum Windows
 {
@@ -58,18 +62,15 @@ static const u32 sMapScreenBgPal[]      = INCBIN_U32("graphics/interface/map_scr
 static const u32 sMapScreenBgMap[]      = INCBIN_U32("graphics/interface/map_screen.bin.lz");
 // shared
 static const u8 sBossRoomGfx[]          = INCBIN_U8("graphics/interface/boss_room.4bpp");
-static const u16 sBossRoomPal[]         = INCBIN_U16("graphics/interface/boss_room.gbapal");
 static const u8 sTreasureRoomGfx[]      = INCBIN_U8("graphics/interface/treasure_room.4bpp");
-static const u16 sTreasureRoomPal[]     = INCBIN_U16("graphics/interface/treasure_room.gbapal");
 static const u8 sShopRoomGfx[]          = INCBIN_U8("graphics/interface/shop_room.4bpp");
-static const u16 sShopRoomPal[]         = INCBIN_U16("graphics/interface/shop_room.gbapal");
 static const u8 sChallengeRoomGfx[]     = INCBIN_U8("graphics/interface/challenge_room.4bpp");
-static const u16 sChallengeRoomPal[]    = INCBIN_U16("graphics/interface/challenge_room.gbapal");
+static const u16 sRoomsPal[]            = INCBIN_U16("graphics/interface/minimap_border.gbapal");
 // minimap
 static const u8 sCurrentRoomGfx[]       = INCBIN_U8("graphics/interface/current_room.4bpp");
 static const u8 sVisitedRoomGfx[]       = INCBIN_U8("graphics/interface/visited_room.4bpp");
 static const u8 sUnvisitedRoomGfx[]     = INCBIN_U8("graphics/interface/unvisited_room.4bpp");
-static const u16 sMinimapPal[]          = INCBIN_U16("graphics/interface/unvisited_room.gbapal");
+static const u8 sMinimapBorderGfx[]     = INCBIN_U8("graphics/interface/minimap_border.4bpp");
 
 static const struct WindowTemplate sMapScreenWinTemplates[WINDOW_COUNT + 1] =
 {
@@ -117,6 +118,11 @@ static const struct BgTemplate sMapScreenBgTemplates[] =
 	}
 };
 
+static const struct SpritePalette sRoomsSpritePalette = 
+{
+    sRoomsPal, TAG_ROOM_PAL
+};
+
 // Boss Room sprite data
 static const struct OamData sBossRoomOAM =
 {
@@ -124,14 +130,14 @@ static const struct OamData sBossRoomOAM =
 	.objMode = ST_OAM_OBJ_NORMAL,
 	.shape = SPRITE_SHAPE(16x16),
 	.size = SPRITE_SIZE(16x16),
-	.priority = 2, // On BG 2
+	.priority = 0,
 };
 
 static void SpriteCB_Dummy(struct Sprite *sprite) {}
 static const struct SpriteTemplate sBossRoomSpriteTemplate =
 {
 	.tileTag = TAG_BOSS_ROOM,
-	.paletteTag = TAG_BOSS_ROOM,
+	.paletteTag = TAG_ROOM_PAL,
 	.oam = &sBossRoomOAM,
 	.anims = gDummySpriteAnimTable,
 	.images = NULL,
@@ -144,11 +150,6 @@ static const struct SpriteSheet sBossRoomSpriteSheet =
     sBossRoomGfx, sizeof(sBossRoomGfx), TAG_BOSS_ROOM
 };
 
-static const struct SpritePalette sBossRoomSpritePalette = 
-{
-    sBossRoomPal, TAG_BOSS_ROOM
-};
-
 // Treasure Room sprite data
 static const struct OamData sTreasureRoomOAM =
 {
@@ -156,13 +157,13 @@ static const struct OamData sTreasureRoomOAM =
 	.objMode = ST_OAM_OBJ_NORMAL,
 	.shape = SPRITE_SHAPE(16x16),
 	.size = SPRITE_SIZE(16x16),
-	.priority = 2, // On BG 2
+	.priority = 0,
 };
 
 static const struct SpriteTemplate sTreasureRoomSpriteTemplate =
 {
 	.tileTag = TAG_TREASURE_ROOM,
-	.paletteTag = TAG_TREASURE_ROOM,
+	.paletteTag = TAG_ROOM_PAL,
 	.oam = &sTreasureRoomOAM,
 	.anims = gDummySpriteAnimTable,
 	.images = NULL,
@@ -175,11 +176,6 @@ static const struct SpriteSheet sTreasureRoomSpriteSheet =
     sTreasureRoomGfx, sizeof(sTreasureRoomGfx), TAG_TREASURE_ROOM
 };
 
-static const struct SpritePalette sTreasureRoomSpritePalette = 
-{
-    sTreasureRoomPal, TAG_TREASURE_ROOM
-};
-
 // Shop Room sprite data
 static const struct OamData sShopRoomOAM =
 {
@@ -187,13 +183,13 @@ static const struct OamData sShopRoomOAM =
 	.objMode = ST_OAM_OBJ_NORMAL,
 	.shape = SPRITE_SHAPE(16x16),
 	.size = SPRITE_SIZE(16x16),
-	.priority = 2, // On BG 2
+	.priority = 0,
 };
 
 static const struct SpriteTemplate sShopRoomSpriteTemplate =
 {
 	.tileTag = TAG_SHOP_ROOM,
-	.paletteTag = TAG_SHOP_ROOM,
+	.paletteTag = TAG_ROOM_PAL,
 	.oam = &sShopRoomOAM,
 	.anims = gDummySpriteAnimTable,
 	.images = NULL,
@@ -206,11 +202,6 @@ static const struct SpriteSheet sShopRoomSpriteSheet =
     sShopRoomGfx, sizeof(sShopRoomGfx), TAG_SHOP_ROOM
 };
 
-static const struct SpritePalette sShopRoomSpritePalette = 
-{
-    sShopRoomPal, TAG_SHOP_ROOM
-};
-
 // Challenge Room sprite data
 static const struct OamData sChallengeRoomOAM =
 {
@@ -218,13 +209,13 @@ static const struct OamData sChallengeRoomOAM =
 	.objMode = ST_OAM_OBJ_NORMAL,
 	.shape = SPRITE_SHAPE(16x16),
 	.size = SPRITE_SIZE(16x16),
-	.priority = 2, // On BG 2
+	.priority = 0,
 };
 
 static const struct SpriteTemplate sChallengeRoomSpriteTemplate =
 {
 	.tileTag = TAG_CHALLENGE_ROOM,
-	.paletteTag = TAG_CHALLENGE_ROOM,
+	.paletteTag = TAG_ROOM_PAL,
 	.oam = &sChallengeRoomOAM,
 	.anims = gDummySpriteAnimTable,
 	.images = NULL,
@@ -235,11 +226,6 @@ static const struct SpriteTemplate sChallengeRoomSpriteTemplate =
 static const struct SpriteSheet sChallengeRoomSpriteSheet = 
 {
     sChallengeRoomGfx, sizeof(sChallengeRoomGfx), TAG_CHALLENGE_ROOM
-};
-
-static const struct SpritePalette sChallengeRoomSpritePalette = 
-{
-    sChallengeRoomPal, TAG_CHALLENGE_ROOM
 };
 
 // Current Room sprite data
@@ -255,7 +241,7 @@ static const struct OamData sCurrentRoomOAM =
 static const struct SpriteTemplate sCurrentRoomSpriteTemplate =
 {
 	.tileTag = TAG_CURRENT_ROOM,
-	.paletteTag = TAG_CURRENT_ROOM,
+	.paletteTag = TAG_ROOM_PAL,
 	.oam = &sCurrentRoomOAM,
 	.anims = gDummySpriteAnimTable,
 	.images = NULL,
@@ -266,11 +252,6 @@ static const struct SpriteTemplate sCurrentRoomSpriteTemplate =
 static const struct SpriteSheet sCurrentRoomSpriteSheet = 
 {
     sCurrentRoomGfx, sizeof(sCurrentRoomGfx), TAG_CURRENT_ROOM
-};
-
-static const struct SpritePalette sMinimapSpritePalette = 
-{
-    sMinimapPal, TAG_CURRENT_ROOM
 };
 
 // Visited Room sprite data
@@ -286,7 +267,7 @@ static const struct OamData sVisitedRoomOAM =
 static const struct SpriteTemplate sVisitedRoomSpriteTemplate =
 {
 	.tileTag = TAG_VISITED_ROOM,
-	.paletteTag = TAG_CURRENT_ROOM,
+	.paletteTag = TAG_ROOM_PAL,
 	.oam = &sVisitedRoomOAM,
 	.anims = gDummySpriteAnimTable,
 	.images = NULL,
@@ -312,7 +293,7 @@ static const struct OamData sUnvisitedRoomOAM =
 static const struct SpriteTemplate sUnvisitedRoomSpriteTemplate =
 {
 	.tileTag = TAG_UNVISITED_ROOM,
-	.paletteTag = TAG_CURRENT_ROOM,
+	.paletteTag = TAG_ROOM_PAL,
 	.oam = &sUnvisitedRoomOAM,
 	.anims = gDummySpriteAnimTable,
 	.images = NULL,
@@ -323,6 +304,32 @@ static const struct SpriteTemplate sUnvisitedRoomSpriteTemplate =
 static const struct SpriteSheet sUnvisitedRoomSpriteSheet = 
 {
     sUnvisitedRoomGfx, sizeof(sUnvisitedRoomGfx), TAG_UNVISITED_ROOM
+};
+
+// Minimap Border sprite data
+static const struct OamData sMinimapBorderOAM =
+{
+	.affineMode = ST_OAM_AFFINE_OFF,
+	.objMode = ST_OAM_OBJ_NORMAL,
+	.shape = SPRITE_SHAPE(32x32),
+	.size = SPRITE_SIZE(32x32),
+	.priority = 0,
+};
+
+static const struct SpriteTemplate sMinimapBorderSpriteTemplate =
+{
+	.tileTag = TAG_MINIMAP_BORDER,
+	.paletteTag = TAG_ROOM_PAL,
+	.oam = &sMinimapBorderOAM,
+	.anims = gDummySpriteAnimTable,
+	.images = NULL,
+	.affineAnims = gDummySpriteAffineAnimTable,
+	.callback = SpriteCB_Dummy,
+};
+
+static const struct SpriteSheet sMinimapBorderSpriteSheet = 
+{
+    sMinimapBorderGfx, sizeof(sMinimapBorderGfx), TAG_MINIMAP_BORDER
 };
 
 // functions
@@ -338,7 +345,7 @@ static void ShowRooms(void);
 
 EWRAM_DATA static u32 sRoomBuffer = 0;
 EWRAM_DATA static u32* sMapScreenTilemapPtr = NULL;
-EWRAM_DATA static u8 sMinimapSpriteIds[9] = {0};
+EWRAM_DATA static u8 sMinimapSpriteIds[10] = {0}; // index 9 used for border
 
 // code
 static void MainCB2_MapScreen(void)
@@ -518,10 +525,10 @@ struct SpriteTable {
 
 static const struct SpriteTable sRoomTypeSpriteTable[NUM_ROOM_TYPES] =
 {
-    [BOSS_ROOM] = {&sBossRoomSpritePalette, &sBossRoomSpriteSheet, &sBossRoomSpriteTemplate},
-    [TREASURE_ROOM] = {&sTreasureRoomSpritePalette, &sTreasureRoomSpriteSheet, &sTreasureRoomSpriteTemplate},
-    [SHOP_ROOM] = {&sShopRoomSpritePalette, &sShopRoomSpriteSheet, &sShopRoomSpriteTemplate},
-    [CHALLENGE_ROOM] = {&sChallengeRoomSpritePalette, &sChallengeRoomSpriteSheet, &sChallengeRoomSpriteTemplate},
+    [BOSS_ROOM] = {&sRoomsSpritePalette, &sBossRoomSpriteSheet, &sBossRoomSpriteTemplate},
+    [TREASURE_ROOM] = {&sRoomsSpritePalette, &sTreasureRoomSpriteSheet, &sTreasureRoomSpriteTemplate},
+    [SHOP_ROOM] = {&sRoomsSpritePalette, &sShopRoomSpriteSheet, &sShopRoomSpriteTemplate},
+    [CHALLENGE_ROOM] = {&sRoomsSpritePalette, &sChallengeRoomSpriteSheet, &sChallengeRoomSpriteTemplate},
 };
 
 static void DrawRoomIcon(u32 x, u32 y)
@@ -571,9 +578,7 @@ static void ShowRooms(void)
         for (y = 0; y < MAX_LAYOUT_HEIGHT; ++y)
         {
             if (DoesRoomExist(ROOM_COORD(x, y)))
-            {
                 DrawRoomOnBg(x, y);
-            }
         }
     }
     ScheduleBgCopyTilemapToVram(2);
@@ -584,9 +589,7 @@ static void CleanWindows(void)
 {
     u32 i;
 	for (i = 0; i < WINDOW_COUNT; ++i)
-    {
 		FillWindowPixelBuffer(i, PIXEL_FILL(0));
-    }
 }
 
 // Display commited windows
@@ -637,36 +640,78 @@ void ShowMapScreen(void)
     }
 }
 
-
-void DrawMinimap(void)
+static void InitMinimap(void)
 {
-    u32 i, room;
-    s32 xOffset, yOffset;
-
-    // Load graphics data
-    LoadSpritePalette(&sMinimapSpritePalette);
+    u32 i;
+    for (i = 0; i < ARRAY_COUNT(sMinimapSpriteIds); ++i)
+        sMinimapSpriteIds[i] = 0xFF;
+    LoadSpritePalette(&sRoomsSpritePalette);
     LoadSpriteSheet(&sCurrentRoomSpriteSheet);
     LoadSpriteSheet(&sVisitedRoomSpriteSheet);
     LoadSpriteSheet(&sUnvisitedRoomSpriteSheet);
+    LoadSpriteSheet(&sMinimapBorderSpriteSheet);
+}
 
+void DrawMinimap(bool32 refresh)
+{
+    u32 i, room, type;
+    s32 xOffset, yOffset;
+
+    // Don't display outside of floors.
+    if (!IsPlayerInFloorMap())
+        return;
+
+    // Refresh if required (i.e. CONNECTION_TYPE_SEAMLESS).
+    if (IndexOfSpritePaletteTag(TAG_ROOM_PAL) != 0xFF)
+    {
+        if (refresh)
+            for (i = 0; i < ARRAY_COUNT(sMinimapSpriteIds); ++i)
+                DestroySprite(&gSprites[sMinimapSpriteIds[i]]);
+        else
+            return;
+    }
+
+    // Load graphics data.
+    InitMinimap();
+
+    // Draw border.
+    if (sMinimapSpriteIds[9] == 0xFF) // avoid redrawing border to minimize flicker with alpha
+        sMinimapSpriteIds[9] = CreateSprite(&sMinimapBorderSpriteTemplate, 240 - 13, 13, 1);
+
+    // Draw rooms.
     for (i = 0; i < 9; ++i)
     {
         xOffset = (i%3)-1;
         yOffset = (i/3)-1;
         room = gSaveBlock1Ptr->currentRoom + xOffset + 10*yOffset;
-        if (room == gSaveBlock1Ptr->currentRoom)
-            sMinimapSpriteIds[i] = CreateSprite(&sCurrentRoomSpriteTemplate, 24 + 8*xOffset, 24 + 8*yOffset, 0);
+        type = GetRoomType(room);
+        if (type != NORMAL_ROOM && DoesRoomExist(room) && IsRoomAdjacentToVisited(room))
+        {
+            LoadSpriteSheet(sRoomTypeSpriteTable[type].spriteSheet);
+            sMinimapSpriteIds[i] = CreateSprite(sRoomTypeSpriteTable[type].spriteTemplate, 240 - 16 + 8*xOffset, 16 + 8*yOffset, 0);
+        }
+        else if (room == gSaveBlock1Ptr->currentRoom)
+            sMinimapSpriteIds[i] = CreateSprite(&sCurrentRoomSpriteTemplate, 240 - 16 + 8*xOffset, 16 + 8*yOffset, 0);
         else if (IsRoomVisited(room))
-            sMinimapSpriteIds[i] = CreateSprite(&sVisitedRoomSpriteTemplate, 24 + 8*xOffset, 24 + 8*yOffset, 0);
-        else if (DoesRoomExist(room))
-            sMinimapSpriteIds[i] = CreateSprite(&sUnvisitedRoomSpriteTemplate, 24 + 8*xOffset, 24 + 8*yOffset, 0);
+            sMinimapSpriteIds[i] = CreateSprite(&sVisitedRoomSpriteTemplate, 240 - 16 + 8*xOffset, 16 + 8*yOffset, 0);
+        else if (DoesRoomExist(room) && IsRoomAdjacentToVisited(room))
+            sMinimapSpriteIds[i] = CreateSprite(&sUnvisitedRoomSpriteTemplate, 240 - 16 + 8*xOffset, 16 + 8*yOffset, 0);
+    }
+    
+    // Make sprites transparent.
+    SetGpuReg(REG_OFFSET_BLDCNT, BLDCNT_TGT2_ALL | BLDCNT_EFFECT_BLEND);
+    SetGpuReg(REG_OFFSET_BLDALPHA, BLDALPHA_BLEND(14, 8));
+    for (i = 0; i < ARRAY_COUNT(sMinimapSpriteIds); ++i)
+    {
+        if (sMinimapSpriteIds[i] != 0xFF)
+            gSprites[sMinimapSpriteIds[i]].oam.objMode = ST_OAM_OBJ_BLEND;
     }
 }
 
-void HideMinimap(void)
+void ClearMinimap(void)
 {
     u32 i;
-    for (i = 0; i < 9; ++i)
+    for (i = 0; i < ARRAY_COUNT(sMinimapSpriteIds); ++i)
         DestroySprite(&gSprites[sMinimapSpriteIds[i]]);
-    FreeSpritePaletteByTag(TAG_CURRENT_ROOM);
+    FreeSpritePaletteByTag(TAG_ROOM_PAL);
 }

@@ -32,6 +32,7 @@
 #include "map_gen.h"
 #include "m4a.h"
 #include "map_name_popup.h"
+#include "map_screen.h"
 #include "match_call.h"
 #include "menu.h"
 #include "metatile_behavior.h"
@@ -1990,6 +1991,7 @@ static bool32 LoadMapInStepsLocal(u8 *state, bool32 a2)
         break;
     case 9:
         DrawWholeMapView();
+        DrawMinimap(FALSE);
         (*state)++;
         break;
     case 10:
@@ -2030,6 +2032,7 @@ static bool32 ReturnToFieldLocal(u8 *state)
         break;
     case 1:
         InitViewGraphics();
+        DrawMinimap(FALSE);
         TryLoadTrainerHillEReaderPalette();
         (*state)++;
         break;

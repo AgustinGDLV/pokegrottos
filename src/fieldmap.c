@@ -7,6 +7,7 @@
 #include "frontier_util.h"
 #include "map_gen.h"
 #include "map_stitch.h"
+#include "map_screen.h"
 #include "menu.h"
 #include "mirage_tower.h"
 #include "overworld.h"
@@ -711,6 +712,7 @@ bool8 CameraMove(int x, int y)
             gSaveBlock1Ptr->currentRoom = GetRoomInDirection(direction);
             SetRoomAsVisited(gSaveBlock1Ptr->currentRoom);
             LoadMapFromCameraTransition(connection.mapGroup, connection.mapNum);
+            DrawMinimap(TRUE);
             gCamera.active = TRUE;
             gCamera.x = old_x - gSaveBlock1Ptr->pos.x;
             gCamera.y = old_y - gSaveBlock1Ptr->pos.y;

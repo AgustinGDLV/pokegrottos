@@ -2,6 +2,7 @@
 #define GUARD_MAP_SCREEN_H
 
 void ShowMapScreen(void);
-void DrawMinimap(void);
+void DrawMinimap(bool32 refresh);
+void ClearMinimap(void);
 
 #endif
