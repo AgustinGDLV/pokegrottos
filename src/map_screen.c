@@ -118,13 +118,9 @@ static const struct BgTemplate sMapScreenBgTemplates[] =
 	}
 };
 
-static const struct SpritePalette sRoomsSpritePalette = 
-{
-    sRoomsPal, TAG_ROOM_PAL
-};
+static const struct SpritePalette sRoomsSpritePalette = {sRoomsPal, TAG_ROOM_PAL};
 
-// Boss Room sprite data
-static const struct OamData sBossRoomOAM =
+static const struct OamData sSpecialRoomOAM =
 {
 	.affineMode = ST_OAM_AFFINE_OFF,
 	.objMode = ST_OAM_OBJ_NORMAL,
@@ -133,142 +129,92 @@ static const struct OamData sBossRoomOAM =
 	.priority = 0,
 };
 
+static const struct OamData sMiniRoomOAM =
+{
+	.affineMode = ST_OAM_AFFINE_OFF,
+	.objMode = ST_OAM_OBJ_NORMAL,
+	.shape = SPRITE_SHAPE(8x8),
+	.size = SPRITE_SIZE(8x8),
+	.priority = 0,
+};
+
+// Boss Room sprite data
 static void SpriteCB_Dummy(struct Sprite *sprite) {}
 static const struct SpriteTemplate sBossRoomSpriteTemplate =
 {
 	.tileTag = TAG_BOSS_ROOM,
 	.paletteTag = TAG_ROOM_PAL,
-	.oam = &sBossRoomOAM,
+	.oam = &sSpecialRoomOAM,
 	.anims = gDummySpriteAnimTable,
 	.images = NULL,
 	.affineAnims = gDummySpriteAffineAnimTable,
 	.callback = SpriteCB_Dummy,
 };
 
-static const struct SpriteSheet sBossRoomSpriteSheet = 
-{
-    sBossRoomGfx, sizeof(sBossRoomGfx), TAG_BOSS_ROOM
-};
+static const struct SpriteSheet sBossRoomSpriteSheet = {sBossRoomGfx, sizeof(sBossRoomGfx), TAG_BOSS_ROOM};
 
 // Treasure Room sprite data
-static const struct OamData sTreasureRoomOAM =
-{
-	.affineMode = ST_OAM_AFFINE_OFF,
-	.objMode = ST_OAM_OBJ_NORMAL,
-	.shape = SPRITE_SHAPE(16x16),
-	.size = SPRITE_SIZE(16x16),
-	.priority = 0,
-};
-
 static const struct SpriteTemplate sTreasureRoomSpriteTemplate =
 {
 	.tileTag = TAG_TREASURE_ROOM,
 	.paletteTag = TAG_ROOM_PAL,
-	.oam = &sTreasureRoomOAM,
+	.oam = &sSpecialRoomOAM,
 	.anims = gDummySpriteAnimTable,
 	.images = NULL,
 	.affineAnims = gDummySpriteAffineAnimTable,
 	.callback = SpriteCB_Dummy,
 };
 
-static const struct SpriteSheet sTreasureRoomSpriteSheet = 
-{
-    sTreasureRoomGfx, sizeof(sTreasureRoomGfx), TAG_TREASURE_ROOM
-};
+static const struct SpriteSheet sTreasureRoomSpriteSheet = {sTreasureRoomGfx, sizeof(sTreasureRoomGfx), TAG_TREASURE_ROOM};
 
 // Shop Room sprite data
-static const struct OamData sShopRoomOAM =
-{
-	.affineMode = ST_OAM_AFFINE_OFF,
-	.objMode = ST_OAM_OBJ_NORMAL,
-	.shape = SPRITE_SHAPE(16x16),
-	.size = SPRITE_SIZE(16x16),
-	.priority = 0,
-};
-
 static const struct SpriteTemplate sShopRoomSpriteTemplate =
 {
 	.tileTag = TAG_SHOP_ROOM,
 	.paletteTag = TAG_ROOM_PAL,
-	.oam = &sShopRoomOAM,
+	.oam = &sSpecialRoomOAM,
 	.anims = gDummySpriteAnimTable,
 	.images = NULL,
 	.affineAnims = gDummySpriteAffineAnimTable,
 	.callback = SpriteCB_Dummy,
 };
 
-static const struct SpriteSheet sShopRoomSpriteSheet = 
-{
-    sShopRoomGfx, sizeof(sShopRoomGfx), TAG_SHOP_ROOM
-};
+static const struct SpriteSheet sShopRoomSpriteSheet = {sShopRoomGfx, sizeof(sShopRoomGfx), TAG_SHOP_ROOM};
 
 // Challenge Room sprite data
-static const struct OamData sChallengeRoomOAM =
-{
-	.affineMode = ST_OAM_AFFINE_OFF,
-	.objMode = ST_OAM_OBJ_NORMAL,
-	.shape = SPRITE_SHAPE(16x16),
-	.size = SPRITE_SIZE(16x16),
-	.priority = 0,
-};
-
 static const struct SpriteTemplate sChallengeRoomSpriteTemplate =
 {
 	.tileTag = TAG_CHALLENGE_ROOM,
 	.paletteTag = TAG_ROOM_PAL,
-	.oam = &sChallengeRoomOAM,
+	.oam = &sSpecialRoomOAM,
 	.anims = gDummySpriteAnimTable,
 	.images = NULL,
 	.affineAnims = gDummySpriteAffineAnimTable,
 	.callback = SpriteCB_Dummy,
 };
 
-static const struct SpriteSheet sChallengeRoomSpriteSheet = 
-{
-    sChallengeRoomGfx, sizeof(sChallengeRoomGfx), TAG_CHALLENGE_ROOM
-};
+static const struct SpriteSheet sChallengeRoomSpriteSheet = {sChallengeRoomGfx, sizeof(sChallengeRoomGfx), TAG_CHALLENGE_ROOM};
 
 // Current Room sprite data
-static const struct OamData sCurrentRoomOAM =
-{
-	.affineMode = ST_OAM_AFFINE_OFF,
-	.objMode = ST_OAM_OBJ_NORMAL,
-	.shape = SPRITE_SHAPE(8x8),
-	.size = SPRITE_SIZE(8x8),
-	.priority = 0,
-};
-
 static const struct SpriteTemplate sCurrentRoomSpriteTemplate =
 {
 	.tileTag = TAG_CURRENT_ROOM,
 	.paletteTag = TAG_ROOM_PAL,
-	.oam = &sCurrentRoomOAM,
+	.oam = &sMiniRoomOAM,
 	.anims = gDummySpriteAnimTable,
 	.images = NULL,
 	.affineAnims = gDummySpriteAffineAnimTable,
 	.callback = SpriteCB_Dummy,
 };
 
-static const struct SpriteSheet sCurrentRoomSpriteSheet = 
-{
-    sCurrentRoomGfx, sizeof(sCurrentRoomGfx), TAG_CURRENT_ROOM
-};
+static const struct SpriteSheet sCurrentRoomSpriteSheet = {sCurrentRoomGfx, sizeof(sCurrentRoomGfx), TAG_CURRENT_ROOM};
 
 // Visited Room sprite data
-static const struct OamData sVisitedRoomOAM =
-{
-	.affineMode = ST_OAM_AFFINE_OFF,
-	.objMode = ST_OAM_OBJ_NORMAL,
-	.shape = SPRITE_SHAPE(8x8),
-	.size = SPRITE_SIZE(8x8),
-	.priority = 0,
-};
-
 static const struct SpriteTemplate sVisitedRoomSpriteTemplate =
 {
 	.tileTag = TAG_VISITED_ROOM,
 	.paletteTag = TAG_ROOM_PAL,
-	.oam = &sVisitedRoomOAM,
+	.oam = &sMiniRoomOAM,
 	.anims = gDummySpriteAnimTable,
 	.images = NULL,
 	.affineAnims = gDummySpriteAffineAnimTable,
@@ -281,30 +227,18 @@ static const struct SpriteSheet sVisitedRoomSpriteSheet =
 };
 
 // Unvisited Room sprite data
-static const struct OamData sUnvisitedRoomOAM =
-{
-	.affineMode = ST_OAM_AFFINE_OFF,
-	.objMode = ST_OAM_OBJ_NORMAL,
-	.shape = SPRITE_SHAPE(8x8),
-	.size = SPRITE_SIZE(8x8),
-	.priority = 0,
-};
-
 static const struct SpriteTemplate sUnvisitedRoomSpriteTemplate =
 {
 	.tileTag = TAG_UNVISITED_ROOM,
 	.paletteTag = TAG_ROOM_PAL,
-	.oam = &sUnvisitedRoomOAM,
+	.oam = &sMiniRoomOAM,
 	.anims = gDummySpriteAnimTable,
 	.images = NULL,
 	.affineAnims = gDummySpriteAffineAnimTable,
 	.callback = SpriteCB_Dummy,
 };
 
-static const struct SpriteSheet sUnvisitedRoomSpriteSheet = 
-{
-    sUnvisitedRoomGfx, sizeof(sUnvisitedRoomGfx), TAG_UNVISITED_ROOM
-};
+static const struct SpriteSheet sUnvisitedRoomSpriteSheet = {sUnvisitedRoomGfx, sizeof(sUnvisitedRoomGfx), TAG_UNVISITED_ROOM};
 
 // Minimap Border sprite data
 static const struct OamData sMinimapBorderOAM =
@@ -327,10 +261,7 @@ static const struct SpriteTemplate sMinimapBorderSpriteTemplate =
 	.callback = SpriteCB_Dummy,
 };
 
-static const struct SpriteSheet sMinimapBorderSpriteSheet = 
-{
-    sMinimapBorderGfx, sizeof(sMinimapBorderGfx), TAG_MINIMAP_BORDER
-};
+static const struct SpriteSheet sMinimapBorderSpriteSheet = {sMinimapBorderGfx, sizeof(sMinimapBorderGfx), TAG_MINIMAP_BORDER};
 
 // functions
 static void PrintFloorText(void);
