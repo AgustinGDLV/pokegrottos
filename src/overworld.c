@@ -1133,6 +1133,8 @@ u16 GetLocationMusic(struct WarpData *warp)
     // Allow for custom music inside a floor.
     if (IsPlayerInFloorMap() && GetRoomType(gSaveBlock1Ptr->currentRoom) != SHOP_ROOM)
         return GetCurrentTemplateRules()->bgm;
+    if (IsPlayerInFloorMap() && GetRoomType(gSaveBlock1Ptr->currentRoom) == SHOP_ROOM)
+        return MUS_POKE_MART;
     else if (NoMusicInSotopolisWithLegendaries(warp) == TRUE)
         return MUS_NONE;
     else if (ShouldLegendaryMusicPlayAtLocation(warp) == TRUE)

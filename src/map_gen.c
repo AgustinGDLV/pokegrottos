@@ -147,7 +147,7 @@ static void ShuffleArrayU8(u8* array, u32 size)
     // Code from https://stackoverflow.com/questions/6127503/shuffle-array-in-c.
     for (i = 0; i < size - 1; ++i) 
     {
-        j = i + RandomF() / (UINT16_MAX / (size - i) + 1);
+        j = i + RandomF() / (UINT32_MAX / (size - i) + 1);
         t = array[j];
         array[j] = array[i];
         array[i] = t;
@@ -342,6 +342,7 @@ void GenerateFloorplan(void)
     gSaveBlock1Ptr->currentTemplateType = gFloorplan.templateType;
     AssignRoomMapIds(&gFloorplan);
     gFloorplan.nextFloorSeed = RandomF();
+    GenerateKecleonShopList();
 }
 
 // Generates the next floor and warps to its starting room.

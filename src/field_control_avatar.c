@@ -147,7 +147,7 @@ void FieldGetPlayerInput(struct FieldInput *input, u16 newKeys, u16 heldKeys)
     }
 #endif
 }
-
+#include "kecleon_shop.h"
 int ProcessPlayerFieldInput(struct FieldInput *input)
 {
     struct MapPosition position;
@@ -210,7 +210,6 @@ int ProcessPlayerFieldInput(struct FieldInput *input)
         FadeScreen(FADE_TO_BLACK, 0);
         LockPlayerFieldControls();
         FreezeObjectEvents();
-        ShowMapScreen();
         return TRUE;
     }
 

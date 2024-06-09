@@ -3,6 +3,6 @@
 
 void ShowMapScreen(void);
 void DrawMinimap(bool32 refresh);
-void ClearMinimap(void);
+void SetMinimapVisibility(bool32 invisible);
 
 #endif

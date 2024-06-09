@@ -639,10 +639,12 @@ void DrawMinimap(bool32 refresh)
     }
 }
 
-void ClearMinimap(void)
+void SetMinimapVisibility(bool32 invisible)
 {
     u32 i;
     for (i = 0; i < ARRAY_COUNT(sMinimapSpriteIds); ++i)
-        DestroySprite(&gSprites[sMinimapSpriteIds[i]]);
-    FreeSpritePaletteByTag(TAG_ROOM_PAL);
+    {
+        if (sMinimapSpriteIds[i] != 0xFF)
+            gSprites[sMinimapSpriteIds[i]].invisible = invisible;
+    }
 }

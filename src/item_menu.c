@@ -20,6 +20,7 @@
 #include "item.h"
 #include "item_menu_icons.h"
 #include "item_use.h"
+#include "kecleon_shop.h"
 #include "lilycove_lady.h"
 #include "list_menu.h"
 #include "link.h"
@@ -594,6 +595,11 @@ void ChooseBerryForMachine(void (*exitCallback)(void))
 void CB2_GoToSellMenu(void)
 {
     GoToBagMenu(ITEMMENULOCATION_SHOP, POCKETS_COUNT, CB2_ExitSellMenu);
+}
+
+void CB2_GoToSellMenuFromKecleonShop(void)
+{
+    GoToBagMenu(ITEMMENULOCATION_SHOP, POCKETS_COUNT, CB2_KecleonShopExitSellMenu);
 }
 
 void CB2_GoToItemDepositMenu(void)
