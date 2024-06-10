@@ -411,7 +411,7 @@ void InitKecleonShop(void)
     for (i = 0; i < WINDOW_COUNT; ++i)
         sShopWindowIds[i] = 0xFF;
     ScriptContext_Stop();
-    FreezeObjectEvent();
+    FreezeObjectEvents();
     LockPlayerFieldControls();
     CreateTask(KecleonShop_ShowIntroScreen, 3);
 }
