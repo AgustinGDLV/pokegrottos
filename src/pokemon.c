@@ -1746,6 +1746,39 @@ static u16 CalculateBoxMonChecksum(struct BoxPokemon *boxMon)
     return checksum;
 }
 
+// Calculates base stat total of a species.
+static u32 CalculateBaseStatTotal(u32 species)
+{
+    return gSpeciesInfo[species].baseHP + gSpeciesInfo[species].baseAttack + gSpeciesInfo[species].baseDefense + gSpeciesInfo[species].baseSpeed + gSpeciesInfo[species].baseSpAttack + gSpeciesInfo[species].baseSpDefense;
+}
+
+// Returns the BST of a species' final stage, used to calculate Rank-based stats.
+static u32 GetFinalStageBaseStatTotal(u32 species)
+{
+    u32 i, evoSpecies, bst, test = 0;
+    const struct Evolution *evolutions = GetSpeciesEvolutions(species);
+
+    bst = CalculateBaseStatTotal(species);
+
+    if (evolutions == NULL)
+        return bst;
+
+    for (i = 0; evolutions[i].method != EVOLUTIONS_END; ++i)
+    {
+        evoSpecies = evolutions[i].targetSpecies;
+
+        if (GetSpeciesEvolutions(evoSpecies) == NULL)
+            test = CalculateBaseStatTotal(evoSpecies);
+        else
+            test = GetFinalStageBaseStatTotal(evoSpecies);
+
+        if (test > bst)
+            bst = test;
+    }
+
+    return bst;
+}
+
 #define CALC_STAT(base, iv, ev, statIndex, field)               \
 {                                                               \
     u8 baseStat = gSpeciesInfo[species].base;                   \

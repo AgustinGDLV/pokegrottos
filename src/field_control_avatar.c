@@ -210,6 +210,7 @@ int ProcessPlayerFieldInput(struct FieldInput *input)
         FadeScreen(FADE_TO_BLACK, 0);
         LockPlayerFieldControls();
         FreezeObjectEvents();
+        ShowMapScreen();
         return TRUE;
     }
 
