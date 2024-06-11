@@ -4062,7 +4062,7 @@ static void BufferStat(u8 *dst, s8 natureMod, u32 stat, u32 strId, u32 align)
 static void PopulateNatureMod(s8 *dest, u32 nature)
 {
     u32 i;
-    for (i = 0; i < NUM_STATS; ++i)
+    for (i = STAT_ATK; i < NUM_STATS; ++i)
     {
         if (gNaturesInfo[nature].statUp == i && gNaturesInfo[nature].statDown != i)
             dest[i] = 1;
@@ -4070,6 +4070,7 @@ static void PopulateNatureMod(s8 *dest, u32 nature)
             dest[i] = -1;
         else
             dest[i] = 0;
+        DebugPrintf("%d\n", dest[i]);
     }
 }
 
@@ -4126,11 +4127,11 @@ static void BufferAndPrintStats_HandleState(u8 mode)
         PrintHPStats(mode);
 
         DynamicPlaceholderTextUtil_Reset();
-        BufferStat(gStringVar1, natureMod[STAT_ATK - 1], atk, 0, 3);
-        BufferStat(gStringVar2, natureMod[STAT_DEF - 1], def, 1, 3);
-        BufferStat(gStringVar3, natureMod[STAT_SPATK - 1], spA, 2, 3);
-        BufferStat(gStringVar4, natureMod[STAT_SPDEF - 1], spD, 3, 3);
-        BufferStat(sStringVar5, natureMod[STAT_SPEED - 1], spe, 4, 3);
+        BufferStat(gStringVar1, natureMod[STAT_ATK], atk, 0, 3);
+        BufferStat(gStringVar2, natureMod[STAT_DEF], def, 1, 3);
+        BufferStat(gStringVar3, natureMod[STAT_SPATK], spA, 2, 3);
+        BufferStat(gStringVar4, natureMod[STAT_SPDEF], spD, 3, 3);
+        BufferStat(sStringVar5, natureMod[STAT_SPEED], spe, 4, 3);
         PrintNonHPStats();
     }
     else
@@ -4185,11 +4186,11 @@ static void BufferNonHPStats(void)
     PopulateNatureMod(natureMod, sMonSummaryScreen->summary.mintNature);
 
     DynamicPlaceholderTextUtil_Reset();
-    BufferStat(gStringVar1, natureMod[STAT_ATK - 1], sMonSummaryScreen->summary.atk, 0, 3);
-    BufferStat(gStringVar2, natureMod[STAT_DEF - 1], sMonSummaryScreen->summary.def, 1, 3);
-    BufferStat(gStringVar3, natureMod[STAT_SPATK - 1], sMonSummaryScreen->summary.spatk, 2, 3);
-    BufferStat(gStringVar4, natureMod[STAT_SPDEF - 1], sMonSummaryScreen->summary.spdef, 3, 3);
-    BufferStat(sStringVar5, natureMod[STAT_SPEED - 1], sMonSummaryScreen->summary.speed, 4, 3);
+    BufferStat(gStringVar1, natureMod[STAT_ATK], sMonSummaryScreen->summary.atk, 0, 3);
+    BufferStat(gStringVar2, natureMod[STAT_DEF], sMonSummaryScreen->summary.def, 1, 3);
+    BufferStat(gStringVar3, natureMod[STAT_SPATK], sMonSummaryScreen->summary.spatk, 2, 3);
+    BufferStat(gStringVar4, natureMod[STAT_SPDEF], sMonSummaryScreen->summary.spdef, 3, 3);
+    BufferStat(sStringVar5, natureMod[STAT_SPEED], sMonSummaryScreen->summary.speed, 4, 3);
 }
 
 static void PrintNonHPStats(void)
