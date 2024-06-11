@@ -540,7 +540,7 @@ static const struct SpritePalette sObjectEventSpritePalettes[] = {
     #ifdef ITEM_STRANGE_BALL
     {gObjectEventPal_StrangeBall,           OBJ_EVENT_PAL_TAG_BALL_STRANGE},
     #endif //ITEM_STRANGE_BALL
-#endif //W_MON_POKEBALLS
+#endif //OW_MON_POKEBALLS
     {gObjectEventPal_Substitute,            OBJ_EVENT_PAL_TAG_SUBSTITUTE},
     {gObjectEventPaletteEmotes,             OBJ_EVENT_PAL_TAG_EMOTES},
     {gObjectEventPal_Flannery,              OBJ_EVENT_PAL_TAG_FLANNERY},
@@ -1512,11 +1512,13 @@ u16 LoadSheetGraphicsInfo(const struct ObjectEventGraphicsInfo *info, u16 uuid, 
         u32 sheetSpan = GetSpanPerImage(info->oam->shape, info->oam->size);
         u16 oldTiles = 0;
         u16 tileStart;
+        bool32 oldInvisible;
         if (tag == TAG_NONE)
             tag = COMP_OW_TILE_TAG_BASE + uuid;
         
         if (sprite)
         {
+            oldInvisible = sprite->invisible;
             oldTiles = sprite->sheetTileStart;
             sprite->sheetTileStart = 0; // mark unused
             // Note: If sprite was not allocated to use a sheet,
@@ -1531,9 +1533,19 @@ u16 LoadSheetGraphicsInfo(const struct ObjectEventGraphicsInfo *info, u16 uuid, 
         {
             struct SpriteFrameImage image = {.size = info->size, .data = info->images->data};
             struct SpriteTemplate template = {.tileTag = tag, .images = &image};
-            if (oldTiles)
-                FieldEffectFreeTilesIfUnused(oldTiles);
+            // Load, then free, in order to avoid displaying garbage data
+            // before sprite's `sheetTileStart` is repointed
             tileStart = LoadCompressedSpriteSheetByTemplate(&template, TILE_SIZE_4BPP << sheetSpan);
+            if (oldTiles) {
+                FieldEffectFreeTilesIfUnused(oldTiles);
+                // We weren't able to load the sheet;
+                // retry (after having freed), and set sprite to invisible until done
+                if (tileStart <= 0) {
+                    if (sprite)
+                        sprite->invisible = TRUE;
+                    tileStart = LoadCompressedSpriteSheetByTemplate(&template, TILE_SIZE_4BPP << sheetSpan);
+                }
+            }
         // sheet loaded; unload any *other* sheet for sprite
         }
         else if (oldTiles && oldTiles != tileStart)
@@ -1546,6 +1558,7 @@ u16 LoadSheetGraphicsInfo(const struct ObjectEventGraphicsInfo *info, u16 uuid, 
             sprite->sheetTileStart = tileStart;
             sprite->sheetSpan = sheetSpan;
             sprite->usingSheet = TRUE;
+            sprite->invisible = oldInvisible;
         }
     // Going from sheet -> !sheet, reset tile number
     // (sheet stays loaded)
@@ -2068,9 +2081,9 @@ void UpdateFollowingPokemon(void)
     // 2. Map is indoors and gfx is larger than 32x32
     // 3. flag is set
     if (OW_FOLLOWERS_ENABLED == FALSE
-        || !GetFollowerInfo(&species, &form, &shiny)
-        || (gMapHeader.mapType == MAP_TYPE_INDOOR && SpeciesToGraphicsInfo(species, 0)->oam->size > ST_OAM_SIZE_2)
-        || FlagGet(FLAG_TEMP_HIDE_FOLLOWER))
+     || !GetFollowerInfo(&species, &form, &shiny)
+     || (gMapHeader.mapType == MAP_TYPE_INDOOR && SpeciesToGraphicsInfo(species, 0)->oam->size > ST_OAM_SIZE_2)
+     || FlagGet(FLAG_TEMP_HIDE_FOLLOWER))
     {
         RemoveFollowingPokemon();
         return;
@@ -2189,12 +2202,12 @@ bool32 CheckMsgCondition(const struct MsgCondition *cond, struct Pokemon *mon, u
     case MSG_COND_TYPE:
         multi = (SpeciesHasType(species, cond->data.bytes[0]) ||
                  SpeciesHasType(species, cond->data.bytes[1]));
-        // if bytes[2] == TYPE_NONE,
+        // if bytes[2] nonzero,
         // invert; check that mon has *neither* type!
-        if (cond->data.bytes[2] == 0)
-            return multi;
-        else
+        if (cond->data.bytes[2] != 0)
             return !multi;
+        else
+            return multi;
         break;
     case MSG_COND_STATUS:
         return (cond->data.raw & mon->status);
@@ -2275,9 +2288,11 @@ void GetFollowerAction(struct ScriptContext *ctx) // Essentially a big switch fo
         [FOLLOWER_EMOTION_UPSET] = 15,
         [FOLLOWER_EMOTION_ANGRY] = 15,
         [FOLLOWER_EMOTION_PENSIVE] = 15,
+        [FOLLOWER_EMOTION_LOVE] = 0,
         [FOLLOWER_EMOTION_SURPRISE] = 10,
         [FOLLOWER_EMOTION_CURIOUS] = 10,
         [FOLLOWER_EMOTION_MUSIC] = 15,
+        [FOLLOWER_EMOTION_POISONED] = 0,
     };
     u32 i, j;
     bool32 pickedCondition = FALSE;
@@ -2308,7 +2323,7 @@ void GetFollowerAction(struct ScriptContext *ctx) // Essentially a big switch fo
     if (GetCurrentWeather() == WEATHER_SUNNY_CLOUDS)
         condEmotes[condCount++] = (struct SpecialEmote) {.emotion = FOLLOWER_EMOTION_HAPPY, .index = 31};
     // Health & status-related
-    multi = mon->hp * 100 / mon->maxHP;
+    multi = SAFE_DIV(mon->hp * 100, mon->maxHP);
     if (multi < 20)
     {
         emotion_weight[FOLLOWER_EMOTION_SAD] = 30;
@@ -6864,10 +6879,10 @@ static void InitJumpRegular(struct ObjectEvent *objectEvent, struct Sprite *spri
 {
     // For follower only, match the anim duration of the player's movement, whether dashing, walking or jumping
     if (objectEvent->localId == OBJ_EVENT_ID_FOLLOWER
-        && type == JUMP_TYPE_HIGH
-        && distance == JUMP_DISTANCE_FAR
-        // In some areas (i.e Meteor Falls), the player can jump as the follower jumps, so preserve type in this case
-        && PlayerGetCopyableMovement() != COPY_MOVE_JUMP2)
+      && type == JUMP_TYPE_HIGH
+      && distance == JUMP_DISTANCE_FAR
+      // In some areas (i.e Meteor Falls), the player can jump as the follower jumps, so preserve type in this case
+      && PlayerGetCopyableMovement() != COPY_MOVE_JUMP2)
         type = TestPlayerAvatarFlags(PLAYER_AVATAR_FLAG_DASH) ? JUMP_TYPE_FASTER : JUMP_TYPE_FAST;
     InitJump(objectEvent, sprite, direction, distance, type);
     SetStepAnimHandleAlternation(objectEvent, sprite, GetMoveDirectionAnimNum(objectEvent->facingDirection));

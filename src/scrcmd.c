@@ -145,12 +145,6 @@ bool8 ScrCmd_callnative(struct ScriptContext *ctx)
     return FALSE;
 }
 
-bool8 ScrCmd_callfunc(struct ScriptContext *ctx)
-{
-    u32 func = ScriptReadWord(ctx);
-    return ((ScrCmdFunc) func)(ctx);
-}
-
 bool8 ScrCmd_waitstate(struct ScriptContext *ctx)
 {
     ScriptContext_Stop();
@@ -1217,10 +1211,10 @@ bool8 ScrCmd_setobjectmovementtype(struct ScriptContext *ctx)
 
 bool8 ScrCmd_createvobject(struct ScriptContext *ctx)
 {
-    u16 graphicsId = ScriptReadByte(ctx);
+    u16 graphicsId = ScriptReadHalfword(ctx);
     u8 virtualObjId = ScriptReadByte(ctx);
     u16 x = VarGet(ScriptReadHalfword(ctx));
-    u32 y = VarGet(ScriptReadHalfword(ctx));
+    u16 y = VarGet(ScriptReadHalfword(ctx));
     u8 elevation = ScriptReadByte(ctx);
     u8 direction = ScriptReadByte(ctx);
 

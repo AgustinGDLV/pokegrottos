@@ -29,7 +29,6 @@
 #include "palette.h"
 #include "pokeball.h"
 #include "pokemon.h"
-#include "pokemon_debug.h"
 #include "pokemon_storage_system.h"
 #include "pokemon_summary_screen.h"
 #include "region_map.h"
@@ -1173,6 +1172,7 @@ static const union AnimCmd sSpriteAnim_CategoryTough[] = {
 };
 
 static const union AnimCmd *const sSpriteAnimTable_MoveTypes[NUMBER_OF_MON_TYPES + CONTEST_CATEGORIES_COUNT] = {
+    sSpriteAnim_TypeMystery,
     sSpriteAnim_TypeNormal,
     sSpriteAnim_TypeFighting,
     sSpriteAnim_TypeFlying,

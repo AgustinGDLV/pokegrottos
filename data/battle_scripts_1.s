@@ -32,6 +32,22 @@ BattleScript_Terastallization::
 	waitmessage B_WAIT_TIME_LONG
 	end3
 
+BattleScript_TeraFormChange::
+	@ TODO: no string prints in S/V, but right now this helps with clarity
+	printstring STRINGID_PKMNSTORINGENERGY
+	handleformchange BS_ATTACKER, 0
+	handleformchange BS_ATTACKER, 1
+	playanimation BS_ATTACKER, B_ANIM_TERA_CHARGE
+	waitanimation
+	applyterastallization
+	playanimation BS_ATTACKER, B_ANIM_TERA_ACTIVATE
+	waitanimation
+	handleformchange BS_ATTACKER, 2
+	printstring STRINGID_PKMNTERASTALLIZEDINTO
+	waitmessage B_WAIT_TIME_LONG
+	switchinabilities BS_ATTACKER
+	end3
+
 BattleScript_LowerAtkSpAtk::
 	jumpifstat BS_EFFECT_BATTLER, CMP_GREATER_THAN, STAT_ATK, MIN_STAT_STAGE, BattleScript_LowerAtkSpAtkDoAnim
 	jumpifstat BS_EFFECT_BATTLER, CMP_EQUAL, STAT_SPATK, MIN_STAT_STAGE, BattleScript_LowerAtkSpAtkEnd
@@ -1803,6 +1819,7 @@ BattleScript_EffectHitSwitchTarget::
 	tryfaintmon BS_TARGET
 	jumpiffainted BS_TARGET, TRUE, BattleScript_MoveEnd
 	jumpifability BS_TARGET, ABILITY_SUCTION_CUPS, BattleScript_AbilityPreventsPhasingOut
+	jumpifability BS_TARGET, ABILITY_GUARD_DOG, BattleScript_MoveEnd
 	jumpifstatus3 BS_TARGET, STATUS3_ROOTED, BattleScript_PrintMonIsRooted
 	jumpiftargetdynamaxed BattleScript_HitSwitchTargetDynamaxed
 	tryhitswitchtarget BattleScript_MoveEnd
@@ -2749,12 +2766,11 @@ BattleScript_EffectHealBlock::
 BattleScript_EffectHitEscape::
 	call BattleScript_EffectHit_Ret
 	jumpifmovehadnoeffect BattleScript_MoveEnd
-	jumpifability BS_TARGET, ABILITY_GUARD_DOG, BattleScript_MoveEnd
 	tryfaintmon BS_TARGET
 	moveendto MOVEEND_ATTACKER_VISIBLE
 	moveendfrom MOVEEND_TARGET_VISIBLE
 	jumpifbattleend BattleScript_HitEscapeEnd
-	jumpifbyte CMP_NOT_EQUAL gBattleOutcome 0, BattleScript_HitEscapeEnd
+	jumpifbyte CMP_NOT_EQUAL, gBattleOutcome, 0, BattleScript_HitEscapeEnd
 	jumpifemergencyexited BS_TARGET, BattleScript_HitEscapeEnd
 	goto BattleScript_MoveSwitch
 BattleScript_HitEscapeEnd:
@@ -3213,7 +3229,8 @@ BattleScript_MirrorArmorReflectStickyWeb:
 	call BattleScript_AbilityPopUp
 	setattackertostickywebuser
 	jumpifbyteequal gBattlerAttacker, gBattlerTarget, BattleScript_StickyWebOnSwitchInEnd   @ Sticky web user not on field -> no stat loss
-	goto BattleScript_MirrorArmorReflectStatLoss
+	call BattleScript_MirrorArmorReflectStatLoss
+	goto BattleScript_StickyWebOnSwitchInEnd
 
 BattleScript_StatDown::
 	playanimation BS_EFFECT_BATTLER, B_ANIM_STATS_CHANGE, sB_ANIM_ARG1
@@ -5775,7 +5792,7 @@ BattleScript_PrintFullBox::
 
 BattleScript_ActionSwitch::
 	hpthresholds2 BS_ATTACKER
-	copybyte sSAVED_BATTLER, gBattlerAttacker
+	saveattacker
 	printstring STRINGID_RETURNMON
 	jumpifbattletype BATTLE_TYPE_DOUBLE, BattleScript_PursuitSwitchDmgSetMultihit
 	setmultihit 1
@@ -5793,7 +5810,7 @@ BattleScript_DoSwitchOut::
 	switchoutabilities BS_ATTACKER
 	updatedynamax
 	waitstate
-	copybyte gBattlerAttacker, sSAVED_BATTLER
+	restoreattacker
 	returnatktoball
 	waitstate
 	drawpartystatussummary BS_ATTACKER
@@ -6338,6 +6355,7 @@ BattleScript_ToxicSpikesPoisoned::
 
 BattleScript_StickyWebOnSwitchIn::
 	savetarget
+	saveattacker
 	copybyte gBattlerTarget, sBATTLER
 	setbyte sSTICKY_WEB_STAT_DROP, 1
 	printstring STRINGID_STICKYWEBSWITCHIN
@@ -6356,6 +6374,7 @@ BattleScript_StickyWebOnSwitchInPrintStatMsg:
 	waitmessage B_WAIT_TIME_LONG
 BattleScript_StickyWebOnSwitchInEnd:
 	restoretarget
+	restoreattacker
 	return
 
 BattleScript_PerishSongTakesLife::
@@ -7820,7 +7839,7 @@ BattleScript_TryIntimidateHoldEffectsRet:
 	return
 
 BattleScript_IntimidateActivates::
-	copybyte sSAVED_BATTLER, gBattlerTarget
+	savetarget
 .if B_ABILITY_POP_UP == TRUE
 	showabilitypopup BS_ATTACKER
 	pause B_WAIT_TIME_LONG
@@ -7858,7 +7877,7 @@ BattleScript_IntimidateLoopIncrement:
 BattleScript_IntimidateEnd:
 	copybyte sBATTLER, gBattlerAttacker
 	destroyabilitypopup
-	copybyte gBattlerTarget, sSAVED_BATTLER
+	restoretarget
 	pause B_WAIT_TIME_MED
 	end3
 
@@ -7891,7 +7910,7 @@ BattleScript_IntimidateInReverse:
 	goto BattleScript_IntimidateLoopIncrement
 
 BattleScript_SupersweetSyrupActivates::
- 	copybyte sSAVED_BATTLER, gBattlerTarget
+ 	savetarget
 .if B_ABILITY_POP_UP == TRUE
 	showabilitypopup BS_ATTACKER
 	pause B_WAIT_TIME_LONG
@@ -7924,7 +7943,7 @@ BattleScript_SupersweetSyrupLoopIncrement:
 BattleScript_SupersweetSyrupEnd:
 	copybyte sBATTLER, gBattlerAttacker
 	destroyabilitypopup
- 	copybyte gBattlerTarget, sSAVED_BATTLER
+ 	restoretarget
 	pause B_WAIT_TIME_MED
 	end3
 
@@ -8315,7 +8334,7 @@ BattleScript_DazzlingProtected::
 	attackstring
 	ppreduce
 	pause B_WAIT_TIME_SHORT
-	call BattleScript_AbilityPopUp
+	call BattleScript_AbilityPopUpScripting
 	printstring STRINGID_POKEMONCANNOTUSEMOVE
 	waitmessage B_WAIT_TIME_LONG
 	goto BattleScript_MoveEnd
@@ -8566,7 +8585,10 @@ BattleScript_FriskMsg::
 	return
 
 BattleScript_FriskActivates::
-	tryfriskmsg BS_ATTACKER
+	saveattacker
+	copybyte gBattlerAttacker, sBATTLER
+	tryfriskmsg BS_SCRIPTING
+	restoreattacker
 	end3
 
 BattleScript_ImposterActivates::
@@ -9559,19 +9581,19 @@ BattleScript_RedCardIngrain:
 	printstring STRINGID_PKMNANCHOREDITSELF
 	waitmessage B_WAIT_TIME_LONG
 	removeitem BS_SCRIPTING
-	swapattackerwithtarget
+	restoretarget
 	return
 BattleScript_RedCardSuctionCups:
 	printstring STRINGID_PKMNANCHORSITSELFWITH
 	waitmessage B_WAIT_TIME_LONG
 	removeitem BS_SCRIPTING
-	swapattackerwithtarget
+	restoretarget
 	return
 BattleScript_RedCardDynamaxed:
 	printstring STRINGID_MOVEBLOCKEDBYDYNAMAX
 	waitmessage B_WAIT_TIME_LONG
 	removeitem BS_SCRIPTING
-	swapattackerwithtarget
+	restoretarget
 	return
 
 BattleScript_EjectButtonActivates::

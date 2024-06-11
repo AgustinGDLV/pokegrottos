@@ -138,15 +138,15 @@ Debug_EventScript_Text_DefensiveIVs:
 	.string "HP IVs: {STR_VAR_1}, DEF IVs: {STR_VAR_2}, SPDEF IVs: {STR_VAR_3}$"
 
 Debug_EventScript_Script_1::
-	callfunc GenerateFloorplan
+	callnative GenerateFloorplan
 	end
 
 Debug_EventScript_Script_2::
-	callfunc GoToNextFloor
+	callnative GoToNextFloor
 	end
 
 Debug_EventScript_Script_3::
-	callfunc FloorDebugFunc
+	callnative FloorDebugFunc
 	end
 
 Debug_EventScript_Script_4::

@@ -15,7 +15,7 @@ EventScript_OverworldEncounterStart::
     end
 
 EventScript_ItemBall::
-	callfunc ChooseOverworldItem
+	callnative ChooseOverworldItem
 	finditem VAR_0x8000
 	end
 
@@ -23,7 +23,7 @@ EventScript_KecleonShop::
     lock
 	faceplayer
 	playmoncry SPECIES_KECLEON, CRY_MODE_NORMAL
-	callfunc InitKecleonShop
+	callnative InitKecleonShop
 	waitmoncry
 	releaseall
 	end
