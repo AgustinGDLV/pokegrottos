@@ -115,6 +115,7 @@ enum {
     MON_DATA_GIGANTAMAX_FACTOR,
     MON_DATA_TERA_TYPE,
     MON_DATA_EVOLUTION_TRACKER,
+    MON_DATA_RANK,
 };
 
 struct PokemonSubstruct0
@@ -125,7 +126,7 @@ struct PokemonSubstruct0
     u16 unused_02:6;
     u32 experience:21;
     u32 nickname11:8; // 11th character of nickname.
-    u32 unused_04:3;
+    u32 rank:3;
     u8 ppBonuses;
     u8 friendship;
     u16 pokeball:6; // 63 balls.

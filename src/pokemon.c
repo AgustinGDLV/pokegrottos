@@ -1064,6 +1064,7 @@ void ZeroMonData(struct Pokemon *mon)
     arg = 0;
     SetMonData(mon, MON_DATA_STATUS, &arg);
     SetMonData(mon, MON_DATA_LEVEL, &arg);
+    SetMonData(mon, MON_DATA_RANK, &arg);
     SetMonData(mon, MON_DATA_HP, &arg);
     SetMonData(mon, MON_DATA_MAX_HP, &arg);
     SetMonData(mon, MON_DATA_ATK, &arg);
@@ -1092,9 +1093,11 @@ void ZeroEnemyPartyMons(void)
 void CreateMon(struct Pokemon *mon, u16 species, u8 level, u8 fixedIV, u8 hasFixedPersonality, u32 fixedPersonality, u8 otIdType, u32 fixedOtId)
 {
     u32 mail;
+    u32 rank = 1;
     ZeroMonData(mon);
     CreateBoxMon(&mon->box, species, level, fixedIV, hasFixedPersonality, fixedPersonality, otIdType, fixedOtId);
     SetMonData(mon, MON_DATA_LEVEL, &level);
+    SetMonData(mon, MON_DATA_RANK, &rank);
     mail = MAIL_NONE;
     SetMonData(mon, MON_DATA_MAIL, &mail);
     CalculateMonStats(mon);
@@ -1779,14 +1782,79 @@ static u32 GetFinalStageBaseStatTotal(u32 species)
     return bst;
 }
 
-#define CALC_STAT(base, iv, ev, statIndex, field)               \
-{                                                               \
-    u8 baseStat = gSpeciesInfo[species].base;                   \
-    s32 n = (((2 * baseStat + iv + ev / 4) * level) / 100) + 5; \
-    n = ModifyStatByNature(nature, n, statIndex);               \
-    if (B_FRIENDSHIP_BOOST == TRUE)                             \
+// Returns the BST a species should have at a certain rank.
+static u32 GetRankBasedBaseStatTotal(u32 species, u32 rank)
+{
+    u32 finalBST = GetFinalStageBaseStatTotal(species);
+    switch (rank)
+    {
+    default:
+    case 1:
+        return 300;
+    case 2:
+        if (finalBST >= 600)
+            return 450;
+        else if (finalBST >= 500)
+            return 420;
+        else
+            return 400;
+    case 3:
+        if (finalBST >= 600)
+            return 600;
+        else if (finalBST >= 500)
+            return 540;
+        else
+            return 500;
+    }
+}
+
+// Returns a multiplier to normalize a Pokemon's stats according to its rank and final stage BST.
+static uq4_12_t GetRankBasedStatMultiplier(u32 species, u32 rank)
+{
+    u32 finalBST = GetFinalStageBaseStatTotal(species);
+    return uq4_12_divide(UQ_4_12(finalBST), UQ_4_12(GetRankBasedBaseStatTotal(species, rank)));
+} 
+
+static u32 GetRankBasedBaseStat(u32 statIndex, struct Pokemon *mon)
+{
+    u32 stat = 0;
+    u32 species = GetMonData(mon, MON_DATA_SPECIES);
+    u32 rank = GetMonData(mon, MON_DATA_RANK);
+
+    switch (statIndex)
+    {
+    default:
+    case STAT_HP:
+        stat = gSpeciesInfo[species].baseHP;
+        break;
+    case STAT_ATK:
+        stat = gSpeciesInfo[species].baseAttack;
+        break;
+    case STAT_DEF:
+        stat = gSpeciesInfo[species].baseDefense;
+        break;
+    case STAT_SPEED:
+        stat = gSpeciesInfo[species].baseSpeed;
+        break;
+    case STAT_SPATK:
+        stat = gSpeciesInfo[species].baseSpAttack;
+        break;
+    case STAT_SPDEF:
+        stat = gSpeciesInfo[species].baseSpDefense;
+        break;
+    }
+
+    return uq4_12_multiply_by_int_half_down(GetRankBasedStatMultiplier(species, rank), stat);
+}
+
+#define CALC_STAT(iv, ev, statIndex, field)                      \
+{                                                                \
+    u8 baseStat = GetRankBasedBaseStat(statIndex, mon);          \
+    s32 n = (((2 * baseStat + iv + ev / 4) * 50) / 100) + 5;     \
+    n = ModifyStatByNature(nature, n, statIndex);                \
+    if (B_FRIENDSHIP_BOOST == TRUE)                              \
         n = n + ((n * 10 * friendship) / (MAX_FRIENDSHIP * 100));\
-    SetMonData(mon, field, &n);                                 \
+    SetMonData(mon, field, &n);                                  \
 }
 
 void CalculateMonStats(struct Pokemon *mon)
@@ -1807,12 +1875,10 @@ void CalculateMonStats(struct Pokemon *mon)
     s32 spDefenseEV = GetMonData(mon, MON_DATA_SPDEF_EV, NULL);
     u16 species = GetMonData(mon, MON_DATA_SPECIES, NULL);
     u8 friendship = GetMonData(mon, MON_DATA_FRIENDSHIP, NULL);
-    s32 level = GetLevelFromMonExp(mon);
+    u32 rank = GetMonData(mon, MON_DATA_RANK);
     s32 newMaxHP;
 
     u8 nature = GetMonData(mon, MON_DATA_HIDDEN_NATURE, NULL);
-
-    SetMonData(mon, MON_DATA_LEVEL, &level);
 
     if (species == SPECIES_SHEDINJA)
     {
@@ -1820,21 +1886,17 @@ void CalculateMonStats(struct Pokemon *mon)
     }
     else
     {
-        s32 n = 2 * gSpeciesInfo[species].baseHP + hpIV;
-        newMaxHP = (((n + hpEV / 4) * level) / 100) + level + 10;
+        DebugPrintf("%d is rank %d and has %d base HP", species, rank, GetRankBasedBaseStat(STAT_HP, mon));
+        s32 n = 2 * GetRankBasedBaseStat(STAT_HP, mon) + hpIV;
+        newMaxHP = (((n + hpEV / 4) * 50) / 100) + 50 + 10;
     }
-
-    gBattleScripting.levelUpHP = newMaxHP - oldMaxHP;
-    if (gBattleScripting.levelUpHP == 0)
-        gBattleScripting.levelUpHP = 1;
-
     SetMonData(mon, MON_DATA_MAX_HP, &newMaxHP);
 
-    CALC_STAT(baseAttack, attackIV, attackEV, STAT_ATK, MON_DATA_ATK)
-    CALC_STAT(baseDefense, defenseIV, defenseEV, STAT_DEF, MON_DATA_DEF)
-    CALC_STAT(baseSpeed, speedIV, speedEV, STAT_SPEED, MON_DATA_SPEED)
-    CALC_STAT(baseSpAttack, spAttackIV, spAttackEV, STAT_SPATK, MON_DATA_SPATK)
-    CALC_STAT(baseSpDefense, spDefenseIV, spDefenseEV, STAT_SPDEF, MON_DATA_SPDEF)
+    CALC_STAT(attackIV, attackEV, STAT_ATK, MON_DATA_ATK)
+    CALC_STAT(defenseIV, defenseEV, STAT_DEF, MON_DATA_DEF)
+    CALC_STAT(speedIV, speedEV, STAT_SPEED, MON_DATA_SPEED)
+    CALC_STAT(spAttackIV, spAttackEV, STAT_SPATK, MON_DATA_SPATK)
+    CALC_STAT(spDefenseIV, spDefenseEV, STAT_SPDEF, MON_DATA_SPDEF)
 
     if (species == SPECIES_SHEDINJA)
     {
@@ -2825,6 +2887,9 @@ u32 GetBoxMonData3(struct BoxPokemon *boxMon, s32 field, u8 *data)
             evoTracker.asField.unused = 0;
             retVal = evoTracker.value;
             break;
+        case MON_DATA_RANK:
+            retVal = substruct0->rank;
+            break;
         default:
             break;
         }
@@ -3257,6 +3322,9 @@ void SetBoxMonData(struct BoxPokemon *boxMon, s32 field, const void *dataArg)
             substruct1->evolutionTracker2 = evoTracker.asField.b;
             break;
         }
+        case MON_DATA_RANK:
+            SET8(substruct0->rank);
+            break;
         default:
             break;
         }
