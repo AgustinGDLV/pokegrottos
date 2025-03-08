@@ -879,5 +879,8 @@ void HealPokemon(struct Pokemon *mon);
 void HealBoxPokemon(struct BoxPokemon *boxMon);
 const u8 *GetMoveName(u16 moveId);
 const u8 *GetMoveAnimationScript(u16 moveId);
+u32 GetRankBasedBaseStat(u32 statIndex, struct Pokemon *mon);
+bool32 IsDuplicateEvolution(u16 baseSpecies, u16 targetSpecies, u32 currIndex);
+u32 GetEvolutionCount(u32 species);
 
 #endif // GUARD_POKEMON_H

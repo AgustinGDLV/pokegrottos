@@ -1758,7 +1758,7 @@ static u32 CalculateBaseStatTotal(u32 species)
 // Returns the BST of a species' final stage, used to calculate Rank-based stats.
 static u32 GetFinalStageBaseStatTotal(u32 species)
 {
-    u32 i, evoSpecies, bst, test = 0;
+    u32 i, targetSpecies, bst, test = 0;
     const struct Evolution *evolutions = GetSpeciesEvolutions(species);
 
     bst = CalculateBaseStatTotal(species);
@@ -1768,12 +1768,12 @@ static u32 GetFinalStageBaseStatTotal(u32 species)
 
     for (i = 0; evolutions[i].method != EVOLUTIONS_END; ++i)
     {
-        evoSpecies = evolutions[i].targetSpecies;
+        targetSpecies = evolutions[i].targetSpecies;
 
-        if (GetSpeciesEvolutions(evoSpecies) == NULL)
-            test = CalculateBaseStatTotal(evoSpecies);
+        if (GetSpeciesEvolutions(targetSpecies) == NULL)
+            test = CalculateBaseStatTotal(targetSpecies);
         else
-            test = GetFinalStageBaseStatTotal(evoSpecies);
+            test = GetFinalStageBaseStatTotal(targetSpecies);
 
         if (test > bst)
             bst = test;
@@ -1811,11 +1811,11 @@ static u32 GetRankBasedBaseStatTotal(u32 species, u32 rank)
 // Returns a multiplier to normalize a Pokemon's stats according to its rank and final stage BST.
 static uq4_12_t GetRankBasedStatMultiplier(u32 species, u32 rank)
 {
-    u32 finalBST = GetFinalStageBaseStatTotal(species);
-    return uq4_12_divide(UQ_4_12(finalBST), UQ_4_12(GetRankBasedBaseStatTotal(species, rank)));
+    u32 bst = CalculateBaseStatTotal(species);
+    return uq4_12_divide(GetRankBasedBaseStatTotal(species, rank), bst);
 } 
 
-static u32 GetRankBasedBaseStat(u32 statIndex, struct Pokemon *mon)
+u32 GetRankBasedBaseStat(u32 statIndex, struct Pokemon *mon)
 {
     u32 stat = 0;
     u32 species = GetMonData(mon, MON_DATA_SPECIES);
@@ -1843,7 +1843,6 @@ static u32 GetRankBasedBaseStat(u32 statIndex, struct Pokemon *mon)
         stat = gSpeciesInfo[species].baseSpDefense;
         break;
     }
-
     return uq4_12_multiply_by_int_half_down(GetRankBasedStatMultiplier(species, rank), stat);
 }
 
@@ -6772,6 +6771,8 @@ bool32 DoesSpeciesHaveFormChangeMethod(u16 species, u16 method)
 
 u16 MonTryLearningNewMoveEvolution(struct Pokemon *mon, bool8 firstMove)
 {
+    return MOVE_NONE;
+    // TODO
     u16 species = GetMonData(mon, MON_DATA_SPECIES, NULL);
     u8 level = GetMonData(mon, MON_DATA_LEVEL, NULL);
     const struct LevelUpMove *learnset = GetSpeciesLevelUpLearnset(species);
@@ -7068,4 +7069,40 @@ const u8 *GetMoveAnimationScript(u16 moveId)
         return Move_TACKLE;
     }
     return gMovesInfo[moveId].battleAnimScript;
+}
+
+// Returns whether the target species occurs before the current index in gEvolutionTable.
+bool32 IsDuplicateEvolution(u16 species, u16 targetSpecies, u32 currIndex)
+{
+    u32 i;
+    const struct Evolution *evolutions = GetSpeciesEvolutions(species);
+
+    if (evolutions != NULL)
+    {
+        for (i = 0; i < currIndex && evolutions[i].method != EVOLUTIONS_END; ++i)
+        {
+            if (evolutions[i].targetSpecies == targetSpecies)
+                return TRUE;
+        }
+    }
+    return FALSE;
+}
+
+// Returns the number of different evolutions a species has.
+u32 GetEvolutionCount(u32 species)
+{
+    u32 i, targetSpecies, count = 0;
+    const struct Evolution *evolutions = GetSpeciesEvolutions(species);
+
+    if (evolutions != NULL)
+    {
+        for (i = 0; evolutions[i].method != EVOLUTIONS_END; ++i)
+        {
+            targetSpecies = evolutions[i].targetSpecies;
+            // This is inefficient with the second loop in IsDuplicateEvolution, but works.
+            if (targetSpecies && !IsDuplicateEvolution(species, targetSpecies, i))
+                ++count;
+        }
+    }
+    return count;
 }

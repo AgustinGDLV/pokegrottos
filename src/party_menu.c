@@ -2459,7 +2459,7 @@ static void DisplayPartyPokemonLevelCheck(struct Pokemon *mon, struct PartyMenuB
             if (c != 0)
                 menuBox->infoRects->blitFunc(menuBox->windowId, menuBox->infoRects->dimensions[4] >> 3, (menuBox->infoRects->dimensions[5] >> 3) + 1, menuBox->infoRects->dimensions[6] >> 3, menuBox->infoRects->dimensions[7] >> 3, FALSE);
             if (c != 2)
-                DisplayPartyPokemonLevel(GetMonData(mon, MON_DATA_LEVEL), menuBox);
+                DisplayPartyPokemonLevel(GetMonData(mon, MON_DATA_RANK), menuBox);
         }
     }
 }
@@ -2718,6 +2718,9 @@ static u8 DisplaySelectionWindow(u8 windowType)
         break;
     case SELECTWINDOW_ZYGARDECUBE:
         window = sZygardeCubeSelectWindowTemplate;
+        break;
+    case SELECTWINDOW_EVOS:
+        SetWindowTemplateFields(&window, 2, 19, 19 - (gPartyMenu.data1 * 2), 10, gPartyMenu.data1 * 2, 14, 0x2E9);
         break;
     default: // SELECTWINDOW_MOVES
         window = sMoveSelectWindowTemplate;
@@ -7776,5 +7779,120 @@ void IsLastMonThatKnowsSurf(void)
         }
         if (AnyStorageMonWithMove(move) != TRUE)
             gSpecialVar_Result = TRUE;
+    }
+}
+
+static void ShowEvolutionSelectWindow(struct Pokemon* mon)
+{
+    u32 i;
+    u32 evoCount = 0;
+    u32 species = GetMonData(mon, MON_DATA_SPECIES);
+    // num actions calculated previously and stored in gPartyMenu.data1
+    u32 windowId = DisplaySelectionWindow(SELECTWINDOW_EVOS);
+    const struct Evolution *evolutions = GetSpeciesEvolutions(species);
+    u32 targetSpecies;
+
+    FillWindowPixelBuffer(windowId, PIXEL_FILL(1));
+    if (evolutions != NULL)
+    {
+        for (i = 0; evolutions[i].method != EVOLUTIONS_END; ++i)
+        {
+            targetSpecies = evolutions[i].targetSpecies;
+            if (targetSpecies && !IsDuplicateEvolution(species, targetSpecies, i))
+            {
+                AddTextPrinterParameterized(windowId, FONT_NORMAL, GetSpeciesName(targetSpecies), 8, (evoCount * 16) + 1, TEXT_SKIP_DRAW, NULL);
+                ++evoCount;
+            }
+        }
+    }
+    sPartyMenuInternal->numActions = evoCount;
+    InitMenuInUpperLeftCornerNormal(windowId, evoCount, 0);
+    ScheduleBgCopyTilemapToVram(2);
+}
+
+static void Task_HandleWhichEvolutionInput(u8 taskId)
+{
+    s8 input = Menu_ProcessInput();
+
+    if (input != MENU_NOTHING_CHOSEN)
+    {
+        if (input == MENU_B_PRESSED)
+        {
+            PlaySE(SE_SELECT);
+            ReturnToUseOnWhichMon(taskId);
+        }
+        else // important: assumes evolution index selected exists, otherwise risks OOB access
+        {
+            struct Pokemon *mon = &gPlayerParty[gPartyMenu.slotId];
+            u16 targetSpecies = gSpeciesInfo[GetMonData(mon, MON_DATA_SPECIES)].evolutions[Menu_GetCursorPos()].targetSpecies;
+
+            PartyMenuRemoveWindow(&sPartyMenuInternal->windowId[1]);
+            PartyMenuRemoveWindow(&sPartyMenuInternal->windowId[0]);
+            RemoveBagItem(gSpecialVar_ItemId, 1);
+            BeginEvolutionScene(mon, targetSpecies, FALSE, gPartyMenu.slotId);
+        }
+    }
+}
+
+static const u8 sText_RankedUp[] = _("{STR_VAR_1} ranked up!{PAUSE_UNTIL_PRESS}");
+
+static void CB2_RankUpAndExit(void)
+{
+    struct Pokemon* mon = &gPlayerParty[gPartyMenu.slotId];
+    u32 rank = GetMonData(mon, MON_DATA_RANK) + 1;
+    SetMonData(mon, MON_DATA_RANK, &rank);
+    SetMainCallback2(gPartyMenu.exitCallback);
+}
+
+void ItemUseCB_SuperEvolutionStone(u8 taskId, TaskFunc task)
+{
+    // Set up variables.
+    struct Pokemon* mon = &gPlayerParty[gPartyMenu.slotId];
+    u32 species = GetMonData(mon, MON_DATA_SPECIES);
+    u32 rank = GetMonData(mon, MON_DATA_RANK);
+    u32 numEvos = gPartyMenu.data1 = GetEvolutionCount(species);
+
+    PlaySE(SE_SELECT);
+    // Item has no effect if Pokemon doesn't have any evolutions.
+    if (numEvos == 0 && rank >= 3) // TODO: MAX_RANK
+    {
+        gPartyMenuUseExitCallback = FALSE;
+        DisplayPartyMenuMessage(gText_WontHaveEffect, TRUE);
+        ScheduleBgCopyTilemapToVram(2);
+        gTasks[taskId].func = task;
+    }
+    else
+    {
+        // Item can still rank up a Pokemon with no evolutions.
+        if (numEvos == 0)
+        {
+            gPartyMenuUseExitCallback = FALSE;
+            RemoveBagItem(gSpecialVar_ItemId, 1);
+            GetMonNickname(mon, gStringVar1);
+            PlaySE(MUS_LEVEL_UP);
+            StringExpandPlaceholders(gStringVar4, sText_RankedUp);
+            DisplayPartyMenuMessage(gStringVar4, FALSE);
+            ScheduleBgCopyTilemapToVram(2);
+            ++rank;
+            SetMonData(mon, MON_DATA_RANK, &rank);
+            CalculateMonStats(mon);
+            gTasks[taskId].func = task;
+        }
+        // Use multichoice if Pokemon has more than one evolution.
+        else if (numEvos > 1)
+        {
+            ShowEvolutionSelectWindow(mon);
+            gTasks[taskId].func = Task_HandleWhichEvolutionInput;
+            gCB2_AfterEvolution = CB2_RankUpAndExit;
+        }
+        // Since there is only one option, just go straight to evolution!
+        else
+        {
+            u32 targetSpecies = gSpeciesInfo[species].evolutions[0].targetSpecies;
+            RemoveBagItem(gSpecialVar_ItemId, 1);
+            FreePartyPointers();
+            BeginEvolutionScene(mon, targetSpecies, FALSE, gPartyMenu.slotId);
+            gCB2_AfterEvolution = CB2_RankUpAndExit;
+        }
     }
 }

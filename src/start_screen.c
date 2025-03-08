@@ -122,7 +122,7 @@ static const struct BgTemplate sStartScreenBgTemplates[] =
 		.charBaseIndex = 0,
 		.mapBaseIndex = 31,
 		.screenSize = 0,
-		.paletteMode = 0,
+		.paletteMode = 0,   
 		.priority = 2,
 		.baseTile = 0,
 	},
