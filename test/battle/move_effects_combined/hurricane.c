@@ -3,8 +3,8 @@
 
 ASSUMPTIONS
 {
-    ASSUME(gMovesInfo[MOVE_HURRICANE].effect == EFFECT_THUNDER);
-    ASSUME(gMovesInfo[MOVE_HURRICANE].accuracy == 70);
+    ASSUME(GetMoveEffect(MOVE_HURRICANE) == EFFECT_THUNDER);
+    ASSUME(GetMoveAccuracy(MOVE_HURRICANE) == 70);
 }
 
 SINGLE_BATTLE_TEST("Hurricane's accuracy is lowered to 50% in Sunlight")
@@ -32,4 +32,42 @@ SINGLE_BATTLE_TEST("Hurricane bypasses accuracy checks in Rain")
         NONE_OF { MESSAGE("Wobbuffet's attack missed!"); }
     }
 }
-TO_DO_BATTLE_TEST("Hurricane Veil can hit airborne targets") // Fly, Bounce, Sky Drop
+
+SINGLE_BATTLE_TEST("Hurricane can hit airborne targets (Fly, Bounce)")
+{
+    u16 move;
+    PARAMETRIZE { move = MOVE_FLY; }
+    PARAMETRIZE { move = MOVE_BOUNCE; }
+    GIVEN {
+        ASSUME(GetMoveEffect(MOVE_FLY) == EFFECT_SEMI_INVULNERABLE);
+        ASSUME(GetMoveTwoTurnAttackStatus(MOVE_FLY) == STATUS3_ON_AIR);
+        ASSUME(GetMoveEffect(MOVE_BOUNCE) == EFFECT_SEMI_INVULNERABLE);
+        ASSUME(GetMoveTwoTurnAttackStatus(MOVE_BOUNCE) == STATUS3_ON_AIR);
+        PLAYER(SPECIES_WOBBUFFET);
+        OPPONENT(SPECIES_WOBBUFFET) { Moves(move); }
+    } WHEN {
+        TURN { MOVE(opponent, move); MOVE(player, MOVE_HURRICANE); }
+    } SCENE {
+        ANIMATION(ANIM_TYPE_MOVE, move, opponent);
+        ANIMATION(ANIM_TYPE_MOVE, MOVE_HURRICANE, player);
+        NONE_OF { MESSAGE("Wobbuffet's attack missed!"); }
+    }
+}
+
+DOUBLE_BATTLE_TEST("Hurricane can hit airborne targets (Sky Drop)")
+{
+    GIVEN {
+        ASSUME(GetMoveEffect(MOVE_SKY_DROP) == EFFECT_SKY_DROP);
+        ASSUME(GetMoveTwoTurnAttackStatus(MOVE_SKY_DROP) == STATUS3_ON_AIR);
+        PLAYER(SPECIES_WOBBUFFET);
+        PLAYER(SPECIES_WOBBUFFET);
+        OPPONENT(SPECIES_WOBBUFFET);
+        OPPONENT(SPECIES_WOBBUFFET);
+    } WHEN {
+        TURN { MOVE(playerLeft, MOVE_SKY_DROP, target: opponentLeft); MOVE(playerRight, MOVE_HURRICANE, target: playerLeft); }
+    } SCENE {
+        ANIMATION(ANIM_TYPE_MOVE, MOVE_SKY_DROP, playerLeft);
+        ANIMATION(ANIM_TYPE_MOVE, MOVE_HURRICANE, playerRight);
+        NONE_OF { MESSAGE("Wobbuffet's attack missed!"); }
+    }
+}

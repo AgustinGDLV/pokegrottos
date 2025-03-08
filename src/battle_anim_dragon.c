@@ -14,8 +14,6 @@ static void AnimSpinningDracoMeteor(struct Sprite *sprite);
 static void AnimSpinningDracoMeteorFinish(struct Sprite *sprite);
 static void AnimDracoMeteorRock_Step(struct Sprite *sprite);
 
-EWRAM_DATA static u16 sUnusedOverheatData[7] = {0};
-
 static const union AnimCmd sAnim_OutrageOverheatFire_0[] =
 {
     ANIMCMD_FRAME(0, 4),
@@ -42,35 +40,35 @@ const struct SpriteTemplate gOutrageFlameSpriteTemplate =
     .callback = AnimOutrageFlame,
 };
 
-static const union AnimCmd sAnim_DreepyMissileOpponent_0[] = 
+static const union AnimCmd sAnim_DreepyMissileOpponent_0[] =
 {
     ANIMCMD_FRAME(0, 0, .hFlip = TRUE),
     ANIMCMD_END,
 };
 
-const union AnimCmd *const gAnims_DreepyMissileOpponent[] = 
+const union AnimCmd *const gAnims_DreepyMissileOpponent[] =
 {
     sAnim_DreepyMissileOpponent_0,
 };
 
-static const union AnimCmd sAnim_DreepyMissilePlayer_0[] = 
+static const union AnimCmd sAnim_DreepyMissilePlayer_0[] =
 {
     ANIMCMD_FRAME(0, 0),
     ANIMCMD_END,
 };
 
-const union AnimCmd *const gAnims_DreepyMissilePlayer[] = 
+const union AnimCmd *const gAnims_DreepyMissilePlayer[] =
 {
     sAnim_DreepyMissilePlayer_0,
 };
 
-static const union AnimCmd sAnim_DreepyMissileNotDrag_0[] = 
+static const union AnimCmd sAnim_DreepyMissileNotDrag_0[] =
 {
     ANIMCMD_FRAME(0, 0, .hFlip = TRUE, .vFlip = TRUE),
     ANIMCMD_END,
 };
 
-const union AnimCmd *const gAnims_DreepyMissileOpponentNotDrag[] = 
+const union AnimCmd *const gAnims_DreepyMissileOpponentNotDrag[] =
 {
     sAnim_DreepyMissileNotDrag_0,
 };
@@ -601,7 +599,6 @@ static void UpdateDragonDanceScanlineEffect(struct Task *task)
 
 void AnimOverheatFlame(struct Sprite *sprite)
 {
-    int i;
     int yAmplitude = (gBattleAnimArgs[2] * 3) / 5;
     sprite->x = GetBattlerSpriteCoord(gBattleAnimAttacker, BATTLER_COORD_X_2);
     sprite->y = GetBattlerSpriteCoord(gBattleAnimAttacker, BATTLER_COORD_Y_PIC_OFFSET) + gBattleAnimArgs[4];
@@ -611,8 +608,6 @@ void AnimOverheatFlame(struct Sprite *sprite)
     sprite->y += sprite->data[2] * gBattleAnimArgs[0];
     sprite->data[3] = gBattleAnimArgs[3];
     sprite->callback = AnimOverheatFlame_Step;
-    for (i = 0; i < 7; i++)
-        sUnusedOverheatData[i] = sprite->data[i];
 }
 
 static void AnimOverheatFlame_Step(struct Sprite *sprite)
@@ -627,36 +622,36 @@ static void AnimOverheatFlame_Step(struct Sprite *sprite)
 
 void AnimDracoMeteorRock(struct Sprite *sprite)
 {
-	if (GetBattlerSide(gBattleAnimTarget) == B_SIDE_PLAYER)
-	{
-		sprite->data[0] = sprite->x - gBattleAnimArgs[0];
-		sprite->data[2] = sprite->x - gBattleAnimArgs[2];
-	}
-	else
-	{
-		sprite->data[0] = sprite->x + gBattleAnimArgs[0];
-		sprite->data[2] = sprite->x + gBattleAnimArgs[2];
-	}
+    if (GetBattlerSide(gBattleAnimTarget) == B_SIDE_PLAYER)
+    {
+        sprite->data[0] = sprite->x - gBattleAnimArgs[0];
+        sprite->data[2] = sprite->x - gBattleAnimArgs[2];
+    }
+    else
+    {
+        sprite->data[0] = sprite->x + gBattleAnimArgs[0];
+        sprite->data[2] = sprite->x + gBattleAnimArgs[2];
+    }
 
-	sprite->data[1] = sprite->y + gBattleAnimArgs[1];
-	sprite->data[3] = sprite->y + gBattleAnimArgs[3];
-	sprite->data[4] = gBattleAnimArgs[4];
+    sprite->data[1] = sprite->y + gBattleAnimArgs[1];
+    sprite->data[3] = sprite->y + gBattleAnimArgs[3];
+    sprite->data[4] = gBattleAnimArgs[4];
 
-	sprite->data[6] = gBattleAnimArgs[2];
-	sprite->data[7] = gBattleAnimArgs[3];
+    sprite->data[6] = gBattleAnimArgs[2];
+    sprite->data[7] = gBattleAnimArgs[3];
 
-	sprite->x = sprite->data[0];
-	sprite->y = sprite->data[1];
-	sprite->callback = AnimDracoMeteorRock_Step;
+    sprite->x = sprite->data[0];
+    sprite->y = sprite->data[1];
+    sprite->callback = AnimDracoMeteorRock_Step;
 }
 
 static void AnimDracoMeteorRock_Step(struct Sprite *sprite)
 {
-	sprite->x2 = ((sprite->data[2] - sprite->data[0]) * sprite->data[5]) / sprite->data[4];
-	sprite->y2 = ((sprite->data[3] - sprite->data[1]) * sprite->data[5]) / sprite->data[4];
+    sprite->x2 = ((sprite->data[2] - sprite->data[0]) * sprite->data[5]) / sprite->data[4];
+    sprite->y2 = ((sprite->data[3] - sprite->data[1]) * sprite->data[5]) / sprite->data[4];
 
-	if (sprite->data[5] == sprite->data[4])
-		DestroyAnimSprite(sprite);
+    if (sprite->data[5] == sprite->data[4])
+        DestroyAnimSprite(sprite);
 
-	sprite->data[5]++;
+    sprite->data[5]++;
 }

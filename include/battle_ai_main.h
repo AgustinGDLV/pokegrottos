@@ -1,13 +1,15 @@
 #ifndef GUARD_BATTLE_AI_MAIN_H
 #define GUARD_BATTLE_AI_MAIN_H
 
+
+typedef s32 (*AiScoreFunc)(u32, u32, u32, s32);
+
 #define UNKNOWN_NO_OF_HITS UINT32_MAX
 
 // return vals for BattleAI_ChooseMoveOrAction
 // 0 - 3 are move idx
 #define AI_CHOICE_FLEE 4
 #define AI_CHOICE_WATCH 5
-#define AI_CHOICE_SWITCH 7
 
 // for AI_WhoStrikesFirst
 #define AI_IS_FASTER   1
@@ -29,10 +31,12 @@
 #define STAT_CHANGE_ACC        10
 #define STAT_CHANGE_EVASION    11
 
-#define BEST_DAMAGE_MOVE     1  // Move with the most amount of hits with the best accuracy/effect
-#define POWERFUL_STATUS_MOVE 10 // Moves with this score will be chosen over a move that faints target
+#define BEST_DAMAGE_MOVE         1  // Move with the most amount of hits with the best accuracy/effect
+#define POWERFUL_STATUS_MOVE     10 // Moves with this score will be chosen over a move that faints target
+#define NO_DAMAGE_OR_FAILS      -20 // Move fails or does no damage
 
-// Scores given in AI_CalcMoveEffectScore
+// Scores given in AI_CalcMoveEffectScore and AI_CalcHoldEffectMoveScore
+#define NO_INCREASE      0
 #define WEAK_EFFECT      1
 #define DECENT_EFFECT    2
 #define GOOD_EFFECT      3
@@ -53,21 +57,41 @@
 #define SET_SCORE(battler, movesetIndex, val) \
     do \
     { \
-        TestRunner_Battle_AISetScore(__FILE__, __LINE__, battler, movesetIndex, val); \
+        if (TESTING) \
+        { \
+            TestRunner_Battle_AISetScore(__FILE__, __LINE__, battler, movesetIndex, val); \
+        } \
         AI_THINKING_STRUCT->score[movesetIndex] = val; \
     } while (0) \
 
 #define ADJUST_SCORE(val) \
     do \
     { \
-        TestRunner_Battle_AIAdjustScore(__FILE__, __LINE__, sBattler_AI, AI_THINKING_STRUCT->movesetIndex, val); \
+        if (TESTING) \
+        { \
+            TestRunner_Battle_AIAdjustScore(__FILE__, __LINE__, battlerAtk, AI_THINKING_STRUCT->movesetIndex, val); \
+        } \
         score += val; \
+    } while (0) \
+
+#define ADJUST_AND_RETURN_SCORE(val) \
+    do \
+    { \
+    if (TESTING) \
+        { \
+            TestRunner_Battle_AIAdjustScore(__FILE__, __LINE__, battlerAtk, AI_THINKING_STRUCT->movesetIndex, val); \
+        } \
+        score += val; \
+        return score; \
     } while (0) \
 
 #define ADJUST_SCORE_PTR(val) \
     do \
     { \
-        TestRunner_Battle_AIAdjustScore(__FILE__, __LINE__, sBattler_AI, AI_THINKING_STRUCT->movesetIndex, val); \
+        if (TESTING) \
+        { \
+            TestRunner_Battle_AIAdjustScore(__FILE__, __LINE__, battlerAtk, AI_THINKING_STRUCT->movesetIndex, val); \
+        } \
         (*score) += val; \
     } while (0) \
 
@@ -83,16 +107,14 @@
     return score;                   \
 }
 
-u32 ComputeBattleAiScores(u32 battler);
 void BattleAI_SetupItems(void);
 void BattleAI_SetupFlags(void);
 void BattleAI_SetupAIData(u8 defaultScoreMoves, u32 battler);
-u32 BattleAI_ChooseMoveOrAction(void);
+u32 BattleAI_ChooseMoveOrAction(u32 battler);
 void Ai_InitPartyStruct(void);
 void Ai_UpdateSwitchInData(u32 battler);
 void Ai_UpdateFaintData(u32 battler);
 void SetAiLogicDataForTurn(struct AiLogicData *aiData);
-
-extern u8 sBattler_AI;
+void ResetDynamicAiFunc(void);
 
 #endif // GUARD_BATTLE_AI_MAIN_H

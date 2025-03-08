@@ -3,6 +3,10 @@
 
 #include "constants/event_object_movement.h"
 
+#if OW_POKEMON_OBJECT_EVENTS == FALSE && OW_FOLLOWERS_ENABLED == TRUE
+#error "OW_POKEMON_OBJECT_EVENTS needs to be TRUE in order for OW_FOLLOWERS_ENABLED to work."
+#endif
+
 // Palette slots for overworld NPCs.
 // The same standard set of palettes for overworld objects are normally always loaded at the same
 // time while walking around the overworld. The only exceptions are the palettes for the player and
@@ -109,6 +113,7 @@ extern const struct OamData gObjectEventBaseOam_64x64;
 extern const struct SubspriteTable sOamTables_32x32[];
 extern const struct SubspriteTable sOamTables_64x64[];
 extern const union AnimCmd *const sAnimTable_Following[];
+extern const union AnimCmd *const sAnimTable_Following_Asym[];
 extern const struct SpriteTemplate *const gFieldEffectObjectTemplatePointers[];
 extern const u8 gReflectionEffectPaletteMap[];
 
@@ -122,6 +127,7 @@ bool8 TryGetObjectEventIdByLocalIdAndMap(u8 localId, u8 mapNum, u8 mapGroupId, u
 u8 GetObjectEventIdByXY(s16 x, s16 y);
 void SetObjectEventDirection(struct ObjectEvent *objectEvent, u8 direction);
 u8 GetFirstInactiveObjectEventId(void);
+u8 GetObjectEventIdByLocalId(u8);
 void RemoveObjectEventByLocalIdAndMap(u8 localId, u8 mapNum, u8 mapGroup);
 void LoadSpecialObjectReflectionPalette(u16 tag, u8 slot);
 void TryMoveObjectEventToMapCoords(u8 localId, u8 mapNum, u8 mapGroup, s16 x, s16 y);
@@ -135,6 +141,7 @@ void ClearObjectEventMovement(struct ObjectEvent *objectEvent, struct Sprite *sp
 void ObjectEventClearHeldMovement(struct ObjectEvent *);
 void ObjectEventClearHeldMovementIfActive(struct ObjectEvent *);
 struct Pokemon *GetFirstLiveMon(void);
+u16 GetOverworldWeatherSpecies(u16 species);
 void UpdateFollowingPokemon(void);
 void RemoveFollowingPokemon(void);
 struct ObjectEvent *GetFollowerObject(void);
@@ -171,6 +178,7 @@ u8 GetWalkInPlaceFastMovementAction(u32);
 u8 GetWalkInPlaceNormalMovementAction(u32);
 u8 GetWalkInPlaceSlowMovementAction(u32);
 u8 GetCollisionAtCoords(struct ObjectEvent *, s16 x, s16 y, u32 dir);
+u32 GetObjectObjectCollidesWith(struct ObjectEvent *objectEvent, s16 x, s16 y, bool32 addCoords);
 void MoveCoords(u8 direction, s16 *x, s16 *y);
 bool8 ObjectEventIsHeldMovementActive(struct ObjectEvent *);
 u8 ObjectEventClearHeldMovementIfFinished(struct ObjectEvent *);
@@ -207,6 +215,7 @@ void ObjectEventForceSetHeldMovement(struct ObjectEvent *objectEvent, u8 movemen
 bool8 ObjectEventIsMovementOverridden(struct ObjectEvent *objectEvent);
 u8 ObjectEventCheckHeldMovementStatus(struct ObjectEvent *objectEvent);
 u8 ObjectEventGetHeldMovementActionId(struct ObjectEvent *objectEvent);
+const struct ObjectEventTemplate *FindObjectEventTemplateByLocalId(u8, const struct ObjectEventTemplate *, u8);
 void TryOverrideTemplateCoordsForObjectEvent(const struct ObjectEvent *objectEvent, u8 movementType);
 void OverrideTemplateCoordsForObjectEvent(const struct ObjectEvent *objectEvent);
 void ShiftStillObjectEventCoords(struct ObjectEvent *objEvent);
@@ -303,11 +312,12 @@ u8 GetJumpMovementAction(u32);
 u8 GetJump2MovementAction(u32);
 u8 CopySprite(struct Sprite *sprite, s16 x, s16 y, u8 subpriority);
 u8 CreateCopySpriteAt(struct Sprite *sprite, s16 x, s16 y, u8 subpriority);
+bool8 IsElevationMismatchAt(u8, s16, s16);
 
 u8 MovementType_WanderAround_Step0(struct ObjectEvent *, struct Sprite *);
 u8 MovementType_WanderAround_Step1(struct ObjectEvent *, struct Sprite *);
 u8 MovementType_WanderAround_Step2(struct ObjectEvent *, struct Sprite *);
-u8 MovementType_WanderAround_Step3(struct ObjectEvent *, struct Sprite *);
+u8 MovementType_Wander_Step3(struct ObjectEvent *, struct Sprite *);
 u8 MovementType_WanderAround_Step4(struct ObjectEvent *, struct Sprite *);
 u8 MovementType_WanderAround_Step5(struct ObjectEvent *, struct Sprite *);
 u8 MovementType_WanderAround_Step6(struct ObjectEvent *, struct Sprite *);
@@ -330,14 +340,12 @@ u8 MovementType_LookAround_Step4(struct ObjectEvent *, struct Sprite *);
 u8 MovementType_WanderUpAndDown_Step0(struct ObjectEvent *, struct Sprite *);
 u8 MovementType_WanderUpAndDown_Step1(struct ObjectEvent *, struct Sprite *);
 u8 MovementType_WanderUpAndDown_Step2(struct ObjectEvent *, struct Sprite *);
-u8 MovementType_WanderUpAndDown_Step3(struct ObjectEvent *, struct Sprite *);
 u8 MovementType_WanderUpAndDown_Step4(struct ObjectEvent *, struct Sprite *);
 u8 MovementType_WanderUpAndDown_Step5(struct ObjectEvent *, struct Sprite *);
 u8 MovementType_WanderUpAndDown_Step6(struct ObjectEvent *, struct Sprite *);
 u8 MovementType_WanderLeftAndRight_Step0(struct ObjectEvent *, struct Sprite *);
 u8 MovementType_WanderLeftAndRight_Step1(struct ObjectEvent *, struct Sprite *);
 u8 MovementType_WanderLeftAndRight_Step2(struct ObjectEvent *, struct Sprite *);
-u8 MovementType_WanderLeftAndRight_Step3(struct ObjectEvent *, struct Sprite *);
 u8 MovementType_WanderLeftAndRight_Step4(struct ObjectEvent *, struct Sprite *);
 u8 MovementType_WanderLeftAndRight_Step5(struct ObjectEvent *, struct Sprite *);
 u8 MovementType_WanderLeftAndRight_Step6(struct ObjectEvent *, struct Sprite *);
@@ -490,6 +498,15 @@ void SetVirtualObjectInvisibility(u8 virtualObjId, bool32 invisible);
 bool32 IsVirtualObjectInvisible(u8 virtualObjId);
 void SetVirtualObjectSpriteAnim(u8 virtualObjId, u8 animNum);
 bool32 IsVirtualObjectAnimating(u8 virtualObjId);
+u8 GetObjectEventIdByLocalId(u8 localId);
+bool32 IsFollowerVisible(void);
+
+// run slow
+u8 GetPlayerRunSlowMovementAction(u32);
+//sideways stairs
+u8 GetSidewaysStairsToRightDirection(s16, s16, u8);
+u8 GetSidewaysStairsToLeftDirection(s16, s16, u8);
+u8 GetSidewaysStairsCollision(struct ObjectEvent *objectEvent, u8 dir, u8 currentBehavior, u8 nextBehavior, u8 collision);
 
 bool8 MovementAction_EmoteX_Step0(struct ObjectEvent *, struct Sprite *);
 bool8 MovementAction_EmoteDoubleExclamationMark_Step0(struct ObjectEvent *, struct Sprite *);

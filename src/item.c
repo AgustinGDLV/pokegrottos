@@ -1,6 +1,7 @@
 #include "global.h"
 #include "item.h"
 #include "berry.h"
+#include "pokeball.h"
 #include "string_util.h"
 #include "text.h"
 #include "event_data.h"
@@ -161,6 +162,18 @@ bool8 HasAtLeastOneBerry(void)
         }
     }
     gSpecialVar_Result = FALSE;
+    return FALSE;
+}
+
+bool8 HasAtLeastOnePokeBall(void)
+{
+    u16 ballId;
+
+    for (ballId = BALL_STRANGE; ballId < POKEBALL_COUNT; ballId++)
+    {
+        if (CheckBagHasItem(ballId, 1) == TRUE)
+            return TRUE;
+    }
     return FALSE;
 }
 
@@ -904,6 +917,11 @@ u8 ItemId_GetImportance(u16 itemId)
     return gItemsInfo[SanitizeItemId(itemId)].importance;
 }
 
+u8 ItemId_GetConsumability(u16 itemId)
+{
+    return !gItemsInfo[SanitizeItemId(itemId)].notConsumed;
+}
+
 u8 ItemId_GetPocket(u16 itemId)
 {
     return gItemsInfo[SanitizeItemId(itemId)].pocket;
@@ -951,7 +969,7 @@ u8 ItemId_GetBattleUsage(u16 itemId)
         return gItemsInfo[item].battleUsage;
 }
 
-u8 ItemId_GetSecondaryId(u16 itemId)
+u32 ItemId_GetSecondaryId(u32 itemId)
 {
     return gItemsInfo[SanitizeItemId(itemId)].secondaryId;
 }

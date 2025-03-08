@@ -9,18 +9,18 @@ extern const u8 gCgb3Vol[];
 BSS_CODE ALIGNED(4) char SoundMainRAM_Buffer[0xB40] = {0};
 BSS_CODE ALIGNED(4) u32 hq_buffer_ptr[0x130] = {0};
 
-struct SoundInfo gSoundInfo;
-struct PokemonCrySong gPokemonCrySongs[MAX_POKEMON_CRIES];
-struct MusicPlayerInfo gPokemonCryMusicPlayers[MAX_POKEMON_CRIES];
-MPlayFunc gMPlayJumpTable[36];
-struct CgbChannel gCgbChans[4];
-struct MusicPlayerTrack gPokemonCryTracks[MAX_POKEMON_CRIES * 2];
-struct PokemonCrySong gPokemonCrySong;
-struct MusicPlayerInfo gMPlayInfo_BGM;
-struct MusicPlayerInfo gMPlayInfo_SE1;
-struct MusicPlayerInfo gMPlayInfo_SE2;
-struct MusicPlayerInfo gMPlayInfo_SE3;
-u8 gMPlayMemAccArea[0x10];
+COMMON_DATA struct SoundInfo gSoundInfo;
+COMMON_DATA struct PokemonCrySong gPokemonCrySongs[MAX_POKEMON_CRIES];
+COMMON_DATA struct MusicPlayerInfo gPokemonCryMusicPlayers[MAX_POKEMON_CRIES];
+COMMON_DATA MPlayFunc gMPlayJumpTable[36];
+COMMON_DATA struct CgbChannel gCgbChans[4];
+COMMON_DATA struct MusicPlayerTrack gPokemonCryTracks[MAX_POKEMON_CRIES * 2];
+COMMON_DATA struct PokemonCrySong gPokemonCrySong;
+COMMON_DATA struct MusicPlayerInfo gMPlayInfo_BGM;
+COMMON_DATA struct MusicPlayerInfo gMPlayInfo_SE1;
+COMMON_DATA struct MusicPlayerInfo gMPlayInfo_SE2;
+COMMON_DATA struct MusicPlayerInfo gMPlayInfo_SE3;
+COMMON_DATA u8 gMPlayMemAccArea[0x10];
 
 u32 MidiKeyToFreq(struct WaveData *wav, u8 key, u8 fineAdjust)
 {

@@ -2,14 +2,14 @@
 // DO NOT MODIFY THIS FILE! It is auto-generated from src/data/battle_partners.party
 //
 // If you want to modify this file set COMPETITIVE_PARTY_SYNTAX to FALSE
-// in include/config.h and remove this notice.
+// in include/config/general.h and remove this notice.
 // Use sed -i '/^#line/d' 'src/data/battle_partners.h' to remove #line markers.
 //
 
 #line 1 "src/data/battle_partners.party"
 
 #line 1
-    [PARTNER_NONE] =
+    [DIFFICULTY_NORMAL][PARTNER_NONE] =
     {
 #line 3
         .trainerClass = TRAINER_CLASS_PKMN_TRAINER_1,
@@ -24,7 +24,7 @@
         },
     },
 #line 8
-    [PARTNER_STEVEN] =
+    [DIFFICULTY_NORMAL][PARTNER_STEVEN] =
     {
 #line 9
         .trainerName = _("STEVEN"),

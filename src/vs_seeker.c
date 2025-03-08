@@ -513,7 +513,7 @@ void ClearRematchMovementByTrainerId(void)
     struct ObjectEventTemplate *objectEventTemplates = gSaveBlock1Ptr->objectEventTemplates;
     struct ObjectEvent *objectEvent;
 
-    int vsSeekerDataIdx = TrainerIdToRematchTableId(gRematchTable, gTrainerBattleOpponent_A);
+    int vsSeekerDataIdx = TrainerIdToRematchTableId(gRematchTable, TRAINER_BATTLE_PARAM.opponentA);
 
     if (!I_VS_SEEKER_CHARGING) return;
 
@@ -575,6 +575,14 @@ u16 GetRematchTrainerIdVSSeeker(u16 trainerId)
     }
 
     return gRematchTable[tableId].trainerIds[rematchTrainerIdx];
+}
+
+bool32 IsVsSeekerEnabled(void)
+{
+    if (I_VS_SEEKER_CHARGING == 0)
+        return FALSE;
+
+    return (CheckBagHasItem(ITEM_VS_SEEKER, 1));
 }
 
 static bool8 ObjectEventIdIsSane(u8 objectEventId)

@@ -1,6 +1,30 @@
 #include "global.h"
 #include "test/battle.h"
 
+ASSUMPTIONS
+{
+    ASSUME(GetMoveEffect(MOVE_BATON_PASS) == EFFECT_BATON_PASS);
+}
+
+// This softlocked the game before.
+SINGLE_BATTLE_TEST("Baton Pass used after Memento works correctly")
+{
+    GIVEN {
+        PLAYER(SPECIES_WOBBUFFET);
+        PLAYER(SPECIES_WOBBUFFET);
+        OPPONENT(SPECIES_WYNAUT);
+        OPPONENT(SPECIES_CATERPIE);
+    } WHEN {
+        TURN { MOVE(player, MOVE_MEMENTO); SEND_OUT(player, 1); MOVE(opponent, MOVE_BATON_PASS); SEND_OUT(opponent, 1); }
+    } SCENE {
+        MESSAGE("Wobbuffet used Memento!");
+        MESSAGE("Wobbuffet fainted!");
+        MESSAGE("The opposing Wynaut used Baton Pass!");
+        MESSAGE("2 sent out Caterpie!");
+        MESSAGE("Go! Wobbuffet!");
+    }
+}
+
 TO_DO_BATTLE_TEST("Baton Pass switches out the user");
 TO_DO_BATTLE_TEST("Baton Pass fails if there's no valid party Pokémon left");
 TO_DO_BATTLE_TEST("Baton Pass passes both positive and negative stat changes");
@@ -15,9 +39,6 @@ TO_DO_BATTLE_TEST("Baton Pass doesn't pass ability changes");
 //
 TO_DO_BATTLE_TEST("Baton Pass passes confusion status");                                                    // test/battle/status2/confusion.c
 
-TO_DO_BATTLE_TEST("Baton Pass passes Cursed status");                                                       // test/battle/move_effect/curse.c
-TO_DO_BATTLE_TEST("Baton Pass doesn't pass Disable's effect");                                              // test/battle/move_effect/disable.c
-TO_DO_BATTLE_TEST("Baton Pass passes Dragon Cheer's effect");                                               // test/battle/move_effect/dragon_cheer.c
 TO_DO_BATTLE_TEST("Baton Pass passes Fairy lock's escape prevention effect");                               // test/battle/move_effect/fairy_lock.c
 TO_DO_BATTLE_TEST("Baton Pass passes Focus Energy's effect");                                               // test/battle/move_effect/focus_energy.c
 TO_DO_BATTLE_TEST("Baton Pass passes Heal Block's effect");                                                 // test/battle/move_effect/heal_block.c

@@ -4,14 +4,14 @@
 ASSUMPTIONS
 {
     ASSUME(MoveHasAdditionalEffectSelf(MOVE_AURA_WHEEL, MOVE_EFFECT_SPD_PLUS_1) == TRUE);
-    ASSUME(gMovesInfo[MOVE_AURA_WHEEL].effect == EFFECT_AURA_WHEEL);
+    ASSUME(GetMoveEffect(MOVE_AURA_WHEEL) == EFFECT_AURA_WHEEL);
 }
 
 SINGLE_BATTLE_TEST("Aura Wheel raises Speed; fails if the user is not Morpeko")
 {
     u16 species;
-    PARAMETRIZE{ species = SPECIES_WOBBUFFET; }
-    PARAMETRIZE{ species = SPECIES_MORPEKO; }
+    PARAMETRIZE { species = SPECIES_WOBBUFFET; }
+    PARAMETRIZE { species = SPECIES_MORPEKO; }
     GIVEN {
         PLAYER(species);
         OPPONENT(SPECIES_WOBBUFFET);

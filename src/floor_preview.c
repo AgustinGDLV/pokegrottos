@@ -328,7 +328,7 @@ static void PopulateSpeciesList(void)
             header = GetRoomMapHeader(ROOM_COORD(x, y));
             for (i = 0; i < header->events->objectEventCount; ++i)
             {
-                if (header->events->objectEvents[i].graphicsId == OBJ_EVENT_GFX_MON_BASE)
+                if (header->events->objectEvents[i].graphicsId == OBJ_EVENT_MON)
                 {
                     species = GetOverworldSpeciesInRoom(ROOM_COORD(x, y), header->events->objectEvents[i].localId);
                     if (!IsSpeciesAlreadyInList(species) && gNumSpeciesInFloor < MAX_FLOOR_SPECIES)
