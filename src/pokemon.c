@@ -1874,7 +1874,6 @@ void CalculateMonStats(struct Pokemon *mon)
     s32 spDefenseEV = GetMonData(mon, MON_DATA_SPDEF_EV, NULL);
     u16 species = GetMonData(mon, MON_DATA_SPECIES, NULL);
     u8 friendship = GetMonData(mon, MON_DATA_FRIENDSHIP, NULL);
-    u32 rank = GetMonData(mon, MON_DATA_RANK);
     s32 newMaxHP;
 
     u8 nature = GetMonData(mon, MON_DATA_HIDDEN_NATURE, NULL);
@@ -1885,7 +1884,6 @@ void CalculateMonStats(struct Pokemon *mon)
     }
     else
     {
-        DebugPrintf("%d is rank %d and has %d base HP", species, rank, GetRankBasedBaseStat(STAT_HP, mon));
         s32 n = 2 * GetRankBasedBaseStat(STAT_HP, mon) + hpIV;
         newMaxHP = (((n + hpEV / 4) * 50) / 100) + 50 + 10;
     }

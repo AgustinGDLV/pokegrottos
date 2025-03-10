@@ -36,8 +36,6 @@ static const TaskFunc sBattleIntroSlideFuncs[] =
     [BATTLE_TERRAIN_PLAIN]      = BattleIntroSlide3,
 };
 
-static void BattleIntroNoSlide(u8);
-
 void SetAnimBgAttribute(u8 bgId, u8 attributeId, u8 value)
 {
     if (bgId < 4)
@@ -118,7 +116,7 @@ void HandleIntroSlide(u8 terrain)
     }
     else if (gBattleTypeFlags & BATTLE_TYPE_FRONTIER)
     {
-        taskId = CreateTask(BattleIntroNoSlide, 0);
+        taskId = CreateTask(BattleIntroSlide3, 0);
     }
     else if (GetMonData(&gEnemyParty[0], MON_DATA_SPECIES, NULL) == SPECIES_KYOGRE)
     {
@@ -127,7 +125,7 @@ void HandleIntroSlide(u8 terrain)
     }
     else
     {
-        taskId = CreateTask(BattleIntroNoSlide, 0);
+        taskId = CreateTask(sBattleIntroSlideFuncs[terrain], 0);
     }
 
     gTasks[taskId].tState = 0;

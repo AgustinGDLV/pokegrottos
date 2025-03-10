@@ -2498,7 +2498,7 @@ void BtlController_HandleDrawTrainerPic(u32 battler, u32 trainerPicId, bool32 is
             if (subpriority == -1)
                 subpriority = GetBattlerSpriteSubpriority(battler);
             gBattleStruct->trainerSlideSpriteIds[battler] = CreateSprite(&gMultiuseSpriteTemplate,
-                                                             xPos,
+                                                             -32,
                                                              yPos,
                                                              subpriority);
             if ((gBattleTypeFlags & BATTLE_TYPE_SAFARI) && GetBattlerPosition(battler) == B_POSITION_PLAYER_LEFT)
