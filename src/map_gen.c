@@ -308,6 +308,15 @@ bool32 TryWarpToRoom(u32 target, u32 warpId)
     return TRUE;
 }
 
+void WarpToBossRoomOrTurn(void)
+{
+    struct ObjectEvent* player = &gObjectEvents[gPlayerAvatar.objectEventId];
+    if (gSpecialVar_Result)
+        TryWarpToRoom(GetRoomInDirection(player->facingDirection), player->facingDirection);
+    else
+        ObjectEventFaceOppositeDirection(player, player->facingDirection);
+}
+
 // Random loot, shops, etc. are generated using a room seed.
 // This seed is currently just based off the room's unique index.
 u16 GetRoomSeed(u32 index)

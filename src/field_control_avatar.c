@@ -211,6 +211,12 @@ int ProcessPlayerFieldInput(struct FieldInput *input)
     GetInFrontOfPlayerPosition(&position);
     metatileBehavior = MapGridGetMetatileBehaviorAt(position.x, position.y);
 
+    if (IsPlayerInFloorMap() && GetRoomType(GetRoomInDirection(playerDirection)) == BOSS_ROOM && (position.x < MAP_OFFSET || position.y < MAP_OFFSET || position.x >= gMapHeader.mapLayout->width + MAP_OFFSET || position.y >= gMapHeader.mapLayout->height + MAP_OFFSET))
+    {
+        ScriptContext_SetupScript(EventScript_EnterBossRoomFromConnection);
+        return TRUE;
+    }
+
     if (input->heldDirection && (input->dpadDirection == playerDirection) && (TrySetUpWalkIntoSignpostScript(&position, metatileBehavior, playerDirection) == TRUE))
         return TRUE;
 
@@ -831,7 +837,15 @@ static bool8 TryArrowWarp(struct MapPosition *position, u16 metatileBehavior, u8
         // Do custom warp in floor rooms.
         if (IsPlayerInFloorMap())
         {
-            return TryWarpToRoom(GetRoomInDirection(direction), direction);
+            if (GetRoomType(GetRoomInDirection(direction)) == BOSS_ROOM)
+            {
+                ScriptContext_SetupScript(EventScript_EnterBossRoom);
+                return FALSE;
+            }
+            else
+            {
+                return TryWarpToRoom(GetRoomInDirection(direction), direction);
+            }
         }
         else
         {

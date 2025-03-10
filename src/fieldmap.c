@@ -1,6 +1,7 @@
 #include "global.h"
 #include "battle_pyramid.h"
 #include "bg.h"
+#include "event_scripts.h"
 #include "fieldmap.h"
 #include "fldeff.h"
 #include "fldeff_misc.h"
@@ -47,7 +48,6 @@ static void FillEastConnection(struct MapHeader const *mapHeader, struct MapHead
 static void InitBackupMapLayoutConnections(struct MapHeader *mapHeader);
 static void LoadSavedMapView(void);
 static bool8 SkipCopyingMetatileFromSavedMap(u16 *mapBlock, u16 mapWidth, u8 yMode);
-static struct MapConnection GetIncomingConnection(u8 direction, int x, int y);
 static bool8 IsPosInIncomingConnectingMap(u8 direction, int x, int y, struct MapConnection connection);
 static bool8 IsCoordInIncomingConnectingMap(int coord, int srcMax, int destMax, int offset);
 
@@ -727,7 +727,7 @@ bool8 CameraMove(int x, int y)
     return gCamera.active;
 }
 
-static struct MapConnection GetIncomingConnection(u8 direction, int x, int y)
+struct MapConnection GetIncomingConnection(u8 direction, int x, int y)
 {
     int count;
     int i;
@@ -740,7 +740,8 @@ static struct MapConnection GetIncomingConnection(u8 direction, int x, int y)
         connection.mapGroup = GetCurrentTemplateRules()->mapGroup;
         connection.mapNum = gFloorplan.layout[GetRoomInDirection(direction)].mapNum;
         connection.offset = 0;
-        return connection;
+        if (IsPosInIncomingConnectingMap(direction, x, y, connection))
+            return connection;
     }
 #ifdef UBFIX // UB: Multiple possible null dereferences
     else if (connections == NULL || connections->connections == NULL)
