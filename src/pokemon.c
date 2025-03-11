@@ -1853,7 +1853,7 @@ u32 GetRankBasedBaseStat(u32 statIndex, struct Pokemon *mon)
 #define CALC_STAT(iv, ev, statIndex, field)                      \
 {                                                                \
     u8 baseStat = GetRankBasedBaseStat(statIndex, mon);          \
-    s32 n = (((2 * baseStat + iv + ev / 4) * (50)) / 100) + 5;   \
+    s32 n = (((2 * baseStat + iv + ev / 4) * level) / 100) + 5;   \
     n = ModifyStatByNature(nature, n, statIndex);                \
     if (B_FRIENDSHIP_BOOST == TRUE)                              \
         n = n + ((n * 10 * friendship) / (MAX_FRIENDSHIP * 100));\
@@ -1880,6 +1880,13 @@ void CalculateMonStats(struct Pokemon *mon)
     u8 friendship = GetMonData(mon, MON_DATA_FRIENDSHIP, NULL);
     s32 newMaxHP;
 
+    #if TESTING
+    s32 level = GetLevelFromMonExp(mon);
+    SetMonData(mon, MON_DATA_LEVEL, &level);
+    #else
+    s32 level = 50;
+    #endif
+
     u8 nature = GetMonData(mon, MON_DATA_HIDDEN_NATURE, NULL);
 
     if (species == SPECIES_SHEDINJA)
@@ -1889,7 +1896,7 @@ void CalculateMonStats(struct Pokemon *mon)
     else
     {
         s32 n = 2 * GetRankBasedBaseStat(STAT_HP, mon) + hpIV;
-        newMaxHP = (((n + hpEV / 4) * (50)) / 100) + (50) + 10;
+        newMaxHP = (((n + hpEV / 4) * level) / 100) + (level) + 10;
     }
     SetMonData(mon, MON_DATA_MAX_HP, &newMaxHP);
 
