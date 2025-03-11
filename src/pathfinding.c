@@ -132,7 +132,7 @@ u32 GetDirectionTowardsPlayer(struct ObjectEvent* objectEvent)
     struct Coords16 playerCoords = gObjectEvents[gPlayerAvatar.objectEventId].currentCoords;
 
     // Check elevation mismatch.
-    if (objectEvent->currentElevation != PlayerGetElevation())
+    if (objectEvent->currentElevation < PlayerGetElevation() && objectEvent->currentElevation != 0)
         return DIR_NONE;
 
     // Check sight range.

@@ -5936,6 +5936,12 @@ bool8 MovementType_EncounterTrackPlayer_TrackMove(struct ObjectEvent *objectEven
         return FALSE;
     }
 
+    // If there's no valid direction to move, wait.
+    if (dir == DIR_NONE)
+    {
+        return FALSE;
+    }
+
     // Select movement action in the direction of the player.
     ObjectEventSetSingleMovement(objectEvent, sprite, GetWalkNormalMovementAction(dir));
     sprite->sTypeFuncId = 6;
