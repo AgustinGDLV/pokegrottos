@@ -4524,8 +4524,8 @@
     {
       "id": "LAYOUT_ICE_CAVE_TEMPLATES_ROOM1",
       "name": "IceCaveTemplates_Room1_Layout",
-      "width": 12,
-      "height": 11,
+      "width": 16,
+      "height": 15,
       "primary_tileset": "gTileset_General",
       "secondary_tileset": "gTileset_IceCave",
       "border_filepath": "data/layouts/IceCaveTemplates_Room1/border.bin",
