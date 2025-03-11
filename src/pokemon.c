@@ -1843,13 +1843,17 @@ u32 GetRankBasedBaseStat(u32 statIndex, struct Pokemon *mon)
         stat = gSpeciesInfo[species].baseSpDefense;
         break;
     }
+    #if TESTING
+    return stat;
+    #else
     return uq4_12_multiply_by_int_half_down(GetRankBasedStatMultiplier(species, rank), stat);
+    #endif
 }
 
 #define CALC_STAT(iv, ev, statIndex, field)                      \
 {                                                                \
     u8 baseStat = GetRankBasedBaseStat(statIndex, mon);          \
-    s32 n = (((2 * baseStat + iv + ev / 4) * 50) / 100) + 5;     \
+    s32 n = (((2 * baseStat + iv + ev / 4) * (50)) / 100) + 5;   \
     n = ModifyStatByNature(nature, n, statIndex);                \
     if (B_FRIENDSHIP_BOOST == TRUE)                              \
         n = n + ((n * 10 * friendship) / (MAX_FRIENDSHIP * 100));\
@@ -1885,7 +1889,7 @@ void CalculateMonStats(struct Pokemon *mon)
     else
     {
         s32 n = 2 * GetRankBasedBaseStat(STAT_HP, mon) + hpIV;
-        newMaxHP = (((n + hpEV / 4) * 50) / 100) + 50 + 10;
+        newMaxHP = (((n + hpEV / 4) * (50)) / 100) + (50) + 10;
     }
     SetMonData(mon, MON_DATA_MAX_HP, &newMaxHP);
 
