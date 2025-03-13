@@ -25,7 +25,7 @@
       "trainer_type": "TRAINER_TYPE_NONE",
       "trainer_sight_or_berry_tree_id": "4",
       "script": "NULL",
-      "flag": "FLAG_UNUSED_0x493"
+      "flag": "FLAG_ENCOUNTER_1"
     }
   ],
   "warp_events": [

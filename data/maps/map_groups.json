@@ -639,7 +639,9 @@
     "IceCaveTemplates_ShopRoom",
     "IceCaveTemplates_TreasureRoom",
     "IceCaveTemplates_ChallengeRoom",
-    "IceCaveTemplates_Room1"
+    "IceCaveTemplates_Room1",
+    "IceCaveTemplates_Room2",
+    "IceCaveTemplates_Room3"
   ],
   "gMapGroup_HotCaveTemplates": [
     "HotCaveTemplates_Connections",

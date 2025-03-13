@@ -1179,3 +1179,7 @@ EventScript_VsSeekerChargingDone::
 	.include "data/maps/PowerPlantTemplates_TreasureRoom/scripts.inc"
 	.include "data/maps/PowerPlantTemplates_ChallengeRoom/scripts.inc"
 	.include "data/maps/PowerPlantTemplates_Room1/scripts.inc"
+
+	.include "data/maps/IceCaveTemplates_Room2/scripts.inc"
+
+	.include "data/maps/IceCaveTemplates_Room3/scripts.inc"

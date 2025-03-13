@@ -4650,6 +4650,26 @@
       "secondary_tileset": "gTileset_PowerPlant",
       "border_filepath": "data/layouts/PowerPlantTemplates_Room1/border.bin",
       "blockdata_filepath": "data/layouts/PowerPlantTemplates_Room1/map.bin"
+    },
+    {
+      "id": "LAYOUT_ICE_CAVE_TEMPLATES_ROOM2",
+      "name": "IceCaveTemplates_Room2_Layout",
+      "width": 23,
+      "height": 19,
+      "primary_tileset": "gTileset_General",
+      "secondary_tileset": "gTileset_IceCave",
+      "border_filepath": "data/layouts/IceCaveTemplates_Room2/border.bin",
+      "blockdata_filepath": "data/layouts/IceCaveTemplates_Room2/map.bin"
+    },
+    {
+      "id": "LAYOUT_ICE_CAVE_TEMPLATES_ROOM3",
+      "name": "IceCaveTemplates_Room3_Layout",
+      "width": 22,
+      "height": 23,
+      "primary_tileset": "gTileset_General",
+      "secondary_tileset": "gTileset_IceCave",
+      "border_filepath": "data/layouts/IceCaveTemplates_Room3/border.bin",
+      "blockdata_filepath": "data/layouts/IceCaveTemplates_Room3/map.bin"
     }
   ]
 }

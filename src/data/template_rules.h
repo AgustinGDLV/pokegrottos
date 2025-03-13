@@ -190,6 +190,8 @@ static const u8 sHotCaveNormalRooms[] =
 static const u8 sIceCaveNormalRooms[] =
 {
     MAP_NUM(ICE_CAVE_TEMPLATES_ROOM1),
+    MAP_NUM(ICE_CAVE_TEMPLATES_ROOM2),
+    MAP_NUM(ICE_CAVE_TEMPLATES_ROOM3),
 };
 
 // Power Plant Template Pools

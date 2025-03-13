@@ -1,7 +1,7 @@
 {
-  "id": "MAP_ICE_CAVE_TEMPLATES_ROOM1",
-  "name": "IceCaveTemplates_Room1",
-  "layout": "LAYOUT_ICE_CAVE_TEMPLATES_ROOM1",
+  "id": "MAP_ICE_CAVE_TEMPLATES_ROOM2",
+  "name": "IceCaveTemplates_Room2",
+  "layout": "LAYOUT_ICE_CAVE_TEMPLATES_ROOM2",
   "music": "MUS_DUMMY",
   "region_map_section": "MAPSEC_ABANDONED_SHIP",
   "requires_flash": false,
@@ -15,35 +15,9 @@
   "connections": 0,
   "object_events": [
     {
-      "graphics_id": "OBJ_EVENT_MON",
-      "x": 13,
-      "y": 12,
-      "elevation": 0,
-      "movement_type": "MOVEMENT_TYPE_ENCOUNTER_TRACK_PLAYER",
-      "movement_range_x": 0,
-      "movement_range_y": 0,
-      "trainer_type": "TRAINER_TYPE_NONE",
-      "trainer_sight_or_berry_tree_id": "4",
-      "script": "NULL",
-      "flag": "FLAG_ENCOUNTER_2"
-    },
-    {
-      "graphics_id": "OBJ_EVENT_MON",
-      "x": 3,
-      "y": 2,
-      "elevation": 0,
-      "movement_type": "MOVEMENT_TYPE_ENCOUNTER_TRACK_PLAYER",
-      "movement_range_x": 0,
-      "movement_range_y": 0,
-      "trainer_type": "TRAINER_TYPE_NONE",
-      "trainer_sight_or_berry_tree_id": "4",
-      "script": "NULL",
-      "flag": "FLAG_ENCOUNTER_1"
-    },
-    {
       "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
-      "x": 6,
-      "y": 6,
+      "x": 3,
+      "y": 3,
       "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_NONE",
       "movement_range_x": 0,
@@ -51,43 +25,56 @@
       "trainer_type": "TRAINER_TYPE_NONE",
       "trainer_sight_or_berry_tree_id": "0",
       "script": "EventScript_ItemBall",
-      "flag": "FLAG_ITEM_1"
+      "flag": "FLAG_ITEM_2"
+    },
+    {
+      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
+      "x": 19,
+      "y": 13,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "movement_range_x": 0,
+      "movement_range_y": 0,
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "trainer_sight_or_berry_tree_id": "0",
+      "script": "EventScript_ItemBall",
+      "flag": "FLAG_ITEM_3"
     }
   ],
   "warp_events": [
     {
-      "x": 8,
-      "y": 7,
+      "x": 11,
+      "y": 9,
       "elevation": 0,
-      "dest_map": "MAP_ICE_CAVE_TEMPLATES_ROOM1",
+      "dest_map": "MAP_ICE_CAVE_TEMPLATES_ROOM2",
       "dest_warp_id": "0"
     },
     {
-      "x": 8,
-      "y": 1,
+      "x": 11,
+      "y": 2,
       "elevation": 0,
-      "dest_map": "MAP_ICE_CAVE_TEMPLATES_ROOM1",
+      "dest_map": "MAP_ICE_CAVE_TEMPLATES_ROOM2",
       "dest_warp_id": "0"
     },
     {
-      "x": 8,
-      "y": 13,
+      "x": 11,
+      "y": 16,
       "elevation": 0,
-      "dest_map": "MAP_ICE_CAVE_TEMPLATES_ROOM1",
+      "dest_map": "MAP_ICE_CAVE_TEMPLATES_ROOM2",
       "dest_warp_id": "0"
     },
     {
-      "x": 14,
-      "y": 4,
+      "x": 19,
+      "y": 6,
       "elevation": 0,
-      "dest_map": "MAP_ICE_CAVE_TEMPLATES_ROOM1",
+      "dest_map": "MAP_ICE_CAVE_TEMPLATES_ROOM2",
       "dest_warp_id": "0"
     },
     {
-      "x": 2,
+      "x": 3,
       "y": 10,
       "elevation": 0,
-      "dest_map": "MAP_ICE_CAVE_TEMPLATES_ROOM1",
+      "dest_map": "MAP_ICE_CAVE_TEMPLATES_ROOM2",
       "dest_warp_id": "0"
     }
   ],

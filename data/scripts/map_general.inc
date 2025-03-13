@@ -30,7 +30,7 @@ EventScript_KecleonShop::
 
 EventScript_EnterBossRoom_Text:
 	.string "You sense a strong presence ahead...\n"
-	.string "Enter?$"
+	.string "Should you enter?$"
 
 EventScript_EnterBossRoom::
 	lock

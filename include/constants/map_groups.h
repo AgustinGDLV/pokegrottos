@@ -606,6 +606,8 @@
 #define MAP_ICE_CAVE_TEMPLATES_TREASURE_ROOM  (3 | (35 << 8))
 #define MAP_ICE_CAVE_TEMPLATES_CHALLENGE_ROOM (4 | (35 << 8))
 #define MAP_ICE_CAVE_TEMPLATES_ROOM1          (5 | (35 << 8))
+#define MAP_ICE_CAVE_TEMPLATES_ROOM2          (6 | (35 << 8))
+#define MAP_ICE_CAVE_TEMPLATES_ROOM3          (7 | (35 << 8))
 
 // gMapGroup_HotCaveTemplates
 #define MAP_HOT_CAVE_TEMPLATES_CONNECTIONS    (0 | (36 << 8))
