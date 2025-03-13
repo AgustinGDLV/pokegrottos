@@ -118,7 +118,7 @@ void GenerateKecleonShopList(void)
 void ChooseOverworldItem(void)
 {
     u32 i, rand, tier;
-    u32 ballId = gObjectEvents[gSelectedObjectEvent].trainerRange_berryTreeId;
+    u32 ballId = gObjectEvents[gSelectedObjectEvent].localId;
 
     // Advance RNG to a repeatable state based on the ball ID.
     // This is to allow for consistency between saves and seed.

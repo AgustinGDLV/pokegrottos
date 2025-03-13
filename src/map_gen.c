@@ -321,7 +321,7 @@ void WarpToBossRoomOrTurn(void)
 // This seed is currently just based off the room's unique index.
 u16 GetRoomSeed(u32 index)
 {
-    return gSaveBlock1Ptr->floorSeed + index;
+    return gSaveBlock1Ptr->floorSeed + index * 1103515245;
 }
 
 // Sets the floor RNG state to the room's RNG seed.

@@ -1256,11 +1256,11 @@
 #define FLAG_ITEM_14                                                0x4B0
 #define FLAG_ITEM_15                                                0x4B1
 #define FLAG_ITEM_16                                                0x4B2
-#define FLAG_UNUSED_0x4B3                                           0x4B3 // Unused Flag
-#define FLAG_UNUSED_0x4B4                                           0x4B4 // Unused Flag
-#define FLAG_UNUSED_0x4B5                                           0x4B5 // Unused Flag
-#define FLAG_UNUSED_0x4B6                                           0x4B6 // Unused Flag
-#define FLAG_UNUSED_0x4B7                                           0x4B7 // Unused Flag
+#define FLAG_BOSS_ENCOUNTER                                         0x4B3
+#define FLAG_CHALLENGE_ENCOUNTER_1                                  0x4B4
+#define FLAG_CHALLENGE_ENCOUNTER_2                                  0x4B5
+#define FLAG_CHALLENGE_ENCOUNTER_3                                  0x4B6
+#define FLAG_CHALLENGE_ENCOUNTER_4                                  0x4B7
 #define FLAG_UNUSED_0x4B8                                           0x4B8 // Unused Flag
 #define FLAG_UNUSED_0x4B9                                           0x4B9 // Unused Flag
 #define FLAG_UNUSED_0x4BA                                           0x4BA // Unused Flag

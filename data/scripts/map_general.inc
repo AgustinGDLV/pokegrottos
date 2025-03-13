@@ -33,11 +33,17 @@ EventScript_EnterBossRoom_Text:
 	.string "Should you enter?$"
 
 EventScript_EnterBossRoom::
+	goto_if_set FLAG_BOSS_ENCOUNTER, EventScript_WarpToBossRoom
 	lock
 	msgbox EventScript_EnterBossRoom_Text, MSGBOX_YESNO
 	waitmessage
 	releaseall
 	callnative WarpToBossRoomOrTurn 
+	end
+
+EventScript_WarpToBossRoom:
+	setvar VAR_RESULT, 1
+	callnative WarpToBossRoomOrTurn
 	end
 
 EventScript_Movement_WalkSouth:
@@ -97,6 +103,7 @@ EventScript_WalkOppposite:
 	case DIR_WEST, EventScript_WalkEast
 
 EventScript_EnterBossRoomFromConnection::
+	goto_if_set FLAG_BOSS_ENCOUNTER, EventScript_End
 	lock
 	playse SE_PIN
 	msgbox EventScript_EnterBossRoom_Text, MSGBOX_YESNO
@@ -105,3 +112,6 @@ EventScript_EnterBossRoomFromConnection::
 	switch VAR_RESULT
 	case 1, EventScript_WalkForward
 	case 0, EventScript_WalkOppposite
+
+EventScript_End:
+	end

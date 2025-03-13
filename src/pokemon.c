@@ -25,6 +25,7 @@
 #include "main.h"
 #include "overworld.h"
 #include "m4a.h"
+#include "map_gen.h"
 #include "party_menu.h"
 #include "pokedex.h"
 #include "pokeblock.h"
@@ -5845,7 +5846,11 @@ bool32 IsSpeciesInHoennDex(u16 species)
 
 u16 GetBattleBGM(void)
 {
-    if (gBattleTypeFlags & BATTLE_TYPE_LEGENDARY)
+    if (IsPlayerInFloorMap() && GetRoomType(gSaveBlock1Ptr->currentRoom) == BOSS_ROOM)
+    {
+        return MUS_VS_FRONTIER_BRAIN;
+    }
+    else if (gBattleTypeFlags & BATTLE_TYPE_LEGENDARY)
     {
         switch (GetMonData(&gEnemyParty[0], MON_DATA_SPECIES, NULL))
         {
