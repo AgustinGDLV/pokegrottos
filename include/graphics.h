@@ -3384,4 +3384,7 @@ extern const u32 gBattleIcons_Gfx2[];
 extern const u32 gBattleIcons_Pal1[];
 extern const u32 gBattleIcons_Pal2[];
 
+extern const u32 gRankStar_Gfx[];
+extern const u16 gRankStar_Pal[];
+
 #endif //GUARD_GRAPHICS_H
