@@ -185,7 +185,7 @@ void CB2_FloorPreview(void)
 
 static void Task_FloorPreviewExitAndWarp(u8 taskId)
 {
-    TryWarpToRoom(STARTING_ROOM, 0);
+    TryWarpToRoom(STARTING_ROOM, 0xFF);
     Free(sMapPreviewTilemapPtr);
     sMapPreviewTilemapPtr = NULL;
     FreeAllWindowBuffers();

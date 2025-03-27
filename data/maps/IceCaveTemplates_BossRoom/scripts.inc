@@ -76,26 +76,40 @@ IceCaveTemplates_BossRoom_Movement_WalkWest:
 	step_end
 
 IceCaveTemplates_BossRoom_WalkSouth:
+	setvar VAR_0x8004, 1  @ vertical pan
+	setvar VAR_0x8005, 1  @ horizontal pan
+	setvar VAR_0x8006, 2  @ num shakes
+	setvar VAR_0x8007, 5  @ shake delay
 	playse SE_M_STRENGTH
 	applymovement LOCALID_BOSS, IceCaveTemplates_BossRoom_Movement_WalkSouth
+	special ShakeCamera
 	waitmovement 0
 	playse SE_M_STRENGTH
 	applymovement LOCALID_BOSS, IceCaveTemplates_BossRoom_Movement_WalkSouth
+	special ShakeCamera
 	waitmovement 0
 	playse SE_M_STRENGTH
 	applymovement LOCALID_BOSS, IceCaveTemplates_BossRoom_Movement_WalkSouth
+	special ShakeCamera
 	waitmovement 0
 	goto IceCaveTemplates_BossRoom_BossContinue
 
 IceCaveTemplates_BossRoom_WalkNorth:
+	setvar VAR_0x8004, 1  @ vertical pan
+	setvar VAR_0x8005, 1  @ horizontal pan
+	setvar VAR_0x8006, 2  @ num shakes
+	setvar VAR_0x8007, 5  @ shake delay
 	playse SE_M_STRENGTH
 	applymovement LOCALID_BOSS, IceCaveTemplates_BossRoom_Movement_WalkNorth
+	special ShakeCamera
 	waitmovement 0
 	playse SE_M_STRENGTH
 	applymovement LOCALID_BOSS, IceCaveTemplates_BossRoom_Movement_WalkNorth
+	special ShakeCamera
 	waitmovement 0
 	playse SE_M_STRENGTH
 	applymovement LOCALID_BOSS, IceCaveTemplates_BossRoom_Movement_WalkNorth
+	special ShakeCamera
 	waitmovement 0
 	goto IceCaveTemplates_BossRoom_BossContinue
 
@@ -119,13 +133,20 @@ IceCaveTemplates_BossRoom_WalkEast:
 	goto IceCaveTemplates_BossRoom_BossContinue
 
 IceCaveTemplates_BossRoom_WalkWest:
+	setvar VAR_0x8004, 1  @ vertical pan
+	setvar VAR_0x8005, 1  @ horizontal pan
+	setvar VAR_0x8006, 2  @ num shakes
+	setvar VAR_0x8007, 5  @ shake delay
 	playse SE_M_STRENGTH
 	applymovement LOCALID_BOSS, IceCaveTemplates_BossRoom_Movement_WalkWest
+	special ShakeCamera
 	waitmovement 0
 	playse SE_M_STRENGTH
 	applymovement LOCALID_BOSS, IceCaveTemplates_BossRoom_Movement_WalkWest
+	special ShakeCamera
 	waitmovement 0
 	playse SE_M_STRENGTH
 	applymovement LOCALID_BOSS, IceCaveTemplates_BossRoom_Movement_WalkWest
+	special ShakeCamera
 	waitmovement 0
 	goto IceCaveTemplates_BossRoom_BossContinue

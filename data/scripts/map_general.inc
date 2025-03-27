@@ -115,3 +115,16 @@ EventScript_EnterBossRoomFromConnection::
 
 EventScript_End:
 	end
+
+EventScript_GoToNextFloor_Text:
+	.string "Continue to the next floor?$"
+
+EventScript_GoToNextFloor::
+	lock
+	goto_if_unset FLAG_BOSS_ENCOUNTER, EventScript_End
+	msgbox EventScript_GoToNextFloor_Text, MSGBOX_YESNO
+	waitmessage
+	releaseall
+	goto_if_eq VAR_RESULT, 0, EventScript_End
+	callnative GoToNextFloor
+	end

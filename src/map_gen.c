@@ -284,6 +284,8 @@ void SetWarpDestinationToRoom(u32 index, u32 warpId)
 // Warp ID can be given using a directional constant.
 bool32 TryWarpToRoom(u32 target, u32 warpId)
 {
+    u32 warp = warpId;
+
     // Don't warp if invalid room.
     if (!DoesRoomExist(target))
         return FALSE;
@@ -292,18 +294,25 @@ bool32 TryWarpToRoom(u32 target, u32 warpId)
     gSaveBlock1Ptr->currentRoom = target;
     SetRoomAsVisited(target);
 
+    // Check if warping to start from last floor. (inelegant!)
+    if (warpId == 0xFF)
+    {
+        gFieldCallback = FieldCB_FallWarpExit;
+        warp = 0;
+    }
+
     // Do warp.
     StoreInitialPlayerAvatarState();
     LockPlayerFieldControls();
     TryFadeOutOldMapMusic();
     WarpFadeOutScreen();
     PlayRainStoppingSoundEffect();
-    SetWarpDestinationToRoom(target, warpId);
+    SetWarpDestinationToRoom(target, warp);
     WarpIntoMap();
     SetMainCallback2(CB2_LoadMap);
     if (warpId == 0)
         gFieldCallback = FieldCB_TeleportWarpIn;
-    else
+    else if (warpId != 0xFF)
         PlaySE(SE_EXIT);
     return TRUE;
 }

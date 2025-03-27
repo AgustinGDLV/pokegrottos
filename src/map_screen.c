@@ -371,15 +371,12 @@ static void Task_MapScreenFadeOutAndExit(u8 taskId)
 
 static void Task_MapScreenFadeOutAndWarp(u8 taskId)
 {
-    if (!gPaletteFade.active && !IsSEPlaying())
-	{
 		Free(sMapScreenTilemapPtr);
         sMapScreenTilemapPtr = NULL;
 		FreeAllWindowBuffers();
         ResetSpriteData();
         TryWarpToRoom(gSaveBlock1Ptr->currentRoom, 0);
 		DestroyTask(taskId);
-	}
 }
 
 static void Task_MapScreenWaitForKeypress(u8 taskId)
@@ -416,7 +413,6 @@ static void Task_MapScreenWaitForKeypress(u8 taskId)
     // Try to warp to new room.
     if (gMain.newKeys & A_BUTTON && gSaveBlock1Ptr->currentRoom != sRoomBuffer)
 	{
-		BeginNormalPaletteFade(PALETTES_ALL, 0, 0, 16, RGB_BLACK);
 		gTasks[taskId].func = Task_MapScreenFadeOutAndWarp;
     }
 
