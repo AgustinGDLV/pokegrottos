@@ -119,6 +119,7 @@ enum BWSkillsPageState
 
 #define MOVE_SELECTOR_SPRITES_COUNT 15
 #define TYPE_ICON_SPRITE_COUNT (MAX_MON_MOVES + 1)
+#define STAR_SPRITES_COUNT 3
 // for the spriteIds field in PokemonSummaryScreenData
 enum BWSummarySprites
 {
@@ -142,7 +143,8 @@ enum BWSummarySprites
     SPRITE_ARR_ID_TYPE, // 2 for mon types, 5 for move types(4 moves and 1 to learn), used interchangeably, because mon types and move types aren't shown on the same screen
     SPRITE_ARR_ID_MOVE_SELECTOR1 = SPRITE_ARR_ID_TYPE + TYPE_ICON_SPRITE_COUNT, // 10 sprites that make up the selector
     SPRITE_ARR_ID_MOVE_SELECTOR2 = SPRITE_ARR_ID_MOVE_SELECTOR1 + MOVE_SELECTOR_SPRITES_COUNT,
-    SPRITE_ARR_ID_COUNT = SPRITE_ARR_ID_MOVE_SELECTOR2 + MOVE_SELECTOR_SPRITES_COUNT
+    SPRITE_ARR_ID_STAR = SPRITE_ARR_ID_MOVE_SELECTOR2 + MOVE_SELECTOR_SPRITES_COUNT,
+    SPRITE_ARR_ID_COUNT = SPRITE_ARR_ID_STAR + STAR_SPRITES_COUNT,
 };
 
 static EWRAM_DATA struct PokemonSummaryScreenData
@@ -337,6 +339,7 @@ static void SpriteCB_Pokemon(struct Sprite *);
 static void StopPokemonAnimations(void);
 static void CreateMonMarkingsSprite(struct Pokemon *);
 static void RemoveAndCreateMonMarkingsSprite(struct Pokemon *);
+static void CreateRankStars(struct Pokemon *);
 static void CreateCaughtBallSprite(struct Pokemon *);
 static void CreateSetStatusSprite(void);
 static void CreateMoveSelectorSprites(u8);
@@ -1944,7 +1947,8 @@ static bool8 LoadGraphics(void)
         gMain.state++;
         break;
     case 19:
-        CreateCaughtBallSprite(&sMonSummaryScreen->currentMon);
+        // CreateCaughtBallSprite(&sMonSummaryScreen->currentMon);
+        CreateRankStars(&sMonSummaryScreen->currentMon);
         gMain.state++;
         break;
     case 20:
@@ -2577,10 +2581,15 @@ static void Task_ChangeSummaryMon(u8 taskId)
         DestroySpriteAndFreeResources(&gSprites[sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_BALL]]);
         break;
     case 3:
+        DestroySpriteAndFreeResources(&gSprites[sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_STAR]]);
+        DestroySpriteAndFreeResources(&gSprites[sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_STAR + 1]]);
+        DestroySpriteAndFreeResources(&gSprites[sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_STAR + 2]]);
+        break;
+    case 4:
         CopyMonToSummaryStruct(&sMonSummaryScreen->currentMon);
         sMonSummaryScreen->switchCounter = 0;
         break;
-    case 4:
+    case 5:
         if (ExtractMonDataToSummaryStruct(&sMonSummaryScreen->currentMon) == FALSE)
         {
             return;
@@ -2597,18 +2606,19 @@ static void Task_ChangeSummaryMon(u8 taskId)
             }
         }
         break;
-    case 5:
+    case 6:
         RemoveAndCreateMonMarkingsSprite(&sMonSummaryScreen->currentMon);
         CreateMonShinySprite(&sMonSummaryScreen->currentMon);
         break;
-    case 6:
-        CreateCaughtBallSprite(&sMonSummaryScreen->currentMon);
-        break;
     case 7:
+        // CreateCaughtBallSprite(&sMonSummaryScreen->currentMon);
+        CreateRankStars(&sMonSummaryScreen->currentMon);
+        break;
+    case 8:
         HandleStatusSprite(&sMonSummaryScreen->currentMon);
         data[1] = 0;
         break;
-    case 8:
+    case 9:
         sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_MON] = LoadMonGfxAndSprite(&sMonSummaryScreen->currentMon, &data[1], FALSE);
 
         if (BW_SUMMARY_MON_SHADOWS)
@@ -2630,14 +2640,14 @@ static void Task_ChangeSummaryMon(u8 taskId)
         TryDrawExperienceProgressBar();
         data[1] = 0;
         break;
-    case 9:
+    case 10:
         SetTypeIcons();
         TrySetInfoPageIcons();
         break;
-    case 10:
+    case 11:
         PrintMonPortraitInfo();
         break;
-    case 11:
+    case 12:
         PrintPageSpecificText(sMonSummaryScreen->currPageIndex);
         if (sMonSummaryScreen->currPageIndex == PSS_PAGE_INFO)
         { 
@@ -2661,11 +2671,11 @@ static void Task_ChangeSummaryMon(u8 taskId)
                 DrawNextSkillsButtonPrompt(SKILL_STATE_BASE);
         }
         break;
-    case 12:
+    case 13:
         if (sMonSummaryScreen->currPageIndex == PSS_PAGE_SKILLS && BW_SUMMARY_IV_EV_DISPLAY == BW_IV_EV_GRADED)
             ShowGradeIcons(SKILL_STATE_BASE);
         break;
-    case 13:
+    case 14:
         gSprites[sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_MON]].sDelayAnim = 0;
         if (BW_SUMMARY_MON_SHADOWS)
             gSprites[sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_SHADOW]].sDelayAnim = 0;
@@ -2827,6 +2837,7 @@ static void PssScrollEnd(u8 taskId)
     TrySetInfoPageIcons();
     TryDrawHPBar();
     TryDrawExperienceProgressBar();
+    CreateRankStars(&sMonSummaryScreen->currentMon);
 
     if (sMonSummaryScreen->currPageIndex == PSS_PAGE_SKILLS && BW_SUMMARY_IV_EV_DISPLAY == BW_IV_EV_GRADED)
         ShowGradeIcons(SKILL_STATE_BASE);
@@ -3601,14 +3612,15 @@ static void PrintNotEggInfo(void)
 
     //print gender
     PrintGenderSymbol(mon, summary->species2);
+    PutWindowTilemap(PSS_LABEL_WINDOW_PORTRAIT_NICKNAME_GENDER_LEVEL);
 
     // print level
-    StringCopy(gStringVar1, gText_LevelSymbol);
-    ConvertIntToDecimalStringN(gStringVar2, summary->level, STR_CONV_MODE_LEFT_ALIGN, 3);
-    StringAppend(gStringVar1, gStringVar2);
+    // StringCopy(gStringVar1, gText_LevelSymbol);
+    // ConvertIntToDecimalStringN(gStringVar2, summary->level, STR_CONV_MODE_LEFT_ALIGN, 3);
+    // StringAppend(gStringVar1, gStringVar2);
 
-    PrintTextOnWindow(PSS_LABEL_WINDOW_PORTRAIT_NICKNAME_GENDER_LEVEL, gStringVar1, 5, 13, 0, 0);
-    PutWindowTilemap(PSS_LABEL_WINDOW_PORTRAIT_NICKNAME_GENDER_LEVEL);
+    // PrintTextOnWindow(PSS_LABEL_WINDOW_PORTRAIT_NICKNAME_GENDER_LEVEL, gStringVar1, 5, 13, 0, 0);
+    // PutWindowTilemap(PSS_LABEL_WINDOW_PORTRAIT_NICKNAME_GENDER_LEVEL);
 }
 
 static void PrintEggInfo(void)
@@ -5262,7 +5274,56 @@ static void RemoveAndCreateMonMarkingsSprite(struct Pokemon *mon)
     CreateMonMarkingsSprite(mon);
 }
 
-static void CreateCaughtBallSprite(struct Pokemon *mon)
+#define TAG_RANK_STAR   2000
+
+const struct OamData sOamData_SumRankStar =
+{
+    .bpp = ST_OAM_4BPP,
+    .shape = SPRITE_SHAPE(8x8),
+    .size = SPRITE_SIZE(8x8),
+    .priority = 1,
+};
+
+const struct CompressedSpriteSheet sSpriteSheet_SumRankStar =
+{
+    gRankStar_Gfx, 384, TAG_RANK_STAR
+};
+
+const struct SpritePalette sSpritePalette_SumRankStar =
+{
+    gRankStar_Pal, TAG_RANK_STAR
+};
+
+const struct SpriteTemplate sSpriteTemplate_SumRankStar =
+{
+    .tileTag = TAG_RANK_STAR,
+    .paletteTag = TAG_RANK_STAR,
+    .oam = &sOamData_SumRankStar,
+    .anims = gDummySpriteAnimTable,
+    .images = NULL,
+    .affineAnims = gDummySpriteAffineAnimTable,
+    .callback = SpriteCallbackDummy,
+};
+
+static void CreateRankStars(struct Pokemon *mon)
+{
+    u32 i;
+    u32 rank = GetMonData(mon, MON_DATA_RANK);
+
+    // Cap rank just in case.
+    if (rank > 3)
+        rank = 3;
+    
+    // Load graphics.
+    LoadSpritePalette(&sSpritePalette_SumRankStar);
+    LoadCompressedSpriteSheet(&sSpriteSheet_SumRankStar);
+
+    // Draw stars.
+    for (i = 0; i < rank; ++i)
+        sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_STAR + i] = CreateSprite(&sSpriteTemplate_SumRankStar, 206 + 8*i, 38, 6);
+}
+
+static UNUSED void CreateCaughtBallSprite(struct Pokemon *mon)
 {
     u8 ball = ItemIdToBallId(GetMonData(mon, MON_DATA_POKEBALL));
 
