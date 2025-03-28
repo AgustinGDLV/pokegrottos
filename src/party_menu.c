@@ -558,11 +558,11 @@ static void InitPartyMenu(u8 menuType, u8 layout, u8 partyAction, bool8 keepCurs
         else if (gPartyMenu.slotId > PARTY_SIZE - 1 || GetMonData(&gPlayerParty[gPartyMenu.slotId], MON_DATA_SPECIES) == SPECIES_NONE)
             gPartyMenu.slotId = 0;
 
+        CalculatePlayerPartyCount();
         if (gPlayerPartyCount == 0)
             gPartyMenu.slotId = PARTY_SIZE + 1; // Cancel
 
         gTextFlags.autoScroll = 0;
-        CalculatePlayerPartyCount();
         SetMainCallback2(CB2_InitPartyMenu);
     }
 }
@@ -8112,6 +8112,7 @@ void ItemUseCB_SuperEvolutionStone(u8 taskId, TaskFunc task)
             DisplayPartyMenuMessage(gStringVar4, FALSE);
             ScheduleBgCopyTilemapToVram(2);
             ++rank;
+            DisplayPartyPokemonLevel(rank, &sPartyMenuBoxes[gPartyMenu.slotId]); // creates dupes
             SetMonData(mon, MON_DATA_RANK, &rank);
             CalculateMonStats(mon);
             gTasks[taskId].func = task;
