@@ -2661,6 +2661,8 @@ const struct SpriteTemplate sSpriteTemplate_RankStar =
     .callback = SpriteCallbackDummy,
 };
 
+#undef TAG_RANK_STAR
+
 static void DisplayPartyPokemonLevel(u8 level, struct PartyMenuBox *menuBox)
 {
     u32 i;
@@ -8090,7 +8092,7 @@ void ItemUseCB_SuperEvolutionStone(u8 taskId, TaskFunc task)
 
     PlaySE(SE_SELECT);
     // Item has no effect if Pokemon doesn't have any evolutions.
-    if (numEvos == 0 && rank >= 3) // TODO: MAX_RANK
+    if (numEvos == 0 && rank >= MAX_RANK)
     {
         gPartyMenuUseExitCallback = FALSE;
         DisplayPartyMenuMessage(gText_WontHaveEffect, TRUE);
