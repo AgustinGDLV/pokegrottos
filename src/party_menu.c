@@ -8074,11 +8074,23 @@ static void Task_HandleWhichEvolutionInput(u8 taskId)
 
 static const u8 sText_RankedUp[] = _("{STR_VAR_1} ranked up!{PAUSE_UNTIL_PRESS}");
 
+static void IncreaseEVsWithRank(struct Pokemon* mon)
+{
+    u32 i, ev;
+    for (i = STAT_HP; i <= STAT_SPDEF; ++i)
+    {
+        ev = GetMonData(mon, MON_DATA_HP_EV + i) + 10;
+        SetMonData(mon, MON_DATA_HP_EV + i, &ev);
+    }
+}
+
 static void CB2_RankUpAndExit(void)
 {
     struct Pokemon* mon = &gPlayerParty[gPartyMenu.slotId];
     u32 rank = GetMonData(mon, MON_DATA_RANK) + 1;
     SetMonData(mon, MON_DATA_RANK, &rank);
+    IncreaseEVsWithRank(mon);
+    CalculateMonStats(mon);
     SetMainCallback2(gPartyMenu.exitCallback);
 }
 
@@ -8112,9 +8124,16 @@ void ItemUseCB_SuperEvolutionStone(u8 taskId, TaskFunc task)
             DisplayPartyMenuMessage(gStringVar4, FALSE);
             ScheduleBgCopyTilemapToVram(2);
             ++rank;
-            DisplayPartyPokemonLevel(rank, &sPartyMenuBoxes[gPartyMenu.slotId]); // creates dupes
+
+            // Update stats.
             SetMonData(mon, MON_DATA_RANK, &rank);
+            IncreaseEVsWithRank(mon);
             CalculateMonStats(mon);
+
+            // Update display.
+            DisplayPartyPokemonLevel(rank, &sPartyMenuBoxes[gPartyMenu.slotId]); // creates dupes
+            DisplayPartyPokemonHP(GetMonData(mon, MON_DATA_HP), GetMonData(mon, MON_DATA_MAX_HP), &sPartyMenuBoxes[gPartyMenu.slotId]);
+            DisplayPartyPokemonMaxHP(GetMonData(mon, MON_DATA_MAX_HP), &sPartyMenuBoxes[gPartyMenu.slotId]);
             gTasks[taskId].func = task;
         }
         // Use multichoice if Pokemon has more than one evolution.
