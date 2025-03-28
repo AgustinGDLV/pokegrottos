@@ -25,6 +25,7 @@
 #include "menu.h"
 #include "menu_helpers.h"
 #include "mon_markings.h"
+#include "money.h"
 #include "move_relearner.h"
 #include "naming_screen.h"
 #include "party_menu.h"
@@ -66,6 +67,7 @@ enum BWSkillsPageState
     SKILL_STATE_STATS,
     SKILL_STATE_BASE,
     SKILL_STATE_EVS,
+    SKILL_STATE_ABILITY,
 };
 
 #define PSS_BUFFER_SIZE 0x400
@@ -94,11 +96,12 @@ enum BWSkillsPageState
 #define PSS_LABEL_WINDOW_PORTRAIT_NICKNAME_GENDER_LEVEL 10
 
 // additional button prompts for IVs and EVs
-#define PSS_LABEL_WINDOW_PROMPT_IVS 11
+#define PSS_LABEL_WINDOW_PROMPT_BASE 11
 #define PSS_LABEL_WINDOW_PROMPT_EVS 12
 #define PSS_LABEL_WINDOW_PROMPT_STATS 13
+#define PSS_LABEL_WINDOW_PROMPT_ABILITY 14
 
-#define PSS_LABEL_WINDOW_END 14
+#define PSS_LABEL_WINDOW_END 15
 
 // Dynamic fields for the Pokémon Info page
 #define PSS_DATA_WINDOW_INFO_OT_OTID_ITEM 0
@@ -128,8 +131,9 @@ enum BWSummarySprites
     SPRITE_ARR_ID_BALL,
     SPRITE_ARR_ID_STATUS,
     SPRITE_ARR_ID_SHINY,
+    SPRITE_ARR_ID_STAR,
     // all sprites below are considered "page-specific" and will be hidden when switching pages
-    SPRITE_ARR_ID_POKERUS_CURED,
+    SPRITE_ARR_ID_POKERUS_CURED = SPRITE_ARR_ID_STAR + STAR_SPRITES_COUNT,
     SPRITE_ARR_ID_FRIENDSHIP,
     SPRITE_ARR_ID_CATEGORY,
     SPRITE_ARR_ID_HP_GRADE,
@@ -143,8 +147,7 @@ enum BWSummarySprites
     SPRITE_ARR_ID_TYPE, // 2 for mon types, 5 for move types(4 moves and 1 to learn), used interchangeably, because mon types and move types aren't shown on the same screen
     SPRITE_ARR_ID_MOVE_SELECTOR1 = SPRITE_ARR_ID_TYPE + TYPE_ICON_SPRITE_COUNT, // 10 sprites that make up the selector
     SPRITE_ARR_ID_MOVE_SELECTOR2 = SPRITE_ARR_ID_MOVE_SELECTOR1 + MOVE_SELECTOR_SPRITES_COUNT,
-    SPRITE_ARR_ID_STAR = SPRITE_ARR_ID_MOVE_SELECTOR2 + MOVE_SELECTOR_SPRITES_COUNT,
-    SPRITE_ARR_ID_COUNT = SPRITE_ARR_ID_STAR + STAR_SPRITES_COUNT,
+    SPRITE_ARR_ID_COUNT = SPRITE_ARR_ID_MOVE_SELECTOR2 + MOVE_SELECTOR_SPRITES_COUNT,
 };
 
 static EWRAM_DATA struct PokemonSummaryScreenData
@@ -227,7 +230,8 @@ static EWRAM_DATA struct PokemonSummaryScreenData
     s16 switchCounter; // Used for various switch statement cases that decompress/load graphics or Pokémon data
     u16 monAnimTimer; // tracks time between re-playing mon anims
     bool8 monAnimPlayed; // tracks if anim has been played at least once
-    u8 unk_filler4[2];
+    u8 displayedAbilityNum;
+    u8 unk_filler4[1];
 } *sMonSummaryScreen = NULL;
 
 static EWRAM_DATA u8 sMoveSlotToReplace = 0;
@@ -293,6 +297,8 @@ static void PrintMonOTID(void);
 static void PrintMonDexNumberSpecies(void);
 static void PrintMonAbilityName(void);
 static void PrintMonAbilityDescription(void);
+static void UpdateMonAbilityInfo(void);
+static void UpdateMonAbilityCost(void);
 static void BufferMonTrainerMemo(void);
 static void PrintMonTrainerMemo(void);
 static void BufferNatureString(void);
@@ -313,6 +319,7 @@ static void PrintHPStats(u8);
 static void BufferNonHPStats(void);
 static void PrintNonHPStats(void);
 static void PrintExpPointsNextLevel(void);
+static void PrintChangeAbility(void);
 static void PrintBattleMoves(void);
 static void Task_PrintBattleMoves(u8);
 static void PrintMoveNameAndPP(u8);
@@ -339,7 +346,7 @@ static void SpriteCB_Pokemon(struct Sprite *);
 static void StopPokemonAnimations(void);
 static void CreateMonMarkingsSprite(struct Pokemon *);
 static void RemoveAndCreateMonMarkingsSprite(struct Pokemon *);
-static void CreateRankStars(struct Pokemon *);
+static void UpdateOrCreateRankStars(struct Pokemon *);
 static void CreateCaughtBallSprite(struct Pokemon *);
 static void CreateSetStatusSprite(void);
 static void CreateMoveSelectorSprites(u8);
@@ -395,11 +402,12 @@ static const u8 sText_PkmnSkills[]                          = _("Pokémon Skills
 static const u8 sText_BattleMoves[]                         = _("Battle Moves");
 static const u8 sText_ContestMoves[]                        = _("Contest Moves");
 static const u8 sText_Info[]                                = _("Info");
-static const u8 sText_ViewBase[]                             = _("View Base");
+static const u8 sText_ViewBase[]                            = _("View Base");
 static const u8 sText_ViewEVs[]                             = _("View EV");
 static const u8 sText_ViewStats[]                           = _("View Stats");
-static const u8 sText_ViewBase_Graded[]                      = _("See Innate");
+static const u8 sText_ViewBase_Graded[]                     = _("See Innate");
 static const u8 sText_ViewEVs_Graded[]                      = _("See Effort");
+static const u8 sText_Change[]                             = _("Change");
 static const u8 sText_NextLv[]                              = _("Next Lv.");
 static const u8 sText_RentalPkmn[]                          = _("Rental Pokémon");
 static const u8 sText_None[]                                = _("None");
@@ -411,11 +419,12 @@ static const u8 sText_PkmnSkills[]                          = _("POKéMON SKILLS
 static const u8 sText_BattleMoves[]                         = _("BATTLE MOVES");
 static const u8 sText_ContestMoves[]                        = _("CONTEST MOVES");
 static const u8 sText_Info[]                                = _("INFO");
-static const u8 sText_ViewBase[]                             = _("VIEW BASE");
+static const u8 sText_ViewBase[]                            = _("VIEW BASE");
 static const u8 sText_ViewEVs[]                             = _("VIEW EV");
 static const u8 sText_ViewStats[]                           = _("VIEW STATS");
-static const u8 sText_ViewBase_Graded[]                      = _("SEE INNATE");
+static const u8 sText_ViewBase_Graded[]                     = _("SEE INNATE");
 static const u8 sText_ViewEVs_Graded[]                      = _("SEE EFFORT");
+static const u8 sText_Change[]                             = _("CHANGE");
 static const u8 sText_NextLv[]                              = _("NEXT LV.");
 static const u8 sText_RentalPkmn[]                          = _("RENTAL POKéMON");
 static const u8 sText_None[]                                = _("NONE");
@@ -601,7 +610,7 @@ static const struct WindowTemplate sSummaryTemplate[] =
         .paletteNum = 6,
         .baseBlock = 245,
     },
-    [PSS_LABEL_WINDOW_PROMPT_IVS] = {
+    [PSS_LABEL_WINDOW_PROMPT_BASE] = {
         .bg = 0,
         .tilemapLeft = 20,
         .tilemapTop = 0,
@@ -628,6 +637,15 @@ static const struct WindowTemplate sSummaryTemplate[] =
         .paletteNum = 6,
         .baseBlock = 315,
     },
+    [PSS_LABEL_WINDOW_PROMPT_ABILITY] = {
+        .bg = 0,
+        .tilemapLeft = 20,
+        .tilemapTop = 0,
+        .width = 10,
+        .height = 2,
+        .paletteNum = 6,
+        .baseBlock = 335,
+    },
     [PSS_LABEL_WINDOW_END] = DUMMY_WIN_TEMPLATE
 };
 static const struct WindowTemplate sPageInfoTemplate[] =
@@ -636,10 +654,10 @@ static const struct WindowTemplate sPageInfoTemplate[] =
         .bg = 0,
         .tilemapLeft = 7,
         .tilemapTop = 7,
-        .width = 12,
+        .width = 13,
         .height = 6,
         .paletteNum = 6,
-        .baseBlock = 335,
+        .baseBlock = 355,
     },
     [PSS_DATA_WINDOW_INFO_MEMO] = {
         .bg = 0,
@@ -648,7 +666,7 @@ static const struct WindowTemplate sPageInfoTemplate[] =
         .width = 26,
         .height = 7,
         .paletteNum = 6,
-        .baseBlock = 407,
+        .baseBlock = 433,
     },
     [PSS_DATA_WINDOW_INFO_DEX_NUMBER_NAME] = {
         .bg = 0,
@@ -657,7 +675,7 @@ static const struct WindowTemplate sPageInfoTemplate[] =
         .width = 9,
         .height = 4,
         .paletteNum = 6,
-        .baseBlock = 589,
+        .baseBlock = 615,
     },
 };
 static const struct WindowTemplate sPageSkillsTemplate[] =
@@ -669,7 +687,7 @@ static const struct WindowTemplate sPageSkillsTemplate[] =
         .width = 10,
         .height = 2,
         .paletteNum = 6,
-        .baseBlock = 335,
+        .baseBlock = 355,
     },
     [PSS_DATA_WINDOW_SKILLS_STATS_HP] = {
         .bg = 0,
@@ -678,7 +696,7 @@ static const struct WindowTemplate sPageSkillsTemplate[] =
         .width = 8,
         .height = 2,
         .paletteNum = 6,
-        .baseBlock = 355,
+        .baseBlock = 375,
     },
     [PSS_DATA_WINDOW_SKILLS_STATS_NON_HP] = {
         .bg = 0,
@@ -687,25 +705,25 @@ static const struct WindowTemplate sPageSkillsTemplate[] =
         .width = 10,
         .height = 8,
         .paletteNum = 6,
-        .baseBlock = 371,
+        .baseBlock = 391,
     },
     [PSS_DATA_WINDOW_EXP] = {
         .bg = 0,
         .tilemapLeft = 0,
         .tilemapTop = 13,
-        .width = 11,
+        .width = 12,
         .height = 2,
         .paletteNum = 6,
-        .baseBlock = 451,
+        .baseBlock = 471,
     },
     [PSS_DATA_WINDOW_EXP_NEXT_LEVEL] = {
         .bg = 0,
-        .tilemapLeft = 18,
+        .tilemapLeft = 13,
         .tilemapTop = 13,
         .width = 9,
         .height = 2,
         .paletteNum = 6,
-        .baseBlock = 473,
+        .baseBlock = 495,
     },
     [PSS_DATA_WINDOW_SKILLS_ABILITY] = {
         .bg = 0,
@@ -714,7 +732,7 @@ static const struct WindowTemplate sPageSkillsTemplate[] =
         .width = 24,
         .height = 5,
         .paletteNum = 6,
-        .baseBlock = 491,
+        .baseBlock = 513,
     },
 };
 static const struct WindowTemplate sPageMovesTemplate[] = // This is used for both battle and contest moves
@@ -726,7 +744,7 @@ static const struct WindowTemplate sPageMovesTemplate[] = // This is used for bo
         .width = 9,
         .height = 20,
         .paletteNum = 8,
-        .baseBlock = 335,
+        .baseBlock = 355,
     },
     [PSS_DATA_WINDOW_MOVE_DESCRIPTION] = {
         .bg = 0,
@@ -735,7 +753,7 @@ static const struct WindowTemplate sPageMovesTemplate[] = // This is used for bo
         .width = 15,
         .height = 9,
         .paletteNum = 6,
-        .baseBlock = 515,
+        .baseBlock = 535,
     },
 };
 static const u8 sTextColors[][3] =
@@ -753,6 +771,7 @@ static const u8 sTextColors[][3] =
     {0, 3, 4},
     {0, 5, 6},
     {0, 7, 8},
+    {0, 11, 2},
 };
 
 static void (*const sTextPrinterFunctions[])(void) =
@@ -1948,7 +1967,7 @@ static bool8 LoadGraphics(void)
         break;
     case 19:
         // CreateCaughtBallSprite(&sMonSummaryScreen->currentMon);
-        CreateRankStars(&sMonSummaryScreen->currentMon);
+        UpdateOrCreateRankStars(&sMonSummaryScreen->currentMon);
         gMain.state++;
         break;
     case 20:
@@ -2389,6 +2408,44 @@ static void ChangeSummaryState(s16 *data, u8 taskId)
     gTasks[taskId].func = Task_HandleInput;
 }
 
+// swap to ability confirm prompt when displayed ability has changed
+static void UpdateAbilityConfirmPrompt(u8 mode)
+{
+    if (sMonSummaryScreen->displayedAbilityNum != sMonSummaryScreen->summary.abilityNum)
+    {
+        switch (mode)
+        {
+            case SKILL_STATE_STATS:
+                ClearWindowTilemap(PSS_LABEL_WINDOW_PROMPT_STATS);
+                break;
+            case SKILL_STATE_BASE:
+                ClearWindowTilemap(PSS_LABEL_WINDOW_PROMPT_BASE);
+                break;
+            case SKILL_STATE_EVS:
+                ClearWindowTilemap(PSS_LABEL_WINDOW_PROMPT_EVS);
+                break;
+        }
+        PutWindowTilemap(PSS_LABEL_WINDOW_PROMPT_ABILITY);
+    }
+    else
+    {
+        ClearWindowTilemap(PSS_LABEL_WINDOW_PROMPT_ABILITY);
+        switch (mode)
+        {
+            case SKILL_STATE_STATS:
+                PutWindowTilemap(PSS_LABEL_WINDOW_PROMPT_STATS);
+                break;
+            case SKILL_STATE_BASE:
+                PutWindowTilemap(PSS_LABEL_WINDOW_PROMPT_BASE);
+                break;
+            case SKILL_STATE_EVS:
+                PutWindowTilemap(PSS_LABEL_WINDOW_PROMPT_EVS);
+                break;
+        }
+    }
+    ScheduleBgCopyTilemapToVram(0);
+}
+
 // draw button prompts when cycling between stats, IVs and EVs
 static void DrawNextSkillsButtonPrompt(u8 mode)
 {
@@ -2396,17 +2453,17 @@ static void DrawNextSkillsButtonPrompt(u8 mode)
     {
         case SKILL_STATE_STATS:
             ClearWindowTilemap(PSS_LABEL_WINDOW_PROMPT_STATS);
-            PutWindowTilemap(PSS_LABEL_WINDOW_PROMPT_IVS);
+            PutWindowTilemap(PSS_LABEL_WINDOW_PROMPT_BASE);
             break;
         case SKILL_STATE_BASE:
-            ClearWindowTilemap(PSS_LABEL_WINDOW_PROMPT_IVS);
+            ClearWindowTilemap(PSS_LABEL_WINDOW_PROMPT_BASE);
             PutWindowTilemap(PSS_LABEL_WINDOW_PROMPT_EVS);
             break;
         case SKILL_STATE_EVS:
             if (BW_SUMMARY_IV_EV_DISPLAY == BW_IV_EV_GRADED)
             {
                 ClearWindowTilemap(PSS_LABEL_WINDOW_PROMPT_EVS);
-                PutWindowTilemap(PSS_LABEL_WINDOW_PROMPT_IVS);
+                PutWindowTilemap(PSS_LABEL_WINDOW_PROMPT_BASE);
             }
             else
             {
@@ -2469,7 +2526,8 @@ static void Task_HandleInput(u8 taskId)
             }
             else
             {
-                if (BW_SUMMARY_IV_EV_DISPLAY != BW_IV_EV_HIDDEN)
+                if (BW_SUMMARY_IV_EV_DISPLAY != BW_IV_EV_HIDDEN
+                    && sMonSummaryScreen->displayedAbilityNum == sMonSummaryScreen->summary.abilityNum)
                 {
                     // Cycle through IVs/EVs/stats on pressing A
                     ChangeSummaryState(data, taskId);
@@ -2480,6 +2538,24 @@ static void Task_HandleInput(u8 taskId)
                     else
                         BufferAndPrintStats_HandleState(tSkillsState);
                 }
+                else
+                {
+                    if (GetMoney(&gSaveBlock1Ptr->money) >= 100) // TODO: ability cost
+                    {
+                        PlaySE(MUS_LEVEL_UP);
+                        RemoveMoney(&gSaveBlock1Ptr->money, 100); // TODO: ability cost
+                        sMonSummaryScreen->summary.abilityNum = sMonSummaryScreen->displayedAbilityNum;
+                        SetMonData(&gPlayerParty[sMonSummaryScreen->curMonIndex], MON_DATA_ABILITY_NUM, &sMonSummaryScreen->summary.abilityNum);
+
+                        UpdateAbilityConfirmPrompt(tSkillsState);
+                        UpdateMonAbilityInfo();
+                        UpdateMonAbilityCost();
+                    }
+                    else
+                    {
+                        PlaySE(SE_FAILURE);
+                    }
+                }
             }
         }
         else if (JOY_NEW(B_BUTTON))
@@ -2487,7 +2563,18 @@ static void Task_HandleInput(u8 taskId)
             StopPokemonAnimations();
             PlaySE(SE_SELECT);
             BeginCloseSummaryScreen(taskId);
-        }  
+        }
+        else if (JOY_NEW(START_BUTTON)
+                 && sMonSummaryScreen->currPageIndex == PSS_PAGE_SKILLS)
+        {
+            PlaySE(SE_SELECT);
+            if (++sMonSummaryScreen->displayedAbilityNum >= NUM_ABILITY_SLOTS)
+                sMonSummaryScreen->displayedAbilityNum = 0;
+
+            UpdateAbilityConfirmPrompt(tSkillsState);
+            UpdateMonAbilityInfo();
+            UpdateMonAbilityCost();
+        }
         else if (JOY_NEW(START_BUTTON)
                 && ShouldShowMoveRelearner()
                 && (sMonSummaryScreen->currPageIndex == PSS_PAGE_BATTLE_MOVES || sMonSummaryScreen->currPageIndex == PSS_PAGE_CONTEST_MOVES))
@@ -2581,15 +2668,10 @@ static void Task_ChangeSummaryMon(u8 taskId)
         DestroySpriteAndFreeResources(&gSprites[sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_BALL]]);
         break;
     case 3:
-        DestroySpriteAndFreeResources(&gSprites[sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_STAR]]);
-        DestroySpriteAndFreeResources(&gSprites[sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_STAR + 1]]);
-        DestroySpriteAndFreeResources(&gSprites[sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_STAR + 2]]);
-        break;
-    case 4:
         CopyMonToSummaryStruct(&sMonSummaryScreen->currentMon);
         sMonSummaryScreen->switchCounter = 0;
         break;
-    case 5:
+    case 4:
         if (ExtractMonDataToSummaryStruct(&sMonSummaryScreen->currentMon) == FALSE)
         {
             return;
@@ -2606,19 +2688,18 @@ static void Task_ChangeSummaryMon(u8 taskId)
             }
         }
         break;
-    case 6:
+    case 5:
         RemoveAndCreateMonMarkingsSprite(&sMonSummaryScreen->currentMon);
         CreateMonShinySprite(&sMonSummaryScreen->currentMon);
         break;
-    case 7:
-        // CreateCaughtBallSprite(&sMonSummaryScreen->currentMon);
-        CreateRankStars(&sMonSummaryScreen->currentMon);
+    case 6:
+        UpdateOrCreateRankStars(&sMonSummaryScreen->currentMon);
         break;
-    case 8:
+    case 7:
         HandleStatusSprite(&sMonSummaryScreen->currentMon);
         data[1] = 0;
         break;
-    case 9:
+    case 8:
         sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_MON] = LoadMonGfxAndSprite(&sMonSummaryScreen->currentMon, &data[1], FALSE);
 
         if (BW_SUMMARY_MON_SHADOWS)
@@ -2637,17 +2718,16 @@ static void Task_ChangeSummaryMon(u8 taskId)
         }
 
         TryDrawHPBar();
-        TryDrawExperienceProgressBar();
         data[1] = 0;
         break;
-    case 10:
+    case 9:
         SetTypeIcons();
         TrySetInfoPageIcons();
         break;
-    case 11:
+    case 10:
         PrintMonPortraitInfo();
         break;
-    case 12:
+    case 11:
         PrintPageSpecificText(sMonSummaryScreen->currPageIndex);
         if (sMonSummaryScreen->currPageIndex == PSS_PAGE_INFO)
         { 
@@ -2671,11 +2751,13 @@ static void Task_ChangeSummaryMon(u8 taskId)
                 DrawNextSkillsButtonPrompt(SKILL_STATE_BASE);
         }
         break;
-    case 13:
+    case 12:
         if (sMonSummaryScreen->currPageIndex == PSS_PAGE_SKILLS && BW_SUMMARY_IV_EV_DISPLAY == BW_IV_EV_GRADED)
             ShowGradeIcons(SKILL_STATE_BASE);
+        if (sMonSummaryScreen->currPageIndex)
+            sMonSummaryScreen->displayedAbilityNum = sMonSummaryScreen->summary.abilityNum;
         break;
-    case 14:
+    case 13:
         gSprites[sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_MON]].sDelayAnim = 0;
         if (BW_SUMMARY_MON_SHADOWS)
             gSprites[sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_SHADOW]].sDelayAnim = 0;
@@ -2836,8 +2918,8 @@ static void PssScrollEnd(u8 taskId)
     SetTypeIcons();
     TrySetInfoPageIcons();
     TryDrawHPBar();
-    TryDrawExperienceProgressBar();
-    CreateRankStars(&sMonSummaryScreen->currentMon);
+    // TryDrawExperienceProgressBar();
+    UpdateOrCreateRankStars(&sMonSummaryScreen->currentMon);
 
     if (sMonSummaryScreen->currPageIndex == PSS_PAGE_SKILLS && BW_SUMMARY_IV_EV_DISPLAY == BW_IV_EV_GRADED)
         ShowGradeIcons(SKILL_STATE_BASE);
@@ -2846,7 +2928,10 @@ static void PssScrollEnd(u8 taskId)
     {
         if (sMonSummaryScreen->markingsSprite != NULL)
            sMonSummaryScreen->markingsSprite->invisible = FALSE; 
-    } 
+    }
+
+    if (sMonSummaryScreen->currPageIndex == PSS_PAGE_SKILLS)
+        sMonSummaryScreen->displayedAbilityNum = sMonSummaryScreen->summary.abilityNum;
 
     SwitchTaskToFollowupFunc(taskId);
 }
@@ -2854,7 +2939,7 @@ static void PssScrollEnd(u8 taskId)
 #undef tScrollState
 #undef tMosaicStrength
 
-static void TryDrawExperienceProgressBar(void)
+static UNUSED void TryDrawExperienceProgressBar(void)
 {
     if (sMonSummaryScreen->currPageIndex == PSS_PAGE_SKILLS)
         DrawExperienceProgressBar(&sMonSummaryScreen->currentMon);
@@ -3511,7 +3596,7 @@ static void OverrideHPBarPalette(void)
 #define EXP_BAR_TILE_EMPTY    0x2100
 #define EXP_BAR_TILE_FULL     0x2108
 
-static void DrawExperienceProgressBar(struct Pokemon *unused)
+static UNUSED void DrawExperienceProgressBar(struct Pokemon *unused)
 {
     s64 numExpProgressBarTicks;
     struct PokeSummary *summary = &sMonSummaryScreen->summary;
@@ -3692,8 +3777,8 @@ static void PrintPageNamesAndStats(void)
             iconXPos = stringXPos - 16;
             if (iconXPos < 0)
                 iconXPos = 0;
-            PrintAOrBButtonIcon(PSS_LABEL_WINDOW_PROMPT_IVS, FALSE, iconXPos);
-            PrintTextOnWindow(PSS_LABEL_WINDOW_PROMPT_IVS, sText_ViewBase_Graded, stringXPos, 1, 0, 1);
+            PrintAOrBButtonIcon(PSS_LABEL_WINDOW_PROMPT_BASE, FALSE, iconXPos);
+            PrintTextOnWindow(PSS_LABEL_WINDOW_PROMPT_BASE, sText_ViewBase_Graded, stringXPos, 1, 0, 1);
 
             stringXPos = GetStringRightAlignXOffset(FONT_NORMAL, sText_ViewEVs_Graded, skillsLabelWidth);
             iconXPos = stringXPos - 16;
@@ -3708,8 +3793,8 @@ static void PrintPageNamesAndStats(void)
             iconXPos = stringXPos - 16;
             if (iconXPos < 0)
                 iconXPos = 0;
-            PrintAOrBButtonIcon(PSS_LABEL_WINDOW_PROMPT_IVS, FALSE, iconXPos);
-            PrintTextOnWindow(PSS_LABEL_WINDOW_PROMPT_IVS, sText_ViewBase, stringXPos, 1, 0, 1);
+            PrintAOrBButtonIcon(PSS_LABEL_WINDOW_PROMPT_BASE, FALSE, iconXPos);
+            PrintTextOnWindow(PSS_LABEL_WINDOW_PROMPT_BASE, sText_ViewBase, stringXPos, 1, 0, 1);
 
             stringXPos = GetStringRightAlignXOffset(FONT_NORMAL, sText_ViewEVs, skillsLabelWidth);
             iconXPos = stringXPos - 16;
@@ -3727,7 +3812,14 @@ static void PrintPageNamesAndStats(void)
         PrintTextOnWindow(PSS_LABEL_WINDOW_PROMPT_STATS, sText_ViewStats, stringXPos, 1, 0, 1);
     }
 
-    PrintTextOnWindow(PSS_LABEL_WINDOW_POKEMON_SKILLS_EXP, sText_NextLv, 0, 4, 0, 0);
+    stringXPos = GetStringRightAlignXOffset(FONT_NORMAL, sText_Change, skillsLabelWidth);
+    iconXPos = stringXPos - 16;
+    if (iconXPos < 0)
+        iconXPos = 0;
+    PrintAOrBButtonIcon(PSS_LABEL_WINDOW_PROMPT_ABILITY, FALSE, iconXPos);
+    PrintTextOnWindow(PSS_LABEL_WINDOW_PROMPT_ABILITY, sText_Change, stringXPos, 1, 0, 1);
+
+    // PrintTextOnWindow(PSS_LABEL_WINDOW_POKEMON_SKILLS_EXP, sText_NextLv, 0, 4, 0, 0);
 }
 
 static void PutPageWindowTilemaps(u8 page)
@@ -3749,7 +3841,7 @@ static void PutPageWindowTilemaps(u8 page)
         PutWindowTilemap(PSS_LABEL_WINDOW_POKEMON_SKILLS_TITLE);
         PutWindowTilemap(PSS_LABEL_WINDOW_POKEMON_SKILLS_EXP);
         if (BW_SUMMARY_IV_EV_DISPLAY == BW_IV_EV_PRECISE)
-            PutWindowTilemap(PSS_LABEL_WINDOW_PROMPT_IVS);
+            PutWindowTilemap(PSS_LABEL_WINDOW_PROMPT_BASE);
         else if (BW_SUMMARY_IV_EV_DISPLAY == BW_IV_EV_GRADED)
             PutWindowTilemap(PSS_LABEL_WINDOW_PROMPT_EVS);
         break;
@@ -3799,7 +3891,8 @@ static void ClearPageWindowTilemaps(u8 page)
         {
             ClearWindowTilemap(PSS_LABEL_WINDOW_PROMPT_STATS);
             ClearWindowTilemap(PSS_LABEL_WINDOW_PROMPT_EVS);
-            ClearWindowTilemap(PSS_LABEL_WINDOW_PROMPT_IVS);
+            ClearWindowTilemap(PSS_LABEL_WINDOW_PROMPT_BASE);
+            ClearWindowTilemap(PSS_LABEL_WINDOW_PROMPT_ABILITY);
         }
         break;
     case PSS_PAGE_BATTLE_MOVES:
@@ -4012,6 +4105,36 @@ static void PrintMonAbilityDescription(void)
     PrintTextOnWindow_BW_Font(AddWindowFromTemplateList(sPageSkillsTemplate, PSS_DATA_WINDOW_SKILLS_ABILITY), gAbilitiesInfo[ability].description, 4, 15, 0, 0);
 }
 
+static void UpdateMonAbilityInfo(void)
+{
+    u16 ability = GetAbilityBySpecies(sMonSummaryScreen->summary.species, sMonSummaryScreen->displayedAbilityNum);
+    FillWindowPixelBuffer(sMonSummaryScreen->windowIds[PSS_DATA_WINDOW_SKILLS_ABILITY], PIXEL_FILL(0));
+    PrintTextOnWindow(sMonSummaryScreen->windowIds[PSS_DATA_WINDOW_SKILLS_ABILITY], gAbilitiesInfo[ability].name, 4, 2, 0, 0);
+    PrintTextOnWindow_BW_Font(sMonSummaryScreen->windowIds[PSS_DATA_WINDOW_SKILLS_ABILITY], gAbilitiesInfo[ability].description, 4, 15, 0, 0);
+    PutWindowTilemap(sMonSummaryScreen->windowIds[PSS_DATA_WINDOW_SKILLS_ABILITY]);
+    ScheduleBgCopyTilemapToVram(0);
+}
+
+static void UpdateMonAbilityCost(void)
+{
+    u32 windowId;
+    RemoveWindowByIndex(PSS_DATA_WINDOW_EXP_NEXT_LEVEL);
+
+    if (sMonSummaryScreen->displayedAbilityNum != sMonSummaryScreen->summary.abilityNum)
+    {
+        windowId = AddWindowFromTemplateList(sPageSkillsTemplate, PSS_DATA_WINDOW_EXP_NEXT_LEVEL);
+        FillWindowPixelBuffer(sMonSummaryScreen->windowIds[PSS_DATA_WINDOW_EXP_NEXT_LEVEL], PIXEL_FILL(0));
+
+        StringCopy(gStringVar1, COMPOUND_STRING("COSTS ¥"));
+        ConvertIntToDecimalStringN(gStringVar2, 100, STR_CONV_MODE_LEFT_ALIGN, 5); // TODO: ability cost
+        StringAppend(gStringVar1, gStringVar2);
+
+        PrintTextOnWindowWithFont(windowId, gStringVar1, 4, 3, 0, 13, FONT_SMALL_NARROW);
+        PutWindowTilemap(sMonSummaryScreen->windowIds[PSS_DATA_WINDOW_EXP_NEXT_LEVEL]);
+    }
+    ScheduleBgCopyTilemapToVram(0);
+}
+
 static void BufferMonTrainerMemo(void)
 {
     struct PokeSummary *sum = &sMonSummaryScreen->summary;
@@ -4198,15 +4321,14 @@ static void PrintEggMemo(void)
 
 static void PrintSkillsPageText(void)
 {
-    //ravetodo handle ribbons
-    //PrintRibbonCount();
     PrintMonAbilityName();
     PrintMonAbilityDescription();
     BufferHPStats();
     PrintHPStats(SKILL_STATE_STATS);
     BufferNonHPStats();
     PrintNonHPStats();
-    PrintExpPointsNextLevel();
+    PrintChangeAbility();
+    RemoveWindowByIndex(PSS_DATA_WINDOW_EXP_NEXT_LEVEL);
 }
 
 static void Task_PrintSkillsPage(u8 taskId)
@@ -4234,7 +4356,8 @@ static void Task_PrintSkillsPage(u8 taskId)
         PrintNonHPStats();
         break;
     case 7:
-        PrintExpPointsNextLevel();
+        // PrintExpPointsNextLevel();
+        PrintChangeAbility();
         break;
     case 8:
         DestroyTask(taskId);
@@ -4447,7 +4570,7 @@ static void PrintNonHPStats(void)
     PrintTextOnWindow(windowId, sStringVar5, 30, 52, 0, 0);
 }
 
-static void PrintExpPointsNextLevel(void)
+static UNUSED void PrintExpPointsNextLevel(void)
 {
     u32 expToNextLevel;
     struct PokeSummary *sum = &sMonSummaryScreen->summary;
@@ -4467,6 +4590,12 @@ static void PrintExpPointsNextLevel(void)
     ConvertIntToDecimalStringN(gStringVar1, expToNextLevel, STR_CONV_MODE_RIGHT_ALIGN, 6);
 
     PrintTextOnWindow(windowIdNextLvl, gStringVar1, 1, 4, 0, 0);
+}
+
+static void PrintChangeAbility(void)
+{
+    u32 windowId = AddWindowFromTemplateList(sPageSkillsTemplate, PSS_DATA_WINDOW_EXP);
+    PrintTextOnWindowWithFont(windowId, COMPOUND_STRING("CHANGE ABILITY"), 26, 3, 0, 0, FONT_SMALL_NARROW);
 }
 
 static void PrintBattleMoves(void)
@@ -5115,7 +5244,12 @@ static u8 CreateMonSprite(struct Pokemon *unused, bool32 isShadow)
 {
     struct PokeSummary *summary = &sMonSummaryScreen->summary;
     u8 shadowPalette = 0;
-    u8 spriteId = CreateSprite(&gMultiuseSpriteTemplate, 204, 76, 5);
+    u8 spriteId;
+
+    if (!isShadow)
+        spriteId = CreateSprite(&gMultiuseSpriteTemplate, 204, 76, 5);
+    else
+        spriteId = CreateSprite(&gMultiuseSpriteTemplate, 204, 76, 6);
 
     FreeSpriteOamMatrix(&gSprites[spriteId]);
     gSprites[spriteId].sSpecies = summary->species2;
@@ -5305,22 +5439,26 @@ const struct SpriteTemplate sSpriteTemplate_SumRankStar =
     .callback = SpriteCallbackDummy,
 };
 
-static void CreateRankStars(struct Pokemon *mon)
+static void UpdateOrCreateRankStars(struct Pokemon *mon)
 {
     u32 i;
     u32 rank = GetMonData(mon, MON_DATA_RANK);
 
-    // Cap rank just in case.
-    if (rank > 3)
-        rank = 3;
-    
-    // Load graphics.
-    LoadSpritePalette(&sSpritePalette_SumRankStar);
-    LoadCompressedSpriteSheet(&sSpriteSheet_SumRankStar);
+    if (sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_STAR] == SPRITE_NONE)
+    {
+        LoadSpritePalette(&sSpritePalette_SumRankStar);
+        LoadCompressedSpriteSheet(&sSpriteSheet_SumRankStar);
+        for (i = 0; i < MAX_RANK; ++i)
+            sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_STAR + i] = CreateSprite(&sSpriteTemplate_SumRankStar, 206 + 8*i, 38, 6);
+    }
 
-    // Draw stars.
-    for (i = 0; i < rank; ++i)
-        sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_STAR + i] = CreateSprite(&sSpriteTemplate_SumRankStar, 206 + 8*i, 38, 6);
+    for (i = 0; i < MAX_RANK; ++i)
+    {
+        if (i < rank)
+            SetSpriteInvisibility(SPRITE_ARR_ID_STAR + i, FALSE);
+        else
+            SetSpriteInvisibility(SPRITE_ARR_ID_STAR + i, TRUE);
+    }
 }
 
 static UNUSED void CreateCaughtBallSprite(struct Pokemon *mon)
@@ -5339,7 +5477,7 @@ static void CreateSetStatusSprite(void)
     u8 statusAnim;
 
     if (*spriteId == SPRITE_NONE)
-        *spriteId = CreateSprite(&sSpriteTemplate_StatusCondition, 213, 38, 6);
+        *spriteId = CreateSprite(&sSpriteTemplate_StatusCondition, 180, 38, 6);
 
     statusAnim = GetMonAilment(&sMonSummaryScreen->currentMon);
     if (statusAnim != 0)
