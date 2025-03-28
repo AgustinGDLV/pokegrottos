@@ -694,7 +694,18 @@ static void KecleonShop_BuyItemsHandleInput(u8 taskId)
             {
             default: // try buying selected item
                 PlaySE(SE_SELECT);
-                if ((ItemId_GetPrice(sSelectedItem) / 10) <= GetMoney(&gSaveBlock1Ptr->money))
+                if (list->scrollOffset + list->selectedRow >= sShopItemsCount)
+                {
+                    PlaySE(SE_SELECT);
+                    KecleonShop_ClearBuyMenuGraphics(taskId);
+                    if (sStartingMoney > GetMoney(&gSaveBlock1Ptr->money))
+                        sKecleonExpression = KECLEON_JOYOUS;
+                    else
+                        sKecleonExpression = KECLEON_NORMAL;
+                    sKecleonMessageText = sText_MayIHelpYouWithAnythingElse;
+                    gTasks[taskId].func = KecleonShop_ShowIntroScreen;
+                }
+                else if ((ItemId_GetPrice(sSelectedItem) / 10) <= GetMoney(&gSaveBlock1Ptr->money))
                 {
                     DestroyListMenuTask(gTasks[taskId].tMenuTaskId, 0, 0);
                     FreeSpritePalette(&gSprites[sItemIconSpriteId]);
@@ -786,7 +797,9 @@ static void KecleonShop_SimplePrintFunc(u8 windowId, u32 itemId, u8 y)
 static void KecleonShop_ItemPrintFunc(u8 windowId, u32 itemId, u8 y)
 {
     if (itemId == LIST_CANCEL)
+    {
         return;
+    }
     else if (itemId < sShopItemsCount)
     {
         AddTextPrinterParameterized4(windowId, GetFontIdToFit(ItemId_GetName(gSaveBlock1Ptr->shopItems[itemId]), FONT_NARROW, 0, 64), 8, y, 0, 0, sTextColor_Normal, TEXT_SKIP_DRAW, ItemId_GetName(gSaveBlock1Ptr->shopItems[itemId]));
@@ -795,7 +808,9 @@ static void KecleonShop_ItemPrintFunc(u8 windowId, u32 itemId, u8 y)
         AddTextPrinterParameterized4(windowId, FONT_SMALL, 8 + GetStringRightAlignXOffset(FONT_SMALL, gStringVar4, 96), y, 0, 0, sTextColor_Normal, TEXT_SKIP_DRAW, gStringVar4);
     }
     else
+    {
         AddTextPrinterParameterized4(windowId, FONT_NARROW, 8, y, 0, 0, sTextColor_Normal, TEXT_SKIP_DRAW, sText_Exit);
+    }
 }
 
 static void KecleonShop_GoToSellMenu(u8 taskId)
