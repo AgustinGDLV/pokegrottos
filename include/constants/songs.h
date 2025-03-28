@@ -947,9 +947,7 @@
 
 #define HG_MUSIC_END                      MUS_HG_WIN_MINIGAME
 
-#define MUS_ATLTS_OFFENSE_AND_DEFENCE     899
-
-#define CUSTOM_MUSIC_END                  MUS_ATLTS_OFFENSE_AND_DEFENCE
+#define CUSTOM_MUSIC_END                  HG_MUSIC_END
 
 #define END_MUS                           CUSTOM_MUSIC_END
 

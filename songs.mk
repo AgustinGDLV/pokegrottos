@@ -2339,6 +2339,3 @@ $(MID_SUBDIR)/mus_hg_obtain_b_points.s: %.s: %.mid
 
 $(MID_SUBDIR)/mus_hg_win_minigame.s: %.s: %.mid
 	$(MID) $< $@ -E -R0 -G229 -V091 -p5
-
-$(MID_SUBDIR)/mus_atlts_offense_and_defence.s: %.s: %.mid
-	$(MID) $< $@ -E -R0 -G229 -V088

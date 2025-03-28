@@ -1676,7 +1676,6 @@ SECTIONS {
         sound/songs/midi/mus_hg_obtain_castle_points.o(.rodata);
         sound/songs/midi/mus_hg_obtain_b_points.o(.rodata);
         sound/songs/midi/mus_hg_win_minigame.o(.rodata);
-        sound/songs/midi/mus_atlts_offense_and_defence.o(.rodata);
     } > ROM =0
 
     lib_rodata :
