@@ -74,8 +74,10 @@ struct TemplateRules {
 
 enum Character
 {
-    CHAR_FLANNERY,
-    CHAR_WALLACE,
+    CHAR_FIREBREATHER,
+    CHAR_AROMA_LADY,
+    CHAR_SWIMMER,
+    CHAR_HIKER,
     CHARACTERS_COUNT,
 };
 

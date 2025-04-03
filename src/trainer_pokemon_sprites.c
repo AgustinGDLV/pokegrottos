@@ -134,22 +134,25 @@ static u16 CreatePicSprite(u16 species, bool8 isShiny, u32 personality, bool8 is
     }
     if (i == PICS_COUNT)
         return 0xFFFF;
-
+    DebugPrintf("a");
     framePics = Alloc(PIC_SPRITE_SIZE * MAX_PIC_FRAMES);
     if (!framePics)
         return 0xFFFF;
 
+        DebugPrintf("b");
     images = Alloc(sizeof(struct SpriteFrameImage) * MAX_PIC_FRAMES);
     if (!images)
     {
         Free(framePics);
         return 0xFFFF;
     }
+    DebugPrintf("c");
     if (DecompressPic(species, personality, isFrontPic, framePics, isTrainer))
     {
         // debug trap?
         return 0xFFFF;
     }
+    DebugPrintf("d");
     for (j = 0; j < MAX_PIC_FRAMES; j ++)
     {
         images[j].data = framePics + PIC_SPRITE_SIZE * j;

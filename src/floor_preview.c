@@ -231,7 +231,7 @@ static void DrawSpeciesIcons(void)
     u32 i, palette, spriteId;
 
     // Load black palette for shadows.
-    palette = RGB(8, 8, 8); // dark gray used in BG top/bottom, kind of jank to have here
+    palette = RGB(12, 12, 12);
     for (i = 0; i < 15; ++i)
         LoadPalette(&palette, OBJ_PLTT_ID(15) + i + 1, PLTT_SIZEOF(1));
 
@@ -273,7 +273,7 @@ static void DrawText(void)
 {
     u8 *ptr;
     u16 palette;
-    palette = RGB(8, 8, 8); // dark gray used in BG top/bottom, kind of jank to have here
+    palette = RGB(12, 12, 12); // dark gray used in BG top/bottom, kind of jank to have here
     LoadPalette(&palette, BG_PLTT_ID(15) + 11, PLTT_SIZEOF(1));
 
     // Load text into continue window.

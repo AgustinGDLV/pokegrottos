@@ -53,7 +53,6 @@ enum ScreenType
 enum Windows
 {
     WIN_BUTTONS_RIGHT,
-    WIN_MUGSHOT,
     WIN_INFO,
 	WIN_MAIN_TEXT,
     WIN_BUTTONS_LEFT,
@@ -70,27 +69,17 @@ static const struct WindowTemplate sStartScreenWinTemplates[WINDOW_COUNT + 1] =
 		.width = 14,
 		.height = 2,
 		.paletteNum = 15,
-		.baseBlock = 281,
-    },
-	[WIN_MUGSHOT] =
-	{
-		.bg = 1,
-		.tilemapLeft = 2,
-		.tilemapTop = 6,
-		.width = 8,
-		.height = 8,
-		.paletteNum = 15,
 		.baseBlock = 1,
-	},
+    },
     [WIN_INFO] =
 	{
 		.bg = 1,
-		.tilemapLeft = 12,
-		.tilemapTop = 6,
-		.width = 16,
-		.height = 8,
+		.tilemapLeft = 2,
+		.tilemapTop = 8,
+		.width = 26,
+		.height = 6,
 		.paletteNum = 15,
-		.baseBlock = 65,
+		.baseBlock = 1 + 28,
 	},
 	[WIN_MAIN_TEXT] =
 	{
@@ -100,7 +89,7 @@ static const struct WindowTemplate sStartScreenWinTemplates[WINDOW_COUNT + 1] =
 		.width = 28,
 		.height = 2,
 		.paletteNum = 15,
-		.baseBlock = 193,
+		.baseBlock = 1 + 28 + 156,
 	},
     [WIN_BUTTONS_LEFT] =
     {
@@ -110,7 +99,7 @@ static const struct WindowTemplate sStartScreenWinTemplates[WINDOW_COUNT + 1] =
 		.width = 16,
 		.height = 2,
 		.paletteNum = 15,
-		.baseBlock = 249,
+		.baseBlock = 1 + 28 + 156 + 56,
     },
 	DUMMY_WIN_TEMPLATE,
 };
@@ -146,6 +135,8 @@ static void Task_ContinueScreenWaitForKeypress(u8 taskId);
 static void Task_CharacterSelectWaitForKeypress(u8 taskId);
 static void Task_StarterSelectWaitForKeypress(u8 taskId);
 static void DrawMugshot(u32 characterId);
+static void DrawPartyIcons(void);
+static void DrawIndexSquares(void);
 static void DrawCharacterSelectInfoText(void);
 static void DrawCharacterSelectItem(void);
 static void UpdateStarterPics(void);
@@ -155,13 +146,63 @@ static void CB2_StartNewRun(void);
 EWRAM_DATA static u32 * sMapPreviewTilemapPtr = NULL;
 EWRAM_DATA static MainCallback sExitCallback = NULL;
 EWRAM_DATA static enum ScreenType sCurrentScreen = 0;
-EWRAM_DATA static bool8 sLRButtonWindowDrawn = FALSE;
+EWRAM_DATA static bool8 sStartScreenWindowIds[WINDOW_COUNT] = {0};
+
 EWRAM_DATA static enum Character sChosenCharacterId = 0;
 EWRAM_DATA static u8 sChosenStarter = 0;
-EWRAM_DATA static u16 sMugshotSpriteId = 0;
-EWRAM_DATA static u16 sCharacterItemSpriteId = 0;
-EWRAM_DATA static u16 sStarterSpriteIds[3] = {0};
-EWRAM_DATA static u16 sStarterShadowSpriteIds[3] = {0};
+
+EWRAM_DATA static u8 sMugshotSpriteId = 0;
+EWRAM_DATA static u8 sIndexSquareSpriteIds[CHARACTERS_COUNT] = {0};
+EWRAM_DATA static u8 sCharacterItemSpriteId = 0;
+EWRAM_DATA static u8 sCharacterItemShadowSpriteId = 0;
+EWRAM_DATA static u8 sStarterSpriteIds[3] = {0};
+EWRAM_DATA static u8 sStarterShadowSpriteIds[3] = {0};
+
+// gfx
+#define TAG_INDEX_SQUARE 6000
+
+static const u8 sIndexSquareGfx[] = INCBIN_U8("graphics/interface/index_square.4bpp");
+static const u16 sIndexSquarePal[] = INCBIN_U16("graphics/interface/index_square.gbapal");
+
+static const struct OamData sOamData_IndexSquare =
+{
+    .bpp = ST_OAM_4BPP,
+    .shape = SPRITE_SHAPE(8x8),
+    .size = SPRITE_SIZE(8x8),
+    .priority = 1,
+};
+
+static const struct SpriteSheet sIndexSquareSpriteSheet = {sIndexSquareGfx, sizeof(sIndexSquareGfx), TAG_INDEX_SQUARE};
+static const struct SpritePalette sIndexSquareSpritePalette = {sIndexSquarePal, TAG_INDEX_SQUARE};
+
+static const union AnimCmd sSpriteAnim_IndexSquareSmall[] =
+{
+    ANIMCMD_FRAME(0, 0),
+    ANIMCMD_END
+};
+
+static const union AnimCmd sSpriteAnim_IndexSquareBig[] =
+{
+    ANIMCMD_FRAME(1, 0),
+    ANIMCMD_END
+};
+
+static const union AnimCmd *const sSpriteAnimTable_IndexSquare[] =
+{
+    sSpriteAnim_IndexSquareSmall,
+    sSpriteAnim_IndexSquareBig,
+};
+
+const struct SpriteTemplate sSpriteTemplate_IndexSquare =
+{
+    .tileTag = TAG_INDEX_SQUARE,
+    .paletteTag = TAG_INDEX_SQUARE,
+    .oam = &sOamData_IndexSquare,
+    .anims = sSpriteAnimTable_IndexSquare,
+    .images = NULL,
+    .affineAnims = gDummySpriteAffineAnimTable,
+    .callback = SpriteCallbackDummy,
+};
 
 // code
 static void MainCB2_StartScreen(void)
@@ -182,6 +223,7 @@ static void VBlankCB_StartScreen(void)
 
 void CB2_StartScreen(void)
 {
+    u32 i;
     switch (gMain.state) {
         default:
         case 0:
@@ -207,6 +249,8 @@ void CB2_StartScreen(void)
             gMain.state++;
             break;
         case 4:
+            for (i = 0; i < WINDOW_COUNT; ++i)
+                sStartScreenWindowIds[i] = WINDOW_NONE;
             InitWindows(sStartScreenWinTemplates);
             LoadMapPreviewGfx();
             gMain.state++;
@@ -226,7 +270,6 @@ void CB2_StartScreen(void)
             gMain.state++;
             break;
         case 7:
-            sLRButtonWindowDrawn = FALSE;
             LoadMessageBoxAndBorderGfx();
             if (gSaveBlock1Ptr->currentFloor == 0)
                 sCurrentScreen = SCREEN_CHARACTER_SELECT;
@@ -248,10 +291,11 @@ static void ClearWindows(void)
     u32 i;
     for (i = 0; i < WINDOW_COUNT; ++i)
     {
-        FillWindowPixelBuffer(i, PIXEL_FILL(0));
-        ClearWindowTilemap(i);
-        CopyWindowToVram(i, COPYWIN_GFX);
-        RemoveWindow(i);
+        FillWindowPixelBuffer(sStartScreenWindowIds[i], PIXEL_FILL(0));
+        ClearWindowTilemap(sStartScreenWindowIds[i]);
+        CopyWindowToVram(sStartScreenWindowIds[i], COPYWIN_GFX);
+        RemoveWindow(sStartScreenWindowIds[i]);
+        sStartScreenWindowIds[i] = WINDOW_NONE;
     }
 }
 
@@ -324,6 +368,7 @@ static void Task_CharacterSelectWaitForKeypress(u8 taskId)
             sChosenCharacterId = CHARACTERS_COUNT - 1;
         else
             --sChosenCharacterId;
+        DrawIndexSquares();
         DrawMugshot(sChosenCharacterId);
         DrawCharacterSelectInfoText();
         DrawCharacterSelectItem();
@@ -334,6 +379,7 @@ static void Task_CharacterSelectWaitForKeypress(u8 taskId)
         ++sChosenCharacterId;
         if (sChosenCharacterId == CHARACTERS_COUNT)
             sChosenCharacterId = 0;
+        DrawIndexSquares();
         DrawMugshot(sChosenCharacterId);
         DrawCharacterSelectInfoText();
         DrawCharacterSelectItem();
@@ -415,40 +461,40 @@ static void LoadMapPreviewGfx(void)
 static void DrawContinueAndSelectWindows(void)
 {
     u32 i;
-
     // Load graphics for windows with border graphics and fill.
-    for (i = WIN_MUGSHOT; i < WIN_MAIN_TEXT; ++i)
+    for (i = WIN_INFO; i < WIN_MAIN_TEXT; ++i)
     {
-        AddWindow(&sStartScreenWinTemplates[i]);
-        FillWindowPixelBuffer(i, PIXEL_FILL(1));
-        DrawStdWindowFrame(i, FALSE);
-        PutWindowTilemap(i);
-        CopyWindowToVram(i, COPYWIN_FULL);
+        // Avoid allocating space for duplicate windows.
+        if (sStartScreenWindowIds[i] == WINDOW_NONE)
+            sStartScreenWindowIds[i] = AddWindow(&sStartScreenWinTemplates[i]);
+        FillWindowPixelBuffer(sStartScreenWindowIds[i], PIXEL_FILL(1));
+        DrawStdWindowFrame(sStartScreenWindowIds[i], FALSE);
+        PutWindowTilemap(sStartScreenWindowIds[i]);
+        CopyWindowToVram(sStartScreenWindowIds[i], COPYWIN_FULL);
     }
     // Load remaining windows.
     for (; i < WINDOW_COUNT; ++i)
     {
-        FillWindowPixelBuffer(i, PIXEL_FILL(0));
-        AddWindow(&sStartScreenWinTemplates[i]);
-        PutWindowTilemap(i);
-        CopyWindowToVram(i, COPYWIN_FULL);
+        if (sStartScreenWindowIds[i] == WINDOW_NONE)
+            sStartScreenWindowIds[i] = AddWindow(&sStartScreenWinTemplates[i]);
+        FillWindowPixelBuffer(sStartScreenWindowIds[i], PIXEL_FILL(0));
+        PutWindowTilemap(sStartScreenWindowIds[i]);
+        CopyWindowToVram(sStartScreenWindowIds[i], COPYWIN_FULL);
     }
 }
 
 static void DrawStarterSelectWindows(void)
 {
     u32 i;
-
-    // Load remaining windows.
     for (i = WIN_BUTTONS_RIGHT; i < WINDOW_COUNT; ++i)
     {
-        ClearStdWindowAndFrame(i, TRUE);
-        FillWindowPixelBuffer(i, PIXEL_FILL(0));
-        AddWindow(&sStartScreenWinTemplates[i]);
-        PutWindowTilemap(i);
-        CopyWindowToVram(i, COPYWIN_FULL);
+        ClearStdWindowAndFrame(sStartScreenWindowIds[i], TRUE);
+        FillWindowPixelBuffer(sStartScreenWindowIds[i], PIXEL_FILL(0));
+        if (sStartScreenWindowIds[i] == WINDOW_NONE)
+            AddWindow(&sStartScreenWinTemplates[i]);
+        PutWindowTilemap(sStartScreenWindowIds[i]);
+        CopyWindowToVram(sStartScreenWindowIds[i], COPYWIN_FULL);
     }
-    sLRButtonWindowDrawn = FALSE;
 }
 
 static const u8 sTextColor_Name[] = {TEXT_COLOR_TRANSPARENT, TEXT_DYNAMIC_COLOR_1, TEXT_COLOR_LIGHT_GRAY};
@@ -466,20 +512,20 @@ static const u8 sText_PressLR[] = _("{L_BUTTON}{R_BUTTON} Change Page");
 static void DrawLRButtonWindow(void)
 {
     u16 palette = RGB(8, 8, 8); // dark gray used in BG top/bottom
-    AddWindow(&sStartScreenWinTemplates[WIN_BUTTONS_RIGHT]);
-    FillWindowPixelBuffer(WIN_BUTTONS_RIGHT, PIXEL_FILL(0));
-    PutWindowTilemap(WIN_BUTTONS_RIGHT);
+    if (sStartScreenWindowIds[WIN_BUTTONS_RIGHT] == WINDOW_NONE)
+        sStartScreenWindowIds[WIN_BUTTONS_RIGHT] = AddWindow(&sStartScreenWinTemplates[WIN_BUTTONS_RIGHT]);
+    FillWindowPixelBuffer(sStartScreenWindowIds[WIN_BUTTONS_RIGHT], PIXEL_FILL(0));
+    PutWindowTilemap(sStartScreenWindowIds[WIN_BUTTONS_RIGHT]);
     LoadPalette(&palette, BG_PLTT_ID(15) + 11, PLTT_SIZEOF(1));
-    AddTextPrinterParameterized3(WIN_BUTTONS_RIGHT, FONT_SMALL, GetStringRightAlignXOffset(FONT_SMALL, sText_PressLR, 110), 0, sTextColor_Instructions, TEXT_SKIP_DRAW, sText_PressLR);
-    CopyWindowToVram(WIN_BUTTONS_RIGHT, COPYWIN_FULL);
-    sLRButtonWindowDrawn = TRUE;
+    AddTextPrinterParameterized3(sStartScreenWindowIds[WIN_BUTTONS_RIGHT], FONT_SMALL, GetStringRightAlignXOffset(FONT_SMALL, sText_PressLR, 110), 0, sTextColor_Instructions, TEXT_SKIP_DRAW, sText_PressLR);
+    CopyWindowToVram(sStartScreenWindowIds[WIN_BUTTONS_RIGHT], COPYWIN_FULL);
 }
 
 static void DrawContinueScreenText(void)
 {
     u8 * ptr;
     u8 strFloor[0x20] = {0};
-    u8 strMoney[0x20] = {0};
+    // u8 strMoney[0x20] = {0};
     u8 strTime[0x20] = {0};
 
     // Load dynamic text colors.
@@ -489,33 +535,33 @@ static void DrawContinueScreenText(void)
     LoadPalette(&palette, BG_PLTT_ID(15) + 11, PLTT_SIZEOF(1));
 
     // Load text into stats window.
-    AddTextPrinterParameterized3(WIN_INFO, FONT_NORMAL, 2, 0, sTextColor_Name, TEXT_SKIP_DRAW, gCharacterInfos[gSaveBlock1Ptr->characterId].name);
-    AddTextPrinterParameterized3(WIN_INFO, FONT_NORMAL, 2, 16, sTextColor_Info, TEXT_SKIP_DRAW, sText_Floor);
-    AddTextPrinterParameterized3(WIN_INFO, FONT_NORMAL, 2, 32, sTextColor_Info, TEXT_SKIP_DRAW, sText_Gold);
-    AddTextPrinterParameterized3(WIN_INFO, FONT_NORMAL, 2, 48, sTextColor_Info, TEXT_SKIP_DRAW, sText_Time);
+    AddTextPrinterParameterized3(sStartScreenWindowIds[WIN_INFO], FONT_NORMAL, 2, 0, sTextColor_Name, TEXT_SKIP_DRAW, gCharacterInfos[gSaveBlock1Ptr->characterId].name);
+    AddTextPrinterParameterized3(sStartScreenWindowIds[WIN_INFO], FONT_NORMAL, 2, 16, sTextColor_Info, TEXT_SKIP_DRAW, sText_Floor);
+    // AddTextPrinterParameterized3(sStartScreenWindowIds[WIN_INFO], FONT_NORMAL, 2, 32, sTextColor_Info, TEXT_SKIP_DRAW, sText_Gold);
+    AddTextPrinterParameterized3(sStartScreenWindowIds[WIN_INFO], FONT_NORMAL, 2, 32, sTextColor_Info, TEXT_SKIP_DRAW, sText_Time);
 
     ConvertIntToDecimalStringN(strFloor, gSaveBlock1Ptr->currentFloor, STR_CONV_MODE_LEFT_ALIGN, 3);
-    AddTextPrinterParameterized3(WIN_INFO, FONT_NORMAL, GetStringRightAlignXOffset(FONT_NORMAL, strFloor, 126), 16, sTextColor_Info, TEXT_SKIP_DRAW, strFloor);
+    AddTextPrinterParameterized3(sStartScreenWindowIds[WIN_INFO], FONT_NORMAL, GetStringRightAlignXOffset(FONT_NORMAL, strFloor, 126), 16, sTextColor_Info, TEXT_SKIP_DRAW, strFloor);
     
-    ptr = strMoney;
-    *ptr = CHAR_CURRENCY;
-    ptr = ConvertIntToDecimalStringN(ptr + 1, GetMoney(&gSaveBlock1Ptr->money), STR_CONV_MODE_LEFT_ALIGN, 6);
-    AddTextPrinterParameterized3(WIN_INFO, FONT_NORMAL, GetStringRightAlignXOffset(FONT_NORMAL, strMoney, 126), 32, sTextColor_Info, TEXT_SKIP_DRAW, strMoney);
+    // ptr = strMoney;
+    // *ptr = CHAR_CURRENCY;
+    // ptr = ConvertIntToDecimalStringN(ptr + 1, GetMoney(&gSaveBlock1Ptr->money), STR_CONV_MODE_LEFT_ALIGN, 6);
+    // AddTextPrinterParameterized3(WIN_INFO, FONT_NORMAL, GetStringRightAlignXOffset(FONT_NORMAL, strMoney, 126), 32, sTextColor_Info, TEXT_SKIP_DRAW, strMoney);
     
     ptr = ConvertIntToDecimalStringN(strTime, gSaveBlock2Ptr->playTimeHours, STR_CONV_MODE_LEFT_ALIGN, 3);
     *ptr = CHAR_COLON;
     ConvertIntToDecimalStringN(ptr + 1, gSaveBlock2Ptr->playTimeMinutes, STR_CONV_MODE_LEADING_ZEROS, 2);
-    AddTextPrinterParameterized3(WIN_INFO, FONT_NORMAL, GetStringRightAlignXOffset(FONT_NORMAL, strTime, 126), 48, sTextColor_Info, TEXT_SKIP_DRAW, strTime);
+    AddTextPrinterParameterized3(sStartScreenWindowIds[WIN_INFO], FONT_NORMAL, GetStringRightAlignXOffset(FONT_NORMAL, strTime, 126), 32, sTextColor_Info, TEXT_SKIP_DRAW, strTime);
 
-    CopyWindowToVram(WIN_INFO, COPYWIN_FULL);
+    CopyWindowToVram(sStartScreenWindowIds[WIN_INFO], COPYWIN_FULL);
 
     // Load text into main window.
-    AddTextPrinterParameterized3(WIN_MAIN_TEXT, FONT_NORMAL, 2, 2, sTextColor_Instructions, TEXT_SKIP_DRAW, sText_Continue);
-    CopyWindowToVram(WIN_MAIN_TEXT, COPYWIN_FULL);
+    AddTextPrinterParameterized3(sStartScreenWindowIds[WIN_MAIN_TEXT], FONT_NORMAL, 2, 2, sTextColor_Instructions, TEXT_SKIP_DRAW, sText_Continue);
+    CopyWindowToVram(sStartScreenWindowIds[WIN_MAIN_TEXT], COPYWIN_FULL);
 
     // Load instructions into button window.
-    AddTextPrinterParameterized3(WIN_BUTTONS_LEFT, FONT_SMALL, 2, 0, sTextColor_Instructions, TEXT_SKIP_DRAW, sText_PressA);
-    CopyWindowToVram(WIN_BUTTONS_LEFT, COPYWIN_FULL);
+    AddTextPrinterParameterized3(sStartScreenWindowIds[WIN_BUTTONS_LEFT], FONT_SMALL, 2, 0, sTextColor_Instructions, TEXT_SKIP_DRAW, sText_PressA);
+    CopyWindowToVram(sStartScreenWindowIds[WIN_BUTTONS_LEFT], COPYWIN_FULL);
 }
 
 static const u8 sText_StartNewRun[] = _("Start a new run?");
@@ -525,10 +571,10 @@ static void DrawCharacterSelectInfoText(void)
 {
     u16 palette = gCharacterInfos[sChosenCharacterId].color;
     LoadPalette(&palette, BG_PLTT_ID(15) + 10, PLTT_SIZEOF(1));
-    FillWindowPixelBuffer(WIN_INFO, PIXEL_FILL(1));
-    AddTextPrinterParameterized3(WIN_INFO, FONT_NORMAL, 2, 0, sTextColor_Name, TEXT_SKIP_DRAW, gCharacterInfos[sChosenCharacterId].name);
-    AddTextPrinterParameterized3(WIN_INFO, FONT_SMALL, 2, 14, sTextColor_Info, TEXT_SKIP_DRAW, gCharacterInfos[sChosenCharacterId].desc);
-    CopyWindowToVram(WIN_INFO, COPYWIN_FULL);
+    FillWindowPixelBuffer(sStartScreenWindowIds[WIN_INFO], PIXEL_FILL(1));
+    AddTextPrinterParameterized3(sStartScreenWindowIds[WIN_INFO], FONT_NORMAL, 2, 0, sTextColor_Name, TEXT_SKIP_DRAW, gCharacterInfos[sChosenCharacterId].name);
+    AddTextPrinterParameterized3(sStartScreenWindowIds[WIN_INFO], FONT_SMALL, 2, 14, sTextColor_Info, TEXT_SKIP_DRAW, gCharacterInfos[sChosenCharacterId].desc);
+    CopyWindowToVram(sStartScreenWindowIds[WIN_INFO], COPYWIN_FULL);
 }
 
 static void DrawCharacterSelectText(void)
@@ -541,12 +587,12 @@ static void DrawCharacterSelectText(void)
     DrawCharacterSelectInfoText();
 
     // Load text into main window.
-    AddTextPrinterParameterized3(WIN_MAIN_TEXT, FONT_NORMAL, 2, 2, sTextColor_Instructions, TEXT_SKIP_DRAW, sText_StartNewRun);
-    CopyWindowToVram(WIN_MAIN_TEXT, COPYWIN_FULL);
+    AddTextPrinterParameterized3(sStartScreenWindowIds[WIN_MAIN_TEXT], FONT_NORMAL, 2, 2, sTextColor_Instructions, TEXT_SKIP_DRAW, sText_StartNewRun);
+    CopyWindowToVram(sStartScreenWindowIds[WIN_MAIN_TEXT], COPYWIN_FULL);
 
     // Load instructions into button window.
-    AddTextPrinterParameterized3(WIN_BUTTONS_LEFT, FONT_SMALL, 2, 0, sTextColor_Instructions, TEXT_SKIP_DRAW, sText_CharSelectPressA);
-    CopyWindowToVram(WIN_BUTTONS_LEFT, COPYWIN_FULL);
+    AddTextPrinterParameterized3(sStartScreenWindowIds[WIN_BUTTONS_LEFT], FONT_SMALL, 2, 0, sTextColor_Instructions, TEXT_SKIP_DRAW, sText_CharSelectPressA);
+    CopyWindowToVram(sStartScreenWindowIds[WIN_BUTTONS_LEFT], COPYWIN_FULL);
 }
 
 static const u8 sText_ChooseStarter[] = _("Choose your starter!");
@@ -558,12 +604,12 @@ static void DrawStarterSelectText(void)
     LoadPalette(&palette, BG_PLTT_ID(15) + 11, PLTT_SIZEOF(1));
 
     // Load text into main window.
-    AddTextPrinterParameterized3(WIN_MAIN_TEXT, FONT_NORMAL, 2, 2, sTextColor_Instructions, TEXT_SKIP_DRAW, sText_ChooseStarter);
-    CopyWindowToVram(WIN_MAIN_TEXT, COPYWIN_FULL);
+    AddTextPrinterParameterized3(sStartScreenWindowIds[WIN_MAIN_TEXT], FONT_NORMAL, 2, 2, sTextColor_Instructions, TEXT_SKIP_DRAW, sText_ChooseStarter);
+    CopyWindowToVram(sStartScreenWindowIds[WIN_MAIN_TEXT], COPYWIN_FULL);
 
     // Load instructions into button window.
-    AddTextPrinterParameterized3(WIN_BUTTONS_LEFT, FONT_SMALL, 2, 0, sTextColor_Instructions, TEXT_SKIP_DRAW, sText_StarterSelectPressA);
-    CopyWindowToVram(WIN_BUTTONS_LEFT, COPYWIN_FULL);
+    AddTextPrinterParameterized3(sStartScreenWindowIds[WIN_BUTTONS_LEFT], FONT_SMALL, 2, 0, sTextColor_Instructions, TEXT_SKIP_DRAW, sText_StarterSelectPressA);
+    CopyWindowToVram(sStartScreenWindowIds[WIN_BUTTONS_LEFT], COPYWIN_FULL);
 }
 
 #define TAG_ITEM_ICON   0x300
@@ -571,29 +617,83 @@ static void DrawStarterSelectText(void)
 static void DrawMugshot(u32 characterId)
 {
     // Free data if there is already a mugshot drawn.
-    if (sMugshotSpriteId != 0xFF)
+    if (sMugshotSpriteId != SPRITE_NONE)
     {
-        DestroySprite(&gSprites[sMugshotSpriteId]);
         FreeSpriteTilesByTag(gSprites[sMugshotSpriteId].template->tileTag);
-        FreeSpritePaletteByTag(gCharacterInfos[characterId].mugshotPal.tag);
+        FreeSpritePaletteByTag(gSprites[sMugshotSpriteId].template->paletteTag);
+        DestroySprite(&gSprites[sMugshotSpriteId]);
     }
     // Draw the new mugshot.
     LoadSpritePalette(&gCharacterInfos[characterId].mugshotPal);
     LoadCompressedSpriteSheet(&gCharacterInfos[characterId].mugshotSheet);
-    sMugshotSpriteId = CreateSprite(gCharacterInfos[characterId].mugshotTemplate, 48, 80, 0);
+    sMugshotSpriteId = CreateSprite(gCharacterInfos[characterId].mugshotTemplate, 48, 25, 0);
+}
+
+static void DrawPartyIcons(void)
+{
+    u32 i, palette, species, spriteId;
+
+    // Load black palette for shadows.
+    palette = RGB(12, 12, 12);
+    for (i = 0; i < 15; ++i)
+        LoadPalette(&palette, OBJ_PLTT_ID(15) + i + 1, PLTT_SIZEOF(1));
+
+    // Draw mon icons.
+    for (i = 0; i < PARTY_SIZE; ++i)
+    {
+        species = GetMonData(&gPlayerParty[i], MON_DATA_SPECIES);
+        if (species == SPECIES_NONE)
+            continue;
+        LoadMonIconPalette(species);
+        CreateMonIconNoPersonality(GetIconSpeciesNoPersonality(species),
+                                   SpriteCB_MonIcon, 68 + 28*i, 36, 0);
+        // Draw shadows.
+        spriteId = CreateMonIconNoPersonality(GetIconSpeciesNoPersonality(species),
+                                   SpriteCB_MonIcon, 69 + 28*i, 37, 4);
+        gSprites[spriteId].oam.paletteNum = 15;
+    }
+}
+
+static void DrawIndexSquares(void)
+{
+    u32 i;
+    // Load graphics data.
+    if (sIndexSquareSpriteIds[0] == SPRITE_NONE)
+    {
+        LoadSpriteSheet(&sIndexSquareSpriteSheet);
+        LoadSpritePalette(&sIndexSquareSpritePalette);
+    }
+
+    for (i = 0; i < CHARACTERS_COUNT; ++i)
+    {
+        if (sIndexSquareSpriteIds[i] == SPRITE_NONE)
+            sIndexSquareSpriteIds[i] = CreateSprite(&sSpriteTemplate_IndexSquare, 120 - 4*CHARACTERS_COUNT + 8*i, 122, 0);
+        StartSpriteAnim(&gSprites[sIndexSquareSpriteIds[i]], i == sChosenCharacterId);
+    }
 }
 
 static void DrawCharacterSelectItem(void)
 {
+    // Load black palette for shadows.
+    u32 i;
+    u32 palette = RGB(12, 12, 12);
+    for (i = 0; i < 15; ++i)
+        LoadPalette(&palette, OBJ_PLTT_ID(12) + i + 1, PLTT_SIZEOF(1));
+
     // Free data if there is already an item drawn.
-    if (sCharacterItemSpriteId != 0xFF)
+    if (sCharacterItemSpriteId != SPRITE_NONE)
+    {
         DestroySprite(&gSprites[sCharacterItemSpriteId]);
+        DestroySprite(&gSprites[sCharacterItemShadowSpriteId]);
+    }
     FreeSpriteTilesByTag(TAG_ITEM_ICON);
     FreeSpritePaletteByTag(TAG_ITEM_ICON);
 
     sCharacterItemSpriteId = AddItemIconSprite(TAG_ITEM_ICON, TAG_ITEM_ICON, gCharacterInfos[sChosenCharacterId].item);
+    sCharacterItemShadowSpriteId = CreateCopySpriteAt(&gSprites[sCharacterItemSpriteId], 217, 105, 0xFF);
     gSprites[sCharacterItemSpriteId].x2 = 216;
     gSprites[sCharacterItemSpriteId].y2 = 104;
+    gSprites[sCharacterItemShadowSpriteId].oam.paletteNum = 12;
 }
 
 static void DrawStarterPics(void)
@@ -601,7 +701,7 @@ static void DrawStarterPics(void)
     u32 i, palette;
 
     // Load black palette for shadows.
-    palette = RGB(8, 8, 8); // dark gray used in BG top/bottom, kind of jank to have here
+    palette = RGB(12, 12, 12);
     for (i = 0; i < 15; ++i)
         LoadPalette(&palette, OBJ_PLTT_ID(12) + i + 1, PLTT_SIZEOF(1));
 
@@ -609,11 +709,13 @@ static void DrawStarterPics(void)
     {
         // Draw sprite.
         sStarterSpriteIds[i] = CreateMonPicSprite(gCharacterInfos[sChosenCharacterId].starters[i], FALSE, 0xFE, TRUE,
-                                                  56 + 64*i, 80, 13 + i, TAG_NONE);
+                                                  56 + 64*i, 70, 13 + i, TAG_NONE);
+        gSprites[sStarterSpriteIds[i]].y += gSpeciesInfo[gCharacterInfos[sChosenCharacterId].starters[i]].frontPicYOffset;
         
         // Draw shadow.
-        sStarterShadowSpriteIds[i] = CreateCopySpriteAt(&gSprites[sStarterSpriteIds[i]], 57 + 64*i, 81, 0xFF);
+        sStarterShadowSpriteIds[i] = CreateCopySpriteAt(&gSprites[sStarterSpriteIds[i]], 57 + 64*i, 71, 0xFF);
         gSprites[sStarterShadowSpriteIds[i]].oam.paletteNum = 12;
+        gSprites[sStarterShadowSpriteIds[i]].y += gSpeciesInfo[gCharacterInfos[sChosenCharacterId].starters[i]].frontPicYOffset;
     }
 }
 
@@ -622,46 +724,69 @@ static void UpdateStarterPics(void)
 {
     u32 i;
     for (i = 0; i < 3; ++i)
+    {
         SetGrayscaleOrOriginalPalette(16 + 13 + i, i == sChosenStarter);
+        gSprites[sStarterSpriteIds[i]].y2 = -4 * (i == sChosenStarter);
+        gSprites[sStarterShadowSpriteIds[i]].y2 = -4 * (i == sChosenStarter);
+    }
+    StopCry();
     PlayCry_Normal(gCharacterInfos[sChosenCharacterId].starters[sChosenStarter], 0);
-    // DoMonFrontSpriteAnimation(&gSprites[sStarterSpriteIds[sChosenStarter]], gCharacterInfos[sChosenCharacterId].starters[sChosenStarter], FALSE, 0);
-    // DoMonFrontSpriteAnimation(&gSprites[sStarterShadowSpriteIds[sChosenStarter]], gCharacterInfos[sChosenCharacterId].starters[sChosenStarter], FALSE, 0);
 }
 
 static void FreeStarterPics(void)
 {
     u32 i;
     for (i = 0; i < 3; ++i)
+    {
         FreeAndDestroyMonPicSprite(sStarterSpriteIds[i]);
+        DestroySprite(&gSprites[sStarterShadowSpriteIds[i]]);
+        sStarterSpriteIds[i] = SPRITE_NONE;
+        sStarterShadowSpriteIds[i] = SPRITE_NONE;
+    }
 }
 
 static void LoadScreenGfx(enum ScreenType screenType)
 {
-    // Clear graphics data
-    sMugshotSpriteId = 0xFF;
-    sCharacterItemSpriteId = 0xFF;
+    u32 i, palette;
+
+    // Clear graphics data.
+    sMugshotSpriteId = SPRITE_NONE;
+    sCharacterItemSpriteId = SPRITE_NONE;
+    for (i = 0; i < CHARACTERS_COUNT; ++i)
+        sIndexSquareSpriteIds[i] = SPRITE_NONE;
+
     ResetSpriteData();
     FreeAllSpritePalettes();
+    DmaClearLarge16(3, (void *)(OBJ_VRAM0), OBJ_VRAM0_SIZE, 0x1000);
 
-    if (!sLRButtonWindowDrawn)
-        DrawLRButtonWindow();
+    if (sCurrentScreen == SCREEN_STARTER_SELECT)
+        FreeStarterPics(); // potential duplication
 
     sCurrentScreen = screenType;
     switch (screenType)
     {
         case SCREEN_CONTINUE:
+            LoadPalette(gMapPreviewData[GetCurrentTemplateRules()->previewId].palette, BG_PLTT_ID(13), PLTT_SIZE_4BPP);
+            DrawLRButtonWindow();
             DrawMugshot(gSaveBlock1Ptr->characterId);
+	        DrawPartyIcons();
             DrawContinueAndSelectWindows();
             DrawContinueScreenText();
             break;
         default:
         case SCREEN_CHARACTER_SELECT:
-            DrawMugshot(sChosenCharacterId);
+            palette = RGB(17, 18, 31);
+            for (i = 0; i < 15; ++i) // turns BG pal to all blue
+                LoadPalette(&palette, BG_PLTT_ID(13) + i + 1, PLTT_SIZEOF(1));
+            DrawLRButtonWindow();
             DrawContinueAndSelectWindows();
+            DrawMugshot(sChosenCharacterId);
+            DrawIndexSquares();
             DrawCharacterSelectText();
             DrawCharacterSelectItem();
             break;
         case SCREEN_STARTER_SELECT:
+            sChosenStarter = 0;
             DrawStarterPics();
             UpdateStarterPics();
             DrawStarterSelectWindows();
@@ -715,7 +840,7 @@ static void NewRunInitData(void)
     PlayTimeCounter_Reset();
 
     gSaveBlock1Ptr->characterId = sChosenCharacterId;
-    StringCopy(gSaveBlock2Ptr->playerName, gCharacterInfos[sChosenCharacterId].name);
+    StringCopy(gSaveBlock2Ptr->playerName, COMPOUND_STRING("Player"));
     CreateMon(&gPlayerParty[0], gCharacterInfos[sChosenCharacterId].starters[sChosenStarter], 10, USE_RANDOM_IVS, FALSE, 0, OT_ID_PLAYER_ID, 0);
     AddBagItem(gCharacterInfos[gSaveBlock1Ptr->characterId].item, 1);
 }

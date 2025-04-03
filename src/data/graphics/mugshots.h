@@ -1,6 +1,8 @@
 enum {
-    TAG_MUGSHOT_FLANNERY = 0x2000,
-    TAG_MUGSHOT_WALLACE,
+    TAG_MUGSHOT_FIREBREATHER = 0x2000,
+    TAG_MUGSHOT_AROMA_LADY,
+    TAG_MUGSHOT_SWIMMER,
+    TAG_MUGSHOT_HIKER,
 };
 
 const struct OamData sOamData_Mugshot =
@@ -11,15 +13,19 @@ const struct OamData sOamData_Mugshot =
     .priority = 1,
 };
 
-const u32 gMugshotGfx_Flannery[] = INCBIN_U32("graphics/trainers/mugshots/flannery.4bpp.lz");
-const u16 gMugshotPal_Flannery[] = INCBIN_U16("graphics/trainers/mugshots/flannery.gbapal");
-const u32 gMugshotGfx_Wallace[] = INCBIN_U32("graphics/trainers/mugshots/wallace.4bpp.lz");
-const u16 gMugshotPal_Wallace[] = INCBIN_U16("graphics/trainers/mugshots/wallace.gbapal");
+const u32 gMugshotGfx_Firebreather[] = INCBIN_U32("graphics/trainers/mugshots/firebreather.4bpp.lz");
+const u16 gMugshotPal_Firebreather[] = INCBIN_U16("graphics/trainers/mugshots/firebreather.gbapal");
+const u32 gMugshotGfx_AromaLady[] = INCBIN_U32("graphics/trainers/mugshots/aroma_lady.4bpp.lz");
+const u16 gMugshotPal_AromaLady[] = INCBIN_U16("graphics/trainers/mugshots/aroma_lady.gbapal");
+const u32 gMugshotGfx_Swimmer[] = INCBIN_U32("graphics/trainers/mugshots/swimmer.4bpp.lz");
+const u16 gMugshotPal_Swimmer[] = INCBIN_U16("graphics/trainers/mugshots/swimmer.gbapal");
+const u32 gMugshotGfx_Hiker[] = INCBIN_U32("graphics/trainers/mugshots/hiker.4bpp.lz");
+const u16 gMugshotPal_Hiker[] = INCBIN_U16("graphics/trainers/mugshots/hiker.gbapal");
 
-const struct SpriteTemplate sSpriteTemplate_Flannery =
+const struct SpriteTemplate sSpriteTemplate_Firebreather =
 {
-    .tileTag = TAG_MUGSHOT_FLANNERY,
-    .paletteTag = TAG_MUGSHOT_FLANNERY,
+    .tileTag = TAG_MUGSHOT_FIREBREATHER,
+    .paletteTag = TAG_MUGSHOT_FIREBREATHER,
     .oam = &sOamData_Mugshot,
     .anims = gDummySpriteAnimTable,
     .images = NULL,
@@ -27,10 +33,32 @@ const struct SpriteTemplate sSpriteTemplate_Flannery =
     .callback = SpriteCallbackDummy,
 };
 
-const struct SpriteTemplate sSpriteTemplate_Wallace =
+const struct SpriteTemplate sSpriteTemplate_AromaLady =
 {
-    .tileTag = TAG_MUGSHOT_WALLACE,
-    .paletteTag = TAG_MUGSHOT_WALLACE,
+    .tileTag = TAG_MUGSHOT_AROMA_LADY,
+    .paletteTag = TAG_MUGSHOT_AROMA_LADY,
+    .oam = &sOamData_Mugshot,
+    .anims = gDummySpriteAnimTable,
+    .images = NULL,
+    .affineAnims = gDummySpriteAffineAnimTable,
+    .callback = SpriteCallbackDummy,
+};
+
+const struct SpriteTemplate sSpriteTemplate_Swimmer =
+{
+    .tileTag = TAG_MUGSHOT_SWIMMER,
+    .paletteTag = TAG_MUGSHOT_SWIMMER,
+    .oam = &sOamData_Mugshot,
+    .anims = gDummySpriteAnimTable,
+    .images = NULL,
+    .affineAnims = gDummySpriteAffineAnimTable,
+    .callback = SpriteCallbackDummy,
+};
+
+const struct SpriteTemplate sSpriteTemplate_Hiker =
+{
+    .tileTag = TAG_MUGSHOT_HIKER,
+    .paletteTag = TAG_MUGSHOT_HIKER,
     .oam = &sOamData_Mugshot,
     .anims = gDummySpriteAnimTable,
     .images = NULL,
