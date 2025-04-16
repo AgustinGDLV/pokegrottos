@@ -243,10 +243,19 @@
 #define OBJ_EVENT_GFX_POKE_BALL                  239
 #define OBJ_EVENT_GFX_OW_MON                     240
 
+#define OBJ_EVENT_GFX_AROMA_LADY                 241
+#define OBJ_EVENT_GFX_FIREBREATHER               242
+#define OBJ_EVENT_GFX_GUITARIST                  243
+#define OBJ_EVENT_GFX_PUNK                       244
+#define OBJ_EVENT_GFX_FAIRY_TALE_GIRL            245
+#define OBJ_EVENT_GFX_BREEDER                    246
+#define OBJ_EVENT_GFX_POKEMON_RANGER             247
+#define OBJ_EVENT_GFX_ACE_TRAINER                248
+
 // NOTE: The maximum amount of object events has been expanded from 255 to 65535.
 // Since dynamic graphics ids still require at least 16 free values, the actual limit
 // is 65519, but even considering follower Pokémon, this should be more than enough :)
-#define NUM_OBJ_EVENT_GFX                        241
+#define NUM_OBJ_EVENT_GFX                        249
 
 
 // These are dynamic object gfx ids.
@@ -423,8 +432,21 @@
 #define OBJ_EVENT_PAL_TAG_SUBSTITUTE              0x7611
 #define OBJ_EVENT_PAL_TAG_EMOTES                  0x8002
 // Characters
-#define OBJ_EVENT_PAL_TAG_FLANNERY                0x116B
-#define OBJ_EVENT_PAL_TAG_WALLACE                 0x116C
+#define OBJ_EVENT_PAL_TAG_SWIMMER                 0x116B
+#define OBJ_EVENT_PAL_TAG_HIKER                   0x116C
+#define OBJ_EVENT_PAL_TAG_AROMA_LADY              0x116D
+#define OBJ_EVENT_PAL_TAG_FIREBREATHER            0x166E
+#define OBJ_EVENT_PAL_TAG_NINJA_BOY               0x166F
+#define OBJ_EVENT_PAL_TAG_BUG_CATCHER             0x1670
+#define OBJ_EVENT_PAL_TAG_HEX_MANIAC              0x1671
+#define OBJ_EVENT_PAL_TAG_GUITARIST               0x1672
+#define OBJ_EVENT_PAL_TAG_PUNK                    0x1673
+#define OBJ_EVENT_PAL_TAG_BLACK_BELT              0x1674
+#define OBJ_EVENT_PAL_TAG_FAIRY_TALE_GIRL         0x1675
+#define OBJ_EVENT_PAL_TAG_BREEDER                 0x1676
+#define OBJ_EVENT_PAL_TAG_POKEMON_RANGER          0x1677
+#define OBJ_EVENT_PAL_TAG_ACE_TRAINER             0x1678
+#define OBJ_EVENT_PAL_TAG_RICH_BOY                0x1679
 // Not a real OW palette tag; used for the white flash applied to followers
 #define OBJ_EVENT_PAL_TAG_WHITE                   (OBJ_EVENT_PAL_TAG_NONE - 1)
 #define OBJ_EVENT_PAL_TAG_NONE                    0x11FF

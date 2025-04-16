@@ -1050,9 +1050,10 @@ struct SaveBlock1
               u32 identifiedItems[2];   // long bitfield
               u16 shopItems[11];        // stores the current stock of the Kecleon Shop
               u8 currentTemplateType;   // current template type for use outside of active run
+              u32 unlockedCharacters;   // long bitfield
 
-    /*0x9BC*/ u16 berryBlenderRecords[3];
-    /*0x9C2*/ u8 unused_9C2[6];
+    /*0x9C0*/ u16 berryBlenderRecords[3];
+    /*0x9C6*/ u8 unused_9C2[2];
 #if FREE_MATCH_CALL == FALSE
     /*0x9C8*/ u16 trainerRematchStepCounter;
     /*0x9CA*/ u8 trainerRematches[MAX_REMATCH_ENTRIES];

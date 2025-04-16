@@ -270,6 +270,15 @@ void CB2_StartScreen(void)
             gMain.state++;
             break;
         case 7:
+            if (gSaveBlock1Ptr->unlockedCharacters == 0)
+            {
+                gSaveBlock1Ptr->unlockedCharacters |= 1 << CHAR_FIREBREATHER;
+                gSaveBlock1Ptr->unlockedCharacters |= 1 << CHAR_AROMA_LADY;
+                gSaveBlock1Ptr->unlockedCharacters |= 1 << CHAR_SWIMMER;
+            }
+            gMain.state++;
+            break;
+        case 8:
             LoadMessageBoxAndBorderGfx();
             if (gSaveBlock1Ptr->currentFloor == 0)
                 sCurrentScreen = SCREEN_CHARACTER_SELECT;
@@ -278,7 +287,7 @@ void CB2_StartScreen(void)
             LoadScreenGfx(sCurrentScreen);
             gMain.state++;
             break;
-        case 8:
+        case 9:
             SetVBlankCallback(VBlankCB_StartScreen);
             CreateTask(Task_StartScreenFadeIn, 0);
             SetMainCallback2(MainCB2_StartScreen);
@@ -386,9 +395,16 @@ static void Task_CharacterSelectWaitForKeypress(u8 taskId)
     }
     if (gMain.newKeys & A_BUTTON)
 	{
-        PlaySE(SE_SELECT);
-        LoadScreenGfx(SCREEN_STARTER_SELECT);
-        gTasks[taskId].func = Task_StarterSelectWaitForKeypress;
+        if (!(gSaveBlock1Ptr->unlockedCharacters & (1 << sChosenCharacterId)))
+        {
+            PlaySE(SE_FAILURE);
+        }
+        else
+        {
+            PlaySE(SE_SELECT);
+            LoadScreenGfx(SCREEN_STARTER_SELECT);
+            gTasks[taskId].func = Task_StarterSelectWaitForKeypress;
+        }
     }
     if (gMain.newKeys & B_BUTTON)
 	{
@@ -572,8 +588,16 @@ static void DrawCharacterSelectInfoText(void)
     u16 palette = gCharacterInfos[sChosenCharacterId].color;
     LoadPalette(&palette, BG_PLTT_ID(15) + 10, PLTT_SIZEOF(1));
     FillWindowPixelBuffer(sStartScreenWindowIds[WIN_INFO], PIXEL_FILL(1));
+    
+    // Print name.
     AddTextPrinterParameterized3(sStartScreenWindowIds[WIN_INFO], FONT_NORMAL, 2, 0, sTextColor_Name, TEXT_SKIP_DRAW, gCharacterInfos[sChosenCharacterId].name);
-    AddTextPrinterParameterized3(sStartScreenWindowIds[WIN_INFO], FONT_SMALL, 2, 14, sTextColor_Info, TEXT_SKIP_DRAW, gCharacterInfos[sChosenCharacterId].desc);
+
+    // Print description or unlock text.
+    if (!(gSaveBlock1Ptr->unlockedCharacters & (1 << sChosenCharacterId)))
+        AddTextPrinterParameterized3(sStartScreenWindowIds[WIN_INFO], FONT_SMALL, 2, 14, sTextColor_Info, TEXT_SKIP_DRAW, gCharacterInfos[sChosenCharacterId].unlockDesc);
+    else
+        AddTextPrinterParameterized3(sStartScreenWindowIds[WIN_INFO], FONT_SMALL, 2, 14, sTextColor_Info, TEXT_SKIP_DRAW, gCharacterInfos[sChosenCharacterId].desc);
+
     CopyWindowToVram(sStartScreenWindowIds[WIN_INFO], COPYWIN_FULL);
 }
 
@@ -614,6 +638,8 @@ static void DrawStarterSelectText(void)
 
 #define TAG_ITEM_ICON   0x300
 
+#define dShadow data[0]
+
 static void DrawMugshot(u32 characterId)
 {
     // Free data if there is already a mugshot drawn.
@@ -621,13 +647,25 @@ static void DrawMugshot(u32 characterId)
     {
         FreeSpriteTilesByTag(gSprites[sMugshotSpriteId].template->tileTag);
         FreeSpritePaletteByTag(gSprites[sMugshotSpriteId].template->paletteTag);
+        DestroySprite(&gSprites[gSprites[sMugshotSpriteId].dShadow]);
         DestroySprite(&gSprites[sMugshotSpriteId]);
     }
     // Draw the new mugshot.
     LoadSpritePalette(&gCharacterInfos[characterId].mugshotPal);
     LoadCompressedSpriteSheet(&gCharacterInfos[characterId].mugshotSheet);
     sMugshotSpriteId = CreateSprite(gCharacterInfos[characterId].mugshotTemplate, 48, 25, 0);
+
+    // Set grayscale if not unlocked.
+    if (!(gSaveBlock1Ptr->unlockedCharacters & (1 << sChosenCharacterId)))
+        SetGrayscaleOrOriginalPalette(16 + gSprites[sMugshotSpriteId].oam.paletteNum, FALSE);
+
+    // Draw shadow.
+    gSprites[sMugshotSpriteId].dShadow = CreateSprite(gCharacterInfos[characterId].mugshotTemplate, 49, 26, 12);
+    gSprites[gSprites[sMugshotSpriteId].dShadow].oam.priority = 2;    // behind textbox
+    gSprites[gSprites[sMugshotSpriteId].dShadow].oam.paletteNum = 15; // presumed to be loaded elsewhere
 }
+
+#undef dShadow
 
 static void DrawPartyIcons(void)
 {
@@ -678,7 +716,7 @@ static void DrawCharacterSelectItem(void)
     u32 i;
     u32 palette = RGB(12, 12, 12);
     for (i = 0; i < 15; ++i)
-        LoadPalette(&palette, OBJ_PLTT_ID(12) + i + 1, PLTT_SIZEOF(1));
+        LoadPalette(&palette, OBJ_PLTT_ID(15) + i + 1, PLTT_SIZEOF(1));
 
     // Free data if there is already an item drawn.
     if (sCharacterItemSpriteId != SPRITE_NONE)
@@ -689,11 +727,18 @@ static void DrawCharacterSelectItem(void)
     FreeSpriteTilesByTag(TAG_ITEM_ICON);
     FreeSpritePaletteByTag(TAG_ITEM_ICON);
 
+    // Don't draw if not unlocked.
+    if (!(gSaveBlock1Ptr->unlockedCharacters & (1 << sChosenCharacterId)))
+    {
+        sCharacterItemSpriteId = sCharacterItemShadowSpriteId = SPRITE_NONE;
+        return;
+    }
+
     sCharacterItemSpriteId = AddItemIconSprite(TAG_ITEM_ICON, TAG_ITEM_ICON, gCharacterInfos[sChosenCharacterId].item);
     sCharacterItemShadowSpriteId = CreateCopySpriteAt(&gSprites[sCharacterItemSpriteId], 217, 105, 0xFF);
     gSprites[sCharacterItemSpriteId].x2 = 216;
     gSprites[sCharacterItemSpriteId].y2 = 104;
-    gSprites[sCharacterItemShadowSpriteId].oam.paletteNum = 12;
+    gSprites[sCharacterItemShadowSpriteId].oam.paletteNum = 15;
 }
 
 static void DrawStarterPics(void)
@@ -828,6 +873,7 @@ static void NewSaveInitData(void)
     FlagSet(FLAG_RECEIVED_RUNNING_SHOES);
     FlagSet(FLAG_SYS_B_DASH);
     EnableNationalPokedex();
+    StringCopy(gSaveBlock2Ptr->playerName, COMPOUND_STRING("You"));
 }
 
 static void NewRunInitData(void)
@@ -838,9 +884,7 @@ static void NewRunInitData(void)
     SetMoney(&gSaveBlock1Ptr->money, 3000);
     ClearBag();
     PlayTimeCounter_Reset();
-
     gSaveBlock1Ptr->characterId = sChosenCharacterId;
-    StringCopy(gSaveBlock2Ptr->playerName, COMPOUND_STRING("Player"));
     CreateMon(&gPlayerParty[0], gCharacterInfos[sChosenCharacterId].starters[sChosenStarter], 10, USE_RANDOM_IVS, FALSE, 0, OT_ID_PLAYER_ID, 0);
     AddBagItem(gCharacterInfos[gSaveBlock1Ptr->characterId].item, 1);
 }

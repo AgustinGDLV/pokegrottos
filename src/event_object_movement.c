@@ -548,8 +548,21 @@ static const struct SpritePalette sObjectEventSpritePalettes[] = {
 #endif //OW_FOLLOWERS_POKEBALLS
     {gObjectEventPal_Substitute,            OBJ_EVENT_PAL_TAG_SUBSTITUTE},
     {gObjectEventPaletteEmotes,             OBJ_EVENT_PAL_TAG_EMOTES},
-    {gObjectEventPal_Flannery,              OBJ_EVENT_PAL_TAG_FLANNERY},
-    {gObjectEventPal_Wallace,               OBJ_EVENT_PAL_TAG_WALLACE},
+    {gObjectEventPal_Swimmer,               OBJ_EVENT_PAL_TAG_SWIMMER},
+    {gObjectEventPal_Hiker,                 OBJ_EVENT_PAL_TAG_HIKER},
+    {gObjectEventPal_AromaLady,             OBJ_EVENT_PAL_TAG_AROMA_LADY},
+    {gObjectEventPal_Firebreather,          OBJ_EVENT_PAL_TAG_FIREBREATHER},
+    {gObjectEventPal_NinjaBoyN,             OBJ_EVENT_PAL_TAG_NINJA_BOY},
+    {gObjectEventPal_BugCatcherN,           OBJ_EVENT_PAL_TAG_BUG_CATCHER},
+    {gObjectEventPal_BlackBeltN,            OBJ_EVENT_PAL_TAG_BLACK_BELT},
+    {gObjectEventPal_Guitarist,             OBJ_EVENT_PAL_TAG_GUITARIST},
+    {gObjectEventPal_Punk,                  OBJ_EVENT_PAL_TAG_PUNK},
+    {gObjectEventPal_HexManiacN,            OBJ_EVENT_PAL_TAG_HEX_MANIAC},
+    {gObjectEventPal_FairyTaleGirl,         OBJ_EVENT_PAL_TAG_FAIRY_TALE_GIRL},
+    {gObjectEventPal_Breeder,               OBJ_EVENT_PAL_TAG_BREEDER},
+    {gObjectEventPal_PokemonRanger,         OBJ_EVENT_PAL_TAG_POKEMON_RANGER},
+    {gObjectEventPal_AceTrainer,            OBJ_EVENT_PAL_TAG_ACE_TRAINER},
+    {gObjectEventPal_RichBoyN,              OBJ_EVENT_PAL_TAG_RICH_BOY},
 #ifdef BUGFIX
     {NULL,                                  OBJ_EVENT_PAL_TAG_NONE},
 #else

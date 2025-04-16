@@ -78,12 +78,23 @@ enum Character
     CHAR_AROMA_LADY,
     CHAR_SWIMMER,
     CHAR_HIKER,
+    CHAR_BREEDER,
+    CHAR_POKEMON_RANGER,
+    CHAR_NINJA_BOY,
+    CHAR_FAIRY_TALE_GIRL,
+    CHAR_BLACK_BELT,
+    CHAR_GUITARIST,
+    CHAR_HEX_MANIAC,
+    CHAR_PUNK,
+    CHAR_ACE_TRAINER,
+    CHAR_RICH_BOY,
     CHARACTERS_COUNT,
 };
 
 struct CharacterInfo {
     const u8 * name;
     const u8 * desc;
+    const u8 * unlockDesc;
     u16 item;
     u16 starters[3];
     const u16 color;
