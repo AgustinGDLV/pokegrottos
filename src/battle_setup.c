@@ -635,7 +635,7 @@ u8 BattleSetup_GetEnvironmentId(void)
     tileBehavior = MapGridGetMetatileBehaviorAt(x, y);
 
     if (IsPlayerInFloorMap())
-        return GetCurrentTemplateRules()->battleTerrain;
+        return GetCurrentTemplateRules()->battleEnvironment;
 
     if (MetatileBehavior_IsTallGrass(tileBehavior))
         return BATTLE_ENVIRONMENT_GRASS;

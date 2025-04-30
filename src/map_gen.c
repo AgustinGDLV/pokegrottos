@@ -14,6 +14,7 @@
 #include "overworld.h"
 #include "pokemon_gen.h"
 #include "random.h"
+#include "rtc.h"
 #include "save.h"
 #include "sound.h"
 #include "script.h"
