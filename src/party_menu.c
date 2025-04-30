@@ -229,6 +229,7 @@ struct PartyMenuBox
     u8 itemSpriteId;
     u8 pokeballSpriteId;
     u8 statusSpriteId;
+    u8 starSpriteIds[MAX_RANK];
 };
 
 // EWRAM vars
@@ -958,7 +959,7 @@ static void InitPartyMenuBoxes(u8 layout)
 
 static void LoadPartyMenuBoxes(u8 layout)
 {
-    u32 i;
+    u32 i, j;
 
     for (i = 0; i < PARTY_SIZE; i++)
     {
@@ -971,6 +972,8 @@ static void LoadPartyMenuBoxes(u8 layout)
         sPartyMenuBoxes[i].itemSpriteId = SPRITE_NONE;
         sPartyMenuBoxes[i].pokeballSpriteId = SPRITE_NONE;
         sPartyMenuBoxes[i].statusSpriteId = SPRITE_NONE;
+        for (j = 0; j < MAX_RANK; ++j)
+            sPartyMenuBoxes[i].starSpriteIds[j] = SPRITE_NONE;
     }
     // The first party mon goes in the left column
     if (layout != PARTY_LAYOUT_SINGLE) //Custom party menu
@@ -2667,6 +2670,10 @@ static void DisplayPartyPokemonLevel(u8 level, struct PartyMenuBox *menuBox)
 {
     u32 i;
 
+    // Don't load repeat graphics.
+    if (menuBox->starSpriteIds[0] != SPRITE_NONE)
+        return;
+
     // Cap rank just in case.
     if (level > 3)
         level = 3;
@@ -2676,8 +2683,11 @@ static void DisplayPartyPokemonLevel(u8 level, struct PartyMenuBox *menuBox)
     LoadCompressedSpriteSheet(&sSpriteSheet_RankStar);
 
     // Draw stars.
-    for (i = 0; i < level; ++i)
-        CreateSprite(&sSpriteTemplate_RankStar, menuBox->spriteCoords[6] - 5 + 8*i, menuBox->spriteCoords[7] + 15, 15);
+    for (i = 0; i < MAX_RANK; ++i)
+        if (i < level)
+            menuBox->starSpriteIds[i] = CreateSprite(&sSpriteTemplate_RankStar, menuBox->spriteCoords[6] - 5 + 8*i, menuBox->spriteCoords[7] + 15, 15);
+        else
+            menuBox->starSpriteIds[i] = SPRITE_NONE;
 }
 
 static void DisplayPartyPokemonGenderNidoranCheck(struct Pokemon *mon, struct PartyMenuBox *menuBox, u8 c)
@@ -3331,10 +3341,13 @@ static void MoveAndBufferPartySlot(const void *rectSrc, s16 x, s16 y, s16 width,
 
 static void MovePartyMenuBoxSprites(struct PartyMenuBox *menuBox, s16 offset)
 {
+    u32 i;
     gSprites[menuBox->pokeballSpriteId].x2 += offset * 8;
     gSprites[menuBox->itemSpriteId].x2 += offset * 8;
     gSprites[menuBox->monSpriteId].x2 += offset * 8;
     gSprites[menuBox->statusSpriteId].x2 += offset * 8;
+    for (i = 0; i < MAX_RANK; ++i)
+        gSprites[menuBox->starSpriteIds[i]].x2 += offset * 8;
 }
 
 static void SlidePartyMenuBoxSpritesOneStep(u8 taskId)
@@ -3441,6 +3454,7 @@ static void SwitchMenuBoxSprites(u8 *spriteIdPtr1, u8 *spriteIdPtr2)
 
 static void SwitchPartyMon(void)
 {
+    u32 i;
     struct PartyMenuBox *menuBoxes[2];
     struct Pokemon *mon1, *mon2;
     struct Pokemon *monBuffer;
@@ -3458,6 +3472,8 @@ static void SwitchPartyMon(void)
     SwitchMenuBoxSprites(&menuBoxes[0]->itemSpriteId, &menuBoxes[1]->itemSpriteId);
     SwitchMenuBoxSprites(&menuBoxes[0]->monSpriteId, &menuBoxes[1]->monSpriteId);
     SwitchMenuBoxSprites(&menuBoxes[0]->statusSpriteId, &menuBoxes[1]->statusSpriteId);
+    for (i = 0; i < MAX_RANK; ++i)
+        SwitchMenuBoxSprites(&menuBoxes[0]->starSpriteIds[i], &menuBoxes[1]->starSpriteIds[i]);
 }
 
 // Finish switching mons or using Softboiled
