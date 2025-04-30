@@ -58,7 +58,7 @@ enum Windows
 
 // const rom data
 static const u32 sMapScreenBgGfx[]      = INCBIN_U32("graphics/interface/map_screen.4bpp.lz");
-static const u32 sMapScreenBgPal[]      = INCBIN_U32("graphics/interface/map_screen.gbapal.lz");
+static const u16 sMapScreenBgPal[]      = INCBIN_U16("graphics/interface/map_screen.gbapal");
 static const u32 sMapScreenBgMap[]      = INCBIN_U32("graphics/interface/map_screen.bin.lz");
 // shared
 static const u8 sBossRoomGfx[]          = INCBIN_U8("graphics/interface/boss_room.4bpp");
@@ -547,7 +547,7 @@ static void LoadMapScreenGfx(void)
 {	
     DecompressAndCopyTileDataToVram(2, &sMapScreenBgGfx, 0, 0, 0);
 	LZDecompressWram(sMapScreenBgMap, sMapScreenTilemapPtr);
-	LoadCompressedPalette(sMapScreenBgPal, 0, 0x20);
+	LoadPalette(sMapScreenBgPal, 0, 0x20);
 	ListMenuLoadStdPalAt(0xC0, 1);
 	Menu_LoadStdPalAt(0xF0);
 }
