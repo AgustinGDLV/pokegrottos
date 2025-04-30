@@ -813,5 +813,6 @@ bool32 IsSpeciesForeignRegionalForm(u32 species, u32 currentRegion);
 u32 GetRankBasedBaseStat(u32 statIndex, struct Pokemon *mon);
 bool32 IsDuplicateEvolution(u16 baseSpecies, u16 targetSpecies, u32 currIndex);
 u32 GetEvolutionCount(u32 species);
+u32 GetTeraTypeFromPersonality(struct Pokemon *mon);
 
 #endif // GUARD_POKEMON_H

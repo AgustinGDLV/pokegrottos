@@ -1169,7 +1169,7 @@ void CreateBoxMon(struct BoxPokemon *boxMon, u16 species, u8 level, u8 fixedIV, 
                 totalRerolls += 1;
             if (I_FISHING_CHAIN && gIsFishingEncounter)
                 totalRerolls += CalculateChainFishingShinyRolls();
-            if (gDexNavBattle)
+            if (gDexNavSpecies)
                 totalRerolls += CalculateDexNavShinyRolls();
 
             while (GET_SHINY_VALUE(value, personality) >= SHINY_ODDS && totalRerolls > 0)
@@ -1203,6 +1203,9 @@ void CreateBoxMon(struct BoxPokemon *boxMon, u16 species, u8 level, u8 fixedIV, 
     value = ITEM_POKE_BALL;
     SetBoxMonData(boxMon, MON_DATA_POKEBALL, &value);
     SetBoxMonData(boxMon, MON_DATA_OT_GENDER, &gSaveBlock2Ptr->playerGender);
+
+    u32 teraType = (boxMon->personality & 0x1) == 0 ? gSpeciesInfo[species].types[0] : gSpeciesInfo[species].types[1];
+    SetBoxMonData(boxMon, MON_DATA_TERA_TYPE, &teraType);
 
     if (fixedIV < USE_RANDOM_IVS)
     {
@@ -2108,16 +2111,22 @@ u16 MonTryLearningNewMove(struct Pokemon *mon, bool8 firstMove)
         }
     }
 
-    //  Handler for if Zacian or Zamazenta should learn Iron Head
-    //  since it transforms in the Behemoth Blade/Bash move in
-    //  battle in the Crowned forms.
-    if (learnset[sLearningMoveTableID].move == MOVE_IRON_HEAD && (species == SPECIES_ZAMAZENTA_CROWNED || species == SPECIES_ZACIAN_CROWNED))
+    //  Handler for Pokémon whose moves change upon form change.
+    //  For example, if Zacian or Zamazenta should learn Iron Head,
+    //  they're prevented from doing if they have Behemoth Blade/Bash,
+    //  since it transforms into them while in their Crowned forms.
+    const struct FormChange *formChanges = GetSpeciesFormChanges(species);
+
+    for (u32 i = 0; formChanges != NULL && formChanges[i].method != FORM_CHANGE_TERMINATOR; i++)
     {
-        for (u32 accessor = MON_DATA_MOVE1; accessor <= MON_DATA_MOVE4; accessor++)
+        if (formChanges[i].method == FORM_CHANGE_END_BATTLE
+            && learnset[sLearningMoveTableID].move == formChanges[i].param3)
         {
-            u32 move = GetMonData(mon, accessor);
-            if (move == MOVE_BEHEMOTH_BLADE || move == MOVE_BEHEMOTH_BASH)
-                return MOVE_NONE;
+            for (u32 j = 0; j < MAX_MON_MOVES; j++)
+            {
+                if (formChanges[i].param2 == GetMonData(mon, MON_DATA_MOVE1 + j))
+                    return MOVE_NONE;
+            }
         }
     }
 
@@ -3752,10 +3761,10 @@ const u16 *GetSpeciesFormTable(u16 species)
 
 const struct FormChange *GetSpeciesFormChanges(u16 species)
 {
-    const struct FormChange *evolutions = gSpeciesInfo[SanitizeSpeciesId(species)].formChangeTable;
-    if (evolutions == NULL)
+    const struct FormChange *formChanges = gSpeciesInfo[SanitizeSpeciesId(species)].formChangeTable;
+    if (formChanges == NULL)
         return gSpeciesInfo[SPECIES_NONE].formChangeTable;
-    return evolutions;
+    return formChanges;
 }
 
 u8 CalculatePPWithBonus(u16 move, u8 ppBonuses, u8 moveIndex)
@@ -6684,7 +6693,23 @@ u32 GetFormChangeTargetSpeciesBoxMon(struct BoxPokemon *boxMon, u16 method, u32 
                 case FORM_CHANGE_ITEM_HOLD:
                     if ((heldItem == formChanges[i].param1 || formChanges[i].param1 == ITEM_NONE)
                      && (ability == formChanges[i].param2 || formChanges[i].param2 == ABILITY_NONE))
-                        targetSpecies = formChanges[i].targetSpecies;
+                    {
+                        // This is to prevent reverting to base form when giving the item to the corresponding form.
+                        // Eg. Giving a Zap Plate to an Electric Arceus without an item (most likely to happen when using givemon)
+                        bool32 currentItemForm = FALSE;
+                        for (int j = 0; formChanges[j].method != FORM_CHANGE_TERMINATOR; j++)
+                        {
+                            if (species == formChanges[j].targetSpecies
+                                && formChanges[j].param1 == heldItem
+                                && formChanges[j].param1 != ITEM_NONE)
+                            {
+                                currentItemForm = TRUE;
+                                break;
+                            }
+                        }
+                        if (!currentItemForm)
+                            targetSpecies = formChanges[i].targetSpecies;
+                    }
                     break;
                 case FORM_CHANGE_ITEM_USE:
                     if (arg == formChanges[i].param1)
@@ -6726,7 +6751,7 @@ u32 GetFormChangeTargetSpeciesBoxMon(struct BoxPokemon *boxMon, u16 method, u32 
                         targetSpecies = formChanges[i].targetSpecies;
                     break;
                 case FORM_CHANGE_END_BATTLE_TERRAIN:
-                    if (gBattleTerrain == formChanges[i].param1)
+                    if (gBattleEnvironment == formChanges[i].param1)
                         targetSpecies = formChanges[i].targetSpecies;
                     break;
                 case FORM_CHANGE_WITHDRAW:
@@ -7234,4 +7259,10 @@ u32 GetEvolutionCount(u32 species)
         }
     }
     return count;
+}
+
+u32 GetTeraTypeFromPersonality(struct Pokemon *mon)
+{
+    const u8 *types = gSpeciesInfo[GetMonData(mon, MON_DATA_SPECIES)].types;
+    return (GetMonData(mon, MON_DATA_PERSONALITY) & 0x1) == 0 ? types[0] : types[1];
 }
