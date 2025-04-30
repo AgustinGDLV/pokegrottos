@@ -295,6 +295,7 @@ extern const u8 BattleScript_SnowWarningActivatesHail[];
 extern const u8 BattleScript_SnowWarningActivatesSnow[];
 extern const u8 BattleScript_PickupActivates[];
 extern const u8 BattleScript_HarvestActivates[];
+extern const u8 BattleScript_HoneyGatherActivates[];
 extern const u8 BattleScript_ImposterActivates[];
 extern const u8 BattleScript_SelectingNotAllowedMoveAssaultVest[];
 extern const u8 BattleScript_SelectingNotAllowedMoveAssaultVestInPalace[];
@@ -517,6 +518,11 @@ extern const u8 BattleScript_BoosterEnergyRet[];
 extern const u8 BattleScript_TeraShellDistortingTypeMatchups[];
 extern const u8 BattleScript_TeraFormChange[];
 extern const u8 BattleScript_SleepClausePreventsEnd[];
+
+// custom moves
+extern const u8 BattleScript_EffectCocoonCare[];
+extern const u8 BattleScript_SelectingNotAllowedHoney[];
+extern const u8 BattleScript_EffectSugarRush[];
 
 // zmoves
 extern const u8 BattleScript_ZMoveActivateDamaging[];

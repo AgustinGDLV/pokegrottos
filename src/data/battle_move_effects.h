@@ -2246,4 +2246,16 @@ const struct BattleMoveEffect gBattleMoveEffects[NUM_BATTLE_MOVE_EFFECTS] =
         .battleScript = BattleScript_EffectSpectralThief,
         .battleTvScore = 0, // TODO: Assign points
     },
+
+    [EFFECT_COCOON_CARE] =
+    {
+        .battleScript = BattleScript_EffectCocoonCare,
+        .battleTvScore = 0, // TODO: Assign points
+    },
+
+    [EFFECT_SUGAR_RUSH] =
+    {
+        .battleScript = BattleScript_EffectSugarRush,
+        .battleTvScore = 0, // TODO: Assign points
+    }
 };

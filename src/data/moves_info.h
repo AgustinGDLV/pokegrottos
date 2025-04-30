@@ -21007,6 +21007,50 @@ const struct MoveInfo gMovesInfo[MOVES_COUNT_ALL] =
         .battleAnimScript = gBattleAnimMove_MalignantChain,
     },
 
+    // Custom Moves
+    [MOVE_COCOON_CARE] = {
+        .name = COMPOUND_STRING("Cocoon Care"),
+        .description = COMPOUND_STRING(
+            "Fully revives a fainted "
+            "party {PKMN}. Two turns if not "
+            "a Bug-type target."),
+        .effect = EFFECT_COCOON_CARE,
+        .power = 0,
+        .pp = 5,
+        .type = TYPE_BUG,
+        .accuracy = 0,
+        .target = MOVE_TARGET_USER,
+        .priority = 0,
+        .category = DAMAGE_CATEGORY_STATUS,
+        .ignoresProtect = TRUE,
+        .mirrorMoveBanned = TRUE,
+        .metronomeBanned = TRUE,
+        .healingMove = TRUE,
+        .sketchBanned = (B_SKETCH_BANS >= GEN_9),
+        .argument.twoTurnAttack = { .stringId = STRINGID_PKMNSPINSCOCOON },
+        .battleAnimScript = gBattleAnimMove_CocoonCare,
+    },
+
+    [MOVE_SUGAR_RUSH] = {
+        .name = COMPOUND_STRING("Sugar Rush"),
+        .description = COMPOUND_STRING(
+            "Consumes Honey to raise Atk, "
+            "Sp. Atk, and Speed."),
+        .effect = EFFECT_SUGAR_RUSH,
+        .power = 0,
+        .pp = 5,
+        .type = TYPE_BUG,
+        .accuracy = 0,
+        .target = MOVE_TARGET_USER,
+        .priority = 0,
+        .category = DAMAGE_CATEGORY_STATUS,
+        .ignoresProtect = TRUE,
+        .mirrorMoveBanned = TRUE,
+        .metronomeBanned = TRUE,
+        .sketchBanned = (B_SKETCH_BANS >= GEN_9),
+        .battleAnimScript = gBattleAnimMove_SugarRush,
+    },
+
     // Z-Moves
     [MOVE_BREAKNECK_BLITZ] =
     {

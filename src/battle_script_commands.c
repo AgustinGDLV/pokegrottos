@@ -4970,7 +4970,7 @@ static void Cmd_jumpbasedontype(void)
 
 FEATURE_FLAG_ASSERT(I_EXP_SHARE_FLAG, YouNeedToSetTheExpShareFlagToAnUnusedFlag);
 
-static bool32 BattleTypeAllowsExp(void)
+static UNUSED bool32 BattleTypeAllowsExp(void)
 {
     if (RECORDED_WILD_BATTLE)
         return TRUE;
@@ -17015,6 +17015,9 @@ void BS_ItemRestoreHP(void)
             case ITEM6_HEAL_HP_QUARTER:
                 healAmount = maxHP / 4;
                 break;
+            case ITEM6_HEAL_HP_EIGHTH:
+                healAmount = maxHP / 8;
+                break;
             default:
                 healAmount = healParam;
                 break;
@@ -18184,6 +18187,95 @@ void BS_TryRevivalBlessing(void)
         // Open party menu, wait to go to next instruction.
         BtlController_EmitChoosePokemon(gBattlerAttacker, BUFFER_A, PARTY_ACTION_CHOOSE_FAINTED_MON, PARTY_SIZE, ABILITY_NONE, gBattleStruct->battlerPartyOrders[gBattlerAttacker]);
         MarkBattlerForControllerExec(gBattlerAttacker);
+    }
+}
+
+void BS_TryCocoonCare(void)
+{
+    NATIVE_ARGS(const u8 *failInstr);
+    u8 index = GetFirstFaintedPartyIndex(gBattlerAttacker);
+
+    // Move fails if there are no battlers to revive.
+    if (index == PARTY_SIZE)
+    {
+        gBattlescriptCurrInstr = cmd->failInstr;
+        return;
+    }
+
+    // Battler selected!
+    if (gSelectedMonPartyId != PARTY_SIZE)
+    {
+        gBattleStruct->cocoonCareIndex[gBattlerAttacker] = gSelectedMonPartyId;
+        gBattlescriptCurrInstr = cmd->nextInstr;
+    }
+    else
+    {
+        // Open party menu, wait to go to next instruction.
+        BtlController_EmitChoosePokemon(gBattlerAttacker, BUFFER_A, PARTY_ACTION_CHOOSE_FAINTED_MON, PARTY_SIZE, ABILITY_NONE, gBattleStruct->battlerPartyOrders[gBattlerAttacker]);
+        MarkBattlerForControllerExec(gBattlerAttacker);
+    }
+}
+
+void BS_ExecuteCocoonCare(void)
+{
+    NATIVE_ARGS(const u8 *failInstr);
+    u32 side = GetBattlerSide(gBattlerAttacker);
+
+    // Execute revival.
+    if (gBattleStruct->cocoonCareIndex[gBattlerAttacker] != PARTY_SIZE)
+    {
+        struct Pokemon *party = GetSideParty(side);
+
+        u16 hp = GetMonData(&party[gBattleStruct->cocoonCareIndex[gBattlerAttacker]], MON_DATA_MAX_HP);
+        BtlController_EmitSetMonData(gBattlerAttacker, BUFFER_A, REQUEST_HP_BATTLE, 1u << gBattleStruct->cocoonCareIndex[gBattlerAttacker], sizeof(hp), &hp);
+        MarkBattlerForControllerExec(gBattlerAttacker);
+        PREPARE_SPECIES_BUFFER(gBattleTextBuff1, GetMonData(&party[gBattleStruct->cocoonCareIndex[gBattlerAttacker]], MON_DATA_SPECIES));
+
+        // If an on-field battler is revived, it needs to be sent out again.
+        if (IsDoubleBattle() &&
+            gBattlerPartyIndexes[BATTLE_PARTNER(gBattlerAttacker)] == gBattleStruct->cocoonCareIndex[gBattlerAttacker])
+        {
+            u32 i = BATTLE_PARTNER(gBattlerAttacker);
+            gAbsentBattlerFlags &= ~(1u << i);
+            gBattleStruct->monToSwitchIntoId[i] = gBattleStruct->cocoonCareIndex[gBattlerAttacker];
+            gBattleScripting.battler = i;
+            gBattleCommunication[MULTIUSE_STATE] = TRUE;
+        }
+
+        gSelectedMonPartyId = gBattleStruct->cocoonCareIndex[gBattlerAttacker] = PARTY_SIZE;
+        gBattlescriptCurrInstr = cmd->nextInstr;
+    }
+    else
+    {
+        gBattlescriptCurrInstr = cmd->failInstr;
+    }
+}
+
+void BS_JumpIfSelectedBug(void)
+{
+    NATIVE_ARGS(const u8 *jumpInstr);
+    struct Pokemon *party = GetBattlerParty(gBattlerAttacker);
+    u32 species = GetMonData(&party[gBattleStruct->cocoonCareIndex[gBattlerAttacker]], MON_DATA_SPECIES);
+
+    if (gSpeciesInfo[species].types[0] == TYPE_BUG || gSpeciesInfo[species].types[1] == TYPE_BUG)
+        gBattlescriptCurrInstr = cmd->jumpInstr;
+    else
+        gBattlescriptCurrInstr = cmd->nextInstr;
+}
+
+void BS_TryConsumeHoney(void)
+{
+    NATIVE_ARGS(const u8 *failInstr);
+    if (gBattleMons[gBattlerAttacker].item == ITEM_HONEY)
+    {
+        gBattleMons[gBattlerAttacker].item = ITEM_NONE;
+        BtlController_EmitSetMonData(gBattlerAttacker, BUFFER_A, REQUEST_HELDITEM_BATTLE, 0, sizeof(gBattleMons[gBattlerAttacker].item), &gBattleMons[gBattlerAttacker].item);
+        MarkBattlerForControllerExec(gBattlerAttacker);
+        gBattlescriptCurrInstr = cmd->nextInstr;
+    }
+    else
+    {
+        gBattlescriptCurrInstr = cmd->failInstr;
     }
 }
 

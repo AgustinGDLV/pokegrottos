@@ -18281,6 +18281,69 @@ gBattleAnimMove_MightyCleave::
 gBattleAnimMove_SupercellSlam::
 	end @to do
 
+@@@@@@@@@@@@@@@@@@@@@@@ CUSTOM @@@@@@@@@@@@@@@@@@@@@@@@
+gBattleAnimMove_CocoonCare::
+	choosetwoturnanim CocoonCareChargeUp CocoonCareUnleash
+CocoonCareChargeUp:
+	loadspritegfx ANIM_TAG_SPIDER_WEB
+	loadspritegfx ANIM_TAG_GUARD_RING
+	monbg ANIM_ATK_PARTNER
+	setalpha 8, 8
+	playsewithpan SE_M_MILK_DRINK, SOUND_PAN_ATTACKER
+	createsprite gGuardRingSpriteTemplate, ANIM_ATTACKER, 2
+	delay 4
+	createsprite gGuardRingSpriteTemplate, ANIM_ATTACKER, 2
+	delay 4
+	createsprite gGuardRingSpriteTemplate, ANIM_ATTACKER, 2
+	playsewithpan SE_M_MILK_DRINK, SOUND_PAN_ATTACKER
+	delay 4
+	createsprite gGuardRingSpriteTemplate, ANIM_ATTACKER, 2
+	waitforvisualfinish
+	splitbgprio ANIM_ATTACKER
+	playsewithpan SE_M_STRING_SHOT2, SOUND_PAN_ATTACKER
+	createsprite gSpiderWebSpriteTemplate, ANIM_ATTACKER, 2, 0, 0, FALSE
+	waitforvisualfinish
+	clearmonbg ANIM_ATK_PARTNER
+	end
+CocoonCareUnleash:
+	loadspritegfx ANIM_TAG_SPIDER_WEB
+	loadspritegfx ANIM_TAG_BLUE_STAR
+	loadspritegfx ANIM_TAG_SPARKLE_2
+	loadspritegfx ANIM_TAG_GUARD_RING
+	loadspritegfx ANIM_TAG_SMALL_EMBER @Yellow colour for ring
+	monbg ANIM_ATK_PARTNER
+	playsewithpan SE_M_STRING_SHOT2, SOUND_PAN_ATTACKER
+	createsprite gSpiderWebSpriteTemplate, ANIM_ATTACKER, 2, 0, 0, FALSE
+	waitforvisualfinish
+	call HealingEffect2
+	createsprite gSpriteTemplate_LunarDanceRing, ANIM_ATTACKER, 2,
+	delay 0x4
+	createsprite gSpriteTemplate_LunarDanceRing, ANIM_ATTACKER, 2,
+	delay 0x4
+	createsprite gSpriteTemplate_LunarDanceRing, ANIM_ATTACKER, 2,
+	delay 0x4
+	clearmonbg ANIM_ATK_PARTNER
+	call HealingEffect
+	waitforvisualfinish
+	end
+
+gBattleAnimMove_SugarRush::
+	loadspritegfx ANIM_TAG_MILK_BOTTLE
+	monbg ANIM_TARGET
+	createsprite gMilkBottleSpriteTemplate, ANIM_ATTACKER, 2
+	delay 40
+	playsewithpan SE_M_CRABHAMMER, SOUND_PAN_ATTACKER
+	delay 12
+	playsewithpan SE_M_CRABHAMMER, SOUND_PAN_ATTACKER
+	delay 20
+	playsewithpan SE_M_CRABHAMMER, SOUND_PAN_ATTACKER
+	waitforvisualfinish
+	loopsewithpan SE_M_DOUBLE_TEAM, SOUND_PAN_TARGET, 10, 4
+	createvisualtask AnimTask_ShakeMon2, 2, ANIM_ATTACKER, 4, 0, 15, 1
+	waitforvisualfinish
+	clearmonbg ANIM_TARGET
+	end
+
 @@@@@@@@@@@@@@@@@@@@@@@ GEN 1-3 @@@@@@@@@@@@@@@@@@@@@@@
 gBattleAnimMove_None::
 gBattleAnimMove_MirrorMove::

@@ -893,6 +893,10 @@ const u8 *const gBattleStringsTable[BATTLESTRINGS_COUNT] =
     [STRINGID_ITDOESNTAFFECTTWOFOES]                = COMPOUND_STRING("It doesn't affect {B_DEF_NAME_WITH_PREFIX2} and {B_DEF_PARTNER_NAME}…"),
     [STRINGID_SENDCAUGHTMONPARTYORBOX]              = COMPOUND_STRING("Add {B_DEF_NAME} to your party?"),
     [STRINGID_PKMNSENTTOPCAFTERCATCH]               = gText_PkmnSentToPCAfterCatch,
+    [STRINGID_PKMNSPINSCOCOON]                      = COMPOUND_STRING("{B_ATK_NAME_WITH_PREFIX} is spinning a cocoon!"),
+    [STRINGID_MOVEREQUIRESHONEY]                    = COMPOUND_STRING("It can't use the move because it doesn't have Honey!\p"),
+    [STRINGID_PKMNCONSUMESHONEY]                    = COMPOUND_STRING("{B_ATK_NAME_WITH_PREFIX} consumed its honey!"),
+    [STRINGID_PKMNCOLLECTEDHONEY]                   = COMPOUND_STRING("{B_SCR_NAME_WITH_PREFIX} collected honey!"),
 };
 
 const u16 gTrainerUsedItemStringIds[] =

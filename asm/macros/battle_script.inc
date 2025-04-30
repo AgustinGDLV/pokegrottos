@@ -1751,6 +1751,26 @@
 	.4byte \failInstr
 	.endm
 
+	.macro trycocooncare, failInstr:req
+	callnative BS_TryCocoonCare
+	.4byte \failInstr
+	.endm
+
+	.macro executecocooncare, failInstr:req
+	callnative BS_ExecuteCocoonCare
+	.4byte \failInstr
+	.endm
+
+	.macro jumpifselectedbug, jumpInstr:req
+	callnative BS_JumpIfSelectedBug
+	.4byte \jumpInstr
+	.endm
+
+	.macro tryconsumehoney, failInstr:req
+	callnative BS_TryConsumeHoney
+	.4byte \failInstr
+	.endm
+
 	.macro jumpifblockedbysoundproof battler:req, failInstr:req
 	callnative BS_JumpIfBlockedBySoundproof
 	.byte \battler

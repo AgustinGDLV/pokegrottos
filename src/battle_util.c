@@ -1473,6 +1473,12 @@ u32 TrySetCantSelectMoveBattleScript(u32 battler)
         }
     }
 
+    if (moveEffect == EFFECT_SUGAR_RUSH && gBattleMons[battler].item != ITEM_HONEY)
+    {
+        gSelectionBattleScripts[battler] = BattleScript_SelectingNotAllowedHoney;
+        limitations++;
+    }
+
     return limitations;
 }
 
@@ -1495,8 +1501,8 @@ u8 CheckMoveLimitations(u32 battler, u8 unusableMoves, u16 check)
         // No PP
         else if (check & MOVE_LIMITATION_PP && gBattleMons[battler].pp[i] == 0)
             unusableMoves |= 1u << i;
-        // Placeholder
-        else if (check & MOVE_LIMITATION_PLACEHOLDER && moveEffect == EFFECT_PLACEHOLDER)
+        // Honey
+        else if (check & MOVE_LIMITATION_HONEY && moveEffect == EFFECT_SUGAR_RUSH && gBattleMons[battler].item != ITEM_HONEY)
             unusableMoves |= 1u << i;
         // Disable
         else if (check & MOVE_LIMITATION_DISABLED && move == gDisableStructs[battler].disabledMove)
@@ -2329,7 +2335,8 @@ u8 DoBattlerEndTurnEffects(void)
             break;
         case ENDTURN_ITEMS3:  // berry effects
             if (gItemsInfo[gBattleMons[battler].item].pocket == POCKET_BERRIES
-             || GetBattlerHoldEffect(battler, TRUE) == HOLD_EFFECT_RESTORE_HP)  // Edge case for Berry Juice
+             || GetBattlerHoldEffect(battler, TRUE) == HOLD_EFFECT_RESTORE_HP       // Edge case for Berry Juice
+             || GetBattlerHoldEffect(battler, TRUE) == HOLD_EFFECT_RESTORE_PCT_HP)  // and Honey
             {
                 if (ItemBattleEffects(ITEMEFFECT_NORMAL, battler, FALSE))
                     effect++;
@@ -4185,6 +4192,28 @@ static inline uq4_12_t GetSupremeOverlordModifier(u32 battler)
     return UQ_4_12(1.0) + (PercentToUQ4_12(gBattleStruct->supremeOverlordCounter[battler] * 10));
 }
 
+// Colony adds a x0.1 defense boost for each fainted ally.
+static uq4_12_t GetColonyModifier(u32 battler)
+{
+    u32 i, hp, species, count = 0;
+    struct Pokemon *party = GetBattlerParty(battler);
+
+    // TODO: Currently counts partner party members.
+
+    // Count Bug-type party members.
+    for (i = 0; i < PARTY_SIZE; ++i)
+    {
+        hp = GetMonData(&party[i], MON_DATA_HP);
+        species = GetMonData(&party[i], MON_DATA_SPECIES);
+        if (hp != 0 && (gSpeciesInfo[species].types[0] == TYPE_BUG || gSpeciesInfo[species].types[1] == TYPE_BUG))
+            ++count;
+        if (species == SPECIES_NONE)
+            break;
+    }
+
+    return UQ_4_12(1.0) + (PercentToUQ4_12(count * 10));
+}
+
 static inline bool32 HadMoreThanHalfHpNowDoesnt(u32 battler)
 {
     u32 cutoff = gBattleMons[battler].maxHP / 2;
@@ -4506,6 +4535,21 @@ static inline u32 SetStartingSideStatus(u32 flag, u32 side, u32 message, u32 ani
     }
 
     return 0;
+}
+
+static u32 CountBugTypePartyMembers(u32 battler)
+{
+    u32 i, species, count = 0;
+    struct Pokemon *party = GetBattlerParty(battler);
+    for (i = 0; i < PARTY_SIZE; ++i)
+    {
+        species = GetMonData(&party[i], MON_DATA_SPECIES);
+        if (species == SPECIES_NONE)
+            break;
+        else if (gSpeciesInfo[species].types[0] == TYPE_BUG || gSpeciesInfo[species].types[1] == TYPE_BUG)
+            ++count;
+    }
+    return count;
 }
 
 u32 AbilityBattleEffects(u32 caseID, u32 battler, u32 ability, u32 special, u32 moveArg)
@@ -5423,6 +5467,20 @@ u32 AbilityBattleEffects(u32 caseID, u32 battler, u32 ability, u32 special, u32 
                     effect++;
                 }
                 break;
+            case ABILITY_HONEY_GATHER:
+                if ((CountBugTypePartyMembers(battler) >= 3 || RandomPercentage(RNG_HONEY_GATHER, 50))
+                 && gBattleMons[battler].item == ITEM_NONE
+                 && gBattleStruct->changedItems[battler] == ITEM_NONE) // Will not inherit an item
+                {
+                    u32 item = ITEM_HONEY;
+                    gBattleScripting.battler = battler;
+                    gBattleMons[battler].item = ITEM_HONEY;
+                    BattleScriptPushCursorAndCallback(BattleScript_HoneyGatherActivates);
+                    BtlController_EmitSetMonData(battler, BUFFER_A, REQUEST_HELDITEM_BATTLE, 0, 2, &item);
+                    MarkBattlerForControllerExec(battler);
+                    effect++;
+                }
+            break;
             case ABILITY_DRY_SKIN:
                 if (IsBattlerWeatherAffected(battler, B_WEATHER_SUN))
                     goto SOLAR_POWER_HP_DROP;
@@ -7233,7 +7291,7 @@ static u32 ItemHealHp(u32 battler, u32 itemId, enum ItemCaseId caseID, bool32 pe
         && HasEnoughHpToEatBerry(battler, 2, itemId))
     {
         if (percentHeal)
-            gBattleStruct->moveDamage[battler] = (GetNonDynamaxMaxHP(battler) * GetBattlerItemHoldEffectParam(battler, itemId) / 100) * -1;
+            gBattleStruct->moveDamage[battler] = (GetNonDynamaxMaxHP(battler) / GetBattlerItemHoldEffectParam(battler, itemId)) * -1;
         else
             gBattleStruct->moveDamage[battler] = GetBattlerItemHoldEffectParam(battler, itemId) * -1;
 
@@ -10046,6 +10104,9 @@ static inline u32 CalcDefenseStat(struct DamageCalculationData *damageCalcData, 
     case ABILITY_PURIFYING_SALT:
         if (moveType == TYPE_GHOST)
             modifier = uq4_12_multiply_half_down(modifier, UQ_4_12(2.0));
+        break;
+    case ABILITY_COLONY:
+        modifier = uq4_12_multiply_half_down(modifier, GetColonyModifier(battlerDef));
         break;
     }
 

@@ -2408,4 +2408,11 @@ const struct Ability gAbilitiesInfo[ABILITIES_COUNT] =
         .cantBeSwapped = TRUE,
         .cantBeTraced = TRUE,
     },
+
+    [ABILITY_COLONY] =
+    {
+        .name = _("Colony"),
+        .description = COMPOUND_STRING("Increases defenses for every Bug-type party {PKMN}."),
+        .aiRating = 10,
+    },
 };

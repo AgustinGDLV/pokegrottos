@@ -459,3 +459,8 @@ const u8 gItemEffect_TamatoBerry[10] = {
     [6] = ITEM6_SUBTRACT_EV,
     EV_BERRY_FRIENDSHIP_CHANGE,
 };
+
+const u8 gItemEffect_Honey[7] = {
+    [4] = ITEM4_HEAL_HP,
+    [6] = ITEM6_HEAL_HP_EIGHTH,
+};

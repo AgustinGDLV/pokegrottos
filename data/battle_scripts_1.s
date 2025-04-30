@@ -20,6 +20,67 @@
 
 	.section script_data, "aw", %progbits
 
+BattleScript_EffectSugarRush::
+	attackcanceler
+	attackstring
+	waitmessage B_WAIT_TIME_SHORT
+	ppreduce
+	tryconsumehoney BattleScript_ButItFailed
+	printstring STRINGID_PKMNCONSUMESHONEY
+	waitmessage B_WAIT_TIME_LONG
+	jumpifstat BS_ATTACKER, CMP_LESS_THAN, STAT_ATK, MAX_STAT_STAGE, BattleScript_SugarRushDoMoveAnim
+	jumpifstat BS_ATTACKER, CMP_LESS_THAN, STAT_SPATK, MAX_STAT_STAGE, BattleScript_SugarRushDoMoveAnim
+	jumpifstat BS_ATTACKER, CMP_LESS_THAN, STAT_SPEED, MAX_STAT_STAGE, BattleScript_SugarRushDoMoveAnim
+	jumpifstat BS_ATTACKER, CMP_EQUAL, STAT_SPEED, MAX_STAT_STAGE, BattleScript_CantRaiseMultipleStats
+BattleScript_SugarRushDoMoveAnim::
+	attackanimation
+	waitanimation
+	setbyte sSTAT_ANIM_PLAYED, FALSE
+	playstatchangeanimation BS_ATTACKER, BIT_ATK | BIT_SPATK | BIT_SPEED, 0
+	setstatchanger STAT_ATK, 2, FALSE
+	statbuffchange MOVE_EFFECT_AFFECTS_USER | STAT_CHANGE_ALLOW_PTR, BattleScript_SugarRushTrySpAtk
+	jumpifbyte CMP_EQUAL, cMULTISTRING_CHOOSER, B_MSG_STAT_WONT_INCREASE, BattleScript_SugarRushTrySpAtk
+	printfromtable gStatUpStringIds
+	waitmessage B_WAIT_TIME_LONG
+BattleScript_SugarRushTrySpAtk::
+	setstatchanger STAT_SPATK, 2, FALSE
+	statbuffchange MOVE_EFFECT_AFFECTS_USER | STAT_CHANGE_ALLOW_PTR, BattleScript_SugarRushTrySpeed
+	jumpifbyte CMP_EQUAL, cMULTISTRING_CHOOSER, B_MSG_STAT_WONT_INCREASE, BattleScript_SugarRushTrySpeed
+	printfromtable gStatUpStringIds
+	waitmessage B_WAIT_TIME_LONG
+BattleScript_SugarRushTrySpeed::
+	setstatchanger STAT_SPEED, 2, FALSE
+	statbuffchange MOVE_EFFECT_AFFECTS_USER | STAT_CHANGE_ALLOW_PTR, BattleScript_SugarRushEnd
+	jumpifbyte CMP_EQUAL, cMULTISTRING_CHOOSER, B_MSG_STAT_WONT_INCREASE, BattleScript_SugarRushEnd
+	printfromtable gStatUpStringIds
+	waitmessage B_WAIT_TIME_LONG
+BattleScript_SugarRushEnd:
+	goto BattleScript_MoveEnd
+
+BattleScript_EffectCocoonCare::
+	jumpifstatus2 BS_ATTACKER, STATUS2_MULTIPLETURNS, BattleScript_CocoonCareSecondTurn
+	jumpifword CMP_COMMON_BITS, gHitMarker, HITMARKER_NO_ATTACKSTRING, BattleScript_CocoonCareSecondTurn
+	call BattleScript_FirstChargingTurn
+	trycocooncare BattleScript_ButItFailed
+	jumpifselectedbug BattleScript_CocoonCareSecondTurn
+	jumpifnoholdeffect BS_ATTACKER, HOLD_EFFECT_POWER_HERB, BattleScript_MoveEnd
+	call BattleScript_PowerHerbActivation
+BattleScript_CocoonCareSecondTurn:
+	attackcanceler
+	setbyte sB_ANIM_TURN, 1
+	clearstatusfromeffect BS_ATTACKER, MOVE_EFFECT_CHARGING
+	orword gHitMarker, HITMARKER_NO_PPDEDUCT
+BattleScript_CocoonCareDoAnimation:
+	attackstring
+	executecocooncare BattleScript_ButItFailed
+	attackanimation
+	waitanimation
+	printstring STRINGID_PKMNREVIVEDREADYTOFIGHT
+	waitmessage B_WAIT_TIME_LONG
+	jumpifbyte CMP_EQUAL, gBattleCommunication, TRUE, BattleScript_EffectRevivalBlessingSendOut
+BattleScript_CocoonCareEnd::
+	goto BattleScript_MoveEnd
+
 BattleScript_DamageToQuarterTargetHP::
 	attackcanceler
 	accuracycheck BattleScript_PrintMoveMissed, ACC_CURR_MOVE
@@ -7679,6 +7740,14 @@ BattleScript_HarvestActivates::
 BattleScript_HarvestActivatesEnd:
 	end3
 
+BattleScript_HoneyGatherActivates::
+	pause 5
+	call BattleScript_AbilityPopUp
+	printstring STRINGID_PKMNCOLLECTEDHONEY
+	waitmessage B_WAIT_TIME_LONG
+BattleScript_HoneyGatherActivatesEnd:
+	end3
+
 BattleScript_SolarPowerActivates::
 	orword gHitMarker, HITMARKER_IGNORE_SUBSTITUTE | HITMARKER_PASSIVE_DAMAGE
 	call BattleScript_AbilityPopUp
@@ -8981,6 +9050,10 @@ BattleScript_SelectingNotAllowedPlaceholder::
 BattleScript_SelectingNotAllowedPlaceholderInPalace::
 	printstring STRINGID_NOTDONEYET
 	goto BattleScript_SelectingUnusableMoveInPalace
+
+BattleScript_SelectingNotAllowedHoney::
+	printselectionstring STRINGID_MOVEREQUIRESHONEY
+	endselectionscript
 
 BattleScript_HangedOnMsg::
 	playanimation BS_TARGET, B_ANIM_HANGED_ON

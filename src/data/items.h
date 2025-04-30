@@ -2828,14 +2828,17 @@ const struct Item gItemsInfo[] =
         .name = _("Honey"),
         .pluralName = _("Honey"),
         .price = (I_PRICE < GEN_5) ? 100 : ((I_PRICE < GEN_8) ? 300 : 900),
+        .holdEffect = HOLD_EFFECT_RESTORE_PCT_HP,
+        .holdEffectParam = 8, // 1/8 HP
         .description = COMPOUND_STRING(
             "Sweet honey that\n"
-            "attracts wild\n"
-            "Pokémon when used."),
+            "heals a little HP."),
         .pocket = POCKET_ITEMS,
-        .type = ITEM_USE_FIELD,
-        .fieldUseFunc = ItemUseOutOfBattle_Honey,
+        .type = ITEM_USE_PARTY_MENU,
+        .fieldUseFunc = ItemUseOutOfBattle_Medicine,
+        .battleUsage = EFFECT_ITEM_RESTORE_HP,
         .flingPower = 30,
+        .effect = gItemEffect_Honey,
         .iconPic = gItemIcon_Honey,
         .iconPalette = gItemIconPalette_Honey,
     },
@@ -9336,7 +9339,7 @@ const struct Item gItemsInfo[] =
         .price = (I_BERRY_PRICE >= GEN_8) ? 80 : 20,
         #if I_SITRUS_BERRY_HEAL >= GEN_4
             .holdEffect = HOLD_EFFECT_RESTORE_PCT_HP,
-            .holdEffectParam = 25,
+            .holdEffectParam = 4, // 1/4 HP
             .description = COMPOUND_STRING(
                 "A hold item that\n"
                 "restores the user's\n"
