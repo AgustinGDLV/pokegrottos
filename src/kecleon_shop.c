@@ -97,9 +97,9 @@ static const struct WindowTemplate sShopWinTemplates[WINDOW_COUNT + 1] =
     {
         .bg = 0,
 		.tilemapLeft = 1,
-		.tilemapTop = 8,
-		.width = 5,
-		.height = 5,
+		.tilemapTop = 9,
+		.width = 4,
+		.height = 4,
 		.paletteNum = 15,
 		.baseBlock = 1 + 21*4,
     },
@@ -251,8 +251,8 @@ static const struct SpriteTemplate * const sKecleonSpriteTemplates[] =
 };
 
 // text
-static const u8 sTextColor_Normal[] = {TEXT_COLOR_TRANSPARENT, TEXT_COLOR_DARK_GRAY, TEXT_COLOR_LIGHT_GRAY};
-static const u8 sText_WelcomeToKecleonShop[] = _("Welcome to the Kecleon Shop! {EMOJI_NOTE}\nHow can I help you? {EMOJI_NOTE}");
+static const u8 sTextColor_Normal[] = {TEXT_COLOR_BLACK, TEXT_COLOR_WHITE, TEXT_COLOR_BLACK};
+static const u8 sText_WelcomeToKecleonShop[] = _("Welcome to my shop! {EMOJI_NOTE}\nHow can I help you? {EMOJI_NOTE}");
 static const u8 sText_MayIHelpYouWithAnythingElse[] = _("May I help you with\nanything else?");
 static const u8 sText_WhatWouldYouLike[] = _("What would you\nlike to buy? {EMOJI_NOTE}");
 static const u8 sText_GoodChoice[] = _("Thank you so much{EMOJI_TILDE}{EMOJI_NOTE}\nA very good choice!");
@@ -311,9 +311,9 @@ static const struct ListMenuTemplate sShopIntroListTemplate =
     .item_X = 8,
     .cursor_X = 0,
     .upText_Y = 1,
-    .cursorPal = 2,
-    .fillValue = 1,
-    .cursorShadowPal = 3,
+    .cursorPal = 1,
+    .fillValue = 15,
+    .cursorShadowPal = 15,
     .lettersSpacing = 1,
     .itemVerticalPadding = 0,
     .scrollMultiple = LIST_NO_MULTIPLE_SCROLL,
@@ -333,9 +333,9 @@ static const struct ListMenuTemplate sShopYesNoListTemplate =
     .item_X = 8,
     .cursor_X = 0,
     .upText_Y = 1,
-    .cursorPal = 2,
-    .fillValue = 1,
-    .cursorShadowPal = 3,
+    .cursorPal = 1,
+    .fillValue = 15,
+    .cursorShadowPal = 15,
     .lettersSpacing = 1,
     .itemVerticalPadding = 0,
     .scrollMultiple = LIST_NO_MULTIPLE_SCROLL,
@@ -355,9 +355,9 @@ static const struct ListMenuTemplate sShopItemsListTemplate =
     .item_X = 8,
     .cursor_X = 0,
     .upText_Y = 1,
-    .cursorPal = 2,
-    .fillValue = 1,
-    .cursorShadowPal = 3,
+    .cursorPal = 1,
+    .fillValue = 15,
+    .cursorShadowPal = 15,
     .lettersSpacing = 1,
     .itemVerticalPadding = 0,
     .scrollMultiple = LIST_NO_MULTIPLE_SCROLL,
@@ -435,7 +435,7 @@ static void DestroyWindow(enum Windows windowId)
 
 static void DrawTextToMessageWindow(const u8* text)
 {
-    FillWindowPixelBuffer(sShopWindowIds[WIN_MESSAGE], PIXEL_FILL(1));
+    FillWindowPixelBuffer(sShopWindowIds[WIN_MESSAGE], PIXEL_FILL(15));
     if (text == NULL)
         AddTextPrinterParameterized3(sShopWindowIds[WIN_MESSAGE], FONT_NORMAL, 2, 0, sTextColor_Normal, GetPlayerTextSpeedDelay(), sText_WelcomeToKecleonShop);
     else
@@ -457,7 +457,7 @@ static void DrawKecleonPortrait(enum Expressions type)
 
     LoadSpritePalette(&sKecleonSpritePalettes[type]);
     LoadSpriteSheet(&sKecleonSpriteSheets[type]);
-    sKecleonPortraitSpriteId = CreateSprite(sKecleonSpriteTemplates[type], 40, 96, 0);
+    sKecleonPortraitSpriteId = CreateSprite(sKecleonSpriteTemplates[type], 36, 100, 0);
 }
 
 static void KecleonShop_ShowIntroScreen(u8 taskId)
@@ -562,7 +562,7 @@ static void KecleonShop_ShowBuyScreenYesNo(u8 taskId)
     DrawKecleonPortrait(sKecleonExpression);
 
     // Draw text.
-    FillWindowPixelBuffer(sShopWindowIds[WIN_ITEMS], PIXEL_FILL(1));
+    FillWindowPixelBuffer(sShopWindowIds[WIN_ITEMS], PIXEL_FILL(15));
     AddTextPrinterParameterized3(sShopWindowIds[WIN_ITEMS], FONT_NORMAL, 0, 0, sTextColor_Normal, TEXT_SKIP_DRAW, ItemId_GetDescription(sSelectedItem));
     CopyWindowToVram(sShopWindowIds[WIN_ITEMS], COPYWIN_FULL);
     StringCopy(gStringVar1, ItemId_GetName(sSelectedItem));
