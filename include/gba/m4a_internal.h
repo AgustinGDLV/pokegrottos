@@ -164,13 +164,17 @@ struct SoundChannel
     u16 xpc;
 };
 
-#define MAX_DIRECTSOUND_CHANNELS 15
+#define MAX_DIRECTSOUND_CHANNELS 12
 
 #define PCM_DMA_BUF_SIZE 1584 // size of Direct Sound buffer
 
 struct MusicPlayerInfo;
 
+#if __STDC_VERSION__ < 202311L
 typedef void (*MPlayFunc)();
+#else
+typedef void (*MPlayFunc)(...);
+#endif
 typedef void (*PlyNoteFunc)(u32, struct MusicPlayerInfo *, struct MusicPlayerTrack *);
 typedef void (*CgbSoundFunc)(void);
 typedef void (*CgbOscOffFunc)(u8);
@@ -253,8 +257,8 @@ struct PokemonCrySong
     u8 tieCmd; // 0x29
     u8 tieKeyValue; // 0x2A
     u8 tieVelocityValue; // 0x2B
-    u8 unkCmd0C[2]; // 0x2C
-    u16 unkCmd0CParam; // 0x2E
+    u8 xwaitCmd[2]; // 0x2C
+    u16 length; // 0x2E
     u8 end[2]; // 0x30
 };
 
@@ -269,7 +273,8 @@ struct MusicPlayerTrack
 {
     u8 flags;
     u8 wait;
-    u8 patternLevel;
+    u8 patternLevel:4;
+    u8 gbsIdentifier:4;
     u8 repN;
     u8 gateTime;
     u8 key;
@@ -302,7 +307,7 @@ struct MusicPlayerTrack
     struct SoundChannel *chan;
     struct ToneData tone;
     u8 gap[10];
-    u16 unk_3A;
+    u16 timer;
     u32 unk_3C;
     u8 *cmdPtr;
     u8 *patternStack[3];
@@ -338,6 +343,7 @@ struct MusicPlayerInfo
     u16 fadeOI;
     u16 fadeOC;
     u16 fadeOV;
+    u16 gbsTempo;
     struct MusicPlayerTrack *tracks;
     struct ToneData *tone;
     u32 ident;
@@ -360,9 +366,15 @@ struct Song
     u16 me;
 };
 
+struct GBSSongItem
+{
+    u32 songID;
+    struct Song song;
+};
+
 extern const struct MusicPlayer gMPlayTable[];
 extern const struct Song gSongTable[];
-
+extern const struct GBSSongItem gGBSSongTable[];
 
 
 extern u8 gMPlayMemAccArea[];
@@ -460,6 +472,7 @@ void ply_goto(struct MusicPlayerInfo *, struct MusicPlayerTrack *);
 void ply_patt(struct MusicPlayerInfo *, struct MusicPlayerTrack *);
 void ply_pend(struct MusicPlayerInfo *, struct MusicPlayerTrack *);
 void ply_rept(struct MusicPlayerInfo *, struct MusicPlayerTrack *);
+void ply_gbs_switch(struct MusicPlayerInfo *, struct MusicPlayerTrack *);
 void ply_memacc(struct MusicPlayerInfo *, struct MusicPlayerTrack *);
 void ply_prio(struct MusicPlayerInfo *, struct MusicPlayerTrack *);
 void ply_tempo(struct MusicPlayerInfo *, struct MusicPlayerTrack *);
@@ -491,7 +504,7 @@ void ply_xiecv(struct MusicPlayerInfo *, struct MusicPlayerTrack *);
 void ply_xiecl(struct MusicPlayerInfo *, struct MusicPlayerTrack *);
 void ply_xleng(struct MusicPlayerInfo *, struct MusicPlayerTrack *);
 void ply_xswee(struct MusicPlayerInfo *, struct MusicPlayerTrack *);
-void ply_xcmd_0C(struct MusicPlayerInfo *, struct MusicPlayerTrack *);
+void ply_xwait(struct MusicPlayerInfo *, struct MusicPlayerTrack *);
 void ply_xcmd_0D(struct MusicPlayerInfo *, struct MusicPlayerTrack *);
 
 #endif // GUARD_GBA_M4A_INTERNAL_H
