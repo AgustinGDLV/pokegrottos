@@ -151,9 +151,9 @@ static const struct FontInfo sFontInfos[] =
         .maxLetterHeight = 16,
         .letterSpacing = 0,
         .lineSpacing = 0,
-        .fgColor = 2,
-        .bgColor = 1,
-        .shadowColor = 3,
+        .fgColor = 1,
+        .bgColor = 15,
+        .shadowColor = 15,
     },
     [FONT_SHORT] = {
         .fontFunction = FontFunc_Short,
@@ -2065,8 +2065,8 @@ static void DecompressGlyph_Normal(u16 glyphId, bool32 isJapanese)
     }
     else
     {
-        glyphs = gFontNormalLatinGlyphs + (0x20 * glyphId);
-        gCurGlyph.width = gFontNormalLatinGlyphWidths[glyphId];
+        glyphs = gFontGBCGlyphs + (0x20 * glyphId);
+        gCurGlyph.width = gFontGBCGlyphWidths[glyphId];
 
         if (gCurGlyph.width <= 8)
         {
@@ -2090,7 +2090,7 @@ static u32 GetGlyphWidth_Normal(u16 glyphId, bool32 isJapanese)
     if (isJapanese == TRUE)
         return 8;
     else
-        return gFontNormalLatinGlyphWidths[glyphId];
+        return gFontGBCGlyphWidths[glyphId];
 }
 
 static void DecompressGlyph_Bold(u16 glyphId)

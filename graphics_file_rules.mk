@@ -226,7 +226,7 @@ $(TILESETGFXDIR)/secondary/mystery_events_house/tiles.4bpp: %.4bpp: %.png
 
 ### Fonts ###
 
-$(FONTGFXDIR)/small.latfont: $(FONTGFXDIR)/latin_small.png
+$(FONTGFXDIR)/small.latfont: $(FONTGFXDIR)/gbc_small.png
 	$(GFX) $< $@
 
 $(FONTGFXDIR)/normal.latfont: $(FONTGFXDIR)/latin_normal.png
@@ -274,6 +274,8 @@ $(FONTGFXDIR)/frlg_male.fwjpnfont: $(FONTGFXDIR)/japanese_frlg_male.png
 $(FONTGFXDIR)/frlg_female.fwjpnfont: $(FONTGFXDIR)/japanese_frlg_female.png
 	$(GFX) $< $@
 
+$(FONTGFXDIR)/gbc.latfont: $(FONTGFXDIR)/gbc.png
+	$(GFX) $< $@
 
 ### Miscellaneous ###
 
