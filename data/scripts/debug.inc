@@ -152,6 +152,8 @@ Debug_EventScript_Script_3::
 	end
 
 Debug_EventScript_Script_4::
+	callnative LoadDummyEnemyParty
+	callnative OpenDeckBattle
 	release
 	end
 

@@ -251,6 +251,7 @@ const u8 gClockTable[] =
 #define xRELE  0x07
 #define xIECV  0x08
 #define xIECL  0x09
+#define xWAIT  0x0c
 
 #define EOT    0xce
 #define TIE    0xcf
@@ -282,7 +283,7 @@ const struct PokemonCrySong gPokemonCrySongTemplate =
     .tieCmd = TIE,
     .tieKeyValue = 60, // default is Cn3
     .tieVelocityValue = 127,
-    .xwaitCmd = {XCMD, 0x0C},
+    .xwaitCmd = {XCMD, xWAIT},
     .length = 60,
     .end = {EOT, FINE}
 };

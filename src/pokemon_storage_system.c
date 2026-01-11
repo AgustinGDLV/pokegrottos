@@ -6404,6 +6404,10 @@ static void SetPlacedMonData(u8 boxId, u8 position)
     {
         gPlayerParty[position] = sStorage->movingMon;
         struct Pokemon *mon = &gPlayerParty[position];
+        u32 pos = 0xFF; // avoid reading current position as 0
+        SetMonData(mon, MON_DATA_POSITION, &pos);
+        pos = GetPlayerLeftmostUnoccupiedPosition();
+        SetMonData(mon, MON_DATA_POSITION, &pos);
         if (mon == GetFirstLiveMon())
             gFollowerSteps = 0;
         SetMonFormPSS(&mon->box, FORM_CHANGE_WITHDRAW);

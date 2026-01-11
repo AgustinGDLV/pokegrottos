@@ -119,6 +119,7 @@ enum {
     MON_DATA_TERA_TYPE,
     MON_DATA_EVOLUTION_TRACKER,
     MON_DATA_RANK,
+    MON_DATA_POSITION,
 };
 
 struct PokemonSubstruct0
@@ -280,6 +281,7 @@ struct Pokemon
     u16 speed;
     u16 spAttack;
     u16 spDefense;
+    u8 position;
 };
 
 struct MonSpritesGfxManager
@@ -833,5 +835,6 @@ u32 GetRankBasedBaseStat(u32 statIndex, struct Pokemon *mon);
 bool32 IsDuplicateEvolution(u16 baseSpecies, u16 targetSpecies, u32 currIndex);
 u32 GetEvolutionCount(u32 species);
 u32 GetTeraTypeFromPersonality(struct Pokemon *mon);
+u32 GetPlayerLeftmostUnoccupiedPosition(void);
 
 #endif // GUARD_POKEMON_H

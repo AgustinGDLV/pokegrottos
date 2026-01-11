@@ -7047,10 +7047,19 @@ void InitNpcForMovement(struct ObjectEvent *objectEvent, struct Sprite *sprite, 
     sprite->sActionFuncId = 1;
 }
 
+static const u32 sScaledMoveSpeed[][3] =
+{
+    [MOVE_SPEED_NORMAL] =   {MOVE_SPEED_NORMAL,  MOVE_SPEED_FAST_1,  MOVE_SPEED_FASTER},
+    [MOVE_SPEED_FAST_1] =   {MOVE_SPEED_FAST_1,  MOVE_SPEED_FASTER,  MOVE_SPEED_FASTEST},
+    [MOVE_SPEED_FAST_2] =   {MOVE_SPEED_FAST_2,  MOVE_SPEED_FASTER,  MOVE_SPEED_FASTEST},
+    [MOVE_SPEED_FASTER] =   {MOVE_SPEED_FASTER,  MOVE_SPEED_FASTEST, MOVE_SPEED_FASTEST},
+    [MOVE_SPEED_FASTEST] =  {MOVE_SPEED_FASTEST, MOVE_SPEED_FASTEST, MOVE_SPEED_FASTEST},
+};
+
 static void InitMovementNormal(struct ObjectEvent *objectEvent, struct Sprite *sprite, u8 direction, u8 speed)
 {
     u8 (*functions[ARRAY_COUNT(sDirectionAnimFuncsBySpeed)])(u8);
-
+    speed = sScaledMoveSpeed[speed][VarGet(VAR_OVERWORLD_SPEED)];
     memcpy(functions, sDirectionAnimFuncsBySpeed, sizeof sDirectionAnimFuncsBySpeed);
     InitNpcForMovement(objectEvent, sprite, direction, speed);
     SetStepAnimHandleAlternation(objectEvent, sprite, functions[speed](objectEvent->facingDirection));
