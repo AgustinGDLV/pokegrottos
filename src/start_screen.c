@@ -515,7 +515,7 @@ static void DrawStarterSelectWindows(void)
 
 static const u8 sTextColor_Name[] = {TEXT_COLOR_TRANSPARENT, TEXT_DYNAMIC_COLOR_1, TEXT_COLOR_LIGHT_GRAY};
 static const u8 sTextColor_Stats[] = {TEXT_COLOR_TRANSPARENT, TEXT_COLOR_BLUE, TEXT_COLOR_LIGHT_GRAY};
-static const u8 sTextColor_Info[] = {TEXT_COLOR_TRANSPARENT, TEXT_COLOR_DARK_GRAY, TEXT_COLOR_LIGHT_GRAY};
+static const u8 sTextColor_Info[] = {TEXT_COLOR_TRANSPARENT, TEXT_COLOR_WHITE, TEXT_COLOR_LIGHT_GRAY};
 static const u8 sTextColor_Instructions[] = {TEXT_COLOR_TRANSPARENT, TEXT_COLOR_WHITE, TEXT_COLOR_DARK_GRAY};
 
 static const u8 sText_Floor[] = _("Floor");
@@ -527,7 +527,7 @@ static const u8 sText_PressLR[] = _("{L_BUTTON}{R_BUTTON} Change Page");
 
 static void DrawLRButtonWindow(void)
 {
-    u16 palette = RGB(8, 8, 8); // dark gray used in BG top/bottom
+    u16 palette = RGB(0, 0, 0); // dark gray used in BG top/bottom
     if (sStartScreenWindowIds[WIN_BUTTONS_RIGHT] == WINDOW_NONE)
         sStartScreenWindowIds[WIN_BUTTONS_RIGHT] = AddWindow(&sStartScreenWinTemplates[WIN_BUTTONS_RIGHT]);
     FillWindowPixelBuffer(sStartScreenWindowIds[WIN_BUTTONS_RIGHT], PIXEL_FILL(0));
@@ -547,7 +547,7 @@ static void DrawContinueScreenText(void)
     // Load dynamic text colors.
     u16 palette = gCharacterInfos[gSaveBlock1Ptr->characterId].color;
     LoadPalette(&palette, BG_PLTT_ID(15) + 10, PLTT_SIZEOF(1));
-    palette = RGB(8, 8, 8); // dark gray used in BG top/bottom
+    palette = RGB(0, 0, 0); // dark gray used in BG top/bottom
     LoadPalette(&palette, BG_PLTT_ID(15) + 11, PLTT_SIZEOF(1));
 
     // Load text into stats window.
@@ -587,16 +587,16 @@ static void DrawCharacterSelectInfoText(void)
 {
     u16 palette = gCharacterInfos[sChosenCharacterId].color;
     LoadPalette(&palette, BG_PLTT_ID(15) + 10, PLTT_SIZEOF(1));
-    FillWindowPixelBuffer(sStartScreenWindowIds[WIN_INFO], PIXEL_FILL(1));
+    FillWindowPixelBuffer(sStartScreenWindowIds[WIN_INFO], PIXEL_FILL(15));
     
     // Print name.
     AddTextPrinterParameterized3(sStartScreenWindowIds[WIN_INFO], FONT_NORMAL, 2, 0, sTextColor_Name, TEXT_SKIP_DRAW, gCharacterInfos[sChosenCharacterId].name);
 
     // Print description or unlock text.
     if (!(gSaveBlock1Ptr->unlockedCharacters & (1 << sChosenCharacterId)))
-        AddTextPrinterParameterized3(sStartScreenWindowIds[WIN_INFO], FONT_SMALL, 2, 14, sTextColor_Info, TEXT_SKIP_DRAW, gCharacterInfos[sChosenCharacterId].unlockDesc);
+        AddTextPrinterParameterized3(sStartScreenWindowIds[WIN_INFO], FONT_NORMAL, 2, 14, sTextColor_Info, TEXT_SKIP_DRAW, gCharacterInfos[sChosenCharacterId].unlockDesc);
     else
-        AddTextPrinterParameterized3(sStartScreenWindowIds[WIN_INFO], FONT_SMALL, 2, 14, sTextColor_Info, TEXT_SKIP_DRAW, gCharacterInfos[sChosenCharacterId].desc);
+        AddTextPrinterParameterized3(sStartScreenWindowIds[WIN_INFO], FONT_NORMAL, 2, 14, sTextColor_Info, TEXT_SKIP_DRAW, gCharacterInfos[sChosenCharacterId].desc);
 
     CopyWindowToVram(sStartScreenWindowIds[WIN_INFO], COPYWIN_FULL);
 }
@@ -604,7 +604,7 @@ static void DrawCharacterSelectInfoText(void)
 static void DrawCharacterSelectText(void)
 {
     // Load dynamic text colors.
-    u16 palette = RGB(8, 8, 8); // dark gray used in BG top/bottom
+    u16 palette = RGB(0, 0, 0); // dark gray used in BG top/bottom
     LoadPalette(&palette, BG_PLTT_ID(15) + 11, PLTT_SIZEOF(1));
 
     // Load text into stats window.
@@ -624,7 +624,7 @@ static const u8 sText_StarterSelectPressA[] = _("{A_BUTTON} Select {DPAD_LEFTRIG
 
 static void DrawStarterSelectText(void)
 {
-    u16 palette = RGB(8, 8, 8); // dark gray used in BG top/bottom
+    u16 palette = RGB(0, 0, 0); // dark gray used in BG top/bottom
     LoadPalette(&palette, BG_PLTT_ID(15) + 11, PLTT_SIZEOF(1));
 
     // Load text into main window.

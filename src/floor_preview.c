@@ -342,7 +342,7 @@ static void PopulateSpeciesList(void)
     }
 }
 
-static const u8 sText_Saving[] = _("Saving...");
+static const u8 sText_Saving[] = _("Saving…");
 
 static void Task_FloorPreviewAutosave(u8 taskId)
 {
