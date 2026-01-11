@@ -76,9 +76,9 @@ void m4aSoundInit(void)
     SoundInit(&gSoundInfo);
     MPlayExtender(gCgbChans);
     m4aSoundMode(SOUND_MODE_DA_BIT_8
-               | SOUND_MODE_FREQ_13379
+               | SOUND_MODE_FREQ_18157
                | (12 << SOUND_MODE_MASVOL_SHIFT)
-               | (5 << SOUND_MODE_MAXCHN_SHIFT));
+               | (15 << SOUND_MODE_MAXCHN_SHIFT));
 
     for (i = 0; i < NUM_MUSIC_PLAYERS; i++)
     {
@@ -119,7 +119,6 @@ const struct Song *GetSong(int songID)
 void m4aSongNumStart(u16 n)
 {
     const struct MusicPlayer *mplayTable = gMPlayTable;
-    const struct Song *songTable = gSongTable;
     const struct Song *song = GetSong(n);
     const struct MusicPlayer *mplay = &mplayTable[song->ms];
 
@@ -129,7 +128,6 @@ void m4aSongNumStart(u16 n)
 void m4aSongNumStartOrChange(u16 n)
 {
     const struct MusicPlayer *mplayTable = gMPlayTable;
-    const struct Song *songTable = gSongTable;
     const struct Song *song = GetSong(n);
     const struct MusicPlayer *mplay = &mplayTable[song->ms];
 
@@ -150,7 +148,6 @@ void m4aSongNumStartOrChange(u16 n)
 static void UNUSED m4aSongNumStartOrContinue(u16 n)
 {
     const struct MusicPlayer *mplayTable = gMPlayTable;
-    const struct Song *songTable = gSongTable;
     const struct Song *song = GetSong(n);
     const struct MusicPlayer *mplay = &mplayTable[song->ms];
 
@@ -165,7 +162,6 @@ static void UNUSED m4aSongNumStartOrContinue(u16 n)
 void m4aSongNumStop(u16 n)
 {
     const struct MusicPlayer *mplayTable = gMPlayTable;
-    const struct Song *songTable = gSongTable;
     const struct Song *song = GetSong(n);
     const struct MusicPlayer *mplay = &mplayTable[song->ms];
 
@@ -176,7 +172,6 @@ void m4aSongNumStop(u16 n)
 static void UNUSED m4aSongNumContinue(u16 n)
 {
     const struct MusicPlayer *mplayTable = gMPlayTable;
-    const struct Song *songTable = gSongTable;
     const struct Song *song = GetSong(n);
     const struct MusicPlayer *mplay = &mplayTable[song->ms];
 
@@ -1751,7 +1746,7 @@ void SetPokemonCryRelease(u8 val)
 
 void SetPokemonCryProgress(u32 val)
 {
-    gPokemonCrySong.length = val;
+    gPokemonCrySong.unkCmd0DParam = val;
 }
 
 bool32 IsPokemonCryPlaying(struct MusicPlayerInfo *mplayInfo)
