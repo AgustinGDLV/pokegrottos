@@ -53,6 +53,7 @@ void StartBattlerAnim(enum BattleId battler, u32 animId);
 struct Sprite * GetBattlerSprite(enum BattleId battler);
 u32 GetBattlerXCoord(enum BattleId battler);
 u32 GetBattlerYCoord(enum BattleId battler);
+bool32 HasBattlerAnimTriggeredCry(enum BattleId battler);
 
 void PrintBattlerMoveInfo(enum BattleId battler);
 void PrintTargetBattlerPrompt(enum BattleId battler);

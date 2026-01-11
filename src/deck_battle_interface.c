@@ -522,7 +522,7 @@ void InitDeckBattleGfx(void)
     UpdatePlayerHPBar(battler);
     LoadBattlerPortrait(battler);
 
-    CreateTask(Task_DoBattlerBobEffect, 1);
+    gDeckGraphics.bobTaskId = CreateTask(Task_DoBattlerBobEffect, 1);
 }
 
 void CreateSelectionCursorOverBattler(enum BattleId battler)
@@ -805,6 +805,11 @@ u32 GetBattlerYCoord(enum BattleId battler)
         return PLAYER_OBJ_Y + gDeckSpeciesInfo[gDeckMons[battler].species].playerYOffset;
     else
         return OPPONENT_OBJ_Y + gDeckSpeciesInfo[gDeckMons[battler].species].opponentYOffset;
+}
+
+bool32 HasBattlerAnimTriggeredCry(enum BattleId battler)
+{
+    return gSprites[gDeckGraphics.battlerSpriteIds[battler]].sAnimState >= 3;
 }
 
 #undef sBattlerId

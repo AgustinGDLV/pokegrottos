@@ -64,11 +64,8 @@ static void Task_ExecuteHit(u8 taskId)
         ++gTasks[taskId].tState;
         break;
     case 1: // Wait for attack animation to execute damage.
-        if (++gTasks[taskId].tTimer >= 32) // right after cry
-        {
-            gTasks[taskId].tTimer = 0;
+        if (HasBattlerAnimTriggeredCry(gBattlerAttacker))
             ++gTasks[taskId].tState;
-        }
         break;
     case 2: // Check for target change.
         if (!IsDeckBattlerAlive(gBattlerTarget))
