@@ -1673,21 +1673,40 @@ const u16 gTilesetPalettes_IceCave[][16] =
 
 const u32 gTilesetTiles_IceCave[] = INCBIN_U32("data/tilesets/secondary/ice_cave/tiles.4bpp.lz");
 
-const u16 gTilesetPalettes_HotCave[][16] =
+const u16 gTilesetPalettes_Volcano[][16] =
 {
-	INCBIN_U16("data/tilesets/secondary/hot_cave/palettes/00.gbapal"),
-	INCBIN_U16("data/tilesets/secondary/hot_cave/palettes/01.gbapal"),
-	INCBIN_U16("data/tilesets/secondary/hot_cave/palettes/02.gbapal"),
-	INCBIN_U16("data/tilesets/secondary/hot_cave/palettes/03.gbapal"),
-	INCBIN_U16("data/tilesets/secondary/hot_cave/palettes/04.gbapal"),
-	INCBIN_U16("data/tilesets/secondary/hot_cave/palettes/05.gbapal"),
-	INCBIN_U16("data/tilesets/secondary/hot_cave/palettes/06.gbapal"),
-	INCBIN_U16("data/tilesets/secondary/hot_cave/palettes/07.gbapal"),
-	INCBIN_U16("data/tilesets/secondary/hot_cave/palettes/08.gbapal"),
-	INCBIN_U16("data/tilesets/secondary/hot_cave/palettes/09.gbapal"),
-	INCBIN_U16("data/tilesets/secondary/hot_cave/palettes/10.gbapal"),
-	INCBIN_U16("data/tilesets/secondary/hot_cave/palettes/11.gbapal"),
-	INCBIN_U16("data/tilesets/secondary/hot_cave/palettes/12.gbapal"),
+	INCBIN_U16("data/tilesets/secondary/volcano/palettes/00.gbapal"),
+	INCBIN_U16("data/tilesets/secondary/volcano/palettes/01.gbapal"),
+	INCBIN_U16("data/tilesets/secondary/volcano/palettes/02.gbapal"),
+	INCBIN_U16("data/tilesets/secondary/volcano/palettes/03.gbapal"),
+	INCBIN_U16("data/tilesets/secondary/volcano/palettes/04.gbapal"),
+	INCBIN_U16("data/tilesets/secondary/volcano/palettes/05.gbapal"),
+	INCBIN_U16("data/tilesets/secondary/volcano/palettes/06.gbapal"),
+	INCBIN_U16("data/tilesets/secondary/volcano/palettes/07.gbapal"),
+	INCBIN_U16("data/tilesets/secondary/volcano/palettes/08.gbapal"),
+	INCBIN_U16("data/tilesets/secondary/volcano/palettes/09.gbapal"),
+	INCBIN_U16("data/tilesets/secondary/volcano/palettes/10.gbapal"),
+	INCBIN_U16("data/tilesets/secondary/volcano/palettes/11.gbapal"),
+	INCBIN_U16("data/tilesets/secondary/volcano/palettes/12.gbapal"),
 };
 
-const u32 gTilesetTiles_HotCave[] = INCBIN_U32("data/tilesets/secondary/hot_cave/tiles.4bpp.lz");
+const u32 gTilesetTiles_Volcano[] = INCBIN_U32("data/tilesets/secondary/volcano/tiles.4bpp.lz");
+
+const u16 gTilesetPalettes_Dojo[][16] =
+{
+	INCBIN_U16("data/tilesets/secondary/dojo/palettes/00.gbapal"),
+	INCBIN_U16("data/tilesets/secondary/dojo/palettes/01.gbapal"),
+	INCBIN_U16("data/tilesets/secondary/dojo/palettes/02.gbapal"),
+	INCBIN_U16("data/tilesets/secondary/dojo/palettes/03.gbapal"),
+	INCBIN_U16("data/tilesets/secondary/dojo/palettes/04.gbapal"),
+	INCBIN_U16("data/tilesets/secondary/dojo/palettes/05.gbapal"),
+	INCBIN_U16("data/tilesets/secondary/dojo/palettes/06.gbapal"),
+	INCBIN_U16("data/tilesets/secondary/dojo/palettes/07.gbapal"),
+	INCBIN_U16("data/tilesets/secondary/dojo/palettes/08.gbapal"),
+	INCBIN_U16("data/tilesets/secondary/dojo/palettes/09.gbapal"),
+	INCBIN_U16("data/tilesets/secondary/dojo/palettes/10.gbapal"),
+	INCBIN_U16("data/tilesets/secondary/dojo/palettes/11.gbapal"),
+	INCBIN_U16("data/tilesets/secondary/dojo/palettes/12.gbapal"),
+};
+
+const u32 gTilesetTiles_Dojo[] = INCBIN_U32("data/tilesets/secondary/dojo/tiles.4bpp.lz");

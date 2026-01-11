@@ -1168,12 +1168,12 @@ EventScript_VsSeekerChargingDone::
 	.include "data/maps/IceCaveTemplates_TreasureRoom/scripts.inc"
 	.include "data/maps/IceCaveTemplates_ChallengeRoom/scripts.inc"
 	.include "data/maps/IceCaveTemplates_Room1/scripts.inc"
-	.include "data/maps/HotCaveTemplates_Connections/scripts.inc"
-	.include "data/maps/HotCaveTemplates_BossRoom/scripts.inc"
-	.include "data/maps/HotCaveTemplates_ShopRoom/scripts.inc"
-	.include "data/maps/HotCaveTemplates_TreasureRoom/scripts.inc"
-	.include "data/maps/HotCaveTemplates_ChallengeRoom/scripts.inc"
-	.include "data/maps/HotCaveTemplates_Room1/scripts.inc"
+	.include "data/maps/VolcanoTemplates_Connections/scripts.inc"
+	.include "data/maps/VolcanoTemplates_BossRoom/scripts.inc"
+	.include "data/maps/VolcanoTemplates_ShopRoom/scripts.inc"
+	.include "data/maps/VolcanoTemplates_TreasureRoom/scripts.inc"
+	.include "data/maps/VolcanoTemplates_ChallengeRoom/scripts.inc"
+	.include "data/maps/VolcanoTemplates_Room1/scripts.inc"
 	.include "data/maps/PowerPlantTemplates_Connections/scripts.inc"
 	.include "data/maps/PowerPlantTemplates_BossRoom/scripts.inc"
 	.include "data/maps/PowerPlantTemplates_ShopRoom/scripts.inc"
@@ -1184,3 +1184,15 @@ EventScript_VsSeekerChargingDone::
 	.include "data/maps/IceCaveTemplates_Room2/scripts.inc"
 
 	.include "data/maps/IceCaveTemplates_Room3/scripts.inc"
+
+	.include "data/maps/DojoTemplates_Connections/scripts.inc"
+
+	.include "data/maps/DojoTemplates_BossRoom/scripts.inc"
+
+	.include "data/maps/DojoTemplates_ShopRoom/scripts.inc"
+
+	.include "data/maps/DojoTemplates_TreasureRoom/scripts.inc"
+
+	.include "data/maps/DojoTemplates_ChallengeRoom/scripts.inc"
+
+	.include "data/maps/DojoTemplates_Room1/scripts.inc"

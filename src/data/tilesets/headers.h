@@ -853,13 +853,24 @@ const struct Tileset gTileset_IceCave =
     .callback = NULL,
 };
 
-const struct Tileset gTileset_HotCave =
+const struct Tileset gTileset_Volcano =
 {
     .isCompressed = TRUE,
     .isSecondary = TRUE,
-    .tiles = gTilesetTiles_HotCave,
-    .palettes = gTilesetPalettes_HotCave,
-    .metatiles = gMetatiles_HotCave,
-    .metatileAttributes = gMetatileAttributes_HotCave,
+    .tiles = gTilesetTiles_Volcano,
+    .palettes = gTilesetPalettes_Volcano,
+    .metatiles = gMetatiles_Volcano,
+    .metatileAttributes = gMetatileAttributes_Volcano,
+    .callback = NULL,
+};
+
+const struct Tileset gTileset_Dojo =
+{
+    .isCompressed = TRUE,
+    .isSecondary = TRUE,
+    .tiles = gTilesetTiles_Dojo,
+    .palettes = gTilesetPalettes_Dojo,
+    .metatiles = gMetatiles_Dojo,
+    .metatileAttributes = gMetatileAttributes_Dojo,
     .callback = NULL,
 };

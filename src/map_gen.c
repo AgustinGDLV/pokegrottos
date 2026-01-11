@@ -270,7 +270,7 @@ u32 GetRoomInDirection(u32 dir)
 // Returns whether the player is inside a template floor.
 bool32 IsPlayerInFloorMap(void)
 {
-    return gSaveBlock1Ptr->location.mapGroup >= TEMPLATE_MAP_GROUP_START;
+    return (gSaveBlock1Ptr->location.mapGroup <= TEMPLATE_MAP_GROUP_END);
 }
 
 

@@ -15,7 +15,7 @@
 #define STARTING_ROOM               45
 
 // Template Constants
-#define TEMPLATE_MAP_GROUP_START    34
+#define TEMPLATE_MAP_GROUP_END      MAP_GROUP(DOJO_TEMPLATES_CONNECTIONS)
 
 // Room Constants
 #define ROOM_COORD(x, y)            ((x+1) + (y+1)*10)  // gFloorplan.layout is not zero-indexed
@@ -39,6 +39,7 @@ enum TemplateTypes {
     TEMPLATES_ICE_PATH,
     TEMPLATES_VOLCANO,
     TEMPLATES_POWER_PLANT,
+    TEMPLATES_DOJO,
     TEMPLATE_TYPES_COUNT,
 };
 

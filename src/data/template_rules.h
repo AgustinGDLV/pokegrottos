@@ -181,7 +181,7 @@ static const u8 sCaveNormalRooms[] =
 };
 
 // Volcano Template Pools
-static const u8 sHotCaveNormalRooms[] =
+static const u8 sVolcanoNormalRooms[] =
 {
     MAP_NUM(ICE_CAVE_TEMPLATES_ROOM1),
 };
@@ -198,6 +198,12 @@ static const u8 sIceCaveNormalRooms[] =
 static const u8 sPowerPlantNormalRooms[] =
 {
     MAP_NUM(POWER_PLANT_TEMPLATES_ROOM1),
+};
+
+// Dojo Template Pools
+static const u8 sDojoNormalRooms[] =
+{
+    MAP_NUM(DOJO_TEMPLATES_ROOM1),
 };
 
 const struct TemplateRules gTemplateRules[TEMPLATE_TYPES_COUNT] = 
@@ -268,7 +274,7 @@ const struct TemplateRules gTemplateRules[TEMPLATE_TYPES_COUNT] =
 
     [TEMPLATES_VOLCANO] =
     {
-        .mapGroup = MAP_GROUP(HOT_CAVE_TEMPLATES_ROOM1),
+        .mapGroup = MAP_GROUP(VOLCANO_TEMPLATES_ROOM1),
         .bgm = MUS_DP_STARK_MOUNTAIN,
         .previewId = PREVIEW_MT_EMBER,
         .battleTerrain = BATTLE_ENVIRONMENT_CAVE,
@@ -279,12 +285,12 @@ const struct TemplateRules gTemplateRules[TEMPLATE_TYPES_COUNT] =
             [DIR_EAST] = {0, 0},
             [DIR_WEST] = {-2, 0},
         },
-        .numNormalRooms = ARRAY_COUNT(sHotCaveNormalRooms),
-        .normalRoomIds = sHotCaveNormalRooms,
+        .numNormalRooms = ARRAY_COUNT(sVolcanoNormalRooms),
+        .normalRoomIds = sVolcanoNormalRooms,
         .specialRoomIds = {
-            [BOSS_ROOM] = MAP_NUM(HOT_CAVE_TEMPLATES_BOSS_ROOM),
-            [TREASURE_ROOM] = MAP_NUM(HOT_CAVE_TEMPLATES_TREASURE_ROOM),
-            [SHOP_ROOM] = MAP_NUM(HOT_CAVE_TEMPLATES_SHOP_ROOM),
+            [BOSS_ROOM] = MAP_NUM(VOLCANO_TEMPLATES_BOSS_ROOM),
+            [TREASURE_ROOM] = MAP_NUM(VOLCANO_TEMPLATES_TREASURE_ROOM),
+            [SHOP_ROOM] = MAP_NUM(VOLCANO_TEMPLATES_SHOP_ROOM),
         },
         .itemPools = gDefaultItemPools,
         .encounterPool = {
@@ -327,6 +333,42 @@ const struct TemplateRules gTemplateRules[TEMPLATE_TYPES_COUNT] =
             {SPECIES_MINUN, 100},
             {SPECIES_ZIGZAGOON, 100},
             {SPECIES_GRIMER, 100},
+        }
+    },
+
+    [TEMPLATES_DOJO] =
+    {
+        .mapGroup = MAP_GROUP(DOJO_TEMPLATES_CONNECTIONS),
+        .bgm = MUS_HG_BURNED_TOWER,
+        .previewId = PREVIEW_POWER_PLANT,
+        .battleTerrain = BATTLE_ENVIRONMENT_CAVE,
+        .connectionType = CONNECTION_TYPE_SEAMLESS,
+        .offsets = {
+            [DIR_NORTH] = {-2, -1},
+            [DIR_SOUTH] = {-2, -5},
+            [DIR_EAST] = {-3, -4},
+            [DIR_WEST] = {-1, -4},
+        },
+        .numNormalRooms = ARRAY_COUNT(sDojoNormalRooms),
+        .normalRoomIds = sDojoNormalRooms,
+        .specialRoomIds = {
+            [BOSS_ROOM] = MAP_NUM(DOJO_TEMPLATES_BOSS_ROOM),
+            [TREASURE_ROOM] = MAP_NUM(DOJO_TEMPLATES_BOSS_ROOM),
+            [SHOP_ROOM] = MAP_NUM(DOJO_TEMPLATES_BOSS_ROOM),
+        },
+        .itemPools = gDefaultItemPools,
+        .encounterPool = {
+            {SPECIES_TYROGUE, 100},
+            {SPECIES_MEDITITE, 100},
+            {SPECIES_RIOLU, 100},
+            {SPECIES_MAKUHITA, 100},
+            {SPECIES_SNUBBULL, 100},
+            {SPECIES_BUNEARY, 100},
+            {SPECIES_ELEKID, 100},
+            {SPECIES_POLIWAG, 100},
+            {SPECIES_PAWNIARD, 100},
+            // {SPECIES_SAWK, 100},
+            // {SPECIES_THROH, 100},
         }
     },
 };

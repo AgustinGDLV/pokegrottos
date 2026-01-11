@@ -999,7 +999,8 @@ void Weather_SetBlendCoeffs(u8 eva, u8 evb)
 
     // don't update BLDALPHA if a hardware fade is on-screen
     if ((GetGpuReg(REG_OFFSET_BLDCNT) & BLDCNT_EFFECT_EFF_MASK) < BLDCNT_EFFECT_LIGHTEN)
-        SetGpuReg(REG_OFFSET_BLDALPHA, BLDALPHA_BLEND(eva, evb));
+        // SetGpuReg(REG_OFFSET_BLDALPHA, BLDALPHA_BLEND(eva, evb));
+        SetGpuReg(REG_OFFSET_BLDALPHA, BLDALPHA_BLEND(14, 8)); // TODO: Finish standardizing blend with minimap.
 }
 
 void Weather_SetTargetBlendCoeffs(u8 eva, u8 evb, int delay)

@@ -1,5 +1,10 @@
 {
   "group_order": [
+    "gMapGroup_CaveTemplates",
+    "gMapGroup_IceCaveTemplates",
+    "gMapGroup_VolcanoTemplates",
+    "gMapGroup_PowerPlantTemplates",
+    "gMapGroup_DojoTemplates",
     "gMapGroup_TownsAndRoutes",
     "gMapGroup_IndoorLittleroot",
     "gMapGroup_IndoorOldale",
@@ -33,11 +38,49 @@
     "gMapGroup_IndoorRoute113",
     "gMapGroup_IndoorRoute123",
     "gMapGroup_IndoorRoute119",
-    "gMapGroup_IndoorRoute124",
-    "gMapGroup_CaveTemplates",
-    "gMapGroup_IceCaveTemplates",
-    "gMapGroup_HotCaveTemplates",
-    "gMapGroup_PowerPlantTemplates"
+    "gMapGroup_IndoorRoute124"
+  ],
+  "gMapGroup_CaveTemplates": [
+    "CaveTemplates_Connections",
+    "CaveTemplates_BossRoom",
+    "CaveTemplates_ShopRoom",
+    "CaveTemplates_TreasureRoom",
+    "CaveTemplates_ChallengeRoom",
+    "CaveTemplates_Room1"
+  ],
+  "gMapGroup_IceCaveTemplates": [
+    "IceCaveTemplates_Connections",
+    "IceCaveTemplates_BossRoom",
+    "IceCaveTemplates_ShopRoom",
+    "IceCaveTemplates_TreasureRoom",
+    "IceCaveTemplates_ChallengeRoom",
+    "IceCaveTemplates_Room1",
+    "IceCaveTemplates_Room2",
+    "IceCaveTemplates_Room3"
+  ],
+  "gMapGroup_VolcanoTemplates": [
+    "VolcanoTemplates_Connections",
+    "VolcanoTemplates_BossRoom",
+    "VolcanoTemplates_ShopRoom",
+    "VolcanoTemplates_TreasureRoom",
+    "VolcanoTemplates_ChallengeRoom",
+    "VolcanoTemplates_Room1"
+  ],
+  "gMapGroup_PowerPlantTemplates": [
+    "PowerPlantTemplates_Connections",
+    "PowerPlantTemplates_BossRoom",
+    "PowerPlantTemplates_ShopRoom",
+    "PowerPlantTemplates_TreasureRoom",
+    "PowerPlantTemplates_ChallengeRoom",
+    "PowerPlantTemplates_Room1"
+  ],
+  "gMapGroup_DojoTemplates": [
+    "DojoTemplates_Connections",
+    "DojoTemplates_BossRoom",
+    "DojoTemplates_ShopRoom",
+    "DojoTemplates_TreasureRoom",
+    "DojoTemplates_ChallengeRoom",
+    "DojoTemplates_Room1"
   ],
   "gMapGroup_TownsAndRoutes": [
     "PetalburgCity",
@@ -624,39 +667,5 @@
   ],
   "gMapGroup_IndoorRoute124": [
     "Route124_DivingTreasureHuntersHouse"
-  ],
-  "gMapGroup_CaveTemplates": [
-    "CaveTemplates_Connections",
-    "CaveTemplates_BossRoom",
-    "CaveTemplates_ShopRoom",
-    "CaveTemplates_TreasureRoom",
-    "CaveTemplates_ChallengeRoom",
-    "CaveTemplates_Room1"
-  ],
-  "gMapGroup_IceCaveTemplates": [
-    "IceCaveTemplates_Connections",
-    "IceCaveTemplates_BossRoom",
-    "IceCaveTemplates_ShopRoom",
-    "IceCaveTemplates_TreasureRoom",
-    "IceCaveTemplates_ChallengeRoom",
-    "IceCaveTemplates_Room1",
-    "IceCaveTemplates_Room2",
-    "IceCaveTemplates_Room3"
-  ],
-  "gMapGroup_HotCaveTemplates": [
-    "HotCaveTemplates_Connections",
-    "HotCaveTemplates_BossRoom",
-    "HotCaveTemplates_ShopRoom",
-    "HotCaveTemplates_TreasureRoom",
-    "HotCaveTemplates_ChallengeRoom",
-    "HotCaveTemplates_Room1"
-  ],
-  "gMapGroup_PowerPlantTemplates": [
-    "PowerPlantTemplates_Connections",
-    "PowerPlantTemplates_BossRoom",
-    "PowerPlantTemplates_ShopRoom",
-    "PowerPlantTemplates_TreasureRoom",
-    "PowerPlantTemplates_ChallengeRoom",
-    "PowerPlantTemplates_Room1"
   ]
 }
