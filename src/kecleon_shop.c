@@ -88,7 +88,7 @@ static const struct WindowTemplate sShopWinTemplates[WINDOW_COUNT + 1] =
 		.bg = 0,
 		.tilemapLeft = 1,
 		.tilemapTop = 15,
-		.width = 21,
+		.width = 20,
 		.height = 4,
 		.paletteNum = 15,
 		.baseBlock = 1,
@@ -96,9 +96,9 @@ static const struct WindowTemplate sShopWinTemplates[WINDOW_COUNT + 1] =
     [WIN_ACTIONS] =
     {
         .bg = 0,
-		.tilemapLeft = 24,
+		.tilemapLeft = 23,
 		.tilemapTop = 13,
-		.width = 5,
+		.width = 6,
 		.height = 6,
 		.paletteNum = 15,
 		.baseBlock = 1 + 21*4 + 5*5,
@@ -275,11 +275,11 @@ static const u8 sText_VisitAgain[] = _("Please do visit again! {EMOJI_TILDE}{EMO
 static const u8 sText_NotEnoughMoney[] = _("Huh? You don't seem\nto have the money…{PAUSE 24}");
 static const u8 sText_NoMoreMerchandise[] = _("That's it! No more merchandise!\nI'm completely sold out!{PAUSE 24}");
 static const u8 sText_ImSoldOut[] = _("I'm sold out… I will have new\nmerchandise later, I swear!{PAUSE 24}");
-static const u8 sText_Buy[]     = _("Buy");
-static const u8 sText_Sell[]    = _("Sell");
-static const u8 sText_Exit[]    = _("Exit");
-static const u8 sText_Yes[]     = _("Yes");
-static const u8 sText_No[]      = _("No    "); // fixing visual artifact don't ask
+static const u8 sText_Buy[]     = _("BUY");
+static const u8 sText_Sell[]    = _("SELL");
+static const u8 sText_Exit[]    = _("EXIT");
+static const u8 sText_Yes[]     = _("YES");
+static const u8 sText_No[]      = _("NO    "); // fixing visual artifact don't ask
 static const u8 sText_Empty[]   = _("");
 
 // list menus

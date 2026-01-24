@@ -922,6 +922,8 @@ gGBSSongTable::
 	song_gbs MUS_CAVE_OF_ORIGIN, gbs_Music_CaveOfOrigin, 0, 0
 	song_gbs MUS_MT_PYRE, gbs_Music_ShoalCave, 0, 0
 	song_gbs MUS_HG_SPROUT_TOWER, gbs_Music_SproutTower, 0, 0
+	song_gbs MUS_POKE_MART, gbs_Music_PokemonMart, 0, 0
+	song_gbs MUS_HG_POKE_MART, gbs_Music_FriendlyShop, 0, 0
 	.4byte 0xFFFFFFFF
 
 	.align 2

@@ -211,7 +211,7 @@ const struct TemplateRules gTemplateRules[TEMPLATE_TYPES_COUNT] =
     [TEMPLATES_CAVE] =
     {
         .mapGroup = MAP_GROUP(CAVE_TEMPLATES_ROOM1),
-        .bgm = MUS_RG_SEVII_CAVE,
+        .bgm = MUS_CAVE_OF_ORIGIN,
         .previewId = PREVIEW_MT_MOON,
         .battleTerrain = BATTLE_ENVIRONMENT_CAVE,
         .connectionType = CONNECTION_TYPE_WARP,

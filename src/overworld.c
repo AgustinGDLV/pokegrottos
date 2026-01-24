@@ -1170,7 +1170,7 @@ u16 GetLocationMusic(struct WarpData *warp)
     if (IsPlayerInFloorMap() && GetRoomType(gSaveBlock1Ptr->currentRoom) == BOSS_ROOM)
         return MUS_NONE;
     else if (IsPlayerInFloorMap() && GetRoomType(gSaveBlock1Ptr->currentRoom) == SHOP_ROOM)
-        return MUS_POKE_MART;
+        return MUS_HG_POKE_MART;
     else if (IsPlayerInFloorMap())
         return GetCurrentTemplateRules()->bgm;
     else if (NoMusicInSotopolisWithLegendaries(warp) == TRUE)

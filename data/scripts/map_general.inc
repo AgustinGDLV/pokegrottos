@@ -29,8 +29,8 @@ EventScript_KecleonShop::
 	end
 
 EventScript_EnterBossRoom_Text:
-	.string "You sense a strong presence ahead...\n"
-	.string "Should you enter?$"
+	.string "You sense a strong presence\n"
+	.string "ahead… Should you enter?$"
 
 EventScript_EnterBossRoom::
 	goto_if_set FLAG_BOSS_ENCOUNTER, EventScript_WarpToBossRoom
