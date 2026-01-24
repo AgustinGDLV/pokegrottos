@@ -50,7 +50,8 @@ enum Expressions
 
 enum PortraitTags
 {
-    TAG_KECLEON_NORMAL = 9000,
+    TAG_FRAME = 9000,
+    TAG_KECLEON_NORMAL,
     TAG_KECLEON_HAPPY,
     TAG_KECLEON_JOYOUS,
     TAG_KECLEON_SURPRISED,
@@ -60,7 +61,6 @@ enum PortraitTags
 enum Windows
 {
 	WIN_MESSAGE,
-    WIN_PORTRAIT,
     WIN_ACTIONS,
     WIN_ICON_YESNO,
     WIN_MONEY,
@@ -93,16 +93,6 @@ static const struct WindowTemplate sShopWinTemplates[WINDOW_COUNT + 1] =
 		.paletteNum = 15,
 		.baseBlock = 1,
 	},
-    [WIN_PORTRAIT] =
-    {
-        .bg = 0,
-		.tilemapLeft = 1,
-		.tilemapTop = 9,
-		.width = 4,
-		.height = 4,
-		.paletteNum = 15,
-		.baseBlock = 1 + 21*4,
-    },
     [WIN_ACTIONS] =
     {
         .bg = 0,
@@ -146,15 +136,22 @@ static const struct WindowTemplate sShopWinTemplates[WINDOW_COUNT + 1] =
 };
 
 // sprite data
+static const u8 sPortraitFrameGfx[]     = INCBIN_U8("graphics/interface/portrait_frame.4bpp");
 static const u8 sKecleonNormalGfx[]     = INCBIN_U8("graphics/interface/kecleon_portrait_normal.4bpp");
 static const u8 sKecleonHappyGfx[]      = INCBIN_U8("graphics/interface/kecleon_portrait_happy.4bpp");
 static const u8 sKecleonJoyousGfx[]     = INCBIN_U8("graphics/interface/kecleon_portrait_joyous.4bpp");
-static const u8 sKecleonSurprisedGfx[]     = INCBIN_U8("graphics/interface/kecleon_portrait_surprised.4bpp");
-static const u8 sKecleonSighGfx[]     = INCBIN_U8("graphics/interface/kecleon_portrait_sigh.4bpp");
+static const u8 sKecleonSurprisedGfx[]  = INCBIN_U8("graphics/interface/kecleon_portrait_surprised.4bpp");
+static const u8 sKecleonSighGfx[]       = INCBIN_U8("graphics/interface/kecleon_portrait_sigh.4bpp");
+static const u16 sPortraitFramePal[]    = INCBIN_U16("graphics/interface/portrait_frame.gbapal");
 static const u16 sKecleonNormalPal[]    = INCBIN_U16("graphics/interface/kecleon_portrait_normal.gbapal");
 static const u16 sKecleonJoyousPal[]    = INCBIN_U16("graphics/interface/kecleon_portrait_joyous.gbapal");
-static const u16 sKecleonSurprisedPal[]    = INCBIN_U16("graphics/interface/kecleon_portrait_surprised.gbapal");
-static const u16 sKecleonSighPal[]    = INCBIN_U16("graphics/interface/kecleon_portrait_sigh.gbapal");
+static const u16 sKecleonSurprisedPal[] = INCBIN_U16("graphics/interface/kecleon_portrait_surprised.gbapal");
+static const u16 sKecleonSighPal[]      = INCBIN_U16("graphics/interface/kecleon_portrait_sigh.gbapal");
+
+static const struct SpriteSheet sPortraitFrameSpriteSheet =
+{
+    sPortraitFrameGfx, sizeof(sPortraitFrameGfx), TAG_FRAME,
+};
 
 static const struct SpriteSheet sKecleonSpriteSheets[] = 
 {
@@ -163,6 +160,11 @@ static const struct SpriteSheet sKecleonSpriteSheets[] =
     {sKecleonJoyousGfx, sizeof(sKecleonJoyousGfx), TAG_KECLEON_JOYOUS},
     {sKecleonSurprisedGfx, sizeof(sKecleonSurprisedGfx), TAG_KECLEON_SURPRISED},
     {sKecleonSighGfx, sizeof(sKecleonSighGfx), TAG_KECLEON_SIGH},
+};
+
+static const struct SpritePalette sPortraitFrameSpritePalette =
+{
+    sPortraitFramePal, TAG_FRAME,
 };
 
 static const struct SpritePalette sKecleonSpritePalettes[] = 
@@ -184,6 +186,17 @@ static const struct OamData sKecleonOAM =
 };
 
 static void SpriteCB_Dummy(struct Sprite *sprite) {}
+static const struct SpriteTemplate sPortraitFrameSpriteTemplate =
+{
+	.tileTag = TAG_FRAME,
+	.paletteTag = TAG_FRAME,
+	.oam = &sKecleonOAM,
+	.anims = gDummySpriteAnimTable,
+	.images = NULL,
+	.affineAnims = gDummySpriteAffineAnimTable,
+	.callback = SpriteCB_Dummy,
+};
+
 static const struct SpriteTemplate sKecleonNormalSpriteTemplate =
 {
 	.tileTag = TAG_KECLEON_NORMAL,
@@ -372,6 +385,7 @@ EWRAM_DATA static u8 sShopWindowIds[WINDOW_COUNT] = {0};
 EWRAM_DATA static bool8 sCreateCommonWindows = FALSE;
 EWRAM_DATA static u8 sKecleonPortraitSpriteId = 0;
 EWRAM_DATA static u8 sItemIconSpriteId = 0;
+EWRAM_DATA static u8 sFrameSpriteId = 0;
 EWRAM_DATA static const u8 * sKecleonMessageText = NULL;
 EWRAM_DATA static enum Expressions sKecleonExpression = 0;
 EWRAM_DATA static u32 sStartingMoney = 0;
@@ -410,6 +424,11 @@ void InitKecleonShop(void)
     sKecleonMessageText = sText_WelcomeToKecleonShop;
     for (i = 0; i < WINDOW_COUNT; ++i)
         sShopWindowIds[i] = 0xFF;
+
+    LoadSpriteSheet(&sPortraitFrameSpriteSheet);
+    LoadSpritePalette(&sPortraitFrameSpritePalette);
+    sFrameSpriteId = CreateSprite(&sPortraitFrameSpriteTemplate, 36, 100, 15);
+
     ScriptContext_Stop();
     FreezeObjectEvents();
     LockPlayerFieldControls();
@@ -457,7 +476,7 @@ static void DrawKecleonPortrait(enum Expressions type)
 
     LoadSpritePalette(&sKecleonSpritePalettes[type]);
     LoadSpriteSheet(&sKecleonSpriteSheets[type]);
-    sKecleonPortraitSpriteId = CreateSprite(sKecleonSpriteTemplates[type], 36, 100, 0);
+    sKecleonPortraitSpriteId = CreateSprite(sKecleonSpriteTemplates[type], 36, 100, 15);
 }
 
 static void KecleonShop_ShowIntroScreen(u8 taskId)
@@ -470,7 +489,6 @@ static void KecleonShop_ShowIntroScreen(u8 taskId)
     {
         LoadMessageBoxAndBorderGfx();
         DrawWindow(WIN_MESSAGE);
-        DrawWindow(WIN_PORTRAIT);
         sCreateCommonWindows = FALSE;
     }
     DrawWindow(WIN_ACTIONS);
@@ -517,7 +535,8 @@ static void KecleonShop_ShowBuyScreenDisplayItems(u8 taskId)
     {
         LoadMessageBoxAndBorderGfx();
         DrawWindow(WIN_MESSAGE);
-        DrawWindow(WIN_PORTRAIT);
+        if (sFrameSpriteId == 0xFF)
+            sFrameSpriteId = CreateSprite(&sPortraitFrameSpriteTemplate, 36, 100, 15);
         sCreateCommonWindows = FALSE;
     }
     DrawWindow(WIN_ICON_YESNO);
@@ -591,6 +610,9 @@ static void KecleonShop_DestroyIntroScreen(u8 taskId)
     FreeSpriteTiles(&gSprites[sKecleonPortraitSpriteId]);
     DestroySprite(&gSprites[sKecleonPortraitSpriteId]);
     DestroyListMenuTask(gTasks[taskId].tMenuTaskId, NULL, NULL);
+    FreeSpriteTiles(&gSprites[sFrameSpriteId]);
+    FreeSpritePalette(&gSprites[sFrameSpriteId]);
+    DestroySprite(&gSprites[sFrameSpriteId]);
     gTasks[taskId].func = KecleonShop_ReturnToField;
 }
 
