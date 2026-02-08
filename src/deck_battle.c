@@ -794,7 +794,7 @@ void SwapBattlerPositions(u32 battler1, u32 battler2)
 s32 CalculateDamage(u32 battlerAtk, u32 battlerDef, u32 move)
 {
     u32 movePower = gDeckMovesInfo[move].power;
-    u32 level = gDeckMons[battlerAtk].lvl;
+    u32 level = 50;
     u32 power = gDeckMons[battlerAtk].power + gDeckMons[battlerAtk].powerBoost;
     u32 defense = gDeckMons[battlerDef].def;
 
