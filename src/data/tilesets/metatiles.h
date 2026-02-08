@@ -219,3 +219,16 @@ const u16 gMetatileAttributes_Volcano[] = INCBIN_U16("data/tilesets/secondary/vo
 
 const u16 gMetatiles_Dojo[] = INCBIN_U16("data/tilesets/secondary/dojo/metatiles.bin");
 const u16 gMetatileAttributes_Dojo[] = INCBIN_U16("data/tilesets/secondary/dojo/metatile_attributes.bin");
+
+// GBC
+const u16 gMetatiles_Overworld[] = INCBIN_U16("data/tilesets/primary/overworld/metatiles.bin");
+const u16 gMetatileAttributes_Overworld[] = INCBIN_U16("data/tilesets/primary/overworld/metatile_attributes.bin");
+
+const u16 gMetatiles_Indoor[] = INCBIN_U16("data/tilesets/primary/indoor/metatiles.bin");
+const u16 gMetatileAttributes_Indoor[] = INCBIN_U16("data/tilesets/primary/indoor/metatile_attributes.bin");
+
+const u16 gMetatiles_CavePrimary[] = INCBIN_U16("data/tilesets/primary/cave/metatiles.bin");
+const u16 gMetatileAttributes_CavePrimary[] = INCBIN_U16("data/tilesets/primary/cave/metatile_attributes.bin");
+
+const u16 gMetatiles_UnderwaterPrimary[] = INCBIN_U16("data/tilesets/primary/underwater/metatiles.bin");
+const u16 gMetatileAttributes_UnderwaterPrimary[] = INCBIN_U16("data/tilesets/primary/underwater/metatile_attributes.bin");

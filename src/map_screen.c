@@ -12,6 +12,7 @@
 #include "international_string_util.h"
 #include "item_menu.h"
 #include "sound.h"
+#include "m4a.h"
 #include "map_gen.h"
 #include "map_screen.h"
 #include "malloc.h"
@@ -348,6 +349,7 @@ void CB2_MapScreen(void)
         case 8:
             SetVBlankCallback(VBlankCB_MapScreen);
             InitMapScreen();
+            m4aMPlayVolumeControl(&gMPlayInfo_BGM, TRACKS_ALL, 0x80);
             CreateTask(Task_MapScreenFadeIn, 0);
             SetMainCallback2(MainCB2_MapScreen);
             break;
@@ -359,6 +361,7 @@ static void Task_MapScreenFadeOutAndExit(u8 taskId)
 	if (!gPaletteFade.active)
 	{
         SetMainCallback2(CB2_ReturnToField);
+        m4aMPlayVolumeControl(&gMPlayInfo_BGM, TRACKS_ALL, 0x100);
 		Free(sMapScreenTilemapPtr);
         sMapScreenTilemapPtr = NULL;
 		FreeAllWindowBuffers();

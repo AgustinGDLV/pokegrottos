@@ -874,3 +874,48 @@ const struct Tileset gTileset_Dojo =
     .metatileAttributes = gMetatileAttributes_Dojo,
     .callback = NULL,
 };
+
+const struct Tileset gTileset_Overworld =
+{
+    .isCompressed = FALSE,
+    .isSecondary = FALSE,
+    .tiles = gTilesetTiles_Overworld,
+    .palettes = gTilesetPalettes_Overworld,
+    .metatiles = gMetatiles_Overworld,
+    .metatileAttributes = gMetatileAttributes_Overworld,
+    .callback = InitTilesetAnim_Overworld,
+};
+
+
+const struct Tileset gTileset_Indoor =
+{
+    .isCompressed = FALSE,
+    .isSecondary = FALSE,
+    .tiles = gTilesetTiles_Indoor,
+    .palettes = gTilesetPalettes_Indoor,
+    .metatiles = gMetatiles_Indoor,
+    .metatileAttributes = gMetatileAttributes_Indoor,
+    .callback = NULL,
+};
+
+const struct Tileset gTileset_CavePrimary =
+{
+    .isCompressed = FALSE,
+    .isSecondary = FALSE,
+    .tiles = gTilesetTiles_CavePrimary,
+    .palettes = gTilesetPalettes_CavePrimary,
+    .metatiles = gMetatiles_CavePrimary,
+    .metatileAttributes = gMetatileAttributes_CavePrimary,
+    .callback = NULL,
+};
+
+const struct Tileset gTileset_UnderwaterPrimary =
+{
+    .isCompressed = FALSE,
+    .isSecondary = FALSE,
+    .tiles = gTilesetTiles_UnderwaterPrimary,
+    .palettes = gTilesetPalettes_UnderwaterPrimary,
+    .metatiles = gMetatiles_UnderwaterPrimary,
+    .metatileAttributes = gMetatileAttributes_UnderwaterPrimary,
+    .callback = NULL,
+};

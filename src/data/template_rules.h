@@ -177,7 +177,7 @@ const struct ItemPoolTable gDefaultItemPools[ITEM_TIER_COUNT] =
 // Cave Template Pools
 static const u8 sCaveNormalRooms[] =
 {
-    MAP_NUM(CAVE_TEMPLATES_ROOM1),
+    MAP_NUM(UNDERWATER_TEMPLATES_ROOM1),
 };
 
 // Volcano Template Pools
@@ -208,10 +208,10 @@ static const u8 sDojoNormalRooms[] =
 
 const struct TemplateRules gTemplateRules[TEMPLATE_TYPES_COUNT] = 
 {
-    [TEMPLATES_CAVE] =
+    [TEMPLATES_UNDERWATER] =
     {
-        .mapGroup = MAP_GROUP(CAVE_TEMPLATES_ROOM1),
-        .bgm = MUS_CAVE_OF_ORIGIN,
+        .mapGroup = MAP_GROUP(UNDERWATER_TEMPLATES_ROOM1),
+        .bgm = MUS_UNDERWATER,
         .previewId = PREVIEW_MT_MOON,
         .battleTerrain = BATTLE_ENVIRONMENT_CAVE,
         .connectionType = CONNECTION_TYPE_WARP,
@@ -224,19 +224,19 @@ const struct TemplateRules gTemplateRules[TEMPLATE_TYPES_COUNT] =
         .numNormalRooms = ARRAY_COUNT(sCaveNormalRooms),
         .normalRoomIds = sCaveNormalRooms,
         .specialRoomIds = {
-            [BOSS_ROOM] = MAP_NUM(CAVE_TEMPLATES_BOSS_ROOM),
-            [TREASURE_ROOM] = MAP_NUM(CAVE_TEMPLATES_TREASURE_ROOM),
-            [SHOP_ROOM] = MAP_NUM(CAVE_TEMPLATES_SHOP_ROOM),
+            [BOSS_ROOM] = MAP_NUM(UNDERWATER_TEMPLATES_BOSS_ROOM),
+            [TREASURE_ROOM] = MAP_NUM(UNDERWATER_TEMPLATES_TREASURE_ROOM),
+            [SHOP_ROOM] = MAP_NUM(UNDERWATER_TEMPLATES_SHOP_ROOM),
         },
         .itemPools = gDefaultItemPools,
         .encounterPool = {
-            {SPECIES_WHISMUR, 100},
-            {SPECIES_POOCHYENA, 100},
-            {SPECIES_GEODUDE, 100},
-            {SPECIES_ZUBAT, 100},
-            {SPECIES_ONIX, 100},
-            {SPECIES_ARON, 100},
-            {SPECIES_DIGLETT, 100},
+            {SPECIES_KRABBY, 100},
+            {SPECIES_KRABBY, 100},
+            {SPECIES_KRABBY, 100},
+            {SPECIES_KRABBY, 100},
+            {SPECIES_KRABBY, 100},
+            {SPECIES_KRABBY, 100},
+            {SPECIES_KRABBY, 100},
         }
     },
 

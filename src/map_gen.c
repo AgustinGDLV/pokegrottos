@@ -85,7 +85,7 @@ static void ZeroFloorplan(struct Floorplan* floorplan)
     floorplan->maxRooms = 0;
     ZeroQueue(&floorplan->queue);
     ZeroStack(&floorplan->endrooms);
-    floorplan->templateType = TEMPLATES_CAVE;
+    floorplan->templateType = TEMPLATES_UNDERWATER;
     memset(floorplan->layout, 0, sizeof(floorplan->layout));
     memset(floorplan->occupiedRooms, 0, sizeof(floorplan->occupiedRooms));
 }

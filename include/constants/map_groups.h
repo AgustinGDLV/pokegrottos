@@ -5,13 +5,13 @@
 // DO NOT MODIFY THIS FILE! It is auto-generated from data/maps/map_groups.json
 //
 
-// gMapGroup_CaveTemplates
-#define MAP_CAVE_TEMPLATES_CONNECTIONS    (0 | (0 << 8))
-#define MAP_CAVE_TEMPLATES_BOSS_ROOM      (1 | (0 << 8))
-#define MAP_CAVE_TEMPLATES_SHOP_ROOM      (2 | (0 << 8))
-#define MAP_CAVE_TEMPLATES_TREASURE_ROOM  (3 | (0 << 8))
-#define MAP_CAVE_TEMPLATES_CHALLENGE_ROOM (4 | (0 << 8))
-#define MAP_CAVE_TEMPLATES_ROOM1          (5 | (0 << 8))
+// gMapGroup_UnderwaterTemplates
+#define MAP_UNDERWATER_TEMPLATES_CONNECTIONS    (0 | (0 << 8))
+#define MAP_UNDERWATER_TEMPLATES_BOSS_ROOM      (1 | (0 << 8))
+#define MAP_UNDERWATER_TEMPLATES_SHOP_ROOM      (2 | (0 << 8))
+#define MAP_UNDERWATER_TEMPLATES_TREASURE_ROOM  (3 | (0 << 8))
+#define MAP_UNDERWATER_TEMPLATES_CHALLENGE_ROOM (4 | (0 << 8))
+#define MAP_UNDERWATER_TEMPLATES_ROOM1          (5 | (0 << 8))
 
 // gMapGroup_IceCaveTemplates
 #define MAP_ICE_CAVE_TEMPLATES_CONNECTIONS    (0 | (1 << 8))

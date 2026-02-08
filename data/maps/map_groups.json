@@ -1,6 +1,6 @@
 {
   "group_order": [
-    "gMapGroup_CaveTemplates",
+    "gMapGroup_UnderwaterTemplates",
     "gMapGroup_IceCaveTemplates",
     "gMapGroup_VolcanoTemplates",
     "gMapGroup_PowerPlantTemplates",
@@ -40,13 +40,13 @@
     "gMapGroup_IndoorRoute119",
     "gMapGroup_IndoorRoute124"
   ],
-  "gMapGroup_CaveTemplates": [
-    "CaveTemplates_Connections",
-    "CaveTemplates_BossRoom",
-    "CaveTemplates_ShopRoom",
-    "CaveTemplates_TreasureRoom",
-    "CaveTemplates_ChallengeRoom",
-    "CaveTemplates_Room1"
+  "gMapGroup_UnderwaterTemplates": [
+    "UnderwaterTemplates_Connections",
+    "UnderwaterTemplates_BossRoom",
+    "UnderwaterTemplates_ShopRoom",
+    "UnderwaterTemplates_TreasureRoom",
+    "UnderwaterTemplates_ChallengeRoom",
+    "UnderwaterTemplates_Room1"
   ],
   "gMapGroup_IceCaveTemplates": [
     "IceCaveTemplates_Connections",

@@ -2323,7 +2323,8 @@ static const s16 sBubbleStartCoords[][2] =
 
 void Bubbles_InitVars(void)
 {
-    FogHorizontal_InitVars();
+    // FogHorizontal_InitVars();
+    gWeatherPtr->weatherGfxLoaded = FALSE;
     if (!gWeatherPtr->bubblesSpritesCreated)
     {
         LoadSpriteSheet(&sWeatherBubbleSpriteSheet);
@@ -2332,7 +2333,7 @@ void Bubbles_InitVars(void)
         gWeatherPtr->bubblesCoordsIndex = 0;
         gWeatherPtr->bubblesSpriteCount = 0;
     }
-    gWeatherPtr->noShadows = TRUE;
+    gWeatherPtr->noShadows = FALSE;
 }
 
 void Bubbles_InitAll(void)
@@ -2344,7 +2345,7 @@ void Bubbles_InitAll(void)
 
 void Bubbles_Main(void)
 {
-    FogHorizontal_Main();
+    gWeatherPtr->weatherGfxLoaded = TRUE;
     if (++gWeatherPtr->bubblesDelayCounter > sBubbleStartDelays[gWeatherPtr->bubblesDelayIndex])
     {
         gWeatherPtr->bubblesDelayCounter = 0;
@@ -2359,12 +2360,7 @@ void Bubbles_Main(void)
 
 bool8 Bubbles_Finish(void)
 {
-    if (!FogHorizontal_Finish())
-    {
-        DestroyBubbleSprites();
-        return FALSE;
-    }
-
+    DestroyBubbleSprites();
     return TRUE;
 }
 
