@@ -379,7 +379,7 @@ const struct DeckSpeciesInfo gDeckSpeciesInfo[NUM_SPECIES] =
         .baseHP = 40,
         .basePower = 40,
         .baseDef = 60,
-        .move = MOVE_TACKLE,
+        .move = MOVE_FLORAL_HEALING,
         .ability = ABILITY_NONE,
 
         .playerIdle = gApplinPlayerIdleGfx,

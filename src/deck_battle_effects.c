@@ -38,11 +38,13 @@
 
 static void ExecuteHitEffect(void);
 static void ExecuteStatChangeEffect(void);
+static void ExecuteHealEffect(void);
 
 void (*const gMoveEffectFuncs[DECK_EFFECT_COUNT])(void) =
 {
-    [DECK_EFFECT_HIT]                               = ExecuteHitEffect,
-    [DECK_EFFECT_POWER_UP]                          = ExecuteStatChangeEffect,
+    [DECK_EFFECT_HIT]       = ExecuteHitEffect,
+    [DECK_EFFECT_POWER_UP]  = ExecuteStatChangeEffect,
+    [DECK_EFFECT_HEAL]      = ExecuteHealEffect,
 };
 
 #define tState  data[0]
@@ -82,7 +84,7 @@ static void ExecuteHitEffect(void)
 }
 
 static void ExecuteStatChangeEffect(void)
-{;
+{
     u32 targetsCount = 0;
     u32 aliveCount = 0;
     enum BattleId targets[MAX_DECK_BATTLERS_COUNT] = {0};
@@ -112,8 +114,43 @@ static void ExecuteStatChangeEffect(void)
     }
 }
 
+static void ExecuteHealEffect(void)
+{
+    s32 damage = 0;
+    u32 targetsCount = 0;
+    u32 aliveCount = 0;
+    enum BattleId targets[MAX_DECK_BATTLERS_COUNT] = {0};
+    PopulateTargetsList(targets, &targetsCount);
+
+    // Execute effect.
+    for (u32 i = 0; i < targetsCount; ++i)
+    {
+        if (IsDeckBattlerAlive(targets[i]))
+        {
+            gBattlerTarget = targets[i];
+            StartBattlerAnim(targets[i], ANIM_STAT_CHANGE);
+            gDeckStruct.lastHitDamage = damage = -(gDeckMons[targets[i]].maxHP * gDeckMovesInfo[gCurrentMove].power) / 100;
+            // DebugPrintf("damage: %d", damage);
+            UpdateBattlerHP(targets[i], damage);
+            aliveCount += 1;
+        }
+    }
+
+    // Print string.
+    if (aliveCount > 0)
+    {
+        PrintMoveOutcomeString();
+        PlaySE(SE_M_ABSORB_2);
+    }
+    else
+    {
+        PrintStringToMessageBox(COMPOUND_STRING("But it failed…"));
+    }
+}
+
 void Task_ExecuteMove(u8 taskId)
 {
+    DebugPrintf("state: %d", gTasks[taskId].tState);
     switch (gTasks[taskId].tState)
     {
     case 0: // Do attack animation.
@@ -153,7 +190,7 @@ void Task_ExecuteSwap(u8 taskId)
         ++gTasks[taskId].tState;
         break;
     case 1: // Wait for attack animation to execute damage.
-        if (++gTasks[taskId].tTimer >= 32) // right after cry
+        if (HasBattlerAnimTriggeredCry(gBattlerAttacker) || gSaveBlock2Ptr->optionsBattleSceneOff)
         {
             gTasks[taskId].tTimer = 0;
             ++gTasks[taskId].tState;
@@ -169,7 +206,7 @@ void Task_ExecuteSwap(u8 taskId)
         }
         break;
     case 3: // Wait for animation.
-        if (++gTasks[taskId].tTimer > 32)
+        if (++gTasks[taskId].tTimer >= 60)
             ++gTasks[taskId].tState;
         break;
     case 4:

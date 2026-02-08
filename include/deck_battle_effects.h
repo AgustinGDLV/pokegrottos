@@ -5,6 +5,7 @@ enum DeckMoveEffect
 {
     DECK_EFFECT_HIT,
     DECK_EFFECT_POWER_UP,
+    DECK_EFFECT_HEAL,
     DECK_EFFECT_COUNT,
 };
 

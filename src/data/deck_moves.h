@@ -53,4 +53,13 @@ const struct DeckMoveInfo gDeckMovesInfo[MOVES_COUNT] =
         .target = TARGET_SINGLE_OPPONENT,
         .effect = DECK_EFFECT_HIT,
     },
+
+    [MOVE_FLORAL_HEALING] =
+    {
+        .name = COMPOUND_STRING("NOURISH"),
+        .description = COMPOUND_STRING("Heals right ally."),
+        .power = 25,
+        .target = TARGET_RIGHT_ALLY,
+        .effect = DECK_EFFECT_HEAL,
+    },
 };

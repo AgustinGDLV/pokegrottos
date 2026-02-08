@@ -903,11 +903,11 @@ static u32 GetDamageDigit(u32 damage, u32 digit)
 	return result;
 }
 
-static void CreateDamageNumberSprite(u32 number, u32 numPrinted, enum BattleId battler)
+static void CreateDamageNumberSprite(u32 number, u32 numPrinted, enum BattleId battler, bool32 heal)
 {
 	u32 spriteId = CreateSprite(&sNumberSpriteTemplate, GetBattlerXCoord(battler) + (7 * numPrinted),
                                 GetBattlerYCoord(battler) - 16, 0);
-	StartSpriteAnim(&gSprites[spriteId], number);
+	gSprites[spriteId].oam.tileNum += number + heal*10;
 	gSprites[spriteId].sDelay = 2 * numPrinted;
 	gSprites[spriteId].sStayTimer = 45;
 	gSprites[spriteId].invisible = TRUE;
@@ -917,16 +917,20 @@ void PrintDamageNumbers(enum BattleId battler, s32 damage)
 {
 	u32 spriteNumber;
 	u32 numPrinted = 0; // used to avoid printing leading 0s
+    bool32 heal = FALSE;
 
 	if (damage < 0)
+    {
 		damage *= -1; // healing is shown as a positive value with a green palette
+        heal = TRUE;
+    }
 
 	// hundreds place
 	spriteNumber = GetDamageDigit(damage, 100);
 	damage -= spriteNumber * 100;
 	if (spriteNumber > 0 || numPrinted != 0)
 	{
-		CreateDamageNumberSprite(spriteNumber, numPrinted, battler);
+		CreateDamageNumberSprite(spriteNumber, numPrinted, battler, heal);
 		numPrinted++;
 	}
 
@@ -935,13 +939,13 @@ void PrintDamageNumbers(enum BattleId battler, s32 damage)
 	damage -= spriteNumber * 10;
 	if (spriteNumber > 0 || numPrinted != 0)
 	{
-		CreateDamageNumberSprite(spriteNumber, numPrinted, battler);
+		CreateDamageNumberSprite(spriteNumber, numPrinted, battler, heal);
 		numPrinted++;
 	}
 
 	// ones place
 	spriteNumber = damage;
-	CreateDamageNumberSprite(spriteNumber, numPrinted, battler);
+	CreateDamageNumberSprite(spriteNumber, numPrinted, battler, heal);
 }
 
 #undef sDelay
@@ -1001,7 +1005,7 @@ void PrintMoveOutcomeString(void) // *TODO: refactor
 {
     // Prepare string buffers.
     StringCopy(gStringVar2, GetSpeciesName(gDeckMons[gBattlerTarget].species)); // unsafe
-    ConvertIntToDecimalStringN(gStringVar3, gDeckStruct.lastHitDamage, STR_CONV_MODE_LEFT_ALIGN, 2);
+    ConvertIntToDecimalStringN(gStringVar3, abs(gDeckStruct.lastHitDamage), STR_CONV_MODE_LEFT_ALIGN, 2);
 
     if (gDeckMovesInfo[gCurrentMove].effect == DECK_EFFECT_HIT)
     {
@@ -1009,6 +1013,13 @@ void PrintMoveOutcomeString(void) // *TODO: refactor
             StringExpandPlaceholders(gStringVar1, COMPOUND_STRING("{STR_VAR_2} took {STR_VAR_3} damage!"));
         if (gDeckMovesInfo[gCurrentMove].target & TARGET_ALL_OPPONENTS)
             StringExpandPlaceholders(gStringVar1, COMPOUND_STRING("Opponents took damage!"));
+    }
+    if (gDeckMovesInfo[gCurrentMove].effect == DECK_EFFECT_HEAL)
+    {
+        if (gDeckMovesInfo[gCurrentMove].target & (TARGET_LEFT_ALLY | TARGET_RIGHT_ALLY | TARGET_SINGLE_ALLY))
+            StringExpandPlaceholders(gStringVar1, COMPOUND_STRING("{STR_VAR_2} healed {STR_VAR_3} HP!"));
+        if (gDeckMovesInfo[gCurrentMove].target & TARGET_ALL_ALLIES)
+            StringExpandPlaceholders(gStringVar1, COMPOUND_STRING("Allies had their HP healed!"));
     }
     else if (gDeckMovesInfo[gCurrentMove].effect == DECK_EFFECT_POWER_UP)
     {
