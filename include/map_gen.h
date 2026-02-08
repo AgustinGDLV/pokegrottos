@@ -60,6 +60,7 @@ struct Floorplan {
 };
 
 struct TemplateRules {
+    const u8 *name;
     u8 mapGroup;
     u16 bgm;
     u8 previewId;

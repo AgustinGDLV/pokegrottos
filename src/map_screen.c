@@ -48,8 +48,6 @@ enum {
 enum Windows
 {
 	WIN_FLOOR,
-    WIN_GENDER,
-    
 	WINDOW_COUNT,
 };
 
@@ -80,9 +78,9 @@ static const struct WindowTemplate sMapScreenWinTemplates[WINDOW_COUNT + 1] =
 		.bg = 1,
 		.tilemapLeft = 0,
 		.tilemapTop = 0,
-		.width = 8,
+		.width = 30,
 		.height = 2,
-		.paletteNum = 15,
+		.paletteNum = 0,
 		.baseBlock = 1,
 	},
 	DUMMY_WIN_TEMPLATE
@@ -437,14 +435,18 @@ static void Task_MapScreenFadeIn(u8 taskId)
 	}
 }
 
-static const u8 sText_Floor[] = _("Floor ");
 static void PrintFloorText(void)
 {
-	const u8 colour[] = {TEXT_COLOR_TRANSPARENT, TEXT_COLOR_WHITE, TEXT_COLOR_DARK_GRAY};
-	StringCopy(gStringVar1, sText_Floor);
+    // Print floor number.
+	const u8 textColor[] = {TEXT_COLOR_TRANSPARENT, 9, 8};
+	StringCopy(gStringVar1, COMPOUND_STRING("FLOOR "));
 	ConvertIntToDecimalStringN(gStringVar2, gSaveBlock1Ptr->currentFloor, STR_CONV_MODE_LEFT_ALIGN, 3);
 	StringAppend(gStringVar1, gStringVar2);
-	AddTextPrinterParameterized3(WIN_FLOOR, 0, 4, 0, colour, 0, gStringVar1);
+    u32 offset = GetStringRightAlignXOffset(FONT_NORMAL, gStringVar1, 80);
+    AddTextPrinterParameterized3(WIN_FLOOR, FONT_NORMAL, 152 + offset, 0, textColor, TEXT_SKIP_DRAW, gStringVar1);
+
+    // Print template name.
+	AddTextPrinterParameterized3(WIN_FLOOR, FONT_NORMAL, 4, 0, textColor, TEXT_SKIP_DRAW, gTemplateRules[gSaveBlock1Ptr->currentTemplateType].name);
 }
 
 struct SpriteTable {

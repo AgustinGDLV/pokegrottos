@@ -210,6 +210,7 @@ const struct TemplateRules gTemplateRules[TEMPLATE_TYPES_COUNT] =
 {
     [TEMPLATES_UNDERWATER] =
     {
+        .name = COMPOUND_STRING("Reefs"),
         .mapGroup = MAP_GROUP(UNDERWATER_TEMPLATES_ROOM1),
         .bgm = MUS_UNDERWATER,
         .previewId = PREVIEW_MT_MOON,
@@ -242,6 +243,7 @@ const struct TemplateRules gTemplateRules[TEMPLATE_TYPES_COUNT] =
 
     [TEMPLATES_ICE_PATH] =
     {
+        .name = COMPOUND_STRING("Ice Path"),
         .mapGroup = MAP_GROUP(ICE_CAVE_TEMPLATES_ROOM1),
         .bgm = MUS_HG_ICE_PATH,
         .previewId = PREVIEW_ICE_PATH,
@@ -274,6 +276,7 @@ const struct TemplateRules gTemplateRules[TEMPLATE_TYPES_COUNT] =
 
     [TEMPLATES_VOLCANO] =
     {
+        .name = COMPOUND_STRING("Volcano"),
         .mapGroup = MAP_GROUP(VOLCANO_TEMPLATES_ROOM1),
         .bgm = MUS_DP_STARK_MOUNTAIN,
         .previewId = PREVIEW_MT_EMBER,
@@ -306,6 +309,7 @@ const struct TemplateRules gTemplateRules[TEMPLATE_TYPES_COUNT] =
 
     [TEMPLATES_POWER_PLANT] =
     {
+        .name = COMPOUND_STRING("Power Plant"),
         .mapGroup = MAP_GROUP(POWER_PLANT_TEMPLATES_CONNECTIONS),
         .bgm = MUS_RG_POKE_MANSION,
         .previewId = PREVIEW_POWER_PLANT,
@@ -338,6 +342,7 @@ const struct TemplateRules gTemplateRules[TEMPLATE_TYPES_COUNT] =
 
     [TEMPLATES_DOJO] =
     {
+        .name = COMPOUND_STRING("Dojo"),
         .mapGroup = MAP_GROUP(DOJO_TEMPLATES_CONNECTIONS),
         .bgm = MUS_HG_BURNED_TOWER,
         .previewId = PREVIEW_POWER_PLANT,
