@@ -130,7 +130,6 @@ static void ExecuteHealEffect(void)
             gBattlerTarget = targets[i];
             StartBattlerAnim(targets[i], ANIM_STAT_CHANGE);
             gDeckStruct.lastHitDamage = damage = -(gDeckMons[targets[i]].maxHP * gDeckMovesInfo[gCurrentMove].power) / 100;
-            // DebugPrintf("damage: %d", damage);
             UpdateBattlerHP(targets[i], damage);
             aliveCount += 1;
         }

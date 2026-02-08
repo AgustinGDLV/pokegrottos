@@ -10,6 +10,7 @@
 #include "field_weather.h"
 #include "gpu_regs.h"
 #include "graphics.h"
+#include "item.h"
 #include "line_break.h"
 #include "m4a.h"
 #include "main.h"
@@ -68,6 +69,7 @@ struct PartyMonData
     u16 def;
     u16 rank;
     u16 position;
+    u16 item;
 };
 
 struct PartyMenuData
@@ -270,6 +272,7 @@ static void Task_PartyMenuHandleDefaultInput(u8 taskId);
 static void Task_PartyMenuHandleSwapInput(u8 taskId);
 static void LoadPartyMenuGfx(void);
 static void CreatePartyMenuWindows(void);
+static void DrawRankStars(u32 index);
 static void PrintMonInfo(vu32 index);
 static void PrintMoveInfo(u32 index);
 static void DrawBattlerSprites(void);
@@ -418,7 +421,7 @@ static u32 GetOccupiedPositionToRight(u32 position)
     for (u32 i = position + 1; i < POSITIONS_COUNT; ++i)
     {
         index = GetPartyIndexAtPosition(i);
-        if (sPartyMenuData.mons[index].species != SPECIES_NONE)
+        if (index != PARTY_SIZE && sPartyMenuData.mons[index].species != SPECIES_NONE)
             return i;
     }
     return POSITIONS_COUNT;
@@ -626,6 +629,24 @@ static void CreatePartyMenuWindows(void)
 #define POS_TO_SCR_ADDR(x,y) (32*(y) + (x))
 #define SCR_MAP_ENTRY(tile, pal, hflip, vflip) ((tile) | (hflip ? (1<<10) : 0) | (vflip ? (1 << 11) : 0) | (pal << 12))
 
+static void DrawRankStars(u32 index)
+{
+    for (u32 i = 0; i < MAX_RANK; ++i)
+    {
+        if (i < sPartyMenuData.mons[index].rank)
+        {
+            *((u16 *)(BG_SCREEN_ADDR(14)) + POS_TO_SCR_ADDR(3+i, 14)) = 0x3A;
+            *((u16 *)(BG_SCREEN_ADDR(14)) + POS_TO_SCR_ADDR(3+i, 15)) = 0x3B;
+        }
+        else
+        {
+            *((u16 *)(BG_SCREEN_ADDR(14)) + POS_TO_SCR_ADDR(3+i, 14)) = 0x26;
+            *((u16 *)(BG_SCREEN_ADDR(14)) + POS_TO_SCR_ADDR(3+i, 15)) = 0x26;
+        }
+    }
+    ScheduleBgCopyTilemapToVram(1);
+}
+
 static void PrintMonInfo(u32 index)
 {
     u8 *strPtr;
@@ -652,21 +673,14 @@ static void PrintMonInfo(u32 index)
     AddTextPrinterParameterized3(WINDOW_INFO, FONT_NORMAL, 17*8+4, 12, sTextColor_Black, TEXT_SKIP_DRAW, gStringVar1);
     
     // Draw rank stars.
-    for (u32 i = 0; i < MAX_RANK; ++i)
-    {
-        if (i < sPartyMenuData.mons[index].rank)
-        {
-            *((u16 *)(BG_SCREEN_ADDR(14)) + POS_TO_SCR_ADDR(3+i, 14)) = 0x3A;
-            *((u16 *)(BG_SCREEN_ADDR(14)) + POS_TO_SCR_ADDR(3+i, 15)) = 0x3B;
-        }
-        else
-        {
-            *((u16 *)(BG_SCREEN_ADDR(14)) + POS_TO_SCR_ADDR(3+i, 14)) = 0x26;
-            *((u16 *)(BG_SCREEN_ADDR(14)) + POS_TO_SCR_ADDR(3+i, 15)) = 0x26;
-        }
-    }
+    DrawRankStars(index);
 
-    // TODO: Print item.
+    // Print item.
+    if (sPartyMenuData.mons[index].item != ITEM_NONE)
+    {
+        CopyItemName(sPartyMenuData.mons[index].item, gStringVar1);
+        AddTextPrinterParameterized3(WINDOW_INFO, FONT_NORMAL, 0, 34, sTextColor_Black, TEXT_SKIP_DRAW, gStringVar1);
+    }
 
     // Print PWR and DEF.
     ConvertIntToDecimalStringN(gStringVar1, sPartyMenuData.mons[index].power, STR_CONV_MODE_LEFT_ALIGN, 3);
@@ -742,11 +756,12 @@ static void InitPartyDataStruct(void)
             data->power = GetMonData(&gPlayerParty[i], MON_DATA_ATK);
             data->def = GetMonData(&gPlayerParty[i], MON_DATA_DEF);
             data->rank = GetMonData(&gPlayerParty[i], MON_DATA_RANK);
-            if (data->species != SPECIES_NONE)
-                data->position = GetMonData(&gPlayerParty[i], MON_DATA_POSITION);
-            else
-                data->position = i; // empty spots have junk positions
+            data->item = GetMonData(&gPlayerParty[i], MON_DATA_HELD_ITEM);
         }
+        if (data->species != SPECIES_NONE)
+            data->position = GetMonData(&gPlayerParty[i], MON_DATA_POSITION);
+        else
+            data->position = i; // empty spots have junk positions
     }
 }
 
@@ -765,6 +780,15 @@ static void CopyPartyDataToMonData(void)
     }
 }
 
+static void Task_DrawRankStarsAfterPageChange(u8 taskId) // janky but the tilemap copy takes a frame
+{
+    if (++gTasks[taskId].data[0] > 1)
+    {
+        DrawRankStars(GetPartyIndexAtPosition(sPartyMenuData.selectedPosition));
+        DestroyTask(taskId);
+    }
+}
+
 static void IncrementCurrentPage(void)
 {
     u32 index = GetPartyIndexAtPosition(sPartyMenuData.selectedPosition);
@@ -779,6 +803,7 @@ static void IncrementCurrentPage(void)
             LZDecompressWram(sPartyMenuStatsTilemap, sPartyMenuTilemapPtr);
             FillWindowPixelBuffer(WINDOW_CONTROL, PIXEL_FILL(0));
             AddTextPrinterParameterized3(WINDOW_CONTROL, FONT_SMALL, 2, 0, sTextColor_White, TEXT_SKIP_DRAW, COMPOUND_STRING("MOVE"));
+            CreateTask(Task_DrawRankStarsAfterPageChange, 0);
             break;
         case PAGE_MOVE:
             PrintMoveInfo(index);
