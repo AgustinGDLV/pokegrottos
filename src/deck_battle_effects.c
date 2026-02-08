@@ -36,256 +36,108 @@
  * 
 */
 
-static void Task_ExecuteHit(u8 taskId);
-static void Task_ExecuteHitAllOpponents(u8 taskId);
-static void Task_ExecutePowerUp(u8 taskId);
-static void Task_ExecuteHitAllOpponentsAdjacentAllies(u8 taskId);
+static void ExecuteHitEffect(void);
+static void ExecuteStatChangeEffect(void);
 
-void (*const gMoveEffectTasks[DECK_EFFECT_COUNT])(u8 taskId) =
+void (*const gMoveEffectFuncs[DECK_EFFECT_COUNT])(void) =
 {
-    [DECK_EFFECT_HIT]                               = Task_ExecuteHit,
-    [DECK_EFFECT_HIT_ALL_OPPONENTS]                 = Task_ExecuteHitAllOpponents,
-    [DECK_EFFECT_POWER_UP]                          = Task_ExecutePowerUp,
-    [DECK_EFFECT_HIT_ALL_OPPONENTS_ADJACENT_ALLIES] = Task_ExecuteHitAllOpponentsAdjacentAllies,
+    [DECK_EFFECT_HIT]                               = ExecuteHitEffect,
+    [DECK_EFFECT_POWER_UP]                          = ExecuteStatChangeEffect,
 };
 
 #define tState  data[0]
 #define tTimer  data[1]
 
-static void Task_ExecuteHit(u8 taskId)
+static void ExecuteHitEffect(void)
 {
-    s32 damage;
-    switch (gTasks[taskId].tState)
+    s32 damage = 0;
+    u32 targetsCount = 0;
+    u32 aliveCount = 0;
+    enum BattleId targets[MAX_DECK_BATTLERS_COUNT] = {0};
+    PopulateTargetsList(targets, &targetsCount);
+
+    // Execute effect.
+    for (u32 i = 0; i < targetsCount; ++i)
     {
-    case 0: // Do attack animation.
-        SetBattlerGrayscale(gBattlerAttacker, FALSE);
-        StartBattlerAnim(gBattlerAttacker, ANIM_ATTACK);
-        PrintMoveUseString();
-        ++gTasks[taskId].tState;
-        break;
-    case 1: // Wait for attack animation to execute damage.
-        if (HasBattlerAnimTriggeredCry(gBattlerAttacker))
-            ++gTasks[taskId].tState;
-        break;
-    case 2: // Check for target change.
-        if (!IsDeckBattlerAlive(gBattlerTarget))
-            gBattlerTarget = GetRandomBattlerOnSide(GetDeckBattlerSide(gBattlerTarget));
-        ++gTasks[taskId].tState;  
-        break;
-    case 3: // Damage target(s).
-        StartBattlerAnim(gBattlerTarget, ANIM_HURT);
-        damage = CalculateDamage(gBattlerAttacker, gBattlerTarget, gCurrentMove);
-        UpdateBattlerHP(gBattlerTarget, damage);
-        PrintMoveOutcomeString(damage);
-        PlaySE(SE_EFFECTIVE);
-        ++gTasks[taskId].tState;
-        break;
-    case 4: // Wait for hurt animation.
-        if (++gTasks[taskId].tTimer >= 60)
-            ++gTasks[taskId].tState;
-        break;
-    case 5:
-        gTasks[taskId].tTimer = 0;
-        gTasks[taskId].tState = 0;
-        gTasks[taskId].func = Task_CheckFaintAndContinue;
-        break;
+        if (IsDeckBattlerAlive(targets[i]))
+        {
+            gBattlerTarget = targets[i];
+            StartBattlerAnim(targets[i], ANIM_HURT);
+            gDeckStruct.lastHitDamage = damage = CalculateDamage(gBattlerAttacker, targets[i], gCurrentMove);
+            UpdateBattlerHP(targets[i], damage);
+            aliveCount += 1;
+        }
     }
-}
 
-static void Task_ExecuteHitAllOpponents(u8 taskId)
-{
-    s32 damage;
-    enum BattleId battlerStart, battlerEnd;
-
-    // Set up indices for targeting.
-    if (GetDeckBattlerSide(gBattlerAttacker) == B_SIDE_PLAYER)
+    // Print string.
+    if (aliveCount > 0)
     {
-        battlerStart = B_OPPONENT_0;
-        battlerEnd = MAX_DECK_BATTLERS_COUNT;
+        PrintMoveOutcomeString();
+        PlaySE(SE_EFFECTIVE);
     }
     else
     {
-        battlerStart = B_PLAYER_0;
-        battlerEnd = B_OPPONENT_0;
-    }
-
-    switch (gTasks[taskId].tState)
-    {
-    case 0: // Do attack animation.
-        SetBattlerGrayscale(gBattlerAttacker, FALSE);
-        StartBattlerAnim(gBattlerAttacker, ANIM_ATTACK);
-        PrintMoveUseString();
-        ++gTasks[taskId].tState;
-        break;
-    case 1: // Wait for attack animation to execute damage.
-        if (++gTasks[taskId].tTimer >= 32) // right after cry
-        {
-            gTasks[taskId].tTimer = 0;
-            ++gTasks[taskId].tState;
-        }
-        break;
-    case 2: // Damage target(s).
-        for (enum BattleId battler = battlerStart; battler < battlerEnd; ++battler)
-        {
-            if (IsDeckBattlerAlive(battler))
-            {
-                StartBattlerAnim(battler, ANIM_HURT);
-                damage = CalculateDamage(gBattlerAttacker, battler, gCurrentMove);
-                UpdateBattlerHP(battler, damage);
-            }
-        }
-        PrintMoveOutcomeString(0);
-        PlaySE(SE_EFFECTIVE);
-        ++gTasks[taskId].tState;
-        break;
-    case 3: // Wait for hurt animation.
-        if (++gTasks[taskId].tTimer >= 60)
-            ++gTasks[taskId].tState;
-        break;
-    case 4:
-        gTasks[taskId].tTimer = 0;
-        gTasks[taskId].tState = 0;
-        gTasks[taskId].func = Task_CheckFaintAndContinue;
-        break;
+        PrintStringToMessageBox(COMPOUND_STRING("But it failed…"));
     }
 }
 
-static void Task_ExecuteHitAllOpponentsAdjacentAllies(u8 taskId)
-{
-    s32 damage;
-    u32 side;
-    enum BattleId battlerStart, battlerEnd, battler;
+static void ExecuteStatChangeEffect(void)
+{;
+    u32 targetsCount = 0;
+    u32 aliveCount = 0;
+    enum BattleId targets[MAX_DECK_BATTLERS_COUNT] = {0};
+    PopulateTargetsList(targets, &targetsCount);
 
-    // Set up indices for targeting.
-    side = GetDeckBattlerSide(gBattlerAttacker);
-    if (side == B_SIDE_PLAYER)
+    // Execute effect.
+    for (u32 i = 0; i < targetsCount; ++i)
     {
-        battlerStart = B_OPPONENT_0;
-        battlerEnd = MAX_DECK_BATTLERS_COUNT;
-    }
-    else
-    {
-        battlerStart = B_PLAYER_0;
-        battlerEnd = B_OPPONENT_0;
+        if (IsDeckBattlerAlive(targets[i]))
+        {
+            gBattlerTarget = targets[i];
+            StartBattlerAnim(targets[i], ANIM_STAT_CHANGE);
+            gDeckMons[targets[i]].powerBoost += gDeckMons[gBattlerAttacker].power / 2;
+            aliveCount += 1;
+        }
     }
 
-    switch (gTasks[taskId].tState)
+    // Print string.
+    if (aliveCount > 0)
     {
-    case 0: // Do attack animation.
-        SetBattlerGrayscale(gBattlerAttacker, FALSE);
-        StartBattlerAnim(gBattlerAttacker, ANIM_ATTACK);
-        PrintMoveUseString();
-        ++gTasks[taskId].tState;
-        break;
-    case 1: // Wait for attack animation to execute damage.
-        if (++gTasks[taskId].tTimer >= 32) // right after cry
-        {
-            gTasks[taskId].tTimer = 0;
-            ++gTasks[taskId].tState;
-        }
-        break;
-    case 2: // Damage target(s).
-        for (battler = battlerStart; battler < battlerEnd; ++battler)
-        {
-            if (IsDeckBattlerAlive(battler))
-            {
-                StartBattlerAnim(battler, ANIM_HURT);
-                damage = CalculateDamage(gBattlerAttacker, battler, gCurrentMove);
-                UpdateBattlerHP(battler, damage);
-            }
-        }
-        if (gDeckMons[gBattlerAttacker].pos != POSITION_0)
-        {
-            battler = GetDeckBattlerAtPos(side, gDeckMons[gBattlerAttacker].pos-1);
-            if (IsDeckBattlerAlive(battler))
-            {
-                StartBattlerAnim(battler, ANIM_HURT);
-                damage = CalculateDamage(gBattlerAttacker, battler, gCurrentMove);
-                UpdateBattlerHP(battler, damage);
-            }
-        }
-        if (gDeckMons[gBattlerAttacker].pos != POSITION_5)
-        {
-            battler = GetDeckBattlerAtPos(side, gDeckMons[gBattlerAttacker].pos+1);
-            if (IsDeckBattlerAlive(battler))
-            {
-                StartBattlerAnim(battler, ANIM_HURT);
-                damage = CalculateDamage(gBattlerAttacker, battler, gCurrentMove);
-                UpdateBattlerHP(battler, damage);
-            }
-        }
-        PrintMoveOutcomeString(0);
-        PlaySE(SE_EFFECTIVE);
-        ++gTasks[taskId].tState;
-        break;
-    case 3: // Wait for hurt animation.
-        if (++gTasks[taskId].tTimer >= 60)
-            ++gTasks[taskId].tState;
-        break;
-    case 4:
-        gTasks[taskId].tTimer = 0;
-        gTasks[taskId].tState = 0;
-        gTasks[taskId].func = Task_CheckFaintAndContinue;
-        break;
-    }
-}
-
-static void Task_ExecutePowerUp(u8 taskId)
-{
-    switch (gTasks[taskId].tState)
-    {
-    case 0: // Do attack animation.
-        SetBattlerGrayscale(gBattlerAttacker, FALSE);
-        StartBattlerAnim(gBattlerAttacker, ANIM_ATTACK);
-        PrintMoveUseString();
-        ++gTasks[taskId].tState;
-        break;
-    case 1: // Wait for attack animation to execute damage.
-        if (++gTasks[taskId].tTimer >= 32) // right after cry
-        {
-            gTasks[taskId].tTimer = 0;
-            ++gTasks[taskId].tState;
-        }
-        break;
-    case 2:
-        if (!IsDeckBattlerAlive(gBattlerTarget))
-        {
-            PrintStringToMessageBox(COMPOUND_STRING("But it failed…"));
-            gTasks[taskId].tState = 6;
-        }
-        else
-        {
-            ++gTasks[taskId].tState;
-        }
-        break;
-    case 3: // Play sound and print string.
-        PrintMoveOutcomeString(0);
+        PrintMoveOutcomeString();
         PlaySE(SE_M_STAT_INCREASE);
-        gDeckMons[gBattlerTarget].powerBoost += gDeckMons[gBattlerAttacker].power / 2;
+    }
+    else
+    {
+        PrintStringToMessageBox(COMPOUND_STRING("But it failed…"));
+    }
+}
+
+void Task_ExecuteMove(u8 taskId)
+{
+    switch (gTasks[taskId].tState)
+    {
+    case 0: // Do attack animation.
+        SetBattlerGrayscale(gBattlerAttacker, FALSE);
+        StartBattlerAnim(gBattlerAttacker, ANIM_ATTACK);
+        PrintMoveUseString();
         ++gTasks[taskId].tState;
         break;
-    case 4: // Blend target.
-        if (++gTasks[taskId].tTimer >= 60)
-        {
-            BlendPalettes(1 << (16 + GetBattlerSprite(gBattlerTarget)->oam.paletteNum), 0, RGB_WHITE);
+    case 1: // Wait for attack animation to execute damage.
+        if (HasBattlerAnimTriggeredCry(gBattlerAttacker) || gSaveBlock2Ptr->optionsBattleSceneOff)
             ++gTasks[taskId].tState;
-        }
-        else if (gTasks[taskId].tTimer < 60)
-        {
-            if (gTasks[taskId].tTimer % 4 < 2)
-                BlendPalettes(1 << (16 + GetBattlerSprite(gBattlerTarget)->oam.paletteNum), 8, RGB_WHITE);
-            else
-                BlendPalettes(1 << (16 + GetBattlerSprite(gBattlerTarget)->oam.paletteNum), 0, RGB_WHITE);
-        }
         break;
-    case 5:
+    case 2: // Execute move effect.
+        gMoveEffectFuncs[gDeckMovesInfo[gCurrentMove].effect]();
+        ++gTasks[taskId].tState;
+        break;
+    case 3: // Wait for animations.
+        if (++gTasks[taskId].tTimer >= 60)
+            ++gTasks[taskId].tState;
+        break;
+    case 4: // Check for fainted battlers.
         gTasks[taskId].tTimer = 0;
         gTasks[taskId].tState = 0;
-        gTasks[taskId].func = Task_ExecuteQueuedActionOrEnd;
-        break;
-    case 6:
-        if (++gTasks[taskId].tTimer >= 30)
-            gTasks[taskId].tState = 5;
+        gTasks[taskId].func = Task_CheckFaintAndContinue;
         break;
     }
 }

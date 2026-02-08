@@ -344,7 +344,7 @@ void Task_ExecuteQueuedActionOrEnd(u8 taskId)
         gTasks[taskId].tTimer = 0;
         gTasks[taskId].tState = 0;
         if (gDeckStruct.queuedActions[gDeckStruct.executedCount].type == ACTION_ATTACK)
-            gTasks[taskId].func = gMoveEffectTasks[gDeckMovesInfo[gCurrentMove].effect];
+            gTasks[taskId].func = Task_ExecuteMove;
         else
             gTasks[taskId].func = Task_ExecuteSwap;
         ++gDeckStruct.executedCount;

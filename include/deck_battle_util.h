@@ -21,4 +21,6 @@ enum BattleId GetRandomBattlerOnSide(u32 side);
 bool32 IsDeckBattlerAlive(enum BattleId battler);
 bool32 IsBattlerAliveOnSide(u32 side);
 
+void PopulateTargetsList(enum BattleId *targets, u32 *targetsCount);
+
 #endif

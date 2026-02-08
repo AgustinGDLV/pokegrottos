@@ -765,6 +765,23 @@ static void SpriteCB_BattlerFaint(struct Sprite *sprite)
     }
 }
 
+static void SpriteCB_BattlerStatChange(struct Sprite *sprite)
+{
+    if (++sprite->sTimer >= 60)
+    {
+        BlendPalettes(1 << (16 + sprite->oam.paletteNum), 0, RGB_WHITE);
+        sprite->sTimer = 0;
+        sprite->callback = SpriteCallbackDummy;
+    }
+    else if (sprite->sTimer < 60)
+    {
+        if (sprite->sTimer % 4 < 2)
+            BlendPalettes(1 << (16 + sprite->oam.paletteNum), 8, RGB_WHITE);
+        else
+            BlendPalettes(1 << (16 + sprite->oam.paletteNum), 0, RGB_WHITE);
+    }
+}
+
 void StartBattlerAnim(enum BattleId battler, u32 animId) // TODO: overwrite sprite tiles?
 {
     switch (animId)
@@ -782,6 +799,9 @@ void StartBattlerAnim(enum BattleId battler, u32 animId) // TODO: overwrite spri
         case ANIM_FAINT:
             gSprites[gDeckGraphics.battlerSpriteIds[battler]].sAnimState = 4;
             gSprites[gDeckGraphics.battlerSpriteIds[battler]].callback = SpriteCB_BattlerFaint;
+            break;
+        case ANIM_STAT_CHANGE:
+            gSprites[gDeckGraphics.battlerSpriteIds[battler]].callback = SpriteCB_BattlerStatChange;
             break;
     }
 }
@@ -948,13 +968,21 @@ void PrintTargetBattlerPrompt(enum BattleId battler)
     StringCopy(gStringVar2, GetSpeciesName(gDeckMons[battler].species));
     if (gDeckMovesInfo[gDeckSpeciesInfo[gDeckMons[gBattlerAttacker].species].move].effect == DECK_EFFECT_POWER_UP)
         StringExpandPlaceholders(gStringVar1, COMPOUND_STRING("Boost {STR_VAR_2}?"));
-    else if (gDeckMovesInfo[gDeckSpeciesInfo[gDeckMons[gBattlerAttacker].species].move].effect == DECK_EFFECT_HIT_ALL_OPPONENTS || gDeckMovesInfo[gDeckSpeciesInfo[gDeckMons[gBattlerAttacker].species].move].effect == DECK_EFFECT_HIT_ALL_OPPONENTS_ADJACENT_ALLIES)
-        StringExpandPlaceholders(gStringVar1, COMPOUND_STRING("Attack all opponents?"));
     else
         StringExpandPlaceholders(gStringVar1, COMPOUND_STRING("Attack {STR_VAR_2}?"));
 
     FillWindowPixelBuffer(WINDOW_MESSAGE, PIXEL_FILL(0));
     AddTextPrinterParameterized3(WINDOW_MESSAGE, FONT_NORMAL, 4, 1, sTextColorNormal, TEXT_SKIP_DRAW, gStringVar1);
+    CopyWindowToVram(WINDOW_MESSAGE, COPYWIN_FULL);
+}
+
+void PrintFixedTargetsPrompt(bool32 viableTarget)
+{
+    FillWindowPixelBuffer(WINDOW_MESSAGE, PIXEL_FILL(0));
+    if (viableTarget)
+        AddTextPrinterParameterized3(WINDOW_MESSAGE, FONT_NORMAL, 4, 1, sTextColorNormal, TEXT_SKIP_DRAW, COMPOUND_STRING("Select targets?"));
+    else
+        AddTextPrinterParameterized3(WINDOW_MESSAGE, FONT_NORMAL, 4, 1, sTextColorNormal, TEXT_SKIP_DRAW, COMPOUND_STRING("Select no targets?"));
     CopyWindowToVram(WINDOW_MESSAGE, COPYWIN_FULL);
 }
 
@@ -969,23 +997,21 @@ void PrintMoveUseString(void)
     CopyWindowToVram(WINDOW_MESSAGE, COPYWIN_FULL);
 }
 
-void PrintMoveOutcomeString(s32 damage)
+void PrintMoveOutcomeString(void) // *TODO: refactor
 {
-    // *TODO - move strings
-    if (gDeckMovesInfo[gCurrentMove].effect == DECK_EFFECT_HIT && gDeckMovesInfo[gCurrentMove].target == MOVE_TARGET_SINGLE_OPPONENT)
+    // Prepare string buffers.
+    StringCopy(gStringVar2, GetSpeciesName(gDeckMons[gBattlerTarget].species)); // unsafe
+    ConvertIntToDecimalStringN(gStringVar3, gDeckStruct.lastHitDamage, STR_CONV_MODE_LEFT_ALIGN, 2);
+
+    if (gDeckMovesInfo[gCurrentMove].effect == DECK_EFFECT_HIT)
     {
-        StringCopy(gStringVar2, GetSpeciesName(gDeckMons[gBattlerTarget].species));
-        ConvertIntToDecimalStringN(gStringVar3, damage, STR_CONV_MODE_LEFT_ALIGN, 2);
-        StringExpandPlaceholders(gStringVar1, COMPOUND_STRING("{STR_VAR_2} took {STR_VAR_3} damage!"));
-    }
-    else if (gDeckMovesInfo[gCurrentMove].effect == DECK_EFFECT_HIT && gDeckMovesInfo[gCurrentMove].target == MOVE_TARGET_ALL_OPPONENTS)
-    {
-        ConvertIntToDecimalStringN(gStringVar3, gDeckMons[gBattlerAttacker].power, STR_CONV_MODE_LEFT_ALIGN, 2);
-        StringExpandPlaceholders(gStringVar1, COMPOUND_STRING("Opponents took damage!"));
+        if (gDeckMovesInfo[gCurrentMove].target & TARGET_SINGLE_OPPONENT)
+            StringExpandPlaceholders(gStringVar1, COMPOUND_STRING("{STR_VAR_2} took {STR_VAR_3} damage!"));
+        if (gDeckMovesInfo[gCurrentMove].target & TARGET_ALL_OPPONENTS)
+            StringExpandPlaceholders(gStringVar1, COMPOUND_STRING("Opponents took damage!"));
     }
     else if (gDeckMovesInfo[gCurrentMove].effect == DECK_EFFECT_POWER_UP)
     {
-        StringCopy(gStringVar2, GetSpeciesName(gDeckMons[gBattlerTarget].species));
         StringExpandPlaceholders(gStringVar1, COMPOUND_STRING("{STR_VAR_2}'s power was boosted!"));
     }
 
@@ -1132,10 +1158,3 @@ void DisplaySwapSelectionInfo(enum BattlePosition position)
     if (battler != MAX_DECK_BATTLERS_COUNT)
         UpdatePlayerHPBar(battler);
 }
-
-// Update graphics for target selection.
-void DisplayTargetSelectionInfo(enum BattleId battler)
-{
-    PrintTargetBattlerPrompt(battler);
-}
-

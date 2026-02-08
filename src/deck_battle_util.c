@@ -214,3 +214,72 @@ bool32 IsBattlerAliveOnSide(u32 side)
     }
     return result;
 }
+
+void PopulateTargetsList(enum BattleId *targets, u32 *targetsCount)
+{
+    u32 side = GetDeckBattlerSide(gBattlerAttacker);
+    enum BattleId battler;
+
+    // ALL_OPPONENTS / ALL_ALLIES
+    if ((side == B_SIDE_PLAYER && (gDeckMovesInfo[gCurrentMove].target & TARGET_ALL_OPPONENTS))
+        || (side == B_SIDE_OPPONENT && (gDeckMovesInfo[gCurrentMove].target & TARGET_ALL_ALLIES)))
+    {
+        for (battler = B_OPPONENT_0; battler < MAX_DECK_BATTLERS_COUNT; ++battler)
+        {
+            targets[*targetsCount] = battler;
+            *targetsCount += 1;
+        }
+    }
+
+    // ALL_OPPONENTS / ALL_ALLIES
+    if ((side == B_SIDE_OPPONENT && (gDeckMovesInfo[gCurrentMove].target & TARGET_ALL_OPPONENTS))
+        || (side == B_SIDE_PLAYER && (gDeckMovesInfo[gCurrentMove].target & TARGET_ALL_ALLIES)))
+    {
+        for (battler = B_PLAYER_0; battler < B_OPPONENT_0; ++battler)
+        {
+            targets[*targetsCount] = battler;
+            *targetsCount += 1;
+        }
+    }
+
+    // USER
+    if (gDeckMovesInfo[gCurrentMove].target & TARGET_USER)
+    {
+        targets[*targetsCount] = gBattlerAttacker;
+        *targetsCount += 1;
+    }
+
+    // LEFT_ALLY
+    if ((gDeckMovesInfo[gCurrentMove].target & TARGET_LEFT_ALLY)
+        && gDeckMons[gBattlerAttacker].pos != POSITION_0)
+    {
+        targets[*targetsCount] = GetDeckBattlerAtPos(side, gDeckMons[gBattlerAttacker].pos-1);
+        *targetsCount += 1;
+    }
+
+    // RIGHT_ALLY
+    if ((gDeckMovesInfo[gCurrentMove].target & TARGET_RIGHT_ALLY)
+        && gDeckMons[gBattlerAttacker].pos != POSITION_5)
+    {
+        targets[*targetsCount] = GetDeckBattlerAtPos(side, gDeckMons[gBattlerAttacker].pos+1);
+        *targetsCount += 1;
+    }
+
+    // SINGLE_OPPONENT / SINGLE_ALLY
+    if ((gDeckMovesInfo[gCurrentMove].target & TARGET_SINGLE_OPPONENT)
+        || (gDeckMovesInfo[gCurrentMove].target & TARGET_SINGLE_ALLY))
+    {
+        if (!IsDeckBattlerAlive(gBattlerTarget))
+        {
+            if (gDeckMovesInfo[gCurrentMove].target & TARGET_SINGLE_OPPONENT)
+                targets[*targetsCount] = GetRandomBattlerOnSide(side ^= 1);
+            else
+                targets[*targetsCount] = GetRandomBattlerOnSide(side);
+        }
+        else
+        {
+            targets[*targetsCount] = gBattlerTarget;
+        }
+        *targetsCount += 1;
+    }
+}

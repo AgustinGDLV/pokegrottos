@@ -35,17 +35,6 @@
  * 
 */
 
-static void Task_OpponentSelectLeftAlly(u8 taskId);
-static void Task_OpponentSelectSingleOpponent(u8 taskId);
-static void Task_OpponentSelectAllOpponents(u8 taskId);
-
-static void (*const sOpponentMoveTargetTasks[MOVE_TARGET_COUNT])(u8 taskId) =
-{
-    [MOVE_TARGET_SINGLE_OPPONENT]   = Task_OpponentSelectSingleOpponent,
-    [MOVE_TARGET_ALL_OPPONENTS]     = Task_OpponentSelectAllOpponents,
-    [MOVE_TARGET_LEFT_ALLY]         = Task_OpponentSelectLeftAlly,
-};
-
 #define tState  data[0]
 #define tTimer  data[1]
 
@@ -55,35 +44,13 @@ void Task_OpponentSelectAction(u8 taskId)
     if (gDeckStruct.selectedPos != POSITIONS_COUNT)
     {
         gBattlerAttacker = GetDeckBattlerAtPos(B_SIDE_OPPONENT, gDeckStruct.selectedPos);
-        gTasks[taskId].func = sOpponentMoveTargetTasks[gDeckMovesInfo[gDeckSpeciesInfo[gDeckMons[gBattlerAttacker].species].move].target];
+        QueueAction(ACTION_ATTACK, gBattlerAttacker, MAX_DECK_BATTLERS_COUNT, gDeckSpeciesInfo[gDeckMons[gBattlerAttacker].species].move);
+        gDeckMons[gBattlerAttacker].hasMoved = TRUE;
     }
     else
     {
         gTasks[taskId].func = Task_PrepareForActionPhase;
     } 
-}
-
-static void Task_OpponentSelectLeftAlly(u8 taskId)
-{
-    gBattlerTarget = GetDeckBattlerAtPos(B_SIDE_OPPONENT, GetOccupiedOnLeft(B_SIDE_OPPONENT, gDeckMons[gBattlerAttacker].pos));
-    QueueAction(ACTION_ATTACK, gBattlerAttacker, gBattlerTarget, gDeckSpeciesInfo[gDeckMons[gBattlerAttacker].species].move);
-    gDeckMons[gBattlerAttacker].hasMoved = TRUE;
-    gTasks[taskId].func = Task_OpponentSelectAction;
-}
-
-static void Task_OpponentSelectSingleOpponent(u8 taskId)
-{
-    gBattlerTarget = GetRandomBattlerOnSide(B_SIDE_PLAYER);
-    QueueAction(ACTION_ATTACK, gBattlerAttacker, gBattlerTarget, gDeckSpeciesInfo[gDeckMons[gBattlerAttacker].species].move);
-    gDeckMons[gBattlerAttacker].hasMoved = TRUE;
-    gTasks[taskId].func = Task_OpponentSelectAction;
-}
-
-static void Task_OpponentSelectAllOpponents(u8 taskId)
-{
-    QueueAction(ACTION_ATTACK, gBattlerAttacker, MAX_DECK_BATTLERS_COUNT, gDeckSpeciesInfo[gDeckMons[gBattlerAttacker].species].move);
-    gDeckMons[gBattlerAttacker].hasMoved = TRUE;
-    gTasks[taskId].func = Task_OpponentSelectAction;
 }
 
 #undef tState

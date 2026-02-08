@@ -8,11 +8,12 @@
 #define TAG_NUMBER      2003
 #define TAG_BATTLER_OBJ 2004 // 2004-2015
 
-#define ANIM_PAUSED 0
-#define ANIM_IDLE   1
-#define ANIM_ATTACK 2
-#define ANIM_HURT   3
-#define ANIM_FAINT  4
+#define ANIM_PAUSED      0
+#define ANIM_IDLE        1
+#define ANIM_ATTACK      2
+#define ANIM_HURT        3
+#define ANIM_FAINT       4
+#define ANIM_STAT_CHANGE 5
 
 #define PORTRAIT_SIZE   (64 * 64 / 2)
 #define OBJECT_SIZE     (32 * 64 / 2)
@@ -57,8 +58,9 @@ bool32 HasBattlerAnimTriggeredCry(enum BattleId battler);
 
 void PrintBattlerMoveInfo(enum BattleId battler);
 void PrintTargetBattlerPrompt(enum BattleId battler);
+void PrintFixedTargetsPrompt(bool32 viableTarget);
 void PrintMoveUseString(void);
-void PrintMoveOutcomeString(s32 damage);
+void PrintMoveOutcomeString(void);
 void PrintSwapTargetPrompt(enum BattlePosition position);
 void PrintSwapString(enum BattleId battler1, enum BattleId battler2);
 void PrintStringToMessageBox(const u8 *str);
@@ -67,7 +69,6 @@ void UpdatePlayerHPBar(enum BattleId battler);
 void UpdateBattlerSelection(enum BattleId battler, bool32 selected);
 void DisplayActionSelectionInfo(enum BattleId battler);
 void DisplaySwapSelectionInfo(enum BattlePosition position);
-void DisplayTargetSelectionInfo(enum BattleId battler);
 
 void PrintDamageNumbers(enum BattleId battler, s32 damage);
 

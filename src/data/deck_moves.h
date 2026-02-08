@@ -5,7 +5,7 @@ const struct DeckMoveInfo gDeckMovesInfo[MOVES_COUNT] =
         .name = COMPOUND_STRING("TACKLE"),
         .description = COMPOUND_STRING("Damages one opponent."),
         .power = 40,
-        .target = MOVE_TARGET_SINGLE_OPPONENT,
+        .target = TARGET_SINGLE_OPPONENT,
         .effect = DECK_EFFECT_HIT,
     },
 
@@ -14,16 +14,16 @@ const struct DeckMoveInfo gDeckMovesInfo[MOVES_COUNT] =
         .name = COMPOUND_STRING("VINE WHIP"),
         .description = COMPOUND_STRING("Damages one opponent."),
         .power = 60,
-        .target = MOVE_TARGET_SINGLE_OPPONENT,
+        .target = TARGET_SINGLE_OPPONENT,
         .effect = DECK_EFFECT_HIT,
     },
 
     [MOVE_HELPING_HAND] =
     {
         .name = COMPOUND_STRING("HELPING HAND"),
-        .description = COMPOUND_STRING("Powers up left ally."),
+        .description = COMPOUND_STRING("Powers up right ally."),
         .power = 0,
-        .target = MOVE_TARGET_LEFT_ALLY,
+        .target = TARGET_RIGHT_ALLY,
         .effect = DECK_EFFECT_POWER_UP,
     },
 
@@ -32,8 +32,8 @@ const struct DeckMoveInfo gDeckMovesInfo[MOVES_COUNT] =
         .name = COMPOUND_STRING("SURF"),
         .description = COMPOUND_STRING("Damages all opponents."),
         .power = 60,
-        .target = MOVE_TARGET_ALL_OPPONENTS,
-        .effect = DECK_EFFECT_HIT_ALL_OPPONENTS,
+        .target = TARGET_ALL_OPPONENTS,
+        .effect = DECK_EFFECT_HIT,
     },
 
     [MOVE_EARTHQUAKE] =
@@ -41,8 +41,8 @@ const struct DeckMoveInfo gDeckMovesInfo[MOVES_COUNT] =
         .name = COMPOUND_STRING("EARTHQUAKE"),
         .description = COMPOUND_STRING("Damages all opponents."),
         .power = 60,
-        .target = MOVE_TARGET_ALL_OPPONENTS_ADJACENT_ALLIES,
-        .effect = DECK_EFFECT_HIT_ALL_OPPONENTS_ADJACENT_ALLIES,
+        .target = TARGET_LEFT_ALLY | TARGET_RIGHT_ALLY | TARGET_ALL_OPPONENTS,
+        .effect = DECK_EFFECT_HIT,
     },
 
     [MOVE_CRABHAMMER] =
@@ -50,7 +50,7 @@ const struct DeckMoveInfo gDeckMovesInfo[MOVES_COUNT] =
         .name = COMPOUND_STRING("CRABHAMMER"),
         .description = COMPOUND_STRING("Damages one opponent."),
         .power = 80,
-        .target = MOVE_TARGET_SINGLE_OPPONENT,
+        .target = TARGET_SINGLE_OPPONENT,
         .effect = DECK_EFFECT_HIT,
     },
 };

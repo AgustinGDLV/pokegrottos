@@ -82,15 +82,14 @@ struct BattleAction
     u16 move;
 };
 
-// move constants
-enum MoveTarget
-{
-    MOVE_TARGET_SINGLE_OPPONENT,
-    MOVE_TARGET_ALL_OPPONENTS,
-    MOVE_TARGET_ALL_OPPONENTS_ADJACENT_ALLIES,
-    MOVE_TARGET_LEFT_ALLY,
-    MOVE_TARGET_COUNT,
-};
+// target constants
+#define TARGET_SINGLE_OPPONENT      (1 << 0)
+#define TARGET_SINGLE_ALLY          (1 << 1)
+#define TARGET_ALL_OPPONENTS        (1 << 2)
+#define TARGET_LEFT_ALLY            (1 << 3)
+#define TARGET_RIGHT_ALLY           (1 << 4)
+#define TARGET_ALL_ALLIES           (1 << 5)
+#define TARGET_USER                 (1 << 6)
 
 struct DeckMoveInfo
 {
@@ -113,6 +112,8 @@ struct DeckBattleStruct
     enum BattleId battlerExp;
     enum BattleId battlerCaught;
     bool8 isSelectionPhase;
+
+    s32 lastHitDamage;
 };
 
 void CB2_OpenDeckBattleCustom(void);

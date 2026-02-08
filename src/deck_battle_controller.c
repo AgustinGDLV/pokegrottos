@@ -37,30 +37,8 @@
 */
 
 static void Task_PlayerSelectAllyToSwap(u8 taskId);
-static void Task_PlayerSelectLeftAlly(u8 taskId);
 static void Task_PlayerSelectSingleOpponent(u8 taskId);
-static void Task_PlayerSelectAllOpponents(u8 taskId);
-static void Task_PlayerSelectAllOpponentsAdjacentAllies(u8 taskId);
-
-static void Task_AutoSelectLeftAlly(u8 taskId);
-static void Task_AutoSelectSingleOpponent(u8 taskId);
-static void Task_AutoSelectAllOpponents(u8 taskId);
-
-static void (*const sPlayerMoveTargetTasks[MOVE_TARGET_COUNT])(u8 taskId) =
-{
-    [MOVE_TARGET_SINGLE_OPPONENT]               = Task_PlayerSelectSingleOpponent,
-    [MOVE_TARGET_ALL_OPPONENTS]                 = Task_PlayerSelectAllOpponents,
-    [MOVE_TARGET_LEFT_ALLY]                     = Task_PlayerSelectLeftAlly,
-    [MOVE_TARGET_ALL_OPPONENTS_ADJACENT_ALLIES] = Task_PlayerSelectAllOpponentsAdjacentAllies,
-};
-
-static void (*const sAutoMoveTargetTasks[MOVE_TARGET_COUNT])(u8 taskId) =
-{
-    [MOVE_TARGET_SINGLE_OPPONENT]               = Task_AutoSelectSingleOpponent,
-    [MOVE_TARGET_ALL_OPPONENTS]                 = Task_AutoSelectAllOpponents,
-    [MOVE_TARGET_LEFT_ALLY]                     = Task_AutoSelectLeftAlly,
-    [MOVE_TARGET_ALL_OPPONENTS_ADJACENT_ALLIES] = Task_AutoSelectAllOpponents,
-};
+static void Task_PlayerDisplayTargets(u8 taskId);
 
 #define tState  data[0]
 #define tTimer  data[1]
@@ -107,7 +85,11 @@ void Task_PlayerSelectAction(u8 taskId)
         SetBattlerPortraitVisibility(FALSE);
         SetGpuReg(REG_OFFSET_BG0VOFS, DISPLAY_HEIGHT);
         SetGpuReg(REG_OFFSET_BG1VOFS, DISPLAY_HEIGHT);
-        gTasks[taskId].func = sPlayerMoveTargetTasks[gDeckMovesInfo[gDeckSpeciesInfo[gDeckMons[gBattlerAttacker].species].move].target];
+        // gTasks[taskId].func = sPlayerMoveTargetTasks[gDeckMovesInfo[gDeckSpeciesInfo[gDeckMons[gBattlerAttacker].species].move].target];
+        if (gDeckMovesInfo[gDeckSpeciesInfo[gDeckMons[gBattlerAttacker].species].move].target & TARGET_SINGLE_OPPONENT)
+            gTasks[taskId].func = Task_PlayerSelectSingleOpponent;
+        else
+            gTasks[taskId].func = Task_PlayerDisplayTargets;
     }
     if (gMain.newKeys & START_BUTTON) // Choose target to swap.
     {
@@ -299,79 +281,6 @@ static void Task_PlayerSelectAllyToSwap(u8 taskId)
     }
 }
 
-static void Task_PlayerSelectLeftAlly(u8 taskId)
-{
-    enum BattleId battler;
-    if (gTasks[taskId].tState == 0)
-    {
-        battler = GetDeckBattlerAtPos(B_SIDE_PLAYER, GetOccupiedOnLeft(B_SIDE_PLAYER, gDeckMons[gBattlerAttacker].pos));
-        if (IsDeckBattlerAlive(battler))
-        {
-            UpdateBattlerSelection(battler, TRUE);
-            DisplayTargetSelectionInfo(battler);
-        }
-        else
-        {
-            PrintStringToMessageBox(COMPOUND_STRING("Target nothing?"));
-        }
-        ++gTasks[taskId].tState;
-    }
-    if (gMain.newKeys & B_BUTTON)
-    {
-        // Deselect target.
-        PlaySE(SE_SELECT);
-        battler = GetDeckBattlerAtPos(B_SIDE_PLAYER, GetOccupiedOnLeft(B_SIDE_PLAYER, gDeckMons[gBattlerAttacker].pos));
-        if (IsDeckBattlerAlive(battler))
-            UpdateBattlerSelection(battler, FALSE);
-
-        // Reselect acting battler.
-        UpdateBattlerSelection(gBattlerAttacker, TRUE);
-        DisplayActionSelectionInfo(gBattlerAttacker);
-        SetBattlerGrayscale(gBattlerAttacker, FALSE);
-        gDeckStruct.selectedPos = gDeckMons[gBattlerAttacker].pos;
-
-        // Set up UI for action selection.
-        SetBattlerPortraitVisibility(TRUE);
-        SetGpuReg(REG_OFFSET_BG0VOFS, 0);
-        SetGpuReg(REG_OFFSET_BG1VOFS, 0);
-        gTasks[taskId].func = Task_PlayerSelectAction;
-        gTasks[taskId].tState = 0;
-    }
-    if (gMain.newKeys & A_BUTTON)
-    {
-        // Deselect target.
-        PlaySE(SE_SELECT);
-        gBattlerTarget = GetDeckBattlerAtPos(B_SIDE_PLAYER, GetOccupiedOnLeft(B_SIDE_PLAYER, gDeckMons[gBattlerAttacker].pos));
-        if (IsDeckBattlerAlive(gBattlerTarget))
-            UpdateBattlerSelection(gBattlerTarget, FALSE);
-
-        // Queue attack action and update data.
-        QueueAction(ACTION_ATTACK, gBattlerAttacker, gBattlerTarget, gDeckSpeciesInfo[gDeckMons[gBattlerAttacker].species].move);
-        SetBattlerGrayscale(gBattlerAttacker, TRUE);
-        gDeckMons[gBattlerAttacker].hasMoved = TRUE;
-        StartBattlerAnim(gBattlerAttacker, ANIM_PAUSED);
-
-        // Select next battler for action selection or begin action phase.
-        gDeckStruct.selectedPos = GetLeftmostPositionToMove(B_SIDE_PLAYER);
-        gTasks[taskId].tState = 0;
-        if (gDeckStruct.selectedPos != POSITIONS_COUNT)
-        {
-            battler = GetDeckBattlerAtPos(B_SIDE_PLAYER, gDeckStruct.selectedPos);
-            UpdateBattlerSelection(battler, TRUE);
-            DisplayActionSelectionInfo(battler);
-
-            SetBattlerPortraitVisibility(TRUE);
-            SetGpuReg(REG_OFFSET_BG0VOFS, 0);
-            SetGpuReg(REG_OFFSET_BG1VOFS, 0);
-            gTasks[taskId].func = Task_PlayerSelectAction;
-        }
-        else
-        {
-            gTasks[taskId].func = Task_PrepareForActionPhase; 
-        }
-    }
-}
-
 static void Task_PlayerSelectSingleOpponent(u8 taskId)
 {
     enum BattleId battler;
@@ -382,7 +291,7 @@ static void Task_PlayerSelectSingleOpponent(u8 taskId)
         gDeckStruct.selectedPos = GetLeftmostOccupiedPosition(B_SIDE_OPPONENT);
         battler = GetDeckBattlerAtPos(B_SIDE_OPPONENT, gDeckStruct.selectedPos);
         UpdateBattlerSelection(battler, TRUE);
-        DisplayTargetSelectionInfo(battler);
+        PrintTargetBattlerPrompt(battler);
         ++gTasks[taskId].tState;
     }
     if ((gMain.newKeys & DPAD_LEFT)
@@ -396,7 +305,7 @@ static void Task_PlayerSelectSingleOpponent(u8 taskId)
         gDeckStruct.selectedPos = pos;
         battler = GetDeckBattlerAtPos(B_SIDE_OPPONENT, gDeckStruct.selectedPos);
         UpdateBattlerSelection(battler, TRUE);
-        DisplayTargetSelectionInfo(battler);
+        PrintTargetBattlerPrompt(battler);
     }
     if ((gMain.newKeys & DPAD_RIGHT)
         && (pos = GetOccupiedOnRight(B_SIDE_OPPONENT, gDeckStruct.selectedPos)) != POSITIONS_COUNT)
@@ -409,7 +318,7 @@ static void Task_PlayerSelectSingleOpponent(u8 taskId)
         gDeckStruct.selectedPos = pos;
         battler = GetDeckBattlerAtPos(B_SIDE_OPPONENT, gDeckStruct.selectedPos);
         UpdateBattlerSelection(battler, TRUE);
-        DisplayTargetSelectionInfo(battler);
+        PrintTargetBattlerPrompt(battler);
     }
     if (gMain.newKeys & B_BUTTON)
     {
@@ -464,28 +373,43 @@ static void Task_PlayerSelectSingleOpponent(u8 taskId)
     }
 }
 
-static void Task_PlayerSelectAllOpponents(u8 taskId)
+static void UpdateDisplayedTargetsSelection(bool32 selected)
+{
+    // Load targets to display.
+    gCurrentMove = gDeckSpeciesInfo[gDeckMons[gBattlerAttacker].species].move;
+    u32 targetsCount = 0;
+    u32 aliveCount = 0;
+    enum BattleId targets[MAX_DECK_BATTLERS_COUNT] = {0};
+    PopulateTargetsList(targets, &targetsCount);
+
+    // Place cursors over targets.
+    for (u32 i = 0; i < targetsCount; ++i)
+    {
+        if (IsDeckBattlerAlive(targets[i]))
+        {
+            UpdateBattlerSelection(targets[i], selected);
+            aliveCount += 1;
+        }
+    }
+
+    if (selected)
+        PrintFixedTargetsPrompt(aliveCount > 0);
+}
+
+static void Task_PlayerDisplayTargets(u8 taskId)
 {
     enum BattleId battler;
+
     if (gTasks[taskId].tState == 0)
     {
-        for (battler = B_OPPONENT_0; battler < MAX_DECK_BATTLERS_COUNT; ++battler)
-        {
-            if (IsDeckBattlerAlive(battler))
-                UpdateBattlerSelection(battler, TRUE);
-        }
-        DisplayTargetSelectionInfo(B_OPPONENT_0);
+        UpdateDisplayedTargetsSelection(TRUE);
         ++gTasks[taskId].tState;
     }
+
     if (gMain.newKeys & B_BUTTON)
     {
-        // Deselect target.
-        PlaySE(SE_SELECT);
-        for (battler = B_OPPONENT_0; battler < MAX_DECK_BATTLERS_COUNT; ++battler)
-        {
-            if (IsDeckBattlerAlive(battler))
-                UpdateBattlerSelection(battler, FALSE);
-        }
+        // Deselect targets.
+        UpdateDisplayedTargetsSelection(FALSE);
 
         // Reselect acting battler.
         UpdateBattlerSelection(gBattlerAttacker, TRUE);
@@ -502,13 +426,8 @@ static void Task_PlayerSelectAllOpponents(u8 taskId)
     }
     if (gMain.newKeys & A_BUTTON)
     {
-        // Deselect target.
-        PlaySE(SE_SELECT);
-        for (battler = B_OPPONENT_0; battler < MAX_DECK_BATTLERS_COUNT; ++battler)
-        {
-            if (IsDeckBattlerAlive(battler))
-                UpdateBattlerSelection(battler, FALSE);
-        }
+        // Deselect targets.
+        UpdateDisplayedTargetsSelection(FALSE);
 
         // Queue attack action and update data.
         QueueAction(ACTION_ATTACK, gBattlerAttacker, MAX_DECK_BATTLERS_COUNT, gDeckSpeciesInfo[gDeckMons[gBattlerAttacker].species].move);
@@ -537,152 +456,19 @@ static void Task_PlayerSelectAllOpponents(u8 taskId)
     }
 }
 
-static void Task_PlayerSelectAllOpponentsAdjacentAllies(u8 taskId)
-{
-    enum BattleId battler;
-    if (gTasks[taskId].tState == 0)
-    {
-        for (battler = B_OPPONENT_0; battler < MAX_DECK_BATTLERS_COUNT; ++battler)
-        {
-            if (IsDeckBattlerAlive(battler))
-                UpdateBattlerSelection(battler, TRUE);
-        }
-        if (gDeckMons[gBattlerAttacker].pos != POSITION_0)
-        {
-            battler = GetDeckBattlerAtPos(B_SIDE_PLAYER, gDeckMons[gBattlerAttacker].pos-1);
-            if (IsDeckBattlerAlive(battler))
-                UpdateBattlerSelection(battler, TRUE);
-        }
-        if (gDeckMons[gBattlerAttacker].pos != POSITION_5)
-        {
-            battler = GetDeckBattlerAtPos(B_SIDE_PLAYER, gDeckMons[gBattlerAttacker].pos+1);
-            if (IsDeckBattlerAlive(battler))
-                UpdateBattlerSelection(battler, TRUE);
-        }
-        
-        DisplayTargetSelectionInfo(B_OPPONENT_0);
-        ++gTasks[taskId].tState;
-    }
-    if (gMain.newKeys & B_BUTTON)
-    {
-        // Deselect target.
-        PlaySE(SE_SELECT);
-        for (battler = B_OPPONENT_0; battler < MAX_DECK_BATTLERS_COUNT; ++battler)
-        {
-            if (IsDeckBattlerAlive(battler))
-                UpdateBattlerSelection(battler, FALSE);
-        }
-        if (gDeckMons[gBattlerAttacker].pos != POSITION_0)
-        {
-            battler = GetDeckBattlerAtPos(B_SIDE_PLAYER, gDeckMons[gBattlerAttacker].pos-1);
-            if (IsDeckBattlerAlive(battler))
-                UpdateBattlerSelection(battler, FALSE);
-        }
-        if (gDeckMons[gBattlerAttacker].pos != POSITION_5)
-        {
-            battler = GetDeckBattlerAtPos(B_SIDE_PLAYER, gDeckMons[gBattlerAttacker].pos+1);
-            if (IsDeckBattlerAlive(battler))
-                UpdateBattlerSelection(battler, FALSE);
-        }
-
-        // Reselect acting battler.
-        UpdateBattlerSelection(gBattlerAttacker, TRUE);
-        DisplayActionSelectionInfo(gBattlerAttacker);
-        SetBattlerGrayscale(gBattlerAttacker, FALSE);
-        gDeckStruct.selectedPos = gDeckMons[gBattlerAttacker].pos;
-
-        // Set up UI for action selection.
-        SetBattlerPortraitVisibility(TRUE);
-        SetGpuReg(REG_OFFSET_BG0VOFS, 0);
-        SetGpuReg(REG_OFFSET_BG1VOFS, 0);
-        gTasks[taskId].func = Task_PlayerSelectAction;
-        gTasks[taskId].tState = 0;
-    }
-    if (gMain.newKeys & A_BUTTON)
-    {
-        // Deselect target.
-        PlaySE(SE_SELECT);
-        for (battler = B_OPPONENT_0; battler < MAX_DECK_BATTLERS_COUNT; ++battler)
-        {
-            if (IsDeckBattlerAlive(battler))
-                UpdateBattlerSelection(battler, FALSE);
-        }
-        if (gDeckMons[gBattlerAttacker].pos != POSITION_0)
-        {
-            battler = GetDeckBattlerAtPos(B_SIDE_PLAYER, gDeckMons[gBattlerAttacker].pos-1);
-            if (IsDeckBattlerAlive(battler))
-                UpdateBattlerSelection(battler, FALSE);
-        }
-        if (gDeckMons[gBattlerAttacker].pos != POSITION_5)
-        {
-            battler = GetDeckBattlerAtPos(B_SIDE_PLAYER, gDeckMons[gBattlerAttacker].pos+1);
-            if (IsDeckBattlerAlive(battler))
-                UpdateBattlerSelection(battler, FALSE);
-        }
-
-        // Queue attack action and update data.
-        QueueAction(ACTION_ATTACK, gBattlerAttacker, MAX_DECK_BATTLERS_COUNT, gDeckSpeciesInfo[gDeckMons[gBattlerAttacker].species].move);
-        SetBattlerGrayscale(gBattlerAttacker, TRUE);
-        gDeckMons[gBattlerAttacker].hasMoved = TRUE;
-        StartBattlerAnim(gBattlerAttacker, ANIM_PAUSED);
-
-        // Select next battler for action selection or begin action phase.
-        gDeckStruct.selectedPos = GetLeftmostPositionToMove(B_SIDE_PLAYER);
-        gTasks[taskId].tState = 0;
-        if (gDeckStruct.selectedPos != POSITIONS_COUNT)
-        {
-            battler = GetDeckBattlerAtPos(B_SIDE_PLAYER, gDeckStruct.selectedPos);
-            UpdateBattlerSelection(battler, TRUE);
-            DisplayActionSelectionInfo(battler);
-
-            SetBattlerPortraitVisibility(TRUE);
-            SetGpuReg(REG_OFFSET_BG0VOFS, 0);
-            SetGpuReg(REG_OFFSET_BG1VOFS, 0);
-            gTasks[taskId].func = Task_PlayerSelectAction;
-        }
-        else
-        {
-            gTasks[taskId].func = Task_PrepareForActionPhase; 
-        }
-    }
-}
-
-// Auto battle tasks
 void Task_AutoSelectAction(u8 taskId)
 {
     gDeckStruct.selectedPos = GetLeftmostPositionToMove(B_SIDE_PLAYER);
     if (gDeckStruct.selectedPos != POSITIONS_COUNT)
     {
         gBattlerAttacker = GetDeckBattlerAtPos(B_SIDE_PLAYER, gDeckStruct.selectedPos);
-        gTasks[taskId].func = sAutoMoveTargetTasks[gDeckMovesInfo[gDeckSpeciesInfo[gDeckMons[gBattlerAttacker].species].move].target];
+        QueueAction(ACTION_ATTACK, gBattlerAttacker, MAX_DECK_BATTLERS_COUNT, gDeckSpeciesInfo[gDeckMons[gBattlerAttacker].species].move);
+        gDeckMons[gBattlerAttacker].hasMoved = TRUE;
     }
     else
     {
         gTasks[taskId].func = Task_PrepareForActionPhase;
     } 
-}
-
-static void Task_AutoSelectLeftAlly(u8 taskId)
-{
-    gBattlerTarget = GetDeckBattlerAtPos(B_SIDE_PLAYER, GetOccupiedOnLeft(B_SIDE_PLAYER, gDeckMons[gBattlerAttacker].pos));
-    QueueAction(ACTION_ATTACK, gBattlerAttacker, gBattlerTarget, gDeckSpeciesInfo[gDeckMons[gBattlerAttacker].species].move);
-    gDeckMons[gBattlerAttacker].hasMoved = TRUE;
-    gTasks[taskId].func = Task_AutoSelectAction;
-}
-
-static void Task_AutoSelectSingleOpponent(u8 taskId)
-{
-    gBattlerTarget = GetRandomBattlerOnSide(B_SIDE_OPPONENT);
-    QueueAction(ACTION_ATTACK, gBattlerAttacker, gBattlerTarget, gDeckSpeciesInfo[gDeckMons[gBattlerAttacker].species].move);
-    gDeckMons[gBattlerAttacker].hasMoved = TRUE;
-    gTasks[taskId].func = Task_AutoSelectAction;
-}
-
-static void Task_AutoSelectAllOpponents(u8 taskId)
-{
-    QueueAction(ACTION_ATTACK, gBattlerAttacker, MAX_DECK_BATTLERS_COUNT, gDeckSpeciesInfo[gDeckMons[gBattlerAttacker].species].move);
-    gDeckMons[gBattlerAttacker].hasMoved = TRUE;
-    gTasks[taskId].func = Task_AutoSelectAction;
 }
 
 #undef tState
