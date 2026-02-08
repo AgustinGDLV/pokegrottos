@@ -1096,44 +1096,44 @@ void UpdatePlayerHPBar(enum BattleId battler)
     SetHPBarColor(battler);
 
     if (pixels >= 3) // bottom
-        *((u16 *)(BG_SCREEN_ADDR(24)) + POS_TO_SCR_ADDR(28, 19)) = sHpBarBottomTiles[3];
+        *((u16 *)(BG_SCREEN_ADDR(14)) + POS_TO_SCR_ADDR(28, 19)) = sHpBarBottomTiles[3];
     else
-        *((u16 *)(BG_SCREEN_ADDR(24)) + POS_TO_SCR_ADDR(28, 19)) = sHpBarBottomTiles[pixels];
+        *((u16 *)(BG_SCREEN_ADDR(14)) + POS_TO_SCR_ADDR(28, 19)) = sHpBarBottomTiles[pixels];
 
     if (pixels >= 11) // 1st from bottom
-        *((u16 *)(BG_SCREEN_ADDR(24)) + POS_TO_SCR_ADDR(28, 18)) = sHpBarMiddleTiles[8];
+        *((u16 *)(BG_SCREEN_ADDR(14)) + POS_TO_SCR_ADDR(28, 18)) = sHpBarMiddleTiles[8];
     else if (pixels >= 3)
-        *((u16 *)(BG_SCREEN_ADDR(24)) + POS_TO_SCR_ADDR(28, 18)) = sHpBarMiddleTiles[pixels-3];
+        *((u16 *)(BG_SCREEN_ADDR(14)) + POS_TO_SCR_ADDR(28, 18)) = sHpBarMiddleTiles[pixels-3];
     else
-        *((u16 *)(BG_SCREEN_ADDR(24)) + POS_TO_SCR_ADDR(28, 18)) = sHpBarMiddleTiles[0];
+        *((u16 *)(BG_SCREEN_ADDR(14)) + POS_TO_SCR_ADDR(28, 18)) = sHpBarMiddleTiles[0];
 
     if (pixels >= 19) // 2nd from bottom
-        *((u16 *)(BG_SCREEN_ADDR(24)) + POS_TO_SCR_ADDR(28, 17)) = sHpBarMiddleTiles[8];
+        *((u16 *)(BG_SCREEN_ADDR(14)) + POS_TO_SCR_ADDR(28, 17)) = sHpBarMiddleTiles[8];
     else if (pixels >= 11)
-        *((u16 *)(BG_SCREEN_ADDR(24)) + POS_TO_SCR_ADDR(28, 17)) = sHpBarMiddleTiles[pixels-11];
+        *((u16 *)(BG_SCREEN_ADDR(14)) + POS_TO_SCR_ADDR(28, 17)) = sHpBarMiddleTiles[pixels-11];
     else
-        *((u16 *)(BG_SCREEN_ADDR(24)) + POS_TO_SCR_ADDR(28, 17)) = sHpBarMiddleTiles[0];
+        *((u16 *)(BG_SCREEN_ADDR(14)) + POS_TO_SCR_ADDR(28, 17)) = sHpBarMiddleTiles[0];
 
     if (pixels >= 27) // 3rd from bottom
-        *((u16 *)(BG_SCREEN_ADDR(24)) + POS_TO_SCR_ADDR(28, 16)) = sHpBarMiddleTiles[8];
+        *((u16 *)(BG_SCREEN_ADDR(14)) + POS_TO_SCR_ADDR(28, 16)) = sHpBarMiddleTiles[8];
     else if (pixels >= 19)
-        *((u16 *)(BG_SCREEN_ADDR(24)) + POS_TO_SCR_ADDR(28, 16)) = sHpBarMiddleTiles[pixels-19];
+        *((u16 *)(BG_SCREEN_ADDR(14)) + POS_TO_SCR_ADDR(28, 16)) = sHpBarMiddleTiles[pixels-19];
     else
-        *((u16 *)(BG_SCREEN_ADDR(24)) + POS_TO_SCR_ADDR(28, 16)) = sHpBarMiddleTiles[0];
+        *((u16 *)(BG_SCREEN_ADDR(14)) + POS_TO_SCR_ADDR(28, 16)) = sHpBarMiddleTiles[0];
 
     if (pixels >= 35) // 4th from bottom
-        *((u16 *)(BG_SCREEN_ADDR(24)) + POS_TO_SCR_ADDR(28, 15)) = sHpBarMiddleTiles[8];
+        *((u16 *)(BG_SCREEN_ADDR(14)) + POS_TO_SCR_ADDR(28, 15)) = sHpBarMiddleTiles[8];
     else if (pixels >= 27)
-        *((u16 *)(BG_SCREEN_ADDR(24)) + POS_TO_SCR_ADDR(28, 15)) = sHpBarMiddleTiles[pixels-27];
+        *((u16 *)(BG_SCREEN_ADDR(14)) + POS_TO_SCR_ADDR(28, 15)) = sHpBarMiddleTiles[pixels-27];
     else
-        *((u16 *)(BG_SCREEN_ADDR(24)) + POS_TO_SCR_ADDR(28, 15)) = sHpBarMiddleTiles[0];
+        *((u16 *)(BG_SCREEN_ADDR(14)) + POS_TO_SCR_ADDR(28, 15)) = sHpBarMiddleTiles[0];
 
     if (pixels == 36) // in case of overflow
-        *((u16 *)(BG_SCREEN_ADDR(24)) + POS_TO_SCR_ADDR(28, 14)) = sHpBarTopTiles[2];
+        *((u16 *)(BG_SCREEN_ADDR(14)) + POS_TO_SCR_ADDR(28, 14)) = sHpBarTopTiles[2];
     else if (pixels == 35)
-        *((u16 *)(BG_SCREEN_ADDR(24)) + POS_TO_SCR_ADDR(28, 14)) = sHpBarTopTiles[1];
+        *((u16 *)(BG_SCREEN_ADDR(14)) + POS_TO_SCR_ADDR(28, 14)) = sHpBarTopTiles[1];
     else
-        *((u16 *)(BG_SCREEN_ADDR(24)) + POS_TO_SCR_ADDR(28, 14)) = sHpBarTopTiles[0];
+        *((u16 *)(BG_SCREEN_ADDR(14)) + POS_TO_SCR_ADDR(28, 14)) = sHpBarTopTiles[0];
 
     CopyBgTilemapBufferToVram(0);
 }
