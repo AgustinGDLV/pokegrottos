@@ -4417,7 +4417,7 @@
       "width": 3,
       "height": 4,
       "primary_tileset": "gTileset_UnderwaterPrimary",
-      "secondary_tileset": "gTileset_Cave",
+      "secondary_tileset": "gTileset_Unused1",
       "border_filepath": "data/layouts/UnderwaterTemplates_Connections/border.bin",
       "blockdata_filepath": "data/layouts/UnderwaterTemplates_Connections/map.bin"
     },
@@ -4427,7 +4427,7 @@
       "width": 12,
       "height": 11,
       "primary_tileset": "gTileset_UnderwaterPrimary",
-      "secondary_tileset": "gTileset_Cave",
+      "secondary_tileset": "gTileset_Unused1",
       "border_filepath": "data/layouts/UnderwaterTemplates_BossRoom/border.bin",
       "blockdata_filepath": "data/layouts/UnderwaterTemplates_BossRoom/map.bin"
     },
@@ -4437,7 +4437,7 @@
       "width": 12,
       "height": 11,
       "primary_tileset": "gTileset_UnderwaterPrimary",
-      "secondary_tileset": "gTileset_Cave",
+      "secondary_tileset": "gTileset_Unused1",
       "border_filepath": "data/layouts/UnderwaterTemplates_ShopRoom/border.bin",
       "blockdata_filepath": "data/layouts/UnderwaterTemplates_ShopRoom/map.bin"
     },
@@ -4447,7 +4447,7 @@
       "width": 12,
       "height": 11,
       "primary_tileset": "gTileset_UnderwaterPrimary",
-      "secondary_tileset": "gTileset_Cave",
+      "secondary_tileset": "gTileset_Unused1",
       "border_filepath": "data/layouts/UnderwaterTemplates_TreasureRoom/border.bin",
       "blockdata_filepath": "data/layouts/UnderwaterTemplates_TreasureRoom/map.bin"
     },
@@ -4457,17 +4457,17 @@
       "width": 12,
       "height": 11,
       "primary_tileset": "gTileset_UnderwaterPrimary",
-      "secondary_tileset": "gTileset_Cave",
+      "secondary_tileset": "gTileset_Unused1",
       "border_filepath": "data/layouts/UnderwaterTemplates_ChallengeRoom/border.bin",
       "blockdata_filepath": "data/layouts/UnderwaterTemplates_ChallengeRoom/map.bin"
     },
     {
       "id": "LAYOUT_UNDERWATER_TEMPLATES_ROOM1",
       "name": "UnderwaterTemplates_Room1_Layout",
-      "width": 12,
-      "height": 11,
+      "width": 20,
+      "height": 17,
       "primary_tileset": "gTileset_UnderwaterPrimary",
-      "secondary_tileset": "gTileset_Cave",
+      "secondary_tileset": "gTileset_Unused1",
       "border_filepath": "data/layouts/UnderwaterTemplates_Room1/border.bin",
       "blockdata_filepath": "data/layouts/UnderwaterTemplates_Room1/map.bin"
     },
@@ -4730,6 +4730,46 @@
       "secondary_tileset": "gTileset_Dojo",
       "border_filepath": "data/layouts/DojoTemplates_Room1/border.bin",
       "blockdata_filepath": "data/layouts/DojoTemplates_Room1/map.bin"
+    },
+    {
+      "id": "LAYOUT_UNDERWATER_TEMPLATES_ROOM2",
+      "name": "UnderwaterTemplates_Room2_Layout",
+      "width": 22,
+      "height": 17,
+      "primary_tileset": "gTileset_UnderwaterPrimary",
+      "secondary_tileset": "gTileset_Unused1",
+      "border_filepath": "data/layouts/UnderwaterTemplates_Room2/border.bin",
+      "blockdata_filepath": "data/layouts/UnderwaterTemplates_Room2/map.bin"
+    },
+    {
+      "id": "LAYOUT_UNDERWATER_TEMPLATES_ROOM3",
+      "name": "UnderwaterTemplates_Room3_Layout",
+      "width": 14,
+      "height": 13,
+      "primary_tileset": "gTileset_UnderwaterPrimary",
+      "secondary_tileset": "gTileset_Unused1",
+      "border_filepath": "data/layouts/UnderwaterTemplates_Room3/border.bin",
+      "blockdata_filepath": "data/layouts/UnderwaterTemplates_Room3/map.bin"
+    },
+    {
+      "id": "LAYOUT_UNDERWATER_TEMPLATES_ROOM4",
+      "name": "UnderwaterTemplates_Room4_Layout",
+      "width": 20,
+      "height": 23,
+      "primary_tileset": "gTileset_UnderwaterPrimary",
+      "secondary_tileset": "gTileset_Unused1",
+      "border_filepath": "data/layouts/UnderwaterTemplates_Room4/border.bin",
+      "blockdata_filepath": "data/layouts/UnderwaterTemplates_Room4/map.bin"
+    },
+    {
+      "id": "LAYOUT_UNDERWATER_TEMPLATES_ROOM5",
+      "name": "UnderwaterTemplates_Room5_Layout",
+      "width": 20,
+      "height": 26,
+      "primary_tileset": "gTileset_UnderwaterPrimary",
+      "secondary_tileset": "gTileset_Unused1",
+      "border_filepath": "data/layouts/UnderwaterTemplates_Room5/border.bin",
+      "blockdata_filepath": "data/layouts/UnderwaterTemplates_Room5/map.bin"
     }
   ]
 }

@@ -175,9 +175,13 @@ const struct ItemPoolTable gDefaultItemPools[ITEM_TIER_COUNT] =
 };
 
 // Cave Template Pools
-static const u8 sCaveNormalRooms[] =
+static const u8 sUnderwaterNormalRooms[] =
 {
     MAP_NUM(UNDERWATER_TEMPLATES_ROOM1),
+    MAP_NUM(UNDERWATER_TEMPLATES_ROOM2),
+    MAP_NUM(UNDERWATER_TEMPLATES_ROOM3),
+    MAP_NUM(UNDERWATER_TEMPLATES_ROOM4),
+    MAP_NUM(UNDERWATER_TEMPLATES_ROOM5),
 };
 
 // Volcano Template Pools
@@ -222,8 +226,8 @@ const struct TemplateRules gTemplateRules[TEMPLATE_TYPES_COUNT] =
             [DIR_EAST] = {0, 0},
             [DIR_WEST] = {-2, 0},
         },
-        .numNormalRooms = ARRAY_COUNT(sCaveNormalRooms),
-        .normalRoomIds = sCaveNormalRooms,
+        .numNormalRooms = ARRAY_COUNT(sUnderwaterNormalRooms),
+        .normalRoomIds = sUnderwaterNormalRooms,
         .specialRoomIds = {
             [BOSS_ROOM] = MAP_NUM(UNDERWATER_TEMPLATES_BOSS_ROOM),
             [TREASURE_ROOM] = MAP_NUM(UNDERWATER_TEMPLATES_TREASURE_ROOM),

@@ -12,6 +12,10 @@
 #define MAP_UNDERWATER_TEMPLATES_TREASURE_ROOM  (3 | (0 << 8))
 #define MAP_UNDERWATER_TEMPLATES_CHALLENGE_ROOM (4 | (0 << 8))
 #define MAP_UNDERWATER_TEMPLATES_ROOM1          (5 | (0 << 8))
+#define MAP_UNDERWATER_TEMPLATES_ROOM2          (6 | (0 << 8))
+#define MAP_UNDERWATER_TEMPLATES_ROOM3          (7 | (0 << 8))
+#define MAP_UNDERWATER_TEMPLATES_ROOM4          (8 | (0 << 8))
+#define MAP_UNDERWATER_TEMPLATES_ROOM5          (9 | (0 << 8))
 
 // gMapGroup_IceCaveTemplates
 #define MAP_ICE_CAVE_TEMPLATES_CONNECTIONS    (0 | (1 << 8))

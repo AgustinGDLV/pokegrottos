@@ -446,7 +446,7 @@ static void PrintFloorText(void)
     AddTextPrinterParameterized3(WIN_FLOOR, FONT_NORMAL, 152 + offset, 0, textColor, TEXT_SKIP_DRAW, gStringVar1);
 
     // Print template name.
-	AddTextPrinterParameterized3(WIN_FLOOR, FONT_NORMAL, 4, 0, textColor, TEXT_SKIP_DRAW, gTemplateRules[gSaveBlock1Ptr->currentTemplateType].name);
+	AddTextPrinterParameterized3(WIN_FLOOR, FONT_NORMAL, 4, 0, textColor, TEXT_SKIP_DRAW, GetCurrentTemplateRules()->name);
 }
 
 struct SpriteTable {

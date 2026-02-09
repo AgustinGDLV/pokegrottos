@@ -46,7 +46,11 @@
     "UnderwaterTemplates_ShopRoom",
     "UnderwaterTemplates_TreasureRoom",
     "UnderwaterTemplates_ChallengeRoom",
-    "UnderwaterTemplates_Room1"
+    "UnderwaterTemplates_Room1",
+    "UnderwaterTemplates_Room2",
+    "UnderwaterTemplates_Room3",
+    "UnderwaterTemplates_Room4",
+    "UnderwaterTemplates_Room5"
   ],
   "gMapGroup_IceCaveTemplates": [
     "IceCaveTemplates_Connections",

@@ -817,37 +817,36 @@ const struct SpriteTemplate gFieldEffectObjectTemplate_UnusedGrass = {
     .callback = WaitFieldEffectSpriteAnim,
 };
 
-static const struct SpriteFrameImage sPicTable_UnusedGrass2[] = {
-    overworld_frame(gFieldEffectObjectPic_UnusedGrass2, 2, 2, 0),
-    overworld_frame(gFieldEffectObjectPic_UnusedGrass2, 2, 2, 1),
-    overworld_frame(gFieldEffectObjectPic_UnusedGrass2, 2, 2, 2),
-    overworld_frame(gFieldEffectObjectPic_UnusedGrass2, 2, 2, 3),
+static const struct SpriteFrameImage sPicTable_UnderwaterGrass[] = {
+    overworld_frame(gFieldEffectObjectPic_UnderwaterGrass, 2, 2, 0),
+    overworld_frame(gFieldEffectObjectPic_UnderwaterGrass, 2, 2, 1),
+    overworld_frame(gFieldEffectObjectPic_UnderwaterGrass, 2, 2, 2),
+    overworld_frame(gFieldEffectObjectPic_UnderwaterGrass, 2, 2, 3),
 };
 
-static const union AnimCmd sAnim_UnusedGrass2[] =
+static const union AnimCmd sAnim_UnderwaterGrass[] =
 {
-    ANIMCMD_FRAME(0, 4),
-    ANIMCMD_FRAME(1, 4),
-    ANIMCMD_FRAME(2, 4),
-    ANIMCMD_FRAME(3, 4),
-    ANIMCMD_FRAME(2, 4),
-    ANIMCMD_FRAME(1, 4),
-    ANIMCMD_JUMP(0),
+    ANIMCMD_FRAME(0, 10),
+    ANIMCMD_FRAME(1, 10),
+    ANIMCMD_FRAME(2, 10),
+    ANIMCMD_FRAME(3, 10),
+    ANIMCMD_FRAME(2, 10),
+    ANIMCMD_END,
 };
 
-static const union AnimCmd *const sAnimTable_UnusedGrass2[] =
+static const union AnimCmd *const sAnimTable_UnderwaterGrass[] =
 {
-    sAnim_UnusedGrass2,
+    sAnim_UnderwaterGrass,
 };
 
-const struct SpriteTemplate gFieldEffectObjectTemplate_UnusedGrass2 = {
+const struct SpriteTemplate gFieldEffectObjectTemplate_Underwater_Grass = {
     .tileTag = TAG_NONE,
     .paletteTag = FLDEFF_PAL_TAG_GENERAL_1,
     .oam = &gObjectEventBaseOam_16x16,
-    .anims = sAnimTable_UnusedGrass2,
-    .images = sPicTable_UnusedGrass2,
+    .anims = sAnimTable_UnderwaterGrass,
+    .images = sPicTable_UnderwaterGrass,
     .affineAnims = gDummySpriteAffineAnimTable,
-    .callback = WaitFieldEffectSpriteAnim,
+    .callback = UpdateTallGrassFieldEffect,
 };
 
 static const struct SpriteFrameImage sPicTable_UnusedSand[] = {

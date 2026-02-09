@@ -1,11 +1,11 @@
 {
-  "id": "MAP_UNDERWATER_TEMPLATES_ROOM1",
-  "name": "UnderwaterTemplates_Room1",
-  "layout": "LAYOUT_UNDERWATER_TEMPLATES_ROOM1",
+  "id": "MAP_UNDERWATER_TEMPLATES_ROOM2",
+  "name": "UnderwaterTemplates_Room2",
+  "layout": "LAYOUT_UNDERWATER_TEMPLATES_ROOM2",
   "music": "MUS_DUMMY",
-  "region_map_section": "MAPSEC_CAVE_OF_ORIGIN",
+  "region_map_section": "MAPSEC_ABANDONED_SHIP",
   "requires_flash": false,
-  "weather": "WEATHER_UNDERWATER_BUBBLES",
+  "weather": "WEATHER_NONE",
   "map_type": "MAP_TYPE_NONE",
   "allow_cycling": false,
   "allow_escaping": false,
@@ -16,8 +16,8 @@
   "object_events": [
     {
       "graphics_id": "OBJ_EVENT_MON",
-      "x": 5,
-      "y": 11,
+      "x": 7,
+      "y": 4,
       "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_ENCOUNTER_TRACK_PLAYER",
       "movement_range_x": 0,
@@ -25,12 +25,12 @@
       "trainer_type": "TRAINER_TYPE_NONE",
       "trainer_sight_or_berry_tree_id": "4",
       "script": "NULL",
-      "flag": "FLAG_ENCOUNTER_1"
+      "flag": "FLAG_ENCOUNTER_3"
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
-      "x": 12,
-      "y": 13,
+      "x": 15,
+      "y": 12,
       "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_NONE",
       "movement_range_x": 0,
@@ -38,43 +38,43 @@
       "trainer_type": "TRAINER_TYPE_NONE",
       "trainer_sight_or_berry_tree_id": "0",
       "script": "EventScript_ItemBall",
-      "flag": "FLAG_ITEM_1"
+      "flag": "FLAG_ITEM_2"
     }
   ],
   "warp_events": [
     {
-      "x": 9,
-      "y": 8,
+      "x": 12,
+      "y": 9,
       "elevation": 0,
-      "dest_map": "MAP_UNDERWATER_TEMPLATES_ROOM1",
+      "dest_map": "MAP_UNDERWATER_TEMPLATES_ROOM2",
       "dest_warp_id": "0"
     },
     {
-      "x": 14,
-      "y": 4,
+      "x": 11,
+      "y": 1,
       "elevation": 0,
-      "dest_map": "MAP_UNDERWATER_TEMPLATES_ROOM1",
+      "dest_map": "MAP_UNDERWATER_TEMPLATES_ROOM2",
       "dest_warp_id": "0"
     },
     {
-      "x": 4,
+      "x": 11,
       "y": 15,
       "elevation": 0,
-      "dest_map": "MAP_UNDERWATER_TEMPLATES_ROOM1",
+      "dest_map": "MAP_UNDERWATER_TEMPLATES_ROOM2",
       "dest_warp_id": "0"
     },
     {
-      "x": 15,
-      "y": 10,
+      "x": 20,
+      "y": 8,
       "elevation": 0,
-      "dest_map": "MAP_UNDERWATER_TEMPLATES_ROOM1",
+      "dest_map": "MAP_UNDERWATER_TEMPLATES_ROOM2",
       "dest_warp_id": "0"
     },
     {
       "x": 2,
       "y": 8,
       "elevation": 0,
-      "dest_map": "MAP_UNDERWATER_TEMPLATES_ROOM1",
+      "dest_map": "MAP_UNDERWATER_TEMPLATES_ROOM2",
       "dest_warp_id": "0"
     }
   ],

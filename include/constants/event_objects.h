@@ -365,8 +365,8 @@
 #define LOCALID_SLATEPORT_ENERGY_GURU 25
 
 // Moved from src/event_object_movement.c so that they're accesible from other files.
-#define OBJ_EVENT_PAL_TAG_BRENDAN                 0x1100
-#define OBJ_EVENT_PAL_TAG_BRENDAN_REFLECTION      0x1101
+#define OBJ_EVENT_PAL_TAG_GBC                     0x1100
+#define OBJ_EVENT_PAL_TAG_GBC_REFLECTION          0x1101
 #define OBJ_EVENT_PAL_TAG_BRIDGE_REFLECTION       0x1102
 #define OBJ_EVENT_PAL_TAG_NPC_1                   0x1103
 #define OBJ_EVENT_PAL_TAG_NPC_2                   0x1104
@@ -445,7 +445,7 @@
 #define OBJ_EVENT_PAL_TAG_EMOTES                  0x8003
 #define OBJ_EVENT_PAL_TAG_NEON_LIGHT              0x8004
 // Characters
-#define OBJ_EVENT_PAL_TAG_SWIMMER                 0x116B
+#define OBJ_EVENT_PAL_TAG_SWIMMER                 0x116B // unused
 #define OBJ_EVENT_PAL_TAG_HIKER                   0x116C
 #define OBJ_EVENT_PAL_TAG_AROMA_LADY              0x116D
 #define OBJ_EVENT_PAL_TAG_FIREBREATHER            0x166E
