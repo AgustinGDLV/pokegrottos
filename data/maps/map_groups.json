@@ -62,7 +62,8 @@
     "CityTemplates_Room1",
     "CityTemplates_Room2",
     "CityTemplates_Room3",
-    "CityTemplates_Room4"
+    "CityTemplates_Room4",
+    "CityTemplates_Room5"
   ],
   "gMapGroup_IceCaveTemplates": [
     "IceCaveTemplates_Connections",

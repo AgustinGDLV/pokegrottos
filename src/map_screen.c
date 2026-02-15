@@ -372,12 +372,12 @@ static void Task_MapScreenFadeOutAndExit(u8 taskId)
 
 static void Task_MapScreenFadeOutAndWarp(u8 taskId)
 {
-		Free(sMapScreenTilemapPtr);
-        sMapScreenTilemapPtr = NULL;
-		FreeAllWindowBuffers();
-        ResetSpriteData();
-        TryWarpToRoom(gSaveBlock1Ptr->currentRoom, 0);
-		DestroyTask(taskId);
+    Free(sMapScreenTilemapPtr);
+    sMapScreenTilemapPtr = NULL;
+    FreeAllWindowBuffers();
+    ResetSpriteData();
+    TryWarpToRoom(gSaveBlock1Ptr->currentRoom, 0);
+    DestroyTask(taskId);
 }
 
 static void Task_MapScreenWaitForKeypress(u8 taskId)

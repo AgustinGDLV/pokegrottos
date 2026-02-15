@@ -1222,3 +1222,5 @@ EventScript_VsSeekerChargingDone::
 	.include "data/maps/CityTemplates_Room3/scripts.inc"
 
 	.include "data/maps/CityTemplates_Room4/scripts.inc"
+
+	.include "data/maps/CityTemplates_Room5/scripts.inc"

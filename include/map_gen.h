@@ -36,10 +36,6 @@ struct Room {
 
 enum TemplateTypes {
     TEMPLATES_UNDERWATER,
-    TEMPLATES_ICE_PATH,
-    TEMPLATES_VOLCANO,
-    TEMPLATES_POWER_PLANT,
-    TEMPLATES_DOJO,
     TEMPLATES_CITY,
     TEMPLATE_TYPES_COUNT,
 };
@@ -67,7 +63,7 @@ struct TemplateRules {
     u8 previewId;
     u8 battleTerrain;
     u8 connectionType;
-    s8 offsets[5][2]; // (x, y) entrance cover offsets for each direction
+    s8 offsets[5][4]; // (x, y) entrance cover offsets for each direction
     u8 numNormalRooms;
     const u8* normalRoomIds;
     u8 specialRoomIds[NUM_ROOM_TYPES];

@@ -174,7 +174,7 @@ const struct ItemPoolTable gDefaultItemPools[ITEM_TIER_COUNT] =
     },
 };
 
-// Cave Template Pools
+// Underwater Template Pools
 static const u8 sUnderwaterNormalRooms[] =
 {
     MAP_NUM(UNDERWATER_TEMPLATES_ROOM1),
@@ -184,39 +184,14 @@ static const u8 sUnderwaterNormalRooms[] =
     MAP_NUM(UNDERWATER_TEMPLATES_ROOM5),
 };
 
-// Volcano Template Pools
-static const u8 sVolcanoNormalRooms[] =
-{
-    MAP_NUM(ICE_CAVE_TEMPLATES_ROOM1),
-};
-
-// Ice Path Template Pools
-static const u8 sIceCaveNormalRooms[] =
-{
-    MAP_NUM(ICE_CAVE_TEMPLATES_ROOM1),
-    MAP_NUM(ICE_CAVE_TEMPLATES_ROOM2),
-    MAP_NUM(ICE_CAVE_TEMPLATES_ROOM3),
-};
-
-// Power Plant Template Pools
-static const u8 sPowerPlantNormalRooms[] =
-{
-    MAP_NUM(POWER_PLANT_TEMPLATES_ROOM1),
-};
-
-// Dojo Template Pools
-static const u8 sDojoNormalRooms[] =
-{
-    MAP_NUM(DOJO_TEMPLATES_ROOM1),
-};
-
-// Dojo Template Pools
+// City Template Pools
 static const u8 sCityNormalRooms[] =
 {
     MAP_NUM(CITY_TEMPLATES_ROOM1),
     MAP_NUM(CITY_TEMPLATES_ROOM2),
     MAP_NUM(CITY_TEMPLATES_ROOM3),
     MAP_NUM(CITY_TEMPLATES_ROOM4),
+    MAP_NUM(CITY_TEMPLATES_ROOM5),
 };
 
 const struct TemplateRules gTemplateRules[TEMPLATE_TYPES_COUNT] = 
@@ -230,10 +205,10 @@ const struct TemplateRules gTemplateRules[TEMPLATE_TYPES_COUNT] =
         .battleTerrain = BATTLE_ENVIRONMENT_CAVE,
         .connectionType = CONNECTION_TYPE_WARP,
         .offsets = {
-            [DIR_NORTH] = {-1, -1},
-            [DIR_SOUTH] = {-1, 1},
-            [DIR_EAST] = {0, 0},
-            [DIR_WEST] = {-2, 0},
+            [DIR_NORTH] = {0, -1, 1, 1},
+            [DIR_SOUTH] = {0, 1, 1, 1},
+            [DIR_EAST] = {0, 0, 2, 1},
+            [DIR_WEST] = {-1, 0, 2, 1},
         },
         .numNormalRooms = ARRAY_COUNT(sUnderwaterNormalRooms),
         .normalRoomIds = sUnderwaterNormalRooms,
@@ -245,148 +220,6 @@ const struct TemplateRules gTemplateRules[TEMPLATE_TYPES_COUNT] =
         .itemPools = gDefaultItemPools,
         .encounterPool = {
             {SPECIES_KRABBY, 100},
-            {SPECIES_KRABBY, 100},
-            {SPECIES_KRABBY, 100},
-            {SPECIES_KRABBY, 100},
-            {SPECIES_KRABBY, 100},
-            {SPECIES_KRABBY, 100},
-            {SPECIES_KRABBY, 100},
-        }
-    },
-
-    [TEMPLATES_ICE_PATH] =
-    {
-        .name = COMPOUND_STRING("Ice Path"),
-        .mapGroup = MAP_GROUP(ICE_CAVE_TEMPLATES_ROOM1),
-        .bgm = MUS_HG_ICE_PATH,
-        .previewId = PREVIEW_ICE_PATH,
-        .battleTerrain = BATTLE_ENVIRONMENT_CAVE,
-        .connectionType = CONNECTION_TYPE_WARP,
-        .offsets = {
-            [DIR_NORTH] = {-1, -1},
-            [DIR_SOUTH] = {-1, 1},
-            [DIR_EAST] = {0, 0},
-            [DIR_WEST] = {-2, 0},
-        },
-        .numNormalRooms = ARRAY_COUNT(sIceCaveNormalRooms),
-        .normalRoomIds = sIceCaveNormalRooms,
-        .specialRoomIds = {
-            [BOSS_ROOM] = MAP_NUM(ICE_CAVE_TEMPLATES_BOSS_ROOM),
-            [TREASURE_ROOM] = MAP_NUM(ICE_CAVE_TEMPLATES_TREASURE_ROOM),
-            [SHOP_ROOM] = MAP_NUM(ICE_CAVE_TEMPLATES_SHOP_ROOM),
-        },
-        .itemPools = gDefaultItemPools,
-        .encounterPool = {
-            {SPECIES_SNOVER, 100},
-            {SPECIES_POOCHYENA, 100},
-            {SPECIES_GEODUDE, 100},
-            {SPECIES_ZUBAT, 100},
-            {SPECIES_SNEASEL, 100},
-            {SPECIES_SPHEAL, 100},
-            {SPECIES_DIGLETT, 100},
-        }
-    },
-
-    [TEMPLATES_VOLCANO] =
-    {
-        .name = COMPOUND_STRING("Volcano"),
-        .mapGroup = MAP_GROUP(VOLCANO_TEMPLATES_ROOM1),
-        .bgm = MUS_DP_STARK_MOUNTAIN,
-        .previewId = PREVIEW_MT_EMBER,
-        .battleTerrain = BATTLE_ENVIRONMENT_CAVE,
-        .connectionType = CONNECTION_TYPE_WARP,
-        .offsets = {
-            [DIR_NORTH] = {-1, -1},
-            [DIR_SOUTH] = {-1, 1},
-            [DIR_EAST] = {0, 0},
-            [DIR_WEST] = {-2, 0},
-        },
-        .numNormalRooms = ARRAY_COUNT(sVolcanoNormalRooms),
-        .normalRoomIds = sVolcanoNormalRooms,
-        .specialRoomIds = {
-            [BOSS_ROOM] = MAP_NUM(VOLCANO_TEMPLATES_BOSS_ROOM),
-            [TREASURE_ROOM] = MAP_NUM(VOLCANO_TEMPLATES_TREASURE_ROOM),
-            [SHOP_ROOM] = MAP_NUM(VOLCANO_TEMPLATES_SHOP_ROOM),
-        },
-        .itemPools = gDefaultItemPools,
-        .encounterPool = {
-            {SPECIES_SLUGMA, 100},
-            {SPECIES_HOUNDOUR, 100},
-            {SPECIES_GEODUDE, 100},
-            {SPECIES_ZUBAT, 100},
-            {SPECIES_MAGBY, 100},
-            {SPECIES_DROWZEE, 100},
-            {SPECIES_DIGLETT, 100},
-        }
-    },
-
-    [TEMPLATES_POWER_PLANT] =
-    {
-        .name = COMPOUND_STRING("Power Plant"),
-        .mapGroup = MAP_GROUP(POWER_PLANT_TEMPLATES_CONNECTIONS),
-        .bgm = MUS_RG_POKE_MANSION,
-        .previewId = PREVIEW_POWER_PLANT,
-        .battleTerrain = BATTLE_ENVIRONMENT_CAVE,
-        .connectionType = CONNECTION_TYPE_SEAMLESS,
-        .offsets = {
-            [DIR_NORTH] = {-2, -1},
-            [DIR_SOUTH] = {-2, -5},
-            [DIR_EAST] = {-3, -4},
-            [DIR_WEST] = {-1, -4},
-        },
-        .numNormalRooms = ARRAY_COUNT(sPowerPlantNormalRooms),
-        .normalRoomIds = sPowerPlantNormalRooms,
-        .specialRoomIds = {
-            [BOSS_ROOM] = MAP_NUM(POWER_PLANT_TEMPLATES_BOSS_ROOM),
-            [TREASURE_ROOM] = MAP_NUM(POWER_PLANT_TEMPLATES_BOSS_ROOM),
-            [SHOP_ROOM] = MAP_NUM(POWER_PLANT_TEMPLATES_BOSS_ROOM),
-        },
-        .itemPools = gDefaultItemPools,
-        .encounterPool = {
-            {SPECIES_MAGNEMITE, 100},
-            {SPECIES_MAGNETON, 100},
-            {SPECIES_VOLTORB, 100},
-            {SPECIES_PLUSLE, 100},
-            {SPECIES_MINUN, 100},
-            {SPECIES_ZIGZAGOON, 100},
-            {SPECIES_GRIMER, 100},
-        }
-    },
-
-    [TEMPLATES_DOJO] =
-    {
-        .name = COMPOUND_STRING("Dojo"),
-        .mapGroup = MAP_GROUP(DOJO_TEMPLATES_CONNECTIONS),
-        .bgm = MUS_HG_BURNED_TOWER,
-        .previewId = PREVIEW_POWER_PLANT,
-        .battleTerrain = BATTLE_ENVIRONMENT_CAVE,
-        .connectionType = CONNECTION_TYPE_SEAMLESS,
-        .offsets = {
-            [DIR_NORTH] = {-2, -1},
-            [DIR_SOUTH] = {-2, -5},
-            [DIR_EAST] = {-3, -4},
-            [DIR_WEST] = {-1, -4},
-        },
-        .numNormalRooms = ARRAY_COUNT(sDojoNormalRooms),
-        .normalRoomIds = sDojoNormalRooms,
-        .specialRoomIds = {
-            [BOSS_ROOM] = MAP_NUM(DOJO_TEMPLATES_BOSS_ROOM),
-            [TREASURE_ROOM] = MAP_NUM(DOJO_TEMPLATES_BOSS_ROOM),
-            [SHOP_ROOM] = MAP_NUM(DOJO_TEMPLATES_BOSS_ROOM),
-        },
-        .itemPools = gDefaultItemPools,
-        .encounterPool = {
-            {SPECIES_RATTATA, 100},
-            {SPECIES_MEDITITE, 100},
-            {SPECIES_RIOLU, 100},
-            {SPECIES_MAKUHITA, 100},
-            {SPECIES_SNUBBULL, 100},
-            {SPECIES_BUNEARY, 100},
-            {SPECIES_ELEKID, 100},
-            {SPECIES_POLIWAG, 100},
-            {SPECIES_PAWNIARD, 100},
-            // {SPECIES_SAWK, 100},
-            // {SPECIES_THROH, 100},
         }
     },
 
@@ -399,10 +232,10 @@ const struct TemplateRules gTemplateRules[TEMPLATE_TYPES_COUNT] =
         .battleTerrain = BATTLE_ENVIRONMENT_CAVE,
         .connectionType = CONNECTION_TYPE_SEAMLESS,
         .offsets = {
-            [DIR_NORTH] = {-1, -5},
-            [DIR_SOUTH] = {-1, -3},
-            [DIR_EAST] = {-1, -3},
-            [DIR_WEST] = {-2, -3},
+            [DIR_NORTH] = {-1, -5, 4, 5},
+            [DIR_SOUTH] = {-1, 1, 4, 2},
+            [DIR_EAST] = {1, -3, 2, 6},
+            [DIR_WEST] = {-2, -3, 2, 6},
         },
         .numNormalRooms = ARRAY_COUNT(sCityNormalRooms),
         .normalRoomIds = sCityNormalRooms,

@@ -4414,7 +4414,7 @@
     {
       "id": "LAYOUT_UNDERWATER_TEMPLATES_CONNECTIONS",
       "name": "UnderwaterTemplates_Connections_Layout",
-      "width": 3,
+      "width": 2,
       "height": 4,
       "primary_tileset": "gTileset_UnderwaterPrimary",
       "secondary_tileset": "gTileset_Unused1",
@@ -4784,7 +4784,7 @@
     {
       "id": "LAYOUT_CITY_TEMPLATES_BOSS_ROOM",
       "name": "CityTemplates_BossRoom_Layout",
-      "width": 19,
+      "width": 20,
       "height": 20,
       "primary_tileset": "gTileset_City",
       "secondary_tileset": "gTileset_Unused1",
@@ -4794,7 +4794,7 @@
     {
       "id": "LAYOUT_CITY_TEMPLATES_SHOP_ROOM",
       "name": "CityTemplates_ShopRoom_Layout",
-      "width": 19,
+      "width": 20,
       "height": 20,
       "primary_tileset": "gTileset_City",
       "secondary_tileset": "gTileset_Unused1",
@@ -4804,7 +4804,7 @@
     {
       "id": "LAYOUT_CITY_TEMPLATES_TREASURE_ROOM",
       "name": "CityTemplates_TreasureRoom_Layout",
-      "width": 19,
+      "width": 20,
       "height": 20,
       "primary_tileset": "gTileset_City",
       "secondary_tileset": "gTileset_Unused1",
@@ -4814,7 +4814,7 @@
     {
       "id": "LAYOUT_CITY_TEMPLATES_CHALLENGE_ROOM",
       "name": "CityTemplates_ChallengeRoom_Layout",
-      "width": 19,
+      "width": 20,
       "height": 20,
       "primary_tileset": "gTileset_City",
       "secondary_tileset": "gTileset_Unused1",
@@ -4824,7 +4824,7 @@
     {
       "id": "LAYOUT_CITY_TEMPLATES_ROOM1",
       "name": "CityTemplates_Room1_Layout",
-      "width": 19,
+      "width": 20,
       "height": 20,
       "primary_tileset": "gTileset_City",
       "secondary_tileset": "gTileset_Unused1",
@@ -4834,7 +4834,7 @@
     {
       "id": "LAYOUT_CITY_TEMPLATES_ROOM2",
       "name": "CityTemplates_Room2_Layout",
-      "width": 19,
+      "width": 20,
       "height": 20,
       "primary_tileset": "gTileset_City",
       "secondary_tileset": "gTileset_Unused1",
@@ -4844,7 +4844,7 @@
     {
       "id": "LAYOUT_CITY_TEMPLATES_ROOM3",
       "name": "CityTemplates_Room3_Layout",
-      "width": 19,
+      "width": 20,
       "height": 20,
       "primary_tileset": "gTileset_City",
       "secondary_tileset": "gTileset_Unused1",
@@ -4854,12 +4854,22 @@
     {
       "id": "LAYOUT_CITY_TEMPLATES_ROOM4",
       "name": "CityTemplates_Room4_Layout",
-      "width": 19,
+      "width": 20,
       "height": 20,
       "primary_tileset": "gTileset_City",
       "secondary_tileset": "gTileset_Unused1",
       "border_filepath": "data/layouts/CityTemplates_Room4/border.bin",
       "blockdata_filepath": "data/layouts/CityTemplates_Room4/map.bin"
+    },
+    {
+      "id": "LAYOUT_CITY_TEMPLATES_ROOM5",
+      "name": "CityTemplates_Room5_Layout",
+      "width": 20,
+      "height": 20,
+      "primary_tileset": "gTileset_City",
+      "secondary_tileset": "gTileset_Unused1",
+      "border_filepath": "data/layouts/CityTemplates_Room5/border.bin",
+      "blockdata_filepath": "data/layouts/CityTemplates_Room5/map.bin"
     }
   ]
 }

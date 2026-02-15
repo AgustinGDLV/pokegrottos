@@ -27,6 +27,7 @@
 #define MAP_CITY_TEMPLATES_ROOM2          (6 | (1 << 8))
 #define MAP_CITY_TEMPLATES_ROOM3          (7 | (1 << 8))
 #define MAP_CITY_TEMPLATES_ROOM4          (8 | (1 << 8))
+#define MAP_CITY_TEMPLATES_ROOM5          (9 | (1 << 8))
 
 // gMapGroup_IceCaveTemplates
 #define MAP_ICE_CAVE_TEMPLATES_CONNECTIONS    (0 | (2 << 8))

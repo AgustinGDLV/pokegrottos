@@ -72,6 +72,16 @@ static s32 GetCoverYOffset(u32 dir)
     return GetCurrentTemplateRules()->offsets[dir][1];
 }
 
+static s32 GetCoverWidth(u32 dir)
+{
+    return GetCurrentTemplateRules()->offsets[dir][2];
+}
+
+static s32 GetCoverHeight(u32 dir)
+{
+    return GetCurrentTemplateRules()->offsets[dir][3];
+}
+
 static void CoverExitInDirection(u32 dir)
 {
     u32 mapGroup, chunkWidth, chunkHeight;
@@ -83,9 +93,9 @@ static void CoverExitInDirection(u32 dir)
     warp = &gMapHeader.events->warps[GetOppositeDirection(dir)];
     layout = Overworld_GetMapHeaderByGroupAndId(mapGroup, 0)->mapLayout;
 
-    chunkWidth = layout->width;
-    chunkHeight = layout->height/4;
-    CopyMapChunk(mapGroup, 0, 0, (dir - 1) * chunkHeight, chunkWidth, chunkHeight, &chunk);
+    chunkWidth = GetCoverWidth(dir);
+    chunkHeight = GetCoverHeight(dir);
+    CopyMapChunk(mapGroup, 0, 0, (dir - 1) * (layout->height/4), chunkWidth, chunkHeight, &chunk);
     PasteMapChunk(warp->x + GetCoverXOffset(dir), warp->y + GetCoverYOffset(dir), &chunk);
 }
 
