@@ -210,6 +210,15 @@ static const u8 sDojoNormalRooms[] =
     MAP_NUM(DOJO_TEMPLATES_ROOM1),
 };
 
+// Dojo Template Pools
+static const u8 sCityNormalRooms[] =
+{
+    MAP_NUM(CITY_TEMPLATES_ROOM1),
+    MAP_NUM(CITY_TEMPLATES_ROOM2),
+    MAP_NUM(CITY_TEMPLATES_ROOM3),
+    MAP_NUM(CITY_TEMPLATES_ROOM4),
+};
+
 const struct TemplateRules gTemplateRules[TEMPLATE_TYPES_COUNT] = 
 {
     [TEMPLATES_UNDERWATER] =
@@ -367,7 +376,7 @@ const struct TemplateRules gTemplateRules[TEMPLATE_TYPES_COUNT] =
         },
         .itemPools = gDefaultItemPools,
         .encounterPool = {
-            {SPECIES_TYROGUE, 100},
+            {SPECIES_RATTATA, 100},
             {SPECIES_MEDITITE, 100},
             {SPECIES_RIOLU, 100},
             {SPECIES_MAKUHITA, 100},
@@ -378,6 +387,33 @@ const struct TemplateRules gTemplateRules[TEMPLATE_TYPES_COUNT] =
             {SPECIES_PAWNIARD, 100},
             // {SPECIES_SAWK, 100},
             // {SPECIES_THROH, 100},
+        }
+    },
+
+    [TEMPLATES_CITY] =
+    {
+        .name = COMPOUND_STRING("City"),
+        .mapGroup = MAP_GROUP(CITY_TEMPLATES_CONNECTIONS),
+        .bgm = MUS_RG_CELADON,
+        .previewId = PREVIEW_POWER_PLANT,
+        .battleTerrain = BATTLE_ENVIRONMENT_CAVE,
+        .connectionType = CONNECTION_TYPE_SEAMLESS,
+        .offsets = {
+            [DIR_NORTH] = {-1, -5},
+            [DIR_SOUTH] = {-1, -3},
+            [DIR_EAST] = {-1, -3},
+            [DIR_WEST] = {-2, -3},
+        },
+        .numNormalRooms = ARRAY_COUNT(sCityNormalRooms),
+        .normalRoomIds = sCityNormalRooms,
+        .specialRoomIds = {
+            [BOSS_ROOM] = MAP_NUM(CITY_TEMPLATES_BOSS_ROOM),
+            [TREASURE_ROOM] = MAP_NUM(CITY_TEMPLATES_TREASURE_ROOM),
+            [SHOP_ROOM] = MAP_NUM(CITY_TEMPLATES_SHOP_ROOM),
+        },
+        .itemPools = gDefaultItemPools,
+        .encounterPool = {
+            {SPECIES_RATTATA, 100},
         }
     },
 };

@@ -1204,3 +1204,21 @@ EventScript_VsSeekerChargingDone::
 	.include "data/maps/UnderwaterTemplates_Room4/scripts.inc"
 
 	.include "data/maps/UnderwaterTemplates_Room5/scripts.inc"
+
+	.include "data/maps/CityTemplates_Connections/scripts.inc"
+
+	.include "data/maps/CityTemplates_BossRoom/scripts.inc"
+
+	.include "data/maps/CityTemplates_ShopRoom/scripts.inc"
+
+	.include "data/maps/CityTemplates_TreasureRoom/scripts.inc"
+
+	.include "data/maps/CityTemplates_ChallengeRoom/scripts.inc"
+
+	.include "data/maps/CityTemplates_Room1/scripts.inc"
+
+	.include "data/maps/CityTemplates_Room2/scripts.inc"
+
+	.include "data/maps/CityTemplates_Room3/scripts.inc"
+
+	.include "data/maps/CityTemplates_Room4/scripts.inc"

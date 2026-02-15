@@ -924,6 +924,7 @@ gGBSSongTable::
 	song_gbs MUS_HG_SPROUT_TOWER, gbs_Music_SproutTower, 0, 0
 	song_gbs MUS_POKE_MART, gbs_Music_PokemonMart, 0, 0
 	song_gbs MUS_HG_POKE_MART, gbs_Music_FriendlyShop, 0, 0
+	song_gbs MUS_RG_CELADON, gbs_Music_NimbasaCity, 0, 0
 	.4byte 0xFFFFFFFF
 
 	.align 2

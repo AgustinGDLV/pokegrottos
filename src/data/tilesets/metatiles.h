@@ -232,3 +232,6 @@ const u16 gMetatileAttributes_CavePrimary[] = INCBIN_U16("data/tilesets/primary/
 
 const u16 gMetatiles_UnderwaterPrimary[] = INCBIN_U16("data/tilesets/primary/underwater/metatiles.bin");
 const u16 gMetatileAttributes_UnderwaterPrimary[] = INCBIN_U16("data/tilesets/primary/underwater/metatile_attributes.bin");
+
+const u16 gMetatiles_City[] = INCBIN_U16("data/tilesets/primary/city/metatiles.bin");
+const u16 gMetatileAttributes_City[] = INCBIN_U16("data/tilesets/primary/city/metatile_attributes.bin");

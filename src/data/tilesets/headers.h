@@ -919,3 +919,14 @@ const struct Tileset gTileset_UnderwaterPrimary =
     .metatileAttributes = gMetatileAttributes_UnderwaterPrimary,
     .callback = NULL,
 };
+
+const struct Tileset gTileset_City =
+{
+    .isCompressed = FALSE,
+    .isSecondary = FALSE,
+    .tiles = gTilesetTiles_City,
+    .palettes = gTilesetPalettes_City,
+    .metatiles = gMetatiles_City,
+    .metatileAttributes = gMetatileAttributes_City,
+    .callback = NULL,
+};

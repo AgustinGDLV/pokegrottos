@@ -1,6 +1,7 @@
 {
   "group_order": [
     "gMapGroup_UnderwaterTemplates",
+    "gMapGroup_CityTemplates",
     "gMapGroup_IceCaveTemplates",
     "gMapGroup_VolcanoTemplates",
     "gMapGroup_PowerPlantTemplates",
@@ -51,6 +52,17 @@
     "UnderwaterTemplates_Room3",
     "UnderwaterTemplates_Room4",
     "UnderwaterTemplates_Room5"
+  ],
+  "gMapGroup_CityTemplates": [
+    "CityTemplates_Connections",
+    "CityTemplates_BossRoom",
+    "CityTemplates_ShopRoom",
+    "CityTemplates_TreasureRoom",
+    "CityTemplates_ChallengeRoom",
+    "CityTemplates_Room1",
+    "CityTemplates_Room2",
+    "CityTemplates_Room3",
+    "CityTemplates_Room4"
   ],
   "gMapGroup_IceCaveTemplates": [
     "IceCaveTemplates_Connections",

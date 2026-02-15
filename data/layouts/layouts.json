@@ -4770,6 +4770,96 @@
       "secondary_tileset": "gTileset_Unused1",
       "border_filepath": "data/layouts/UnderwaterTemplates_Room5/border.bin",
       "blockdata_filepath": "data/layouts/UnderwaterTemplates_Room5/map.bin"
+    },
+    {
+      "id": "LAYOUT_CITY_TEMPLATES_CONNECTIONS",
+      "name": "CityTemplates_Connections_Layout",
+      "width": 4,
+      "height": 24,
+      "primary_tileset": "gTileset_City",
+      "secondary_tileset": "gTileset_Unused1",
+      "border_filepath": "data/layouts/CityTemplates_Connections/border.bin",
+      "blockdata_filepath": "data/layouts/CityTemplates_Connections/map.bin"
+    },
+    {
+      "id": "LAYOUT_CITY_TEMPLATES_BOSS_ROOM",
+      "name": "CityTemplates_BossRoom_Layout",
+      "width": 19,
+      "height": 20,
+      "primary_tileset": "gTileset_City",
+      "secondary_tileset": "gTileset_Unused1",
+      "border_filepath": "data/layouts/CityTemplates_BossRoom/border.bin",
+      "blockdata_filepath": "data/layouts/CityTemplates_BossRoom/map.bin"
+    },
+    {
+      "id": "LAYOUT_CITY_TEMPLATES_SHOP_ROOM",
+      "name": "CityTemplates_ShopRoom_Layout",
+      "width": 19,
+      "height": 20,
+      "primary_tileset": "gTileset_City",
+      "secondary_tileset": "gTileset_Unused1",
+      "border_filepath": "data/layouts/CityTemplates_ShopRoom/border.bin",
+      "blockdata_filepath": "data/layouts/CityTemplates_ShopRoom/map.bin"
+    },
+    {
+      "id": "LAYOUT_CITY_TEMPLATES_TREASURE_ROOM",
+      "name": "CityTemplates_TreasureRoom_Layout",
+      "width": 19,
+      "height": 20,
+      "primary_tileset": "gTileset_City",
+      "secondary_tileset": "gTileset_Unused1",
+      "border_filepath": "data/layouts/CityTemplates_TreasureRoom/border.bin",
+      "blockdata_filepath": "data/layouts/CityTemplates_TreasureRoom/map.bin"
+    },
+    {
+      "id": "LAYOUT_CITY_TEMPLATES_CHALLENGE_ROOM",
+      "name": "CityTemplates_ChallengeRoom_Layout",
+      "width": 19,
+      "height": 20,
+      "primary_tileset": "gTileset_City",
+      "secondary_tileset": "gTileset_Unused1",
+      "border_filepath": "data/layouts/CityTemplates_ChallengeRoom/border.bin",
+      "blockdata_filepath": "data/layouts/CityTemplates_ChallengeRoom/map.bin"
+    },
+    {
+      "id": "LAYOUT_CITY_TEMPLATES_ROOM1",
+      "name": "CityTemplates_Room1_Layout",
+      "width": 19,
+      "height": 20,
+      "primary_tileset": "gTileset_City",
+      "secondary_tileset": "gTileset_Unused1",
+      "border_filepath": "data/layouts/CityTemplates_Room1/border.bin",
+      "blockdata_filepath": "data/layouts/CityTemplates_Room1/map.bin"
+    },
+    {
+      "id": "LAYOUT_CITY_TEMPLATES_ROOM2",
+      "name": "CityTemplates_Room2_Layout",
+      "width": 19,
+      "height": 20,
+      "primary_tileset": "gTileset_City",
+      "secondary_tileset": "gTileset_Unused1",
+      "border_filepath": "data/layouts/CityTemplates_Room2/border.bin",
+      "blockdata_filepath": "data/layouts/CityTemplates_Room2/map.bin"
+    },
+    {
+      "id": "LAYOUT_CITY_TEMPLATES_ROOM3",
+      "name": "CityTemplates_Room3_Layout",
+      "width": 19,
+      "height": 20,
+      "primary_tileset": "gTileset_City",
+      "secondary_tileset": "gTileset_Unused1",
+      "border_filepath": "data/layouts/CityTemplates_Room3/border.bin",
+      "blockdata_filepath": "data/layouts/CityTemplates_Room3/map.bin"
+    },
+    {
+      "id": "LAYOUT_CITY_TEMPLATES_ROOM4",
+      "name": "CityTemplates_Room4_Layout",
+      "width": 19,
+      "height": 20,
+      "primary_tileset": "gTileset_City",
+      "secondary_tileset": "gTileset_Unused1",
+      "border_filepath": "data/layouts/CityTemplates_Room4/border.bin",
+      "blockdata_filepath": "data/layouts/CityTemplates_Room4/map.bin"
     }
   ]
 }

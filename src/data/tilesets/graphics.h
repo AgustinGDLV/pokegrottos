@@ -1788,3 +1788,22 @@ const u16 gTilesetPalettes_UnderwaterPrimary[][16] =
     INCBIN_U16("data/tilesets/primary/underwater/palettes/11.gbapal"),
     INCBIN_U16("data/tilesets/primary/underwater/palettes/12.gbapal"),
 };
+
+const u32 gTilesetTiles_City[] = INCBIN_U32("data/tilesets/primary/city/tiles.4bpp");
+
+const u16 gTilesetPalettes_City[][16] =
+{
+    INCBIN_U16("data/tilesets/primary/city/palettes/00.gbapal"),
+    INCBIN_U16("data/tilesets/primary/city/palettes/01.gbapal"),
+    INCBIN_U16("data/tilesets/primary/city/palettes/02.gbapal"),
+    INCBIN_U16("data/tilesets/primary/city/palettes/03.gbapal"),
+    INCBIN_U16("data/tilesets/primary/city/palettes/04.gbapal"),
+    INCBIN_U16("data/tilesets/primary/city/palettes/05.gbapal"),
+    INCBIN_U16("data/tilesets/primary/city/palettes/06.gbapal"),
+    INCBIN_U16("data/tilesets/primary/city/palettes/07.gbapal"),
+    INCBIN_U16("data/tilesets/primary/city/palettes/08.gbapal"),
+    INCBIN_U16("data/tilesets/primary/city/palettes/09.gbapal"),
+    INCBIN_U16("data/tilesets/primary/city/palettes/10.gbapal"),
+    INCBIN_U16("data/tilesets/primary/city/palettes/11.gbapal"),
+    INCBIN_U16("data/tilesets/primary/city/palettes/12.gbapal"),
+};
