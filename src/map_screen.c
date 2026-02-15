@@ -572,16 +572,25 @@ void ShowMapScreen(void)
     }
 }
 
-static void InitMinimap(void)
+void InitMinimap(void)
 {
     u32 i;
-    for (i = 0; i < ARRAY_COUNT(sMinimapSpriteIds); ++i)
-        sMinimapSpriteIds[i] = 0xFF;
-    LoadSpritePalette(&sRoomsSpritePalette);
-    LoadSpriteSheet(&sCurrentRoomSpriteSheet);
-    LoadSpriteSheet(&sVisitedRoomSpriteSheet);
-    LoadSpriteSheet(&sUnvisitedRoomSpriteSheet);
-    LoadSpriteSheet(&sMinimapBorderSpriteSheet);
+    // If palette tag is unloaded, assume all tiles are unloaded.
+    if (IndexOfSpritePaletteTag(TAG_ROOM_PAL) == 0xFF)
+    {
+        for (i = 0; i < ARRAY_COUNT(sMinimapSpriteIds); ++i)
+            sMinimapSpriteIds[i] = 0xFF;
+
+        LoadSpritePalette(&sRoomsSpritePalette);
+        LoadSpriteSheet(&sCurrentRoomSpriteSheet);
+        LoadSpriteSheet(&sVisitedRoomSpriteSheet);
+        LoadSpriteSheet(&sUnvisitedRoomSpriteSheet);
+        LoadSpriteSheet(&sMinimapBorderSpriteSheet);
+        LoadSpriteSheet(&sBossRoomSpriteSheet);
+        LoadSpriteSheet(&sTreasureRoomSpriteSheet);
+        LoadSpriteSheet(&sShopRoomSpriteSheet);
+        LoadSpriteSheet(&sChallengeRoomSpriteSheet);
+    }
 }
 
 void DrawMinimap(bool32 refresh)
@@ -596,14 +605,17 @@ void DrawMinimap(bool32 refresh)
     // Refresh if required (i.e. CONNECTION_TYPE_SEAMLESS).
     if (IndexOfSpritePaletteTag(TAG_ROOM_PAL) != 0xFF)
     {
-        if (refresh)
-            for (i = 0; i < ARRAY_COUNT(sMinimapSpriteIds); ++i)
-                DestroySprite(&gSprites[sMinimapSpriteIds[i]]);
-        else
+        if (!refresh)
             return;
+
+        for (i = 0; i < ARRAY_COUNT(sMinimapSpriteIds); ++i)
+        {
+            DestroySprite(&gSprites[sMinimapSpriteIds[i]]);
+            sMinimapSpriteIds[i] = 0xFF;
+        }
     }
 
-    // Load graphics data.
+    // Load graphics data if needed.
     InitMinimap();
 
     // Draw border.
@@ -618,10 +630,7 @@ void DrawMinimap(bool32 refresh)
         room = gSaveBlock1Ptr->currentRoom + xOffset + 10*yOffset;
         type = GetRoomType(room);
         if (type != NORMAL_ROOM && DoesRoomExist(room) && IsRoomAdjacentToVisited(room))
-        {
-            LoadSpriteSheet(sRoomTypeSpriteTable[type].spriteSheet);
             sMinimapSpriteIds[i] = CreateSprite(sRoomTypeSpriteTable[type].spriteTemplate, 240 - 16 + 8*xOffset, 16 + 8*yOffset, 0);
-        }
         else if (room == gSaveBlock1Ptr->currentRoom)
             sMinimapSpriteIds[i] = CreateSprite(&sCurrentRoomSpriteTemplate, 240 - 16 + 8*xOffset, 16 + 8*yOffset, 0);
         else if (IsRoomVisited(room))
