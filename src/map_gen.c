@@ -1,5 +1,6 @@
 #include "global.h"
 #include "data_util.h"
+#include "deck_battle.h"
 #include "event_data.h"
 #include "event_object_movement.h"
 #include "fieldmap.h"

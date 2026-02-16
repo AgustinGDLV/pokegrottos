@@ -15,6 +15,7 @@
 #include "m4a.h"
 #include "main.h"
 #include "malloc.h"
+#include "map_gen.h"
 #include "menu.h"
 #include "overworld.h"
 #include "option_menu.h"
@@ -125,6 +126,7 @@ static const struct BgTemplate sDeckBattleBgTemplates[] =
 
 // graphics data
 #include "data/graphics/deck_battle.h"
+#include "data/graphics/deck_battle_background.h"
 
 const u8 sDummyObjectGfx[] = INCBIN_U8("graphics/deck_pokemon/slowpoke/player_idle.4bpp");
 const u8 sDummyPortraitGfx[] = INCBIN_U8("graphics/deck_pokemon/slowpoke/portrait_normal.4bpp");
@@ -300,6 +302,7 @@ void ClearDeckBattleGraphicsStruct(void)
 
 void LoadBattleBoxesAndBackground(void)
 {
+    const struct DeckBattleBackground *bg;
     ResetBgsAndClearDma3BusyFlags(0);
     InitBgsFromTemplates(0, sDeckBattleBgTemplates, ARRAY_COUNT(sDeckBattleBgTemplates));
 
@@ -307,10 +310,10 @@ void LoadBattleBoxesAndBackground(void)
     LZDecompressVram(sDeckBattleInterfaceTilemap, (void *)(BG_SCREEN_ADDR(14)));
     LoadPalette(sDeckBattleInterfacePalette, BG_PLTT_ID(0), PLTT_SIZE_4BPP);
 
-    // TODO: Support more backgrounds.
-    LZDecompressVram(gGrassBackgroundTiles, (void *)(BG_CHAR_ADDR(1)));
-    LZDecompressVram(gGrassBackgroundTilemap, (void *)(BG_SCREEN_ADDR(21)));
-    LoadPalette(gGrassBackgroundPalette, BG_PLTT_ID(1), PLTT_SIZE_4BPP);
+    bg = &gDeckBackgrounds[GetCurrentTemplateRules()->background];
+    LZDecompressVram(bg->tiles, (void *)(BG_CHAR_ADDR(1)));
+    LZDecompressVram(bg->map, (void *)(BG_SCREEN_ADDR(21)));
+    LoadPalette(bg->palette, BG_PLTT_ID(1), PLTT_SIZE_4BPP);
 
     CopyBgTilemapBufferToVram(0);
     CopyBgTilemapBufferToVram(3);

@@ -116,6 +116,21 @@ struct DeckBattleStruct
     s32 lastHitDamage;
 };
 
+enum DeckBattleBackgroundId
+{
+    BG_GRASS,
+    BG_UNDERWATER,
+    BG_CITY,
+    BG_COUNT,
+};
+
+struct DeckBattleBackground
+{
+    const u32 *tiles;
+    const u16 *palette;
+    const u32 *map;
+};
+
 void CB2_OpenDeckBattleCustom(void);
 void Task_PrepareForActionPhase(u8 taskId);
 void Task_CheckFaintAndContinue(u8 taskId);
@@ -131,6 +146,7 @@ void UpdateBattlerHP(u32 battler, s32 damage);
 extern struct DeckBattleStruct gDeckStruct;
 extern struct DeckBattlePokemon gDeckMons[MAX_DECK_BATTLERS_COUNT];
 extern const struct DeckSpeciesInfo gDeckSpeciesInfo[NUM_SPECIES];
-extern const struct DeckMoveInfo gDeckMovesInfo[MOVES_COUNT];
+extern const struct DeckMoveInfo gDeckMovesInfo[850]; // *TODO
+extern const struct DeckBattleBackground gDeckBackgrounds[BG_COUNT];
 
 #endif

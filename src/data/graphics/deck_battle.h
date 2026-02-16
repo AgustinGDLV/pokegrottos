@@ -2,10 +2,6 @@ static const u16 sDeckBattleInterfacePalette[] = INCBIN_U16("graphics/deck_battl
 static const u32 sDeckBattleInterfaceTiles[] = INCBIN_U32("graphics/deck_battle_interface/tiles.4bpp.lz");
 static const u32 sDeckBattleInterfaceTilemap[] = INCBIN_U32("graphics/deck_battle_interface/map.bin.lz");
 
-const u16 gGrassBackgroundPalette[] = INCBIN_U16("graphics/deck_battle_backgrounds/grass_tiles.gbapal");
-const u32 gGrassBackgroundTiles[] = INCBIN_U32("graphics/deck_battle_backgrounds/grass_tiles.4bpp.lz");
-const u32 gGrassBackgroundTilemap[] = INCBIN_U32("graphics/deck_battle_backgrounds/grass_map.bin.lz");
-
 const struct OamData sOamData_8x8 =
 {
     .bpp = ST_OAM_4BPP,

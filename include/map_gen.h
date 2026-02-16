@@ -60,8 +60,7 @@ struct TemplateRules {
     const u8 *name;
     u8 mapGroup;
     u16 bgm;
-    u8 previewId;
-    u8 battleTerrain;
+    u8 background;
     u8 connectionType;
     s8 offsets[5][4]; // (x, y) entrance cover offsets for each direction
     u8 numNormalRooms;

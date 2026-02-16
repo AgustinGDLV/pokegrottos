@@ -15,6 +15,7 @@
 #include "m4a.h"
 #include "main.h"
 #include "malloc.h"
+#include "map_gen.h"
 #include "menu.h"
 #include "overworld.h"
 #include "option_menu.h"
@@ -322,16 +323,19 @@ void CB2_OpenPartyMenuCustom(void)
             gMain.state++;
             break;
         case 3:
+        {
             DecompressAndCopyTileDataToVram(2, sPartyMenuTiles, 0, 0, 0);
             LZDecompressWram(sPartyMenuStatsTilemap, sPartyMenuTilemapPtr);
             LoadPalette(sPartyMenuPalette, BG_PLTT_ID(0), PLTT_SIZE_4BPP);
             Menu_LoadStdPalAt(BG_PLTT_ID(15));
 
-            DecompressAndCopyTileDataToVram(3, gGrassBackgroundTiles, 0, 0, 0);
-            LZDecompressVram(gGrassBackgroundTilemap, sEnvironmentTilemapPtr);
-            LoadPalette(gGrassBackgroundPalette, BG_PLTT_ID(1), PLTT_SIZE_4BPP);
+            const struct DeckBattleBackground *bg = &gDeckBackgrounds[GetCurrentTemplateRules()->background];
+            DecompressAndCopyTileDataToVram(3, bg->tiles, 0, 0, 0);
+            LZDecompressVram(bg->map, sEnvironmentTilemapPtr);
+            LoadPalette(bg->palette, BG_PLTT_ID(1), PLTT_SIZE_4BPP);
             gMain.state++;
             break;
+        }
         case 4:
             if (IsDma3ManagerBusyWithBgCopy() != TRUE)
             {

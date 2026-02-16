@@ -321,9 +321,14 @@ void CB2_MapScreen(void)
             gMain.state++;
             break;
         case 4:
+        {
             LoadMapScreenGfx();
+            u16 palette = RGB(0,0,0); // for cleaner fadeout
+            LoadPalette(&palette, BG_PLTT_ID(0), PLTT_SIZEOF(1));
+            LoadPalette(&palette, BG_PLTT_ID(1), PLTT_SIZEOF(1));
             gMain.state++;
             break;
+        }
         case 5:
             if (IsDma3ManagerBusyWithBgCopy() != TRUE)
             {

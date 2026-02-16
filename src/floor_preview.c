@@ -1,6 +1,8 @@
 #include "global.h"
 #include "bg.h"
 #include "decompress.h"
+#include "deck_battle.h"
+#include "deck_battle_interface.h"
 #include "event_object_movement.h"
 #include "field_screen_effect.h"
 #include "field_weather.h"
@@ -35,6 +37,7 @@
 #include "constants/songs.h"
 
 EWRAM_DATA static u32 * sMapPreviewTilemapPtr = NULL;
+EWRAM_DATA static u32 * sOverlayTilemapPtr = NULL;
 EWRAM_DATA u8 gNumSpeciesInFloor = 0; // num unique species in the current floor
 EWRAM_DATA u16 gFloorSpeciesList[MAX_FLOOR_SPECIES] = {0};
 
@@ -72,25 +75,66 @@ static const struct WindowTemplate sFloorPreviewWinTemplates[WINDOW_COUNT + 1] =
 
 static const struct BgTemplate sFloorPreviewBgTemplates[] =
 {
-	{ // Map Preview
-		.bg = 2,
-		.charBaseIndex = 0,
-		.mapBaseIndex = 31,
-		.screenSize = 0,
-		.paletteMode = 0,
-		.priority = 2,
-		.baseTile = 0,
-	},
-	{ // Text
-		.bg = 1,
-		.charBaseIndex = 2,
-		.mapBaseIndex = 6,
-		.screenSize = 0,
-		.paletteMode = 0,
-		.priority = 1,
-		.baseTile = 0,
-	},
+	    {   // Interface
+        .bg = 0,
+        .charBaseIndex = 0,
+        .mapBaseIndex = 14,
+        .screenSize = 0,
+        .paletteMode = 0,
+        .priority = 1,
+        .baseTile = 0,
+    },
+    {
+        .bg = 1,
+        .charBaseIndex = 2,
+        .mapBaseIndex = 28,
+        .screenSize = 0,
+        .paletteMode = 0,
+        .priority = 0,
+        .baseTile = 0,
+    },
+    {   // Background
+        .bg = 2,
+        .charBaseIndex = 1,
+        .mapBaseIndex = 21,
+        .screenSize = 0,
+        .paletteMode = 0,
+        .priority = 3,
+        .baseTile = 0,
+    },
 };
+
+static const union AnimCmd sAnim_Paused[] =
+{
+    ANIMCMD_FRAME(0, 1),
+    ANIMCMD_END,
+};
+
+static const union AnimCmd sAnim_Idle[] =
+{
+    ANIMCMD_FRAME(0, 12),
+    ANIMCMD_FRAME(16, 12),
+    ANIMCMD_JUMP(0),
+};
+
+static const union AnimCmd *const sAnims_Battler[] =
+{
+    sAnim_Paused,
+    sAnim_Idle,
+};
+
+static const struct OamData sOamData_Battler =
+{
+    .bpp = ST_OAM_4BPP,
+    .shape = SPRITE_SHAPE(32x32),
+    .size = SPRITE_SIZE(32x32),
+    .priority = 1,
+};
+
+static const u8 sDummyObjectGfx[] = INCBIN_U8("graphics/deck_pokemon/slowpoke/player_idle.4bpp");
+static const u16 sOverlayPalette[] = INCBIN_U16("graphics/deck_battle_backgrounds/overlay.gbapal");
+static const u32 sOverlayTiles[] = INCBIN_U32("graphics/deck_battle_backgrounds/overlay.4bpp.lz");
+static const u32 sOverlayMap[] = INCBIN_U32("graphics/deck_battle_backgrounds/overlay.bin.lz");
 
 static void MainCB2_FloorPreview(void);
 static void VBlankCB_FloorPreview(void);
@@ -99,7 +143,7 @@ static void Task_FloorPreviewWaitForKeypress(u8 taskId);
 static void Task_FloorPreviewFadeIn(u8 taskId);
 static void Task_FloorPreviewAutosave(u8 taskId);
 static void LoadMapPreviewGfx(void);
-static void DrawSpeciesIcons(void);
+static void DrawBattlerSprites(void);
 static void DrawText(void);
 static void DrawWindows(void);
 static void LoadFloorPreviewGfx(void);
@@ -144,21 +188,29 @@ void CB2_FloorPreview(void)
             break;
         case 3:
             sMapPreviewTilemapPtr = AllocZeroed(BG_SCREEN_SIZE);
+            sOverlayTilemapPtr = AllocZeroed(BG_SCREEN_SIZE);
             ResetBgsAndClearDma3BusyFlags(0);
             InitBgsFromTemplates(0, sFloorPreviewBgTemplates, ARRAY_COUNT(sFloorPreviewBgTemplates));
             SetBgTilemapBuffer(2, sMapPreviewTilemapPtr);
+            SetBgTilemapBuffer(0, sOverlayTilemapPtr);
             gMain.state++;
             break;
         case 4:
+        {
             LoadMapPreviewGfx();
+            u16 palette = RGB(0,0,0); // for cleaner fadeout
+            LoadPalette(&palette, BG_PLTT_ID(0), PLTT_SIZEOF(1));
+            LoadPalette(&palette, BG_PLTT_ID(1), PLTT_SIZEOF(1));
             gMain.state++;
             break;
-        case 5:
+        }
+        case 5: 
             if (IsDma3ManagerBusyWithBgCopy() != TRUE)
             {
-                HideBg(0);
+                ShowBg(0);
                 ShowBg(1);
                 ShowBg(2);
+                CopyBgTilemapBufferToVram(0);
                 CopyBgTilemapBufferToVram(2);
                 gMain.state++;
             }
@@ -169,12 +221,6 @@ void CB2_FloorPreview(void)
             gMain.state++;
             break;
         case 7:
-            // dealing with flicker issues :(
-            // BlendPalettes(PALETTES_ALL, 16, 0);
-            // BeginNormalPaletteFade(PALETTES_ALL, 0, 16, 0, RGB_BLACK);
-            gMain.state++;
-            break;
-        case 8:
             SetVBlankCallback(VBlankCB_FloorPreview);
             LoadFloorPreviewGfx();
             CreateTask(Task_FloorPreviewFadeIn, 0);
@@ -188,6 +234,8 @@ static void Task_FloorPreviewExitAndWarp(u8 taskId)
     TryWarpToRoom(STARTING_ROOM, 0xFF);
     Free(sMapPreviewTilemapPtr);
     sMapPreviewTilemapPtr = NULL;
+    Free(sOverlayTilemapPtr);
+    sOverlayTilemapPtr = NULL;
     FreeAllWindowBuffers();
     ResetSpriteData();
     UnlockPlayerFieldControls();
@@ -217,37 +265,15 @@ static void Task_FloorPreviewFadeIn(u8 taskId)
 
 static void LoadMapPreviewGfx(void)
 {   
-    struct MapPreview data = gMapPreviewData[GetCurrentTemplateRules()->previewId];
-
-    DecompressAndCopyTileDataToVram(2, data.tiles, 0, 0, 0);
-	LZDecompressWram(data.map, sMapPreviewTilemapPtr);
-	LoadPalette(data.palette, BG_PLTT_ID(13), PLTT_SIZE_4BPP);
+    const struct DeckBattleBackground *bg = &gDeckBackgrounds[GetCurrentTemplateRules()->background];
+    DecompressAndCopyTileDataToVram(2, bg->tiles, 0, 0, 0);
+	LZDecompressWram(bg->map, sMapPreviewTilemapPtr);
+	LoadPalette(bg->palette, BG_PLTT_ID(1), PLTT_SIZE_4BPP);
 	Menu_LoadStdPalAt(BG_PLTT_ID(15));
-}
 
-// Draw species icons into preview screen.
-static void DrawSpeciesIcons(void)
-{
-    u32 i, palette, spriteId;
-
-    // Load black palette for shadows.
-    palette = RGB(12, 12, 12);
-    for (i = 0; i < 15; ++i)
-        LoadPalette(&palette, OBJ_PLTT_ID(15) + i + 1, PLTT_SIZEOF(1));
-
-    // Draw mon icons.
-    PopulateSpeciesList();
-    for (i = 0; i < gNumSpeciesInFloor; ++i)
-    {
-        // Main icon
-        LoadMonIconPalette(gFloorSpeciesList[i]);
-        CreateMonIconNoPersonality(GetIconSpeciesNoPersonality(gFloorSpeciesList[i]),
-                                   SpriteCB_MonIcon, 24+(i%5)*48, 64-(gNumSpeciesInFloor/6)*18 + (i/5)*36, 0);
-        // Shadow
-        spriteId = CreateMonIconNoPersonality(GetIconSpeciesNoPersonality(gFloorSpeciesList[i]),
-                                   SpriteCB_MonIcon, 25+(i%5)*48, 65-(gNumSpeciesInFloor/6)*18 + (i/5)*36, 4);
-        gSprites[spriteId].oam.paletteNum = 15;
-    }
+    DecompressAndCopyTileDataToVram(0, sOverlayTiles, 0, 0, 0);
+	LZDecompressWram(sOverlayMap, sOverlayTilemapPtr);
+	LoadPalette(sOverlayPalette, BG_PLTT_ID(0), PLTT_SIZE_4BPP);
 }
 
 static void DrawWindows(void)
@@ -280,7 +306,7 @@ static void DrawText(void)
     ptr = StringCopy(gStringVar4, sText_Floor);
     ptr = ConvertIntToDecimalStringN(ptr, gSaveBlock1Ptr->currentFloor, STR_CONV_MODE_LEFT_ALIGN, 1+(gSaveBlock1Ptr->currentFloor/10));
     ptr = StringAppend(ptr, sText_Continue);
-    ptr = StringAppend(ptr, gMapPreviewData[GetCurrentTemplateRules()->previewId].name);
+    ptr = StringAppend(ptr, GetCurrentTemplateRules()->name);
     *ptr = CHAR_ELLIPSIS;
     *(++ptr) = EOS;
     AddTextPrinterParameterized3(WIN_CONTINUE, FONT_NORMAL, 2, 2, sTextColor_Instructions, TEXT_SKIP_DRAW, gStringVar4);
@@ -291,10 +317,19 @@ static void DrawText(void)
     CopyWindowToVram(WIN_BUTTONS, COPYWIN_FULL);
 }
 
+static void DrawBattlerSprites(void);
+
 static void LoadFloorPreviewGfx(void)
 {
     DrawWindows();
-    DrawSpeciesIcons();
+    
+    // Load battler sprites.
+    LoadSpritePalette(&gMiscGfxSpritePalette);
+    LoadSpriteSheet(&gShadowSpriteSheet);
+    DrawBattlerSprites();
+    SetGpuReg(REG_OFFSET_BLDCNT, BLDCNT_TGT2_ALL | BLDCNT_EFFECT_BLEND);
+    SetGpuReg(REG_OFFSET_BLDALPHA, BLDALPHA_BLEND(8, 6));
+
     DrawText();
 }
 
@@ -377,5 +412,37 @@ static void Task_FloorPreviewAutosave(u8 taskId)
             gTasks[taskId].func = Task_FloorPreviewWaitForKeypress;
             break;
         }
+    }
+}
+
+static void DrawBattlerSprites(void)
+{
+    u32 species, palIndex, spriteId;
+
+    PopulateSpeciesList();
+    for (u32 i = 0; i < gNumSpeciesInFloor; ++i)
+    {
+        species = gFloorSpeciesList[i];
+        // Draw battler sprite.
+        palIndex = LoadSpritePaletteWithTag(gDeckSpeciesInfo[species].objectPalette, 10000 + i);
+        const struct SpriteSheet spriteSheet = {gDeckSpeciesInfo[species].opponentIdle, sizeof(sDummyObjectGfx), 10000 + i};
+        const struct SpriteTemplate spriteTemplate =
+        {
+            .tileTag = 10000+i,
+            .paletteTag = 0,
+            .oam = &sOamData_Battler,
+            .anims = sAnims_Battler,
+            .images = NULL,
+            .affineAnims = gDummySpriteAffineAnimTable,
+            .callback = SpriteCallbackDummy,
+        };
+        LoadSpriteSheet(&spriteSheet);
+        spriteId = CreateSprite(&spriteTemplate, 24+(i%5)*48, 64-(gNumSpeciesInFloor/6)*18 + (i/5)*36 + gDeckSpeciesInfo[species].opponentYOffset, 0);
+        gSprites[spriteId].oam.paletteNum = palIndex;
+        StartSpriteAnim(&gSprites[spriteId], ANIM_IDLE);
+
+        // Draw shadow.
+        spriteId = CreateSprite(&gShadowSpriteTemplate, 24+(i%5)*48, 64-(gNumSpeciesInFloor/6)*18 + (i/5)*36, 16);
+        gSprites[spriteId].callback = SpriteCallbackDummy;
     }
 }
