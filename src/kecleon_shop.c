@@ -16,7 +16,6 @@
 #include "money.h"
 #include "overworld.h"
 #include "palette.h"
-#include "pokemon_gen.h"
 #include "pokemon_icon.h"
 #include "random.h"
 #include "save.h"

@@ -3,4 +3,6 @@
 
 u16 GetOverworldSpeciesInRoom(u32 index, u32 localId);
 
+extern const u16 gEncountersInfo[NUM_SPECIES][POSITIONS_COUNT];
+
 #endif

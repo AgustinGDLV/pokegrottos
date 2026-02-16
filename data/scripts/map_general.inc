@@ -8,8 +8,8 @@ EventScript_OverworldEncounterStart::
     playmoncry VAR_0x8000, CRY_MODE_ENCOUNTER
 	delay 40
 	waitmoncry
-    setwildbattle VAR_0x8000, 10 @ Set based on GraphicsID
-    dowildbattle
+	callnative InitEnemyPartyFromEncounter
+	callnative OpenDeckBattle
 	removeobject VAR_0x8001
 	releaseall
     end
