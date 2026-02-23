@@ -912,6 +912,7 @@ gGBSSongTable::
 	song_gbs MUS_GAME_CORNER, gbs_Music_RSGameCorner, 0, 0
 	song_gbs MUS_HEAL, gbs_Music_HealPokemon, 2, 2
 	song_gbs MUS_LEVEL_UP, gbs_Music_LevelUp, 2, 2
+	song_gbs MUS_OBTAIN_ITEM, gbs_Music_LevelUp, 2, 2
 	song_gbs MUS_HG_ICE_PATH, gbs_Music_IcePathHGSS, 0, 0
 	song_gbs MUS_CAVE_OF_ORIGIN, gbs_Music_CaveOfOrigin, 0, 0
 	song_gbs MUS_VS_AQUA_MAGMA_LEADER, gbs_Music_MaxieArchieBattle, 0, 0
