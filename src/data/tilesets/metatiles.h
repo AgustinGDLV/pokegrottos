@@ -211,19 +211,10 @@ const u16 gMetatileAttributes_UnionRoom[] = INCBIN_U16("data/tilesets/secondary/
 const u16 gMetatiles_PowerPlant[] = INCBIN_U16("data/tilesets/secondary/power_plant/metatiles.bin");
 const u16 gMetatileAttributes_PowerPlant[] = INCBIN_U16("data/tilesets/secondary/power_plant/metatile_attributes.bin");
 
-const u16 gMetatiles_IceCave[] = INCBIN_U16("data/tilesets/secondary/ice_cave/metatiles.bin");
-const u16 gMetatileAttributes_IceCave[] = INCBIN_U16("data/tilesets/secondary/ice_cave/metatile_attributes.bin");
-
-const u16 gMetatiles_Volcano[] = INCBIN_U16("data/tilesets/secondary/volcano/metatiles.bin");
-const u16 gMetatileAttributes_Volcano[] = INCBIN_U16("data/tilesets/secondary/volcano/metatile_attributes.bin");
-
 const u16 gMetatiles_Dojo[] = INCBIN_U16("data/tilesets/secondary/dojo/metatiles.bin");
 const u16 gMetatileAttributes_Dojo[] = INCBIN_U16("data/tilesets/secondary/dojo/metatile_attributes.bin");
 
 // GBC
-const u16 gMetatiles_Overworld[] = INCBIN_U16("data/tilesets/primary/overworld/metatiles.bin");
-const u16 gMetatileAttributes_Overworld[] = INCBIN_U16("data/tilesets/primary/overworld/metatile_attributes.bin");
-
 const u16 gMetatiles_Indoor[] = INCBIN_U16("data/tilesets/primary/indoor/metatiles.bin");
 const u16 gMetatileAttributes_Indoor[] = INCBIN_U16("data/tilesets/primary/indoor/metatile_attributes.bin");
 
@@ -235,3 +226,21 @@ const u16 gMetatileAttributes_UnderwaterPrimary[] = INCBIN_U16("data/tilesets/pr
 
 const u16 gMetatiles_City[] = INCBIN_U16("data/tilesets/primary/city/metatiles.bin");
 const u16 gMetatileAttributes_City[] = INCBIN_U16("data/tilesets/primary/city/metatile_attributes.bin");
+
+const u16 gMetatiles_Forest[] = INCBIN_U16("data/tilesets/primary/forest/metatiles.bin");
+const u16 gMetatileAttributes_Forest[] = INCBIN_U16("data/tilesets/primary/forest/metatile_attributes.bin");
+
+const u16 gMetatiles_Swamp[] = INCBIN_U16("data/tilesets/primary/swamp/metatiles.bin");
+const u16 gMetatileAttributes_Swamp[] = INCBIN_U16("data/tilesets/primary/swamp/metatile_attributes.bin");
+
+const u16 gMetatiles_Tundra[] = INCBIN_U16("data/tilesets/primary/tundra/metatiles.bin");
+const u16 gMetatileAttributes_Tundra[] = INCBIN_U16("data/tilesets/primary/tundra/metatile_attributes.bin");
+
+const u16 gMetatiles_Desert[] = INCBIN_U16("data/tilesets/primary/desert/metatiles.bin");
+const u16 gMetatileAttributes_Desert[] = INCBIN_U16("data/tilesets/primary/desert/metatile_attributes.bin");
+
+const u16 gMetatiles_IcePath[] = INCBIN_U16("data/tilesets/primary/ice_path/metatiles.bin");
+const u16 gMetatileAttributes_IcePath[] = INCBIN_U16("data/tilesets/primary/ice_path/metatile_attributes.bin");
+
+const u16 gMetatiles_Volcano[] = INCBIN_U16("data/tilesets/primary/volcano/metatiles.bin");
+const u16 gMetatileAttributes_Volcano[] = INCBIN_U16("data/tilesets/primary/volcano/metatile_attributes.bin");

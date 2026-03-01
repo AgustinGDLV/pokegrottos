@@ -1,0 +1,1497 @@
+	.include "asm/macros.inc"
+	.section .rodata
+	.global gbs_Music_MtChimney
+	.align 2
+
+gbs_Music_MtChimney:
+	channel_count 4
+	channel 1, Music_MtChimney_Ch1
+	channel 2, Music_MtChimney_Ch2
+	channel 3, Music_MtChimney_Ch3
+	channel 4, Music_MtChimney_Ch4
+
+gbs_Music_MtChimney_Ch1:
+	gbs_switch 0
+Music_MtChimney_Ch1:
+	tempo 160
+	volume 7, 7
+	duty_cycle 0
+	pitch_offset 2
+	vibrato 8, 1, 5
+	note_type 12, 8, 0
+	octave 1
+	note G_, 4
+	octave 2
+	note Ds, 4
+	octave 1
+	note As, 4
+	octave 2
+	note G_, 4
+	note As, 8
+	volume_envelope 8, 7
+	note As, 9
+Music_MtChimney_Ch1_loop_main:
+	sound_call Music_MtChimney_Ch1_branch_1
+	octave 4
+	volume_envelope 10, 2
+	note Fs, 2
+	note F_, 1
+	note E_, 1
+	note Ds, 1
+	note Cs, 1
+	octave 3
+	note B_, 1
+	rest 1
+	note_type 8, 5, 2
+	duty_cycle 1
+Music_MtChimney_Ch1_loop_1:
+	octave 2
+	note B_, 1
+	octave 3
+	note Ds, 1
+	note Fs, 1
+	note As, 1
+	note Fs, 1
+	note Ds, 1
+	sound_loop 3, Music_MtChimney_Ch1_loop_1
+Music_MtChimney_Ch1_loop_2:
+	octave 2
+	note As, 1
+	octave 3
+	note Cs, 1
+	note F_, 1
+	note Gs, 1
+	note F_, 1
+	note Cs, 1
+	sound_loop 2, Music_MtChimney_Ch1_loop_2
+	duty_cycle 0
+	note_type 6, 10, 2
+	note Gs, 2
+	octave 4
+	note Cs, 4
+	octave 3
+	note F_, 2
+	octave 4
+	note Ds, 2
+	note Cs, 1
+	note C_, 1
+	octave 3
+	note As, 1
+	note Gs, 3
+	octave 4
+	note Cs, 2
+	note Cs, 2
+	note Cs, 2
+	note Cs, 4
+	note Cs, 4
+	note Cs, 2
+	note_type 8, 5, 2
+	duty_cycle 1
+Music_MtChimney_Ch1_loop_3:
+	octave 2
+	note A_, 1
+	octave 3
+	note Cs, 1
+	note E_, 1
+	note Gs, 1
+	note E_, 1
+	note Cs, 1
+	sound_loop 2, Music_MtChimney_Ch1_loop_3
+Music_MtChimney_Ch1_loop_4:
+	octave 2
+	note Gs, 1
+	octave 3
+	note C_, 1
+	note Ds, 1
+	note G_, 1
+	note Ds, 1
+	note C_, 1
+	sound_loop 2, Music_MtChimney_Ch1_loop_4
+	duty_cycle 0
+	note_type 6, 10, 2
+	note Gs, 2
+	octave 4
+	note C_, 4
+	octave 3
+	note Gs, 2
+	octave 4
+	note Ds, 2
+	note Cs, 1
+	note C_, 1
+	octave 3
+	note As, 1
+	note Gs, 3
+	duty_cycle 1
+	volume_envelope 10, 7
+	octave 2
+	note As, 12
+	note Gs, 2
+	note As, 2
+	octave 3
+	note C_, 8
+	octave 2
+	note Gs, 2
+	note Ds, 2
+	octave 3
+	note C_, 2
+	note Cs, 2
+	note Ds, 12
+	note Ds, 2
+	note E_, 2
+	duty_cycle 0
+	volume_envelope 10, 2
+	note F_, 2
+	note F_, 2
+	note F_, 2
+	note F_, 2
+	rest 10
+	note F_, 4
+	note D_, 2
+	note F_, 2
+	note D_, 2
+	note F_, 2
+	note Gs, 4
+	sound_call Music_MtChimney_Ch1_branch_1
+	octave 3
+	volume_envelope 10, 2
+	note Ds, 2
+	note Ds, 2
+	note As, 2
+	note A_, 2
+	volume_envelope 10, 4
+	note Gs, 4
+	volume_envelope 10, 2
+	note G_, 4
+	note G_, 2
+	note Gs, 4
+	note Gs, 2
+	volume_envelope 10, 7
+	note G_, 8
+	volume_envelope 10, 2
+	note Ds, 2
+	note Ds, 2
+	note As, 2
+	note A_, 2
+	volume_envelope 10, 4
+	note Gs, 4
+	volume_envelope 10, 2
+	note G_, 4
+	note G_, 2
+	note Gs, 4
+	note Gs, 2
+	volume_envelope 10, 7
+	note B_, 8
+	volume_envelope 10, 2
+	note Ds, 2
+	note Ds, 2
+	note As, 2
+	note A_, 2
+	volume_envelope 10, 4
+	note Gs, 4
+	volume_envelope 10, 2
+	note G_, 4
+	note Ds, 2
+	note Ds, 2
+	note As, 2
+	note A_, 2
+	volume_envelope 10, 4
+	note Gs, 4
+	volume_envelope 10, 2
+	note G_, 4
+	note Ds, 2
+	note Ds, 2
+	note As, 2
+	note A_, 2
+	note Ds, 2
+	note Ds, 2
+	note As, 2
+	note A_, 2
+	note Ds, 2
+	note Ds, 2
+	note As, 2
+	note A_, 2
+	note Ds, 2
+	note Ds, 2
+	note Ds, 2
+	note Ds, 1
+	note Ds, 1
+	sound_call Music_MtChimney_blank
+	rest 2
+	sound_loop 0, Music_MtChimney_Ch1_loop_main
+	
+Music_MtChimney_Ch1_branch_1:
+	note_type 6, 10, 2
+	octave 3
+	note F_, 1
+	note E_, 1
+	note Ds, 4
+	note Gs, 4
+	note G_, 4
+	note A_, 2
+	note As, 4
+	note As, 2
+	volume_envelope 10, 5
+	note Gs, 4
+	note F_, 4
+	volume_envelope 10, 2
+	note B_, 2
+	note B_, 2
+	note As, 2
+	note B_, 6
+	octave 4
+	note Ds, 2
+	note Ds, 2
+	note Ds, 4
+	note Ds, 4
+	volume_envelope 10, 4
+	note D_, 4
+	octave 3
+	note B_, 2
+	octave 4
+	volume_envelope 10, 2
+	note D_, 5
+	octave 3
+	note E_, 1
+	note Ds, 4
+	note Gs, 4
+	note G_, 4
+	volume_envelope 10, 5
+	note As, 8
+	note Gs, 4
+	note F_, 4
+	volume_envelope 10, 2
+	note Fs, 2
+	note Gs, 4
+	note Gs, 6
+	octave 4
+	note Ds, 2
+	note Ds, 2
+	note D_, 2
+	note Ds, 2
+	note Gs, 2
+	note Gs, 2
+	note G_, 2
+	note Gs, 2
+	note B_, 2
+	note B_, 2
+	octave 5
+	note Ds, 1
+	note D_, 1
+	note C_, 1
+	octave 4
+	note B_, 1
+	note A_, 1
+	note G_, 16
+	rest 3
+	volume_envelope 10, 3
+	note D_, 2
+	note Ds, 8
+	octave 3
+	volume_envelope 10, 2
+	note G_, 4
+	note Ds, 2
+	note G_, 2
+	note F_, 2
+	note G_, 2
+	note As, 10
+	octave 2
+	note G_, 2
+	note F_, 2
+	note G_, 2
+	note As, 2
+	octave 3
+	volume_envelope 10, 0
+	note Ds, 16
+	volume_envelope 10, 7
+	note Ds, 16
+	rest 16
+	rest 16
+	rest 4
+	volume_envelope 10, 2
+	note As, 2
+	note A_, 2
+	note Gs, 4
+	note G_, 4
+	note A_, 2
+	note As, 4
+	note As, 2
+	volume_envelope 10, 5
+	note Gs, 4
+	note F_, 4
+	volume_envelope 10, 2
+	note B_, 2
+	note B_, 2
+	note As, 2
+	note B_, 6
+	octave 4
+	note Ds, 2
+	note Ds, 2
+	note Ds, 4
+	note Ds, 4
+	volume_envelope 10, 4
+	note D_, 4
+	octave 3
+	volume_envelope 10, 2
+	note B_, 2
+	octave 4
+	note D_, 2
+	octave 3
+	note Ds, 2
+	note Ds, 2
+	note As, 2
+	note A_, 2
+	note Gs, 4
+	note G_, 4
+	volume_envelope 10, 5
+	note As, 8
+	note Gs, 4
+	note F_, 4
+	volume_envelope 10, 2
+	note Fs, 2
+	note Gs, 4
+	note Gs, 6
+	octave 4
+	note Ds, 2
+	note Ds, 2
+	note D_, 2
+	note Ds, 2
+	note Gs, 2
+	note Gs, 2
+	note G_, 2
+	note Gs, 2
+	note B_, 2
+	note B_, 2
+	octave 5
+	note Ds, 1
+	note D_, 1
+	note C_, 1
+	octave 4
+	note B_, 1
+	note A_, 1
+	note G_, 16
+	rest 3
+	note D_, 2
+	note Ds, 8
+	octave 3
+	note G_, 4
+	note Ds, 2
+	note G_, 2
+	note F_, 2
+	note G_, 2
+	note As, 10
+	octave 2
+	note G_, 2
+	note F_, 2
+	note G_, 2
+	note As, 2
+	octave 3
+	volume_envelope 10, 0
+	note Ds, 16
+	volume_envelope 10, 7
+	note Ds, 16
+	rest 16
+	rest 16
+	sound_ret
+	
+Music_MtChimney_blank:
+	rest 16
+	sound_loop 8, Music_MtChimney_blank
+	sound_ret
+
+gbs_Music_MtChimney_Ch2:
+	gbs_switch 1
+Music_MtChimney_Ch2:
+	duty_cycle 3
+	vibrato 18, 2, 5
+	pitch_offset 1
+	note_type 12, 8, 0
+	octave 2
+	note Ds, 4
+	note As, 4
+	note G_, 4
+	octave 3
+	note Cs, 4
+	note Ds, 8
+	volume_envelope 8, 7
+	note Ds, 9
+Music_MtChimney_Ch2_loop:
+	sound_call Music_MtChimney_Ch2_branch_1
+	octave 4
+	volume_envelope 12, 0
+	note Ds, 8
+	volume_envelope 12, 6
+	note Ds, 12
+	volume_envelope 12, 2
+	note Cs, 8
+	octave 3
+	note Gs, 4
+	volume_envelope 12, 0
+	note As, 16
+	volume_envelope 12, 7
+	note As, 16
+	octave 4
+	volume_envelope 12, 0
+	note Cs, 16
+	volume_envelope 12, 4
+	note Cs, 8
+	volume_envelope 12, 2
+	octave 3
+	note B_, 4
+	octave 4
+	note Cs, 2
+	octave 3
+	note B_, 2
+	volume_envelope 12, 5
+	note As, 2
+	octave 4
+	note C_, 1
+	octave 3
+	note As, 1
+	volume_envelope 12, 0
+	note Gs, 16
+	volume_envelope 12, 5
+	note Gs, 12
+	volume_envelope 12, 0
+	note Fs, 4
+	volume_envelope 12, 5
+	note Fs, 8
+	note F_, 2
+	note Fs, 2
+	note Gs, 8
+	note Ds, 8
+	volume_envelope 12, 7
+	note Gs, 12
+	note G_, 2
+	note Gs, 2
+	volume_envelope 12, 0
+	note As, 8
+	volume_envelope 10, 0
+	note Gs, 1
+	note G_, 1
+	volume_envelope 9, 0
+	note F_, 1
+	volume_envelope 7, 0
+	note Ds, 1
+	volume_envelope 5, 0
+	note Cs, 1
+	volume_envelope 4, 0
+	note C_, 1
+	octave 2
+	volume_envelope 3, 0
+	note As, 1
+	rest 3
+	volume_envelope 12, 2
+	octave 3
+	note As, 4
+	note F_, 2
+	octave 4
+	note D_, 2
+	octave 3
+	note As, 2
+	octave 4
+	note D_, 2
+	note F_, 4
+	volume_envelope 10, 2
+	sound_call Music_MtChimney_Ch2_branch_1
+	octave 3
+	volume_envelope 10, 2
+	note Gs, 2
+	note Gs, 2
+	octave 4
+	note Fs, 2
+	note F_, 2
+	volume_envelope 10, 4
+	note Ds, 4
+	volume_envelope 10, 2
+	note D_, 4
+	note D_, 2
+	note Ds, 4
+	note Ds, 2
+	volume_envelope 10, 7
+	note D_, 8
+	duty_cycle 0
+	octave 3
+	volume_envelope 10, 2
+	note Gs, 2
+	note Gs, 2
+	octave 4
+	note Fs, 2
+	note F_, 2
+	volume_envelope 10, 4
+	note Ds, 4
+	volume_envelope 10, 2
+	note D_, 4
+	note D_, 2
+	note Ds, 4
+	note Ds, 2
+	volume_envelope 10, 7
+	note Fs, 8
+	duty_cycle 1
+	octave 3
+	volume_envelope 10, 2
+	note Gs, 2
+	note Gs, 2
+	octave 4
+	note Fs, 2
+	note F_, 2
+	volume_envelope 10, 4
+	note Ds, 4
+	volume_envelope 10, 2
+	note D_, 4
+	duty_cycle 0
+	octave 3
+	note Gs, 2
+	note Gs, 2
+	octave 4
+	note Fs, 2
+	note F_, 2
+	volume_envelope 10, 4
+	note Ds, 4
+	volume_envelope 10, 2
+	note D_, 4
+	duty_cycle 1
+	octave 3
+	note Gs, 2
+	note Gs, 2
+	octave 4
+	note Fs, 2
+	note F_, 2
+	octave 3
+	note Gs, 2
+	note Gs, 2
+	octave 4
+	note Fs, 2
+	note F_, 2
+	duty_cycle 0
+	octave 3
+	note Gs, 2
+	note Gs, 2
+	octave 4
+	note Fs, 2
+	note F_, 2
+	octave 3
+	note Gs, 2
+	note Gs, 2
+	note Gs, 2
+	note Gs, 1
+	note Gs, 1
+	sound_call Music_MtChimney_blank
+	duty_cycle 3
+	rest 2
+	sound_loop 0, Music_MtChimney_Ch2_loop
+
+Music_MtChimney_Ch2_branch_1:
+	note_type 6, 10, 2
+	octave 3
+	note As, 1
+	note A_, 1
+	note Gs, 4
+	octave 4
+	note Ds, 4
+	note D_, 4
+	note F_, 2
+	note Fs, 4
+	note Fs, 2
+	volume_envelope 10, 5
+	note F_, 4
+	note Cs, 4
+	volume_envelope 10, 2
+	note Ds, 2
+	note Ds, 2
+	note D_, 2
+	note Ds, 6
+	duty_cycle 0
+	octave 3
+	note B_, 2
+	note B_, 2
+	note B_, 4
+	note B_, 4
+	volume_envelope 10, 4
+	note As, 4
+	note G_, 2
+	volume_envelope 10, 2
+	note As, 5
+	duty_cycle 3
+	note A_, 1
+	note Gs, 4
+	octave 4
+	note Ds, 4
+	note D_, 3
+	note G_, 1
+	volume_envelope 10, 5
+	note Fs, 8
+	note F_, 4
+	note Cs, 4
+	volume_envelope 10, 2
+	note D_, 2
+	note Ds, 4
+	note Ds, 5
+	note G_, 1
+	volume_envelope 10, 0
+	note Gs, 8
+	volume_envelope 10, 6
+	note Gs, 12
+	volume_envelope 10, 2
+	note Ds, 2
+	octave 3
+	note As, 2
+	note G_, 2
+	volume_envelope 10, 1
+	note Ds, 4
+	note Cs, 4
+	octave 2
+	note As, 4
+	note G_, 4
+	note Ds, 2
+	octave 3
+	volume_envelope 10, 3
+	note D_, 2
+	note Ds, 8
+	duty_cycle 0
+	octave 2
+	volume_envelope 10, 2
+	note G_, 4
+	note Ds, 2
+	note G_, 2
+	note F_, 2
+	note G_, 2
+	note As, 10
+	duty_cycle 3
+	octave 3
+	note Ds, 2
+	note D_, 2
+	note Ds, 2
+	note G_, 2
+	note_type 12, 10, 0
+	note As, 8
+	volume_envelope 10, 7
+	note As, 9
+	note_type 6, 10, 2
+	duty_cycle 0
+	octave 4
+	note Ds, 4
+	note Cs, 2
+	note Ds, 1
+	note E_, 1
+	note Cs, 2
+	octave 3
+	note As, 2
+	note G_, 2
+	note As, 2
+	note As, 2
+	note As, 2
+	note As, 2
+	octave 4
+	note Ds, 1
+	note D_, 1
+	note C_, 1
+	octave 3
+	note As, 1
+	note A_, 1
+	note G_, 7
+	duty_cycle 3
+	octave 4
+	note Fs, 2
+	note F_, 2
+	note Ds, 4
+	note D_, 4
+	note F_, 2
+	note Fs, 4
+	note Fs, 2
+	volume_envelope 10, 5
+	note F_, 4
+	note Cs, 4
+	volume_envelope 10, 2
+	note Ds, 2
+	note Ds, 2
+	note D_, 2
+	note Ds, 6
+	duty_cycle 0
+	octave 3
+	note B_, 2
+	note B_, 2
+	note B_, 4
+	note B_, 4
+	volume_envelope 10, 4
+	note As, 4
+	volume_envelope 10, 2
+	note G_, 2
+	note As, 2
+	duty_cycle 3
+	note Gs, 2
+	note Gs, 2
+	octave 4
+	note Fs, 2
+	note F_, 2
+	note Ds, 4
+	note D_, 3
+	note G_, 1
+	volume_envelope 10, 5
+	note Fs, 8
+	note F_, 4
+	note Cs, 4
+	volume_envelope 10, 2
+	note D_, 2
+	note Ds, 4
+	note Ds, 5
+	note G_, 1
+	volume_envelope 10, 0
+	note Gs, 8
+	volume_envelope 10, 7
+	note Gs, 12
+	volume_envelope 10, 2
+	note Ds, 2
+	octave 3
+	note As, 2
+	note G_, 2
+	volume_envelope 10, 1
+	note Ds, 4
+	note Cs, 4
+	octave 2
+	note As, 4
+	note G_, 4
+	note Ds, 2
+	octave 3
+	volume_envelope 10, 3
+	note D_, 2
+	note Ds, 8
+	octave 2
+	duty_cycle 0
+	volume_envelope 10, 2
+	note G_, 4
+	note Ds, 2
+	note G_, 2
+	note F_, 2
+	note G_, 2
+	note As, 10
+	duty_cycle 3
+	octave 3
+	note Ds, 2
+	note D_, 2
+	note Ds, 2
+	note G_, 2
+	volume_envelope 10, 0
+	note As, 16
+	volume_envelope 10, 7
+	note As, 16
+	volume_envelope 6, 0
+	octave 2
+	note Ds, 8
+	volume_envelope 7, 0
+	note As, 8
+	octave 3
+	volume_envelope 8, 0
+	note G_, 8
+	octave 4
+	volume_envelope 9, 0
+	note Cs, 8
+	sound_ret
+
+gbs_Music_MtChimney_Ch3:
+	gbs_switch 2
+Music_MtChimney_Ch3:
+	note_type 6, 2, 5
+	vibrato 18, 1, 5
+	octave 2
+	note Ds, 4
+	rest 12
+	octave 1
+	note As, 4
+	rest 8
+	note As, 1
+	rest 1
+	note As, 1
+	rest 1
+	octave 2
+	note Ds, 4
+	rest 4
+	octave 1
+	note As, 4
+	rest 4
+	note Ds, 4
+	rest 4
+	octave 4
+	note Cs, 1
+	octave 3
+	note As, 1
+	note G_, 1
+	note Ds, 1
+	note Cs, 1
+	octave 2
+	note As, 1
+	note G_, 1
+	note Ds, 1
+Music_MtChimney_Ch3_loop:
+	sound_call Music_MtChimney_Ch3_branch_1
+	sound_call Music_MtChimney_Ch3_branch_1
+	octave 1
+	note B_, 3
+	note Fs, 3
+	octave 2
+	note Fs, 2
+	rest 4
+	note As, 2
+	rest 4
+	note As, 2
+	note Ds, 4
+	note Fs, 2
+	rest 2
+	note Cs, 2
+	rest 2
+	octave 1
+	note As, 3
+	note F_, 3
+	octave 2
+	note F_, 2
+	rest 4
+	note Gs, 2
+	rest 4
+	note Gs, 2
+	note Cs, 4
+	note Fs, 1
+	rest 1
+	note Gs, 1
+	rest 1
+	octave 1
+	note As, 4
+	octave 1
+	note A_, 3
+	note E_, 3
+	octave 2
+	note E_, 2
+	rest 4
+	note Gs, 2
+	rest 4
+	note Gs, 2
+	note Cs, 4
+	note E_, 2
+	rest 2
+	octave 1
+	note A_, 2
+	rest 2
+	octave 1
+	note Gs, 3
+	note Ds, 3
+	octave 2
+	note Ds, 2
+	rest 4
+	note G_, 2
+	rest 4
+	note G_, 2
+	note C_, 4
+	note Ds, 1
+	rest 1
+	note G_, 1
+	rest 1
+	octave 1
+	note Gs, 4
+	note Fs, 6
+	note As, 2
+	rest 4
+	octave 2
+	note Cs, 2
+	rest 2
+	octave 1
+	note F_, 2
+	note Gs, 2
+	octave 2
+	note C_, 2
+	note Ds, 2
+	rest 2
+	note F_, 2
+	rest 2
+	note G_, 2
+	octave 1
+	note E_, 6
+	note B_, 2
+	rest 4
+	octave 2
+	note Ds, 2
+	rest 2
+	octave 1
+	note D_, 2
+	note F_, 2
+	note Gs, 2
+	note As, 2
+	octave 2
+	note D_, 2
+	note F_, 2
+	note Gs, 2
+	note As, 2
+	rest 2
+	note D_, 2
+	rest 2
+	note D_, 1
+	rest 1
+	note D_, 1
+	rest 1
+	note As, 1
+	rest 1
+	note D_, 1
+	rest 1
+	octave 1
+	note A_, 1
+	rest 1
+	sound_call Music_MtChimney_Ch3_branch_1
+	sound_call Music_MtChimney_Ch3_branch_1
+	sound_call Music_MtChimney_Ch3_branch_2
+	sound_call Music_MtChimney_Ch3_branch_2
+	octave 2
+	note Gs, 4
+	octave 1
+	note Gs, 4
+	rest 4
+	note Gs, 1
+	rest 1
+	note Gs, 1
+	rest 1
+	octave 2
+	note Gs, 4
+	octave 1
+	note Gs, 4
+	rest 4
+	note Gs, 1
+	rest 1
+	note Gs, 1
+	rest 1
+	octave 2
+	note Gs, 4
+	octave 1
+	note Gs, 1
+	rest 1
+	note Gs, 1
+	rest 1
+	octave 2
+	note Gs, 4
+	octave 1
+	note Gs, 1
+	rest 1
+	note Gs, 1
+	rest 1
+	octave 2
+	note Gs, 4
+	octave 1
+	note Gs, 1
+	rest 1
+	note Gs, 1
+	rest 1
+	octave 2
+	note Gs, 4
+	octave 1
+	note Gs, 1
+	rest 1
+	note Gs, 1
+	rest 1
+	sound_call Music_MtChimney_blank
+	sound_loop 0, Music_MtChimney_Ch3_loop
+	
+Music_MtChimney_Ch3_branch_1:
+	octave 1
+	note Gs, 6
+	octave 2
+	note Ds, 2
+	rest 4
+	note B_, 2
+	rest 4
+	note B_, 1
+	rest 1
+	octave 1
+	note B_, 4
+	octave 2
+	note Ds, 2
+	rest 2
+	note Cs, 2
+	rest 2
+	octave 1
+	note Gs, 6
+	octave 2
+	note Ds, 2
+	rest 4
+	note B_, 2
+	rest 4
+	note B_, 1
+	rest 1
+	octave 1
+	note B_, 4
+	octave 2
+	note Ds, 1
+	rest 1
+	note Gs, 1
+	rest 1
+	octave 1
+	note B_, 4
+	octave 1
+	note Gs, 6
+	octave 2
+	note Ds, 2
+	rest 4
+	note B_, 2
+	rest 4
+	note B_, 1
+	rest 1
+	octave 1
+	note B_, 4
+	octave 2
+	note Ds, 2
+	rest 2
+	note Cs, 2
+	rest 2
+	octave 1
+	note Gs, 6
+	octave 2
+	note Ds, 2
+	rest 4
+	note B_, 2
+	rest 4
+	note B_, 1
+	rest 1
+	octave 1
+	note B_, 4
+	octave 2
+	note Ds, 1
+	rest 1
+	note Cs, 1
+	rest 1
+	octave 1
+	note As, 1
+	rest 1
+	note G_, 1
+	rest 1
+	octave 1
+	note Ds, 6
+	note As, 2
+	rest 4
+	octave 2
+	note Ds, 2
+	rest 4
+	note Ds, 1
+	rest 1
+	octave 1
+	note Ds, 4
+	octave 2
+	note As, 2
+	rest 2
+	note G_, 2
+	rest 2
+	octave 1
+	note Ds, 6
+	note As, 2
+	rest 4
+	octave 2
+	note Ds, 2
+	rest 4
+	note Ds, 1
+	rest 1
+	octave 1
+	note Ds, 4
+	note As, 1
+	rest 1
+	octave 2
+	note Ds, 1
+	rest 1
+	octave 1
+	note G_, 4
+	note Ds, 6
+	note As, 2
+	rest 4
+	octave 2
+	note Ds, 2
+	rest 4
+	note Ds, 1
+	rest 1
+	octave 1
+	note Ds, 4
+	octave 2
+	note As, 2
+	rest 2
+	note G_, 2
+	rest 2
+	octave 1
+	note Ds, 6
+	note As, 2
+	rest 4
+	octave 2
+	note Ds, 2
+	rest 4
+	note Ds, 1
+	rest 1
+	octave 1
+	note Ds, 4
+	note G_, 1
+	rest 1
+	octave 2
+	note Cs, 1
+	rest 1
+	note Ds, 1
+	note G_, 1
+	note As, 1
+	octave 3
+	note Cs, 1
+	sound_ret
+	
+Music_MtChimney_Ch3_branch_2:
+	octave 2
+	note Gs, 4
+	octave 1
+	note Gs, 4
+	rest 4
+	note Gs, 1
+	rest 1
+	note Gs, 1
+	rest 1
+	note Gs, 1
+	rest 1
+	note Gs, 1
+	rest 1
+	note Gs, 1
+	rest 1
+	note Gs, 1
+	rest 1
+	note Gs, 1
+	note B_, 1
+	octave 2
+	note Cs, 1
+	note D_, 1
+	note Ds, 1
+	note E_, 1
+	note F_, 1
+	note F_, 1
+	sound_ret
+	
+gbs_Music_MtChimney_Ch4:
+	gbs_switch 3
+Music_MtChimney_Ch4:
+	toggle_noise 4
+	drum_speed 6
+	drum_note 12, 4
+	drum_note 5, 2
+	drum_note 2, 1
+	drum_note 8, 1
+	drum_note 5, 2
+	drum_note 5, 4
+	drum_note 5, 2
+	drum_note 5, 2
+	drum_note 3, 2
+	drum_note 5, 2
+	drum_note 3, 2
+	drum_note 2, 1
+	drum_note 2, 1
+	drum_note 2, 1
+	drum_note 2, 1
+	drum_note 5, 2
+	drum_note 5, 2
+	drum_note 5, 2
+	drum_note 5, 2
+	drum_note 2, 1
+	drum_note 2, 1
+	drum_note 2, 1
+	drum_note 2, 1
+	drum_note 5, 2
+	drum_note 3, 2
+	drum_note 5, 2
+	drum_note 3, 2
+	drum_note 5, 2
+	drum_note 5, 2
+	drum_note 2, 1
+	drum_note 2, 1
+	drum_note 2, 1
+	drum_note 2, 1
+	drum_note 5, 2
+	drum_note 5, 2
+	drum_note 2, 1
+	drum_note 2, 1
+	drum_note 2, 1
+	drum_note 2, 1
+Music_MtChimney_Ch4_loop:
+	sound_call Music_MtChimney_Ch4_branch_1
+	sound_call Music_MtChimney_Ch4_branch_1
+	drum_note 10, 16
+	drum_note 3, 2
+	drum_note 2, 2
+	drum_note 3, 2
+	drum_note 2, 1
+	drum_note 2, 1
+	drum_note 5, 4
+	drum_note 3, 4
+	drum_note 5, 2
+	drum_note 2, 2
+	drum_note 2, 2
+	drum_note 3, 1
+	drum_note 2, 1
+	drum_note 5, 4
+	drum_note 3, 2
+	drum_note 3, 2
+	drum_note 5, 2
+	drum_note 3, 2
+	drum_note 5, 2
+	drum_note 2, 1
+	drum_note 2, 1
+	drum_note 5, 4
+	drum_note 3, 2
+	drum_note 3, 2
+	drum_note 5, 4
+	drum_note 2, 1
+	drum_note 2, 1
+	drum_note 2, 1
+	drum_note 2, 1
+	drum_note 5, 4
+	drum_note 5, 2
+	drum_note 3, 2
+	drum_note 5, 2
+	drum_note 3, 2
+	drum_note 5, 2
+	drum_note 2, 1
+	drum_note 2, 1
+	drum_note 5, 4
+	drum_note 3, 2
+	drum_note 3, 2
+	drum_note 5, 2
+	drum_note 2, 2
+	drum_note 2, 2
+	drum_note 3, 1
+	drum_note 2, 1
+	drum_note 5, 4
+	drum_note 3, 2
+	drum_note 3, 2
+	drum_note 5, 2
+	drum_note 3, 2
+	drum_note 5, 2
+	drum_note 2, 1
+	drum_note 2, 1
+	drum_note 5, 4
+	drum_note 12, 4
+	drum_note 5, 6
+	drum_note 2, 1
+	drum_note 2, 1
+	drum_note 5, 4
+	drum_note 5, 2
+	drum_note 3, 2
+	drum_note 4, 2
+	drum_note 4, 2
+	drum_note 4, 2
+	drum_note 2, 1
+	drum_note 2, 1
+	drum_note 5, 4
+	drum_note 5, 4
+	drum_note 3, 2
+	drum_note 5, 2
+	drum_note 3, 4
+	drum_note 5, 2
+	drum_note 3, 2
+	drum_note 5, 4
+	drum_note 5, 4
+	drum_note 5, 2
+	drum_note 2, 1
+	drum_note 2, 1
+	drum_note 3, 2
+	drum_note 3, 2
+	drum_note 3, 2
+	drum_note 3, 4
+	drum_note 2, 4
+	drum_note 2, 2
+	drum_note 2, 2
+	drum_note 2, 2
+	drum_note 12, 4
+	sound_call Music_MtChimney_Ch4_branch_1
+	sound_call Music_MtChimney_Ch4_branch_1
+	drum_note 5, 4
+	drum_note 11, 8
+	drum_note 5, 2
+	drum_note 5, 2
+	drum_note 5, 4
+	drum_note 11, 4
+	drum_note 12, 8
+	drum_note 5, 4
+	drum_note 11, 8
+	drum_note 5, 2
+	drum_note 5, 2
+	drum_note 5, 4
+	drum_note 11, 4
+	drum_note 12, 8
+	drum_note 5, 4
+	drum_note 11, 4
+	drum_note 12, 8
+	drum_note 5, 4
+	drum_note 11, 4
+	drum_note 12, 8
+	drum_note 5, 4
+	drum_note 11, 4
+	drum_note 5, 4
+	drum_note 11, 4
+	drum_note 5, 4
+	drum_note 11, 4
+	drum_note 5, 4
+	drum_note 5, 2
+	drum_note 5, 1
+	drum_note 5, 1
+	drum_note 5, 2
+	drum_note 3, 2
+	drum_note 5, 2
+	drum_note 10, 2
+	drum_note 5, 2
+	drum_note 5, 2
+	drum_note 10, 2
+	drum_note 5, 2
+	drum_note 5, 2
+	drum_note 3, 2
+	drum_note 3, 2
+	drum_note 5, 2
+	drum_note 3, 1
+	drum_note 2, 1
+	drum_note 2, 1
+	drum_note 2, 1
+	drum_note 3, 2
+	drum_note 3, 2
+	drum_note 3, 2
+	drum_note 3, 2
+	drum_note 3, 1
+	drum_note 2, 1
+	drum_note 2, 1
+	drum_note 2, 1
+	drum_note 3, 1
+	drum_note 3, 1
+	drum_note 3, 1
+	drum_note 3, 1
+	drum_note 5, 2
+	drum_note 5, 2
+	drum_note 5, 2
+	drum_note 3, 2
+	drum_note 2, 1
+	drum_note 2, 1
+	drum_note 2, 1
+	drum_note 2, 1
+	drum_note 5, 2
+	drum_note 3, 2
+	drum_note 2, 1
+	drum_note 2, 1
+	drum_note 2, 1
+	drum_note 2, 1
+	drum_note 5, 2
+	drum_note 3, 2
+	drum_note 2, 1
+	drum_note 2, 1
+	drum_note 2, 1
+	drum_note 2, 1
+	drum_note 5, 2
+	drum_note 3, 2
+	rest 2
+	drum_note 5, 2
+	drum_note 5, 2
+	drum_note 3, 2
+	drum_note 5, 2
+	drum_note 10, 2
+	drum_note 3, 1
+	drum_note 2, 1
+	drum_note 2, 1
+	drum_note 2, 1
+	drum_note 5, 2
+	drum_note 3, 2
+	drum_note 5, 2
+	drum_note 3, 2
+	drum_note 2, 1
+	drum_note 2, 1
+	drum_note 2, 1
+	drum_note 2, 1
+	drum_note 5, 2
+	drum_note 3, 2
+	drum_note 5, 2
+	drum_note 3, 2
+	drum_note 5, 2
+	drum_note 5, 2
+	drum_note 2, 1
+	drum_note 2, 1
+	drum_note 2, 1
+	drum_note 2, 1
+	drum_note 5, 2
+	drum_note 5, 2
+	drum_note 2, 1
+	drum_note 2, 1
+	drum_note 2, 1
+	drum_note 2, 1
+	sound_loop 0, Music_MtChimney_Ch4_loop
+
+Music_MtChimney_Ch4_branch_1:
+	drum_note 12, 6
+	drum_note 2, 4
+	drum_note 8, 2
+	drum_note 2, 4
+	drum_note 6, 2
+	drum_note 6, 2
+	drum_note 2, 2
+	drum_note 6, 2
+	drum_note 5, 4
+	drum_note 6, 4
+	drum_note 5, 2
+	drum_note 5, 2
+	drum_note 11, 4
+	drum_note 2, 4
+	drum_note 5, 2
+	drum_note 5, 2
+	drum_note 5, 4
+	drum_note 11, 4
+	drum_note 2, 4
+	drum_note 5, 2
+	drum_note 5, 2
+	drum_note 5, 4
+	drum_note 11, 2
+	drum_note 2, 4
+	drum_note 8, 2
+	drum_note 2, 8
+	drum_note 3, 2
+	drum_note 3, 2
+	drum_note 5, 4
+	drum_note 5, 2
+	drum_note 5, 2
+	drum_note 3, 2
+	drum_note 3, 2
+	drum_note 11, 4
+	drum_note 3, 4
+	drum_note 5, 2
+	drum_note 5, 2
+	drum_note 3, 2
+	drum_note 3, 2
+	drum_note 11, 3
+	drum_note 2, 1
+	drum_note 3, 4
+	drum_note 11, 4
+	drum_note 12, 6
+	drum_note 2, 4
+	drum_note 8, 2
+	drum_note 2, 4
+	drum_note 6, 2
+	drum_note 6, 2
+	drum_note 2, 4
+	drum_note 5, 4
+	drum_note 3, 2
+	drum_note 3, 2
+	drum_note 5, 4
+	drum_note 4, 2
+	drum_note 2, 4
+	drum_note 8, 2
+	drum_note 3, 2
+	drum_note 3, 2
+	drum_note 5, 4
+	drum_note 4, 2
+	drum_note 2, 2
+	drum_note 5, 4
+	drum_note 5, 4
+	drum_note 3, 4
+	drum_note 10, 2
+	drum_note 3, 4
+	drum_note 10, 2
+	drum_note 3, 4
+	drum_note 10, 2
+	drum_note 4, 2
+	drum_note 4, 4
+	drum_note 5, 4
+	drum_note 4, 4
+	drum_note 12, 16
+	drum_note 6, 2
+	drum_note 6, 2
+	drum_note 6, 2
+	drum_note 6, 2
+	drum_note 9, 2
+	drum_note 10, 2
+	drum_note 3, 2
+	drum_note 5, 2
+	sound_ret

@@ -1174,28 +1174,9 @@ EventScript_VsSeekerChargingDone::
 	.include "data/maps/VolcanoTemplates_TreasureRoom/scripts.inc"
 	.include "data/maps/VolcanoTemplates_ChallengeRoom/scripts.inc"
 	.include "data/maps/VolcanoTemplates_Room1/scripts.inc"
-	.include "data/maps/PowerPlantTemplates_Connections/scripts.inc"
-	.include "data/maps/PowerPlantTemplates_BossRoom/scripts.inc"
-	.include "data/maps/PowerPlantTemplates_ShopRoom/scripts.inc"
-	.include "data/maps/PowerPlantTemplates_TreasureRoom/scripts.inc"
-	.include "data/maps/PowerPlantTemplates_ChallengeRoom/scripts.inc"
-	.include "data/maps/PowerPlantTemplates_Room1/scripts.inc"
-
 	.include "data/maps/IceCaveTemplates_Room2/scripts.inc"
 
 	.include "data/maps/IceCaveTemplates_Room3/scripts.inc"
-
-	.include "data/maps/DojoTemplates_Connections/scripts.inc"
-
-	.include "data/maps/DojoTemplates_BossRoom/scripts.inc"
-
-	.include "data/maps/DojoTemplates_ShopRoom/scripts.inc"
-
-	.include "data/maps/DojoTemplates_TreasureRoom/scripts.inc"
-
-	.include "data/maps/DojoTemplates_ChallengeRoom/scripts.inc"
-
-	.include "data/maps/DojoTemplates_Room1/scripts.inc"
 
 	.include "data/maps/UnderwaterTemplates_Room2/scripts.inc"
 
@@ -1224,3 +1205,31 @@ EventScript_VsSeekerChargingDone::
 	.include "data/maps/CityTemplates_Room4/scripts.inc"
 
 	.include "data/maps/CityTemplates_Room5/scripts.inc"
+
+	.include "data/maps/CaveTemplates_Connections/scripts.inc"
+
+	.include "data/maps/CaveTemplates_BossRoom/scripts.inc"
+
+	.include "data/maps/CaveTemplates_TreasureRoom/scripts.inc"
+
+	.include "data/maps/CaveTemplates_ShopRoom/scripts.inc"
+
+	.include "data/maps/CaveTemplates_ChallengeRoom/scripts.inc"
+
+	.include "data/maps/CaveTemplates_Room1/scripts.inc"
+
+	.include "data/maps/DesertTemplates_Connections/scripts.inc"
+
+	.include "data/maps/DesertTemplates_BossRoom/scripts.inc"
+
+	.include "data/maps/DesertTemplates_ShopRoom/scripts.inc"
+
+	.include "data/maps/DesertTemplates_TreasureRoom/scripts.inc"
+
+	.include "data/maps/DesertTemplates_ChallengeRoom/scripts.inc"
+
+	.include "data/maps/DesertTemplates_Room1/scripts.inc"
+
+	.include "data/maps/ForestTemplates_Connections/scripts.inc"
+
+	.include "data/maps/ForestTemplates_BossRoom/scripts.inc"

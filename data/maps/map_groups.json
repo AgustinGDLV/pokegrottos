@@ -4,8 +4,12 @@
     "gMapGroup_CityTemplates",
     "gMapGroup_IceCaveTemplates",
     "gMapGroup_VolcanoTemplates",
-    "gMapGroup_PowerPlantTemplates",
-    "gMapGroup_DojoTemplates",
+    "gMapGroup_CaveTemplates",
+    "gMapGroup_DesertTemplates",
+    "gMapGroup_FieldsTemplates",
+    "gMapGroup_ForestTemplates",
+    "gMapGroup_SwampTemplates",
+    "gMapGroup_TundraTemplates",
     "gMapGroup_TownsAndRoutes",
     "gMapGroup_IndoorLittleroot",
     "gMapGroup_IndoorOldale",
@@ -83,21 +87,34 @@
     "VolcanoTemplates_ChallengeRoom",
     "VolcanoTemplates_Room1"
   ],
-  "gMapGroup_PowerPlantTemplates": [
-    "PowerPlantTemplates_Connections",
-    "PowerPlantTemplates_BossRoom",
-    "PowerPlantTemplates_ShopRoom",
-    "PowerPlantTemplates_TreasureRoom",
-    "PowerPlantTemplates_ChallengeRoom",
-    "PowerPlantTemplates_Room1"
+  "gMapGroup_CaveTemplates": [
+    "CaveTemplates_Connections",
+    "CaveTemplates_BossRoom",
+    "CaveTemplates_TreasureRoom",
+    "CaveTemplates_ShopRoom",
+    "CaveTemplates_ChallengeRoom",
+    "CaveTemplates_Room1"
   ],
-  "gMapGroup_DojoTemplates": [
-    "DojoTemplates_Connections",
-    "DojoTemplates_BossRoom",
-    "DojoTemplates_ShopRoom",
-    "DojoTemplates_TreasureRoom",
-    "DojoTemplates_ChallengeRoom",
-    "DojoTemplates_Room1"
+  "gMapGroup_DesertTemplates": [
+    "DesertTemplates_Connections",
+    "DesertTemplates_BossRoom",
+    "DesertTemplates_ShopRoom",
+    "DesertTemplates_TreasureRoom",
+    "DesertTemplates_ChallengeRoom",
+    "DesertTemplates_Room1"
+  ],
+  "gMapGroup_FieldsTemplates": [
+
+  ],
+  "gMapGroup_ForestTemplates": [
+    "ForestTemplates_Connections",
+    "ForestTemplates_BossRoom"
+  ],
+  "gMapGroup_SwampTemplates": [
+
+  ],
+  "gMapGroup_TundraTemplates": [
+
   ],
   "gMapGroup_TownsAndRoutes": [
     "PetalburgCity",

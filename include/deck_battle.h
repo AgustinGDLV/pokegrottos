@@ -121,6 +121,10 @@ enum DeckBattleBackgroundId
     BG_GRASS,
     BG_UNDERWATER,
     BG_CITY,
+    BG_ICE_PATH,
+    BG_VOLCANO,
+    BG_CAVE,
+    BG_DESERT,
     BG_COUNT,
 };
 

@@ -43,36 +43,36 @@
   ],
   "warp_events": [
     {
-      "x": 11,
+      "x": 6,
+      "y": 5,
+      "elevation": 0,
+      "dest_map": "MAP_ICE_CAVE_TEMPLATES_ROOM2",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 6,
+      "y": 1,
+      "elevation": 0,
+      "dest_map": "MAP_ICE_CAVE_TEMPLATES_ROOM2",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 6,
       "y": 9,
       "elevation": 0,
       "dest_map": "MAP_ICE_CAVE_TEMPLATES_ROOM2",
       "dest_warp_id": "0"
     },
     {
-      "x": 11,
-      "y": 2,
+      "x": 10,
+      "y": 5,
       "elevation": 0,
       "dest_map": "MAP_ICE_CAVE_TEMPLATES_ROOM2",
       "dest_warp_id": "0"
     },
     {
-      "x": 11,
-      "y": 16,
-      "elevation": 0,
-      "dest_map": "MAP_ICE_CAVE_TEMPLATES_ROOM2",
-      "dest_warp_id": "0"
-    },
-    {
-      "x": 19,
-      "y": 6,
-      "elevation": 0,
-      "dest_map": "MAP_ICE_CAVE_TEMPLATES_ROOM2",
-      "dest_warp_id": "0"
-    },
-    {
-      "x": 3,
-      "y": 10,
+      "x": 2,
+      "y": 5,
       "elevation": 0,
       "dest_map": "MAP_ICE_CAVE_TEMPLATES_ROOM2",
       "dest_warp_id": "0"

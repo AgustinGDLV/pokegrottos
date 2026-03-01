@@ -920,12 +920,15 @@ gGBSSongTable::
 	song_gbs MUS_UNDERWATER, gbs_Music_Dive, 0, 0
 	song_gbs MUS_VICTORY_ROAD, gbs_Music_VictoryRoad, 0, 0
 	song_gbs MUS_OCEANIC_MUSEUM, gbs_Music_OceanicFriendArea, 0, 0
-	song_gbs MUS_CAVE_OF_ORIGIN, gbs_Music_CaveOfOrigin, 0, 0
 	song_gbs MUS_MT_PYRE, gbs_Music_ShoalCave, 0, 0
 	song_gbs MUS_HG_SPROUT_TOWER, gbs_Music_SproutTower, 0, 0
 	song_gbs MUS_POKE_MART, gbs_Music_PokemonMart, 0, 0
 	song_gbs MUS_HG_POKE_MART, gbs_Music_FriendlyShop, 0, 0
 	song_gbs MUS_RG_CELADON, gbs_Music_NimbasaCity, 0, 0
+	song_gbs MUS_MT_CHIMNEY, gbs_Music_MtChimney, 0, 0
+	song_gbs MUS_DP_MT_CORONET, gbs_Music_MtCoronet, 0, 0
+	song_gbs MUS_DP_GREAT_MARSH, gbs_Music_PeanutSwamp, 0, 0
+	song_gbs MUS_HG_GOLDENROD, gbs_Music_BlackCity, 0, 0
 	.4byte 0xFFFFFFFF
 
 	.align 2

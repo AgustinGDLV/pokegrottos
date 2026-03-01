@@ -194,11 +194,37 @@ static const u8 sCityNormalRooms[] =
     MAP_NUM(CITY_TEMPLATES_ROOM5),
 };
 
+// Ice Path Template Pools
+static const u8 sIcePathNormalRooms[] =
+{
+    MAP_NUM(ICE_CAVE_TEMPLATES_ROOM1),
+    MAP_NUM(ICE_CAVE_TEMPLATES_ROOM2),
+    MAP_NUM(ICE_CAVE_TEMPLATES_ROOM3),
+};
+
+// Volcano Template Pools
+static const u8 sVolcanoNormalRooms[] =
+{
+    MAP_NUM(VOLCANO_TEMPLATES_ROOM1),
+};
+
+// Cave Template Pools
+static const u8 sCaveNormalRooms[] =
+{
+    MAP_NUM(CAVE_TEMPLATES_ROOM1),
+};
+
+// Desert Template Pools
+static const u8 sDesertNormalRooms[] =
+{
+    MAP_NUM(DESERT_TEMPLATES_ROOM1),
+};
+
 const struct TemplateRules gTemplateRules[TEMPLATE_TYPES_COUNT] = 
 {
     [TEMPLATES_UNDERWATER] =
     {
-        .name = COMPOUND_STRING("Reefs"),
+        .name = COMPOUND_STRING("Corsola Reefs"),
         .mapGroup = MAP_GROUP(UNDERWATER_TEMPLATES_ROOM1),
         .bgm = MUS_UNDERWATER,
         .background = BG_UNDERWATER,
@@ -225,7 +251,7 @@ const struct TemplateRules gTemplateRules[TEMPLATE_TYPES_COUNT] =
 
     [TEMPLATES_CITY] =
     {
-        .name = COMPOUND_STRING("City"),
+        .name = COMPOUND_STRING("Pidove City"),
         .mapGroup = MAP_GROUP(CITY_TEMPLATES_CONNECTIONS),
         .bgm = MUS_RG_CELADON,
         .background = BG_CITY,
@@ -248,6 +274,110 @@ const struct TemplateRules gTemplateRules[TEMPLATE_TYPES_COUNT] =
             {SPECIES_RATTATA, 100},
             {SPECIES_SPEAROW, 100},
             {SPECIES_POOCHYENA, 100},
+        }
+    },
+
+    [TEMPLATES_ICE_PATH] =
+    {
+        .name = COMPOUND_STRING("Vanillite Path"),
+        .mapGroup = MAP_GROUP(ICE_CAVE_TEMPLATES_CONNECTIONS),
+        .bgm = MUS_HG_ICE_PATH,
+        .background = BG_ICE_PATH,
+        .connectionType = CONNECTION_TYPE_WARP,
+        .offsets = {
+            [DIR_NORTH] = {0, -1, 1, 1},
+            [DIR_SOUTH] = {0, 1, 1, 1},
+            [DIR_EAST] = {0, 0, 2, 1},
+            [DIR_WEST] = {-1, 0, 2, 1},
+        },
+        .numNormalRooms = ARRAY_COUNT(sIcePathNormalRooms),
+        .normalRoomIds = sIcePathNormalRooms,
+        .specialRoomIds = {
+            [BOSS_ROOM] = MAP_NUM(ICE_CAVE_TEMPLATES_BOSS_ROOM),
+            [TREASURE_ROOM] = MAP_NUM(ICE_CAVE_TEMPLATES_TREASURE_ROOM),
+            [SHOP_ROOM] = MAP_NUM(ICE_CAVE_TEMPLATES_SHOP_ROOM),
+        },
+        .itemPools = gDefaultItemPools,
+        .encounterPool = {
+            {SPECIES_SWINUB, 100},
+        }
+    },
+
+    [TEMPLATES_VOLCANO] =
+    {
+        .name = COMPOUND_STRING("Slugma Caves"),
+        .mapGroup = MAP_GROUP(VOLCANO_TEMPLATES_CONNECTIONS),
+        .bgm = MUS_MT_CHIMNEY,
+        .background = BG_VOLCANO,
+        .connectionType = CONNECTION_TYPE_WARP,
+        .offsets = {
+            [DIR_NORTH] = {0, -1, 1, 1},
+            [DIR_SOUTH] = {0, 1, 1, 1},
+            [DIR_EAST] = {0, 0, 2, 1},
+            [DIR_WEST] = {-1, 0, 2, 1},
+        },
+        .numNormalRooms = ARRAY_COUNT(sVolcanoNormalRooms),
+        .normalRoomIds = sVolcanoNormalRooms,
+        .specialRoomIds = {
+            [BOSS_ROOM] = MAP_NUM(VOLCANO_TEMPLATES_BOSS_ROOM),
+            [TREASURE_ROOM] = MAP_NUM(VOLCANO_TEMPLATES_TREASURE_ROOM),
+            [SHOP_ROOM] = MAP_NUM(VOLCANO_TEMPLATES_SHOP_ROOM),
+        },
+        .itemPools = gDefaultItemPools,
+        .encounterPool = {
+            {SPECIES_VULPIX, 100},
+        }
+    },
+
+    [TEMPLATES_CAVE] =
+    {
+        .name = COMPOUND_STRING("Zubat Tunnels"),
+        .mapGroup = MAP_GROUP(CAVE_TEMPLATES_CONNECTIONS),
+        .bgm = MUS_DP_MT_CORONET,
+        .background = BG_CAVE,
+        .connectionType = CONNECTION_TYPE_WARP,
+        .offsets = {
+            [DIR_NORTH] = {0, -1, 1, 1},
+            [DIR_SOUTH] = {0, 1, 1, 1},
+            [DIR_EAST] = {0, 0, 2, 1},
+            [DIR_WEST] = {-1, 0, 2, 1},
+        },
+        .numNormalRooms = ARRAY_COUNT(sCaveNormalRooms),
+        .normalRoomIds = sCaveNormalRooms,
+        .specialRoomIds = {
+            [BOSS_ROOM] = MAP_NUM(CAVE_TEMPLATES_BOSS_ROOM),
+            [TREASURE_ROOM] = MAP_NUM(CAVE_TEMPLATES_TREASURE_ROOM),
+            [SHOP_ROOM] = MAP_NUM(CAVE_TEMPLATES_SHOP_ROOM),
+        },
+        .itemPools = gDefaultItemPools,
+        .encounterPool = {
+            {SPECIES_CLEFFA, 100},
+        }
+    },
+
+    [TEMPLATES_DESERT] =
+    {
+        .name = COMPOUND_STRING("Sandile Desert"),
+        .mapGroup = MAP_GROUP(DESERT_TEMPLATES_CONNECTIONS),
+        .bgm = MUS_ROUTE113,
+        .background = BG_DESERT,
+        .connectionType = CONNECTION_TYPE_SEAMLESS,
+        .offsets = {
+            [DIR_NORTH] = {-1, -2, 4, 2},
+            [DIR_SOUTH] = {-1, 1, 4, 2},
+            [DIR_EAST] = {1, -2, 2, 4},
+            [DIR_WEST] = {-2, -2, 2, 4},
+        },
+        .numNormalRooms = ARRAY_COUNT(sDesertNormalRooms),
+        .normalRoomIds = sDesertNormalRooms,
+        .specialRoomIds = {
+            [BOSS_ROOM] = MAP_NUM(DESERT_TEMPLATES_BOSS_ROOM),
+            [TREASURE_ROOM] = MAP_NUM(DESERT_TEMPLATES_TREASURE_ROOM),
+            [SHOP_ROOM] = MAP_NUM(DESERT_TEMPLATES_SHOP_ROOM),
+        },
+        .itemPools = gDefaultItemPools,
+        .encounterPool = {
+            {SPECIES_BALTOY, 100},
         }
     },
 };
