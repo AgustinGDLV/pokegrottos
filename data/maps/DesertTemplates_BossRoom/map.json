@@ -39,14 +39,14 @@
       "dest_warp_id": "0"
     },
     {
-      "x": 2,
+      "x": 18,
       "y": 10,
       "elevation": 0,
       "dest_map": "MAP_DESERT_TEMPLATES_BOSS_ROOM",
       "dest_warp_id": "0"
     },
     {
-      "x": 18,
+      "x": 2,
       "y": 10,
       "elevation": 0,
       "dest_map": "MAP_DESERT_TEMPLATES_BOSS_ROOM",

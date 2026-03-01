@@ -1233,3 +1233,5 @@ EventScript_VsSeekerChargingDone::
 	.include "data/maps/ForestTemplates_Connections/scripts.inc"
 
 	.include "data/maps/ForestTemplates_BossRoom/scripts.inc"
+
+	.include "data/maps/DesertTemplates_Room2/scripts.inc"

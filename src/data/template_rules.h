@@ -218,6 +218,7 @@ static const u8 sCaveNormalRooms[] =
 static const u8 sDesertNormalRooms[] =
 {
     MAP_NUM(DESERT_TEMPLATES_ROOM1),
+    MAP_NUM(DESERT_TEMPLATES_ROOM2),
 };
 
 const struct TemplateRules gTemplateRules[TEMPLATE_TYPES_COUNT] = 
@@ -246,6 +247,9 @@ const struct TemplateRules gTemplateRules[TEMPLATE_TYPES_COUNT] =
         .encounterPool = {
             {SPECIES_KRABBY, 100},
             {SPECIES_SLOWPOKE, 100},
+            {SPECIES_CLAMPERL, 100},
+            {SPECIES_CHINCHOU, 100},
+            {SPECIES_CORSOLA, 100},
         }
     },
 
@@ -273,7 +277,8 @@ const struct TemplateRules gTemplateRules[TEMPLATE_TYPES_COUNT] =
         .encounterPool = {
             {SPECIES_RATTATA, 100},
             {SPECIES_SPEAROW, 100},
-            {SPECIES_POOCHYENA, 100},
+            {SPECIES_SMEARGLE, 100},
+            {SPECIES_GRIMER, 100},
         }
     },
 
@@ -300,12 +305,14 @@ const struct TemplateRules gTemplateRules[TEMPLATE_TYPES_COUNT] =
         .itemPools = gDefaultItemPools,
         .encounterPool = {
             {SPECIES_SWINUB, 100},
+            {SPECIES_DELIBIRD, 100},
+            {SPECIES_SNOVER, 100},
         }
     },
 
     [TEMPLATES_VOLCANO] =
     {
-        .name = COMPOUND_STRING("Slugma Caves"),
+        .name = COMPOUND_STRING("Slugma Peak"),
         .mapGroup = MAP_GROUP(VOLCANO_TEMPLATES_CONNECTIONS),
         .bgm = MUS_MT_CHIMNEY,
         .background = BG_VOLCANO,
@@ -326,6 +333,7 @@ const struct TemplateRules gTemplateRules[TEMPLATE_TYPES_COUNT] =
         .itemPools = gDefaultItemPools,
         .encounterPool = {
             {SPECIES_VULPIX, 100},
+            {SPECIES_SLUGMA, 100},
         }
     },
 
@@ -352,12 +360,14 @@ const struct TemplateRules gTemplateRules[TEMPLATE_TYPES_COUNT] =
         .itemPools = gDefaultItemPools,
         .encounterPool = {
             {SPECIES_CLEFFA, 100},
+            {SPECIES_ZUBAT, 100},
+            {SPECIES_DIGLETT, 100},
         }
     },
 
     [TEMPLATES_DESERT] =
     {
-        .name = COMPOUND_STRING("Sandile Desert"),
+        .name = COMPOUND_STRING("Sandile Dunes"),
         .mapGroup = MAP_GROUP(DESERT_TEMPLATES_CONNECTIONS),
         .bgm = MUS_ROUTE113,
         .background = BG_DESERT,
@@ -378,6 +388,10 @@ const struct TemplateRules gTemplateRules[TEMPLATE_TYPES_COUNT] =
         .itemPools = gDefaultItemPools,
         .encounterPool = {
             {SPECIES_BALTOY, 100},
+            {SPECIES_CACNEA, 100},
+            {SPECIES_HIPPOPOTAS, 100},
+            {SPECIES_SKORUPI, 100},
+            {SPECIES_TRAPINCH, 100},
         }
     },
 };

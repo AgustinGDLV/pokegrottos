@@ -101,7 +101,8 @@
     "DesertTemplates_ShopRoom",
     "DesertTemplates_TreasureRoom",
     "DesertTemplates_ChallengeRoom",
-    "DesertTemplates_Room1"
+    "DesertTemplates_Room1",
+    "DesertTemplates_Room2"
   ],
   "gMapGroup_FieldsTemplates": [
 

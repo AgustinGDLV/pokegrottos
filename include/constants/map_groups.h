@@ -62,6 +62,7 @@
 #define MAP_DESERT_TEMPLATES_TREASURE_ROOM  (3 | (5 << 8))
 #define MAP_DESERT_TEMPLATES_CHALLENGE_ROOM (4 | (5 << 8))
 #define MAP_DESERT_TEMPLATES_ROOM1          (5 | (5 << 8))
+#define MAP_DESERT_TEMPLATES_ROOM2          (6 | (5 << 8))
 
 // gMapGroup_FieldsTemplates
 
