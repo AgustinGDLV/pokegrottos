@@ -46,8 +46,6 @@ static void Task_Scene1_End(u8);
 // Scene 1 supplemental functions
 static void IntroResetGpuRegs(void);
 static u8 CreateGameFreakLogoSprites(s16, s16, s16);
-static void Task_BlendLogoIn(u8);
-static void Task_BlendLogoOut(u8);
 static void Task_CreateSparkles(u8);
 static u8 CreateWaterDrop(s16, s16, u16, u16, u16, u8);
 static void SpriteCB_WaterDrop(struct Sprite *sprite);
@@ -1053,8 +1051,7 @@ void MainCB2_Intro(void)
 
 static void MainCB2_EndIntro(void)
 {
-    if (!UpdatePaletteFade())
-        SetMainCallback2(CB2_InitTitleScreen);
+    SetMainCallback2(CB2_InitTitleScreen);
 }
 
 static void LoadCopyrightGraphics(u16 tilesetAddress, u16 tilemapAddress, u16 paletteOffset)
@@ -1122,13 +1119,14 @@ static u8 SetUpCopyrightScreen(void)
     case COPYRIGHT_START_INTRO:
         if (UpdatePaletteFade())
             break;
-#if EXPANSION_INTRO == TRUE
-        SetMainCallback2(CB2_ExpansionIntro);
-        CreateTask(Task_HandleExpansionIntro, 0);
-#else
-        CreateTask(Task_Scene1_Load, 0);
-        SetMainCallback2(MainCB2_Intro);
-#endif
+// #if EXPANSION_INTRO == TRUE
+//         SetMainCallback2(CB2_ExpansionIntro);
+//         CreateTask(Task_HandleExpansionIntro, 0);
+// #else
+//         CreateTask(Task_Scene1_Load, 0);
+//         SetMainCallback2(MainCB2_Intro);
+// #endif
+        SetMainCallback2(MainCB2_EndIntro);
         if (gMultibootProgramStruct.gcmb_field_2 != 0)
         {
             if (gMultibootProgramStruct.gcmb_field_2 == 2)
@@ -1239,14 +1237,8 @@ static void Task_Scene1_WaterDrops(u8 taskId)
     if (gIntroFrameCounter == TIMER_BIG_DROP_START)
         gSprites[gTasks[taskId].sBigDropSpriteId].sState = 1;
 
-    if (gIntroFrameCounter == TIMER_LOGO_APPEAR)
-        CreateTask(Task_BlendLogoIn, 0);
-
     if (gIntroFrameCounter == TIMER_BIG_DROP_FALLS)
         gSprites[gTasks[taskId].sBigDropSpriteId].sState = 2;
-
-    if (gIntroFrameCounter == TIMER_LOGO_BLEND_OUT)
-        CreateTask(Task_BlendLogoOut, 0);
 
     if (gIntroFrameCounter == TIMER_SMALL_DROP_1)
         CreateWaterDrop(48, 0, 0x400, 5, 0x70, TRUE);
@@ -1785,10 +1777,10 @@ static void Task_Scene3_LoadGroudon(u8 taskId)
         ResetSpriteData();
         FreeAllSpritePalettes();
         gReservedSpritePaletteCount = 8;
-        LZDecompressVram(gIntroGroudon_Gfx, (void *)VRAM);
-        LZDecompressVram(gIntroGroudon_Tilemap, (void *)(BG_CHAR_ADDR(3)));
-        LZDecompressVram(gIntroLegendBg_Gfx, (void *)(BG_CHAR_ADDR(1)));
-        LZDecompressVram(gIntroGroudonBg_Tilemap, (void *)(BG_SCREEN_ADDR(28)));
+        LZ77UnCompVram(gIntroGroudon_Gfx, (void *)VRAM);
+        LZ77UnCompVram(gIntroGroudon_Tilemap, (void *)(BG_CHAR_ADDR(3)));
+        LZ77UnCompVram(gIntroLegendBg_Gfx, (void *)(BG_CHAR_ADDR(1)));
+        LZ77UnCompVram(gIntroGroudonBg_Tilemap, (void *)(BG_SCREEN_ADDR(28)));
         LoadCompressedSpriteSheetUsingHeap(&gBattleAnimPicTable[GET_TRUE_SPRITE_INDEX(ANIM_TAG_ROCKS)]);
         LoadSpritePalette(&gBattleAnimPaletteTable[GET_TRUE_SPRITE_INDEX(ANIM_TAG_ROCKS)]);
         CpuCopy16(gIntro3Bg_Pal, gPlttBufferUnfaded, sizeof(gIntro3Bg_Pal));
@@ -1875,12 +1867,15 @@ static void Task_Scene3_StartGroudon(u8 taskId)
 #define tTrigIdx data[6] // Re-used
 #define tPalIdx  data[7]
 
+// Treats gIntro3Bg_Pal as u8* and iterates by 1
+#define INTRO3_RAW_PTR(palId)(((void *) &gIntro3Bg_Pal) + palId)
+
 static void Task_Scene3_Groudon(u8 taskId)
 {
     s16 *data = gTasks[taskId].data;
 
     tTimer++;
-    if ((u16)(tState - 1) < 7 && tTimer % 2 == 0)
+    if ((tState >= 1 && tState <= 7) && tTimer % 2 == 0)
         tYShake ^= 3;
     PanFadeAndZoomScreen(tScreenX, tScreenY + tYShake, tZoom, 0);
     switch (tState)
@@ -1899,7 +1894,7 @@ static void Task_Scene3_Groudon(u8 taskId)
         if (--tDelay == 0)
         {
             tDelay = 2;
-            CpuCopy16(&gIntro3Bg_Pal[tPalIdx], &gPlttBufferFaded[BG_PLTT_ID(1) + 15], PLTT_SIZEOF(1));
+            CpuCopy16(INTRO3_RAW_PTR(tPalIdx), &gPlttBufferFaded[BG_PLTT_ID(1) + 15], PLTT_SIZEOF(1));
             tPalIdx += 2;
             if (tPalIdx == 0x1EC)
                 tState++;
@@ -1916,7 +1911,7 @@ static void Task_Scene3_Groudon(u8 taskId)
         if (--tDelay == 0)
         {
             tDelay = 2;
-            CpuCopy16(&gIntro3Bg_Pal[tPalIdx], &gPlttBufferFaded[BG_PLTT_ID(1) + 15], PLTT_SIZEOF(1));
+            CpuCopy16(INTRO3_RAW_PTR(tPalIdx), &gPlttBufferFaded[BG_PLTT_ID(1) + 15], PLTT_SIZEOF(1));
             tPalIdx -= 2;
             if (tPalIdx == 0x1E0)
             {
@@ -2060,9 +2055,9 @@ static void SpriteCB_GroudonRocks(struct Sprite *sprite)
 static void Task_Scene3_LoadKyogre(u8 taskId)
 {
     ResetSpriteData();
-    LZDecompressVram(gIntroKyogre_Gfx, (void *)VRAM);
-    LZDecompressVram(gIntroKyogre_Tilemap, (void *)(BG_CHAR_ADDR(3)));
-    LZDecompressVram(gIntroKyogreBg_Tilemap, (void *)(BG_SCREEN_ADDR(28)));
+    LZ77UnCompVram(gIntroKyogre_Gfx, (void *)VRAM);
+    LZ77UnCompVram(gIntroKyogre_Tilemap, (void *)(BG_CHAR_ADDR(3)));
+    LZ77UnCompVram(gIntroKyogreBg_Tilemap, (void *)(BG_SCREEN_ADDR(28)));
     LoadCompressedSpriteSheet(sSpriteSheet_Bubbles);
     LoadSpritePalette(sSpritePalette_Bubbles);
     BeginNormalPaletteFade(PALETTES_ALL & ~1, 0, 16, 0, RGB_WHITEALPHA);
@@ -2158,7 +2153,7 @@ static void Task_Scene3_Kyogre(u8 taskId)
         if (--tDelay == 0)
         {
             tDelay = 4;
-            CpuCopy16(&gIntro3Bg_Pal[tPalIdx], &gPlttBufferFaded[BG_PLTT_ID(2) + 15], PLTT_SIZEOF(1));
+            CpuCopy16(INTRO3_RAW_PTR(tPalIdx), &gPlttBufferFaded[BG_PLTT_ID(2) + 15], PLTT_SIZEOF(1));
             tPalIdx -= 2;
             if (tPalIdx == 0x1E0)
                 tState++;
@@ -2176,7 +2171,7 @@ static void Task_Scene3_Kyogre(u8 taskId)
         if (--tDelay == 0)
         {
             tDelay = 4;
-            CpuCopy16(&gIntro3Bg_Pal[tPalIdx], &gPlttBufferFaded[BG_PLTT_ID(2) + 15], PLTT_SIZEOF(1));
+            CpuCopy16(INTRO3_RAW_PTR(tPalIdx), &gPlttBufferFaded[BG_PLTT_ID(2) + 15], PLTT_SIZEOF(1));
             tPalIdx += 2;
             if (tPalIdx == 0x1EE)
             {
@@ -2368,16 +2363,16 @@ static void Task_Scene3_LoadClouds1(u8 taskId)
     SetGpuReg(REG_OFFSET_BG1VOFS, 0);
     SetGpuReg(REG_OFFSET_BG2HOFS, 0);
     SetGpuReg(REG_OFFSET_BG2VOFS, 0);
-    LZDecompressVram(gIntroClouds_Gfx, (void *)VRAM);
-    LZDecompressVram(gIntroClouds_Gfx, (void *)(BG_CHAR_ADDR(1)));
-    LZDecompressVram(gIntroCloudsSun_Tilemap, (void *)(BG_SCREEN_ADDR(28)));
+    LZ77UnCompVram(gIntroClouds_Gfx, (void *)VRAM);
+    LZ77UnCompVram(gIntroClouds_Gfx, (void *)(BG_CHAR_ADDR(1)));
+    LZ77UnCompVram(gIntroCloudsSun_Tilemap, (void *)(BG_SCREEN_ADDR(28)));
     gTasks[taskId].func = Task_Scene3_LoadClouds2;
 }
 
 static void Task_Scene3_LoadClouds2(u8 taskId)
 {
-    LZDecompressVram(gIntroCloudsLeft_Tilemap, (void *)(BG_CHAR_ADDR(3)));
-    LZDecompressVram(gIntroCloudsRight_Tilemap, (void *)(BG_SCREEN_ADDR(26)));
+    LZ77UnCompVram(gIntroCloudsLeft_Tilemap, (void *)(BG_CHAR_ADDR(3)));
+    LZ77UnCompVram(gIntroCloudsRight_Tilemap, (void *)(BG_SCREEN_ADDR(26)));
     gTasks[taskId].func = Task_Scene3_InitClouds;
 }
 
@@ -2435,10 +2430,10 @@ static void Task_Scene3_Clouds(u8 taskId)
 
 static void Task_Scene3_LoadLightning(u8 taskId)
 {
-    LZDecompressVram(gIntroRayquaza_Tilemap, (void *)(BG_SCREEN_ADDR(28)));
-    LZDecompressVram(gIntroRayquazaClouds_Tilemap, (void *)(BG_CHAR_ADDR(3)));
-    LZDecompressVram(gIntroRayquaza_Gfx, (void *)(BG_CHAR_ADDR(1)));
-    LZDecompressVram(gIntroRayquazaClouds_Gfx, (void *)VRAM);
+    LZ77UnCompVram(gIntroRayquaza_Tilemap, (void *)(BG_SCREEN_ADDR(28)));
+    LZ77UnCompVram(gIntroRayquazaClouds_Tilemap, (void *)(BG_CHAR_ADDR(3)));
+    LZ77UnCompVram(gIntroRayquaza_Gfx, (void *)(BG_CHAR_ADDR(1)));
+    LZ77UnCompVram(gIntroRayquazaClouds_Gfx, (void *)VRAM);
     SetGpuReg(REG_OFFSET_DISPCNT, DISPCNT_MODE_0
                                 | DISPCNT_OBJ_1D_MAP
                                 | DISPCNT_BG0_ON
@@ -2507,7 +2502,7 @@ static void SpriteCB_Lightning(struct Sprite *sprite)
         sprite->sPalIdx = 0x1C2;
         sprite->sState++;
     case 1:
-        CpuCopy16(&gIntro3Bg_Pal[sprite->sPalIdx], &gPlttBufferFaded[BG_PLTT_ID(5) + 13], PLTT_SIZEOF(1));
+        CpuCopy16(INTRO3_RAW_PTR(sprite->sPalIdx), &gPlttBufferFaded[BG_PLTT_ID(5) + 13], PLTT_SIZEOF(1));
         sprite->sPalIdx += 2;
         if (sprite->sPalIdx != 0x1CE)
             break;
@@ -2518,7 +2513,7 @@ static void SpriteCB_Lightning(struct Sprite *sprite)
         if (--sprite->sDelay == 0)
         {
             sprite->sDelay = 4;
-            CpuCopy16(&gIntro3Bg_Pal[sprite->sPalIdx], &gPlttBufferFaded[BG_PLTT_ID(5) + 13], PLTT_SIZEOF(1));
+            CpuCopy16(INTRO3_RAW_PTR(sprite->sPalIdx), &gPlttBufferFaded[BG_PLTT_ID(5) + 13], PLTT_SIZEOF(1));
             sprite->sPalIdx -= 2;
             if (sprite->sPalIdx == 0x1C0)
                 DestroySprite(sprite);
@@ -2621,7 +2616,7 @@ static void Task_RayquazaAttack(u8 taskId)
     case 0:
         if ((data[2] & 1) != 0)
         {
-            CpuCopy16(&gIntro3Bg_Pal[0x1A2 + data[1] * 2], &gPlttBufferFaded[BG_PLTT_ID(5) + 14], PLTT_SIZEOF(1));
+            CpuCopy16(INTRO3_RAW_PTR(0x1A2 + data[1] * 2), &gPlttBufferFaded[BG_PLTT_ID(5) + 14], PLTT_SIZEOF(1));
             data[1]++;
         }
         if (data[1] == 6)
@@ -2636,7 +2631,7 @@ static void Task_RayquazaAttack(u8 taskId)
         {
             if ((data[2] & 1) != 0)
             {
-                CpuCopy16(&gIntro3Bg_Pal[0x1A2 + data[1] * 2], &gPlttBufferFaded[BG_PLTT_ID(5) + 8], PLTT_SIZEOF(1));
+                CpuCopy16(INTRO3_RAW_PTR(0x1A2 + data[1] * 2), &gPlttBufferFaded[BG_PLTT_ID(5) + 8], PLTT_SIZEOF(1));
                 data[1]++;
             }
             if (data[1] == 6)
@@ -2655,7 +2650,7 @@ static void Task_RayquazaAttack(u8 taskId)
         {
             if ((data[2] & 1) != 0)
             {
-                CpuCopy16(&gIntro3Bg_Pal[0x182 + data[1] * 2], &gPlttBufferFaded[BG_PLTT_ID(5) + 12], PLTT_SIZEOF(1));
+                CpuCopy16(INTRO3_RAW_PTR(0x182 + data[1] * 2), &gPlttBufferFaded[BG_PLTT_ID(5) + 12], PLTT_SIZEOF(1));
                 data[1]++;
             }
             if (data[1] == 6)
@@ -2679,9 +2674,9 @@ static void Task_RayquazaAttack(u8 taskId)
             if (--data[3] != 0)
             {
                 BlendPalette(BG_PLTT_ID(5), 16, data[3], RGB(9, 10, 10));
-                CpuCopy16(&gIntro3Bg_Pal[428], &gPlttBufferFaded[BG_PLTT_ID(5) + 14], PLTT_SIZEOF(1));
-                CpuCopy16(&gIntro3Bg_Pal[428], &gPlttBufferFaded[BG_PLTT_ID(5) + 8], PLTT_SIZEOF(1));
-                CpuCopy16(&gIntro3Bg_Pal[396], &gPlttBufferFaded[BG_PLTT_ID(5) + 12], PLTT_SIZEOF(1));
+                CpuCopy16(INTRO3_RAW_PTR(428), &gPlttBufferFaded[BG_PLTT_ID(5) + 14], PLTT_SIZEOF(1));
+                CpuCopy16(INTRO3_RAW_PTR(428), &gPlttBufferFaded[BG_PLTT_ID(5) + 8], PLTT_SIZEOF(1));
+                CpuCopy16(INTRO3_RAW_PTR(396), &gPlttBufferFaded[BG_PLTT_ID(5) + 12], PLTT_SIZEOF(1));
             }
             else
             {
@@ -2718,99 +2713,6 @@ static void IntroResetGpuRegs(void)
     SetGpuReg(REG_OFFSET_BLDCNT, 0);
     SetGpuReg(REG_OFFSET_BLDALPHA, 0);
     SetGpuReg(REG_OFFSET_BLDY, 0);
-}
-
-static void Task_BlendLogoIn(u8 taskId)
-{
-    switch (gTasks[taskId].tState)
-    {
-    case 0:
-    default:
-        SetGpuReg(REG_OFFSET_BLDCNT, BLDCNT_EFFECT_BLEND
-                                   | BLDCNT_TGT2_BG0
-                                   | BLDCNT_TGT2_BG1
-                                   | BLDCNT_TGT2_BG2
-                                   | BLDCNT_TGT2_BG3
-                                   | BLDCNT_TGT2_OBJ
-                                   | BLDCNT_TGT2_BD);
-        SetGpuReg(REG_OFFSET_BLDALPHA, gTitleScreenAlphaBlend[31]);
-        SetGpuReg(REG_OFFSET_BLDY, 0);
-        gTasks[taskId].data[1] = ARRAY_COUNT(gTitleScreenAlphaBlend);
-        gTasks[taskId].tState++;
-        break;
-    case 1:
-        if (gTasks[taskId].data[1] != 0)
-        {
-            u8 tmp;
-
-            gTasks[taskId].data[1]--;
-            tmp = gTasks[taskId].data[1] / 2;
-            SetGpuReg(REG_OFFSET_BLDALPHA, gTitleScreenAlphaBlend[tmp]);
-        }
-        else
-        {
-            SetGpuReg(REG_OFFSET_BLDALPHA, gTitleScreenAlphaBlend[0]);
-            gTasks[taskId].data[1] = ARRAY_COUNT(gTitleScreenAlphaBlend) / 4;
-            gTasks[taskId].tState++;
-        }
-        break;
-    case 2:
-        SetGpuReg(REG_OFFSET_BLDCNT, 0);
-        SetGpuReg(REG_OFFSET_BLDALPHA, 0);
-        SetGpuReg(REG_OFFSET_BLDY, 0);
-        DestroyTask(taskId);
-        break;
-    }
-}
-
-static void Task_BlendLogoOut(u8 taskId)
-{
-    switch (gTasks[taskId].tState)
-    {
-    case 0:
-    default:
-        SetGpuReg(REG_OFFSET_BLDCNT, BLDCNT_EFFECT_BLEND
-                                   | BLDCNT_TGT2_BG0
-                                   | BLDCNT_TGT2_BG1
-                                   | BLDCNT_TGT2_BG2
-                                   | BLDCNT_TGT2_BG3
-                                   | BLDCNT_TGT2_OBJ
-                                   | BLDCNT_TGT2_BD);
-        SetGpuReg(REG_OFFSET_BLDALPHA, gTitleScreenAlphaBlend[0]);
-        SetGpuReg(REG_OFFSET_BLDY, 0);
-        gTasks[taskId].data[1] = 0;
-        gTasks[taskId].tState++;
-        break;
-    case 1:
-        if (gTasks[taskId].data[1] < (int)ARRAY_COUNT(gTitleScreenAlphaBlend) - 2)
-        {
-            u8 tmp;
-
-            gTasks[taskId].data[1]++;
-            tmp = gTasks[taskId].data[1] / 2;
-            SetGpuReg(REG_OFFSET_BLDALPHA, gTitleScreenAlphaBlend[tmp]);
-        }
-        else
-        {
-            SetGpuReg(REG_OFFSET_BLDALPHA, gTitleScreenAlphaBlend[31]);
-            gTasks[taskId].data[1] = ARRAY_COUNT(gTitleScreenAlphaBlend) / 4;
-            gTasks[taskId].tState++;
-        }
-        break;
-    case 2:
-        if (gTasks[taskId].data[1] != 0)
-        {
-            gTasks[taskId].data[1]--;
-        }
-        else
-        {
-            SetGpuReg(REG_OFFSET_BLDCNT, 0);
-            SetGpuReg(REG_OFFSET_BLDALPHA, 0);
-            SetGpuReg(REG_OFFSET_BLDY, 0);
-            DestroyTask(taskId);
-        }
-        break;
-    }
 }
 
 void PanFadeAndZoomScreen(u16 screenX, u16 screenY, u16 zoom, u16 alpha)
