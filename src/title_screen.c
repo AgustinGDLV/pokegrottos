@@ -6,26 +6,43 @@
 #include "gba/m4a_internal.h"
 #include "clear_save_data_menu.h"
 #include "decompress.h"
+#include "deck_battle.h"
+#include "deck_battle_interface.h"
 #include "event_data.h"
+#include "event_object_movement.h"
+#include "field_screen_effect.h"
+#include "field_weather.h"
+#include "global.fieldmap.h"
 #include "intro.h"
+#include "item.h"
 #include "m4a.h"
 #include "main.h"
 #include "main_menu.h"
 #include "malloc.h"
+#include "map_gen.h"
+#include "map_preview.h"
 #include "menu.h"
+#include "naming_screen.h"
+#include "overworld.h"
 #include "palette.h"
+#include "play_time.h"
+#include "pokemon.h"
 #include "reset_rtc_screen.h"
 #include "berry_fix_program.h"
+#include "scanline_effect.h"
+#include "script.h"
 #include "sound.h"
 #include "sprite.h"
 #include "start_screen.h"
+#include "string.h"
+#include "string_util.h"
 #include "task.h"
-#include "scanline_effect.h"
 #include "gpu_regs.h"
 #include "trig.h"
 #include "graphics.h"
 #include "constants/rgb.h"
 #include "constants/songs.h"
+#include "constants/flags.h"
 
 #define CLEAR_SAVE_BUTTON_COMBO (B_BUTTON | SELECT_BUTTON | DPAD_UP)
 #define RESET_RTC_BUTTON_COMBO (B_BUTTON | SELECT_BUTTON | DPAD_LEFT)
@@ -86,19 +103,18 @@ static const u32 sTitleContinueGfx[] = INCBIN_U32("graphics/title_screen/title_c
 static const u32 sTitleContinueTilemap[] = INCBIN_U32("graphics/title_screen/title_continue.bin.lz");
 
 // ewram data
-EWRAM_DATA static u32 *sTitleForestTilemapPtr = NULL;
-EWRAM_DATA static u32 *sTitleLogoTilemapPtr = NULL;
-EWRAM_DATA static u32 *sTitleContinueTilemapPtr = NULL;
+EWRAM_DATA static u32 *sTitleTilemapPtrs[3] = {0};
 
 // forward declarations
 static void MainCB2_TitleScreen(void);
 static void VBlankCB2_TitleScreen(void);
 static void Task_OpenTitleScreen(u8 taskId);
 static void Task_TitleScreenWaitForKeypress(u8 taskId);
-static void CB2_GoToMainMenu(void);
+static void Task_FadeOutToGame(u8 taskId);
 static void CB2_GoToClearSaveDataScreen(void);
 static void CB2_GoToResetRtcScreen(void);
 static void CB2_GoToBerryFixScreen(void);
+static void CB2_StartNewRun(void);
 static void Task_UpdateContinueText(u8 taskId);
 
 // UI functions
@@ -138,28 +154,28 @@ void CB2_InitTitleScreen(void)
             gMain.state++;
             break;
         case 3:
-            sTitleForestTilemapPtr = AllocZeroed(BG_SCREEN_SIZE);
-            sTitleLogoTilemapPtr = AllocZeroed(BG_SCREEN_SIZE);
-            sTitleContinueTilemapPtr = AllocZeroed(BG_SCREEN_SIZE);
+            sTitleTilemapPtrs[0] = AllocZeroed(BG_SCREEN_SIZE);
+            sTitleTilemapPtrs[1] = AllocZeroed(BG_SCREEN_SIZE);
+            sTitleTilemapPtrs[2] = AllocZeroed(BG_SCREEN_SIZE);
 
             ResetBgsAndClearDma3BusyFlags(0);
             InitBgsFromTemplates(0, sTitleScreenBgTemplates, ARRAY_COUNT(sTitleScreenBgTemplates));
 
-            SetBgTilemapBuffer(1, sTitleContinueTilemapPtr);
-            SetBgTilemapBuffer(2, sTitleLogoTilemapPtr);
-            SetBgTilemapBuffer(3, sTitleForestTilemapPtr);
+            SetBgTilemapBuffer(1, sTitleTilemapPtrs[0]);
+            SetBgTilemapBuffer(2, sTitleTilemapPtrs[1]);
+            SetBgTilemapBuffer(3, sTitleTilemapPtrs[2]);
             gMain.state++;
             break;
         case 4:
             DecompressAndCopyTileDataToVram(1, sTitleContinueGfx, 0, 0, 0);
-            LZDecompressWram(sTitleContinueTilemap, sTitleContinueTilemapPtr);
+            LZDecompressWram(sTitleContinueTilemap, sTitleTilemapPtrs[0]);
             
             DecompressAndCopyTileDataToVram(2, sTitleLogoGfx, 0, 0, 0);
-            LZDecompressWram(sTitleLogoTilemap, sTitleLogoTilemapPtr);
+            LZDecompressWram(sTitleLogoTilemap, sTitleTilemapPtrs[1]);
             LoadPalette(sTitleLogoPal, BG_PLTT_ID(1), PLTT_SIZE_4BPP);
 
             DecompressAndCopyTileDataToVram(3, sTitleForestGfx, 0, 0, 0);
-            LZDecompressWram(sTitleForestTilemap, sTitleForestTilemapPtr);
+            LZDecompressWram(sTitleForestTilemap, sTitleTilemapPtrs[2]);
             LoadPalette(sTitleForestPal, BG_PLTT_ID(0), PLTT_SIZE_4BPP);
 
             Menu_LoadStdPalAt(BG_PLTT_ID(15));
@@ -205,7 +221,7 @@ static void Task_TitleScreenWaitForKeypress(u8 taskId)
     {
         FadeOutBGM(4);
         BeginNormalPaletteFade(PALETTES_ALL, 0, 0, 16, RGB_BLACK);
-        SetMainCallback2(CB2_GoToMainMenu);
+        gTasks[taskId].func = Task_FadeOutToGame;
     }
     else if (JOY_HELD(CLEAR_SAVE_BUTTON_COMBO) == CLEAR_SAVE_BUTTON_COMBO)
     {
@@ -224,12 +240,6 @@ static void Task_TitleScreenWaitForKeypress(u8 taskId)
         BeginNormalPaletteFade(PALETTES_ALL, 0, 0, 16, RGB_BLACK);
         SetMainCallback2(CB2_GoToBerryFixScreen);
     }
-}
-
-static void CB2_GoToMainMenu(void)
-{
-    if (!UpdatePaletteFade())
-        SetMainCallback2(CB2_StartScreen);
 }
 
 static void CB2_GoToClearSaveDataScreen(void)
@@ -267,4 +277,96 @@ static void Task_UpdateContinueText(u8 taskId)
     {
         gTasks[taskId].data[0] = 0;
     }
+}
+
+static void Task_FadeOutToGame(u8 taskId)
+{
+    if (!gPaletteFade.active)
+	{
+        for (u32 i = 0; i < 3; ++i)
+        {
+            Free(sTitleTilemapPtrs[i]);
+            sTitleTilemapPtrs[i] = NULL;
+        }
+		DestroyTask(taskId);
+        SetMainCallback2(CB2_StartNewRun);
+	}
+}
+
+// Clears run-specific save data to start a new run or end a run.
+static void ResetRunSaveData1(void)
+{
+    gSaveBlock1Ptr->characterId = 0;
+    gSaveBlock1Ptr->currentFloor = 0;
+    gSaveBlock1Ptr->currentRoom = 0;
+    gSaveBlock1Ptr->currentTemplateType = 0;
+}
+
+// Sets flags for an entirely new save.
+static void NewSaveInitData(void)
+{
+    FlagSet(FLAG_SYS_POKEMON_GET);
+    FlagSet(FLAG_SYS_POKEDEX_GET);
+    FlagSet(FLAG_RECEIVED_POKEDEX_FROM_BIRCH);
+    FlagSet(FLAG_RECEIVED_RUNNING_SHOES);
+    FlagSet(FLAG_SYS_B_DASH);
+    EnableNationalPokedex();
+    StringCopy(gSaveBlock2Ptr->playerName, COMPOUND_STRING("You"));
+}
+
+static void NewRunInitData(void)
+{
+    ZeroPlayerPartyMons();
+    ZeroEnemyPartyMons();
+    gPlayerPartyCount = 0;
+    ClearBag();
+    PlayTimeCounter_Reset();
+}
+
+static void CB2_StartNewRun(void)
+{
+    StopMapMusic();
+    ResetInitialPlayerAvatarState();
+    PlayTimeCounter_Start();
+    ScriptContext_Init();
+    UnlockPlayerFieldControls();
+
+    // TODO: Proper new game check
+    if (!FlagGet(FLAG_RECEIVED_RUNNING_SHOES))
+        NewSaveInitData();
+
+    ResetRunSaveData1();
+    NewRunInitData();
+
+    StoreInitialPlayerAvatarState();
+    LockPlayerFieldControls();
+    TryFadeOutOldMapMusic();
+    WarpFadeOutScreen();
+    PlayRainStoppingSoundEffect();
+    SetWarpDestination(MAP_GROUP(INTRO_SEQUENCE), MAP_NUM(INTRO_SEQUENCE), WARP_ID_NONE, 7, 5);
+    WarpIntoMap();
+    SetMainCallback2(CB2_LoadMap);
+}
+
+// Assigns player character and refreshes graphics for intro sequence.
+void AssignPlayerCharacter(void)
+{
+    struct SpriteTemplate spriteTemplate;
+    struct SpriteFrameImage spriteFrameImage;
+    const struct SubspriteTable *subspriteTables;
+    const struct ObjectEventGraphicsInfo *graphicsInfo;
+
+    // Update character ID and change sprite template.
+    gSaveBlock1Ptr->characterId = gSpecialVar_Result;
+    graphicsInfo = GetObjectEventGraphicsInfo(gCharacterInfos[gSpecialVar_Result].graphicsId);
+    CopyObjectGraphicsInfoToSpriteTemplate_WithMovementType(gCharacterInfos[gSpecialVar_Result].graphicsId, MOVEMENT_TYPE_WALK_LEFT_AND_RIGHT, &spriteTemplate, &subspriteTables);
+    spriteFrameImage.size = graphicsInfo->size;
+    spriteTemplate.images = &spriteFrameImage;
+    
+    gSprites[gObjectEvents[gPlayerAvatar.objectEventId].spriteId].images = graphicsInfo->images;
+}
+
+void AssignPlayerName(void)
+{
+    DoNamingScreen(NAMING_SCREEN_PLAYER, gSaveBlock2Ptr->playerName, gSaveBlock2Ptr->playerGender, 0, 0, CB2_ReturnToFieldContinueScript);
 }

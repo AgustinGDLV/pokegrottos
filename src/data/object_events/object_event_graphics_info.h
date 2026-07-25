@@ -4694,7 +4694,7 @@ const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Swimmer = {
 
 const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_HikerN = {
     .tileTag = TAG_NONE,
-    .paletteTag = OBJ_EVENT_PAL_TAG_HIKER,
+    .paletteTag = OBJ_EVENT_PAL_TAG_GBC,
     .reflectionPaletteTag = OBJ_EVENT_PAL_TAG_NONE,
     .size = 256,
     .width = 16,
@@ -4751,7 +4751,7 @@ const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Firebreather = {
 
 const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_NinjaBoyN = {
     .tileTag = TAG_NONE,
-    .paletteTag = OBJ_EVENT_PAL_TAG_NINJA_BOY,
+    .paletteTag = OBJ_EVENT_PAL_TAG_GBC,
     .reflectionPaletteTag = OBJ_EVENT_PAL_TAG_NONE,
     .size = 256,
     .width = 16,
@@ -4770,7 +4770,7 @@ const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_NinjaBoyN = {
 
 const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_BugCatcherN = {
     .tileTag = TAG_NONE,
-    .paletteTag = OBJ_EVENT_PAL_TAG_BUG_CATCHER,
+    .paletteTag = OBJ_EVENT_PAL_TAG_GBC,
     .reflectionPaletteTag = OBJ_EVENT_PAL_TAG_NONE,
     .size = 256,
     .width = 16,
@@ -4783,7 +4783,7 @@ const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_BugCatcherN = {
     .oam = &gObjectEventBaseOam_16x32,
     .subspriteTables = sOamTables_16x32,
     .anims = sAnimTable_Standard,
-    .images = sPicTable_BugCatcher,
+    .images = sPicTable_BugCatcherN,
     .affineAnims = gDummySpriteAffineAnimTable,
 };
 

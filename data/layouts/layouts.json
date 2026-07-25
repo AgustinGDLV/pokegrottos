@@ -4900,6 +4900,16 @@
       "secondary_tileset": "gTileset_Unused1",
       "border_filepath": "data/layouts/DesertTemplates_Room2/border.bin",
       "blockdata_filepath": "data/layouts/DesertTemplates_Room2/map.bin"
+    },
+    {
+      "id": "LAYOUT_INTRO_SEQUENCE",
+      "name": "IntroSequence_Layout",
+      "width": 15,
+      "height": 10,
+      "primary_tileset": "gTileset_Indoor",
+      "secondary_tileset": "gTileset_Unused1",
+      "border_filepath": "data/layouts/IntroSequence/border.bin",
+      "blockdata_filepath": "data/layouts/IntroSequence/map.bin"
     }
   ]
 }

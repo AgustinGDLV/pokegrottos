@@ -208,7 +208,6 @@ static u32 LoadDynamicFollowerPalette(u32 species, bool32 shiny, bool32 female);
 const struct ObjectEventGraphicsInfo *SpeciesToGraphicsInfo(u32 species, bool32 shiny, bool32 female);
 static bool8 NpcTakeStep(struct Sprite *);
 static bool8 AreElevationsCompatible(u8, u8);
-static void CopyObjectGraphicsInfoToSpriteTemplate_WithMovementType(u16 graphicsId, u16 movementType, struct SpriteTemplate *spriteTemplate, const struct SubspriteTable **subspriteTables);
 
 static u16 GetGraphicsIdForMon(u32 species, bool32 shiny, bool32 female);
 static u16 GetUnownSpecies(struct Pokemon *mon);
@@ -1832,7 +1831,7 @@ static void CopyObjectGraphicsInfoToSpriteTemplate(u16 graphicsId, void (*callba
     *subspriteTables = graphicsInfo->subspriteTables;
 }
 
-static void CopyObjectGraphicsInfoToSpriteTemplate_WithMovementType(u16 graphicsId, u16 movementType, struct SpriteTemplate *spriteTemplate, const struct SubspriteTable **subspriteTables)
+void CopyObjectGraphicsInfoToSpriteTemplate_WithMovementType(u16 graphicsId, u16 movementType, struct SpriteTemplate *spriteTemplate, const struct SubspriteTable **subspriteTables)
 {
     CopyObjectGraphicsInfoToSpriteTemplate(graphicsId, sMovementTypeCallbacks[movementType], spriteTemplate, subspriteTables);
 }

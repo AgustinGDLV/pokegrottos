@@ -76,24 +76,14 @@ struct TemplateRules {
 
 enum Character
 {
-    CHAR_FIREBREATHER,
-    CHAR_AROMA_LADY,
+    CHAR_BUG_CATCHER,
+    CHAR_BREEDER,
     CHAR_SWIMMER,
     CHAR_HIKER,
-    CHAR_BREEDER,
-    CHAR_POKEMON_RANGER,
-    CHAR_NINJA_BOY,
-    CHAR_FAIRY_TALE_GIRL,
-    CHAR_BLACK_BELT,
-    CHAR_GUITARIST,
-    CHAR_HEX_MANIAC,
-    CHAR_PUNK,
-    CHAR_ACE_TRAINER,
-    CHAR_RICH_BOY,
     CHARACTERS_COUNT,
 };
 
-struct CharacterInfo {
+struct CharacterInfo { // TODO: Clean up data
     const u8 * name;
     const u8 * desc;
     const u8 * unlockDesc;

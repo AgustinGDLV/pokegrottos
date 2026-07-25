@@ -929,6 +929,7 @@ gGBSSongTable::
 	song_gbs MUS_DP_GREAT_MARSH, gbs_Music_PeanutSwamp, 0, 0
 	song_gbs MUS_HG_GOLDENROD, gbs_Music_BlackCity, 0, 0
 	song_gbs MUS_TITLE, gbs_Music_SafariZone, 0, 0
+	song_gbs MUS_HG_ELM_LAB, gbs_Music_TrainerSchool, 0, 0
 	.4byte 0xFFFFFFFF
 
 	.align 2

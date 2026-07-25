@@ -1235,3 +1235,5 @@ EventScript_VsSeekerChargingDone::
 	.include "data/maps/ForestTemplates_BossRoom/scripts.inc"
 
 	.include "data/maps/DesertTemplates_Room2/scripts.inc"
+
+	.include "data/maps/IntroSequence/scripts.inc"

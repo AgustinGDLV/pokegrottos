@@ -132,6 +132,7 @@
 #define MAP_UNDERWATER_ROUTE129 (54 | (10 << 8))
 #define MAP_UNDERWATER_ROUTE105 (55 | (10 << 8))
 #define MAP_UNDERWATER_ROUTE125 (56 | (10 << 8))
+#define MAP_INTRO_SEQUENCE      (57 | (10 << 8))
 
 // gMapGroup_IndoorLittleroot
 #define MAP_LITTLEROOT_TOWN_BRENDANS_HOUSE_1F    (0 | (11 << 8))

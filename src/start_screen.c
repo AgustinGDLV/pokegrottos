@@ -319,9 +319,10 @@ void CB2_StartScreen(void)
         case 7:
             if (gSaveBlock1Ptr->unlockedCharacters == 0)
             {
-                gSaveBlock1Ptr->unlockedCharacters |= 1 << CHAR_FIREBREATHER;
-                gSaveBlock1Ptr->unlockedCharacters |= 1 << CHAR_AROMA_LADY;
+                gSaveBlock1Ptr->unlockedCharacters |= 1 << CHAR_BUG_CATCHER;
+                gSaveBlock1Ptr->unlockedCharacters |= 1 << CHAR_HIKER;
                 gSaveBlock1Ptr->unlockedCharacters |= 1 << CHAR_SWIMMER;
+                gSaveBlock1Ptr->unlockedCharacters |= 1 << CHAR_BREEDER;
             }
             gMain.state++;
             break;

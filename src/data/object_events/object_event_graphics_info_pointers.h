@@ -522,6 +522,7 @@ const struct ObjectEventGraphicsInfo *const gObjectEventGraphicsInfoPointers[NUM
     [OBJ_EVENT_GFX_ACE_TRAINER] =              &gObjectEventGraphicsInfo_AceTrainer,
     [OBJ_EVENT_GFX_POKEMON_RANGER] =           &gObjectEventGraphicsInfo_PokemonRanger,
     [OBJ_EVENT_GFX_RICH_BOY] =                 &gObjectEventGraphicsInfo_RichBoyN,
+    [OBJ_EVENT_GFX_BUG_CATCHER] =              &gObjectEventGraphicsInfo_BugCatcherN,
 };
 
 const struct ObjectEventGraphicsInfo *const gMauvilleOldManGraphicsInfoPointers[] = {

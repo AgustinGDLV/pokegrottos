@@ -510,6 +510,7 @@ void SetVirtualObjectSpriteAnim(u8 virtualObjId, u8 animNum);
 bool32 IsVirtualObjectAnimating(u8 virtualObjId);
 u8 GetObjectEventIdByLocalId(u8 localId);
 bool32 IsFollowerVisible(void);
+void CopyObjectGraphicsInfoToSpriteTemplate_WithMovementType(u16 graphicsId, u16 movementType, struct SpriteTemplate *spriteTemplate, const struct SubspriteTable **subspriteTables);
 
 // run slow
 u8 GetPlayerRunSlowMovementAction(u32);
