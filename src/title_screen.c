@@ -366,7 +366,20 @@ void AssignPlayerCharacter(void)
     gSprites[gObjectEvents[gPlayerAvatar.objectEventId].spriteId].images = graphicsInfo->images;
 }
 
+// Trigger naming screen for intro sequence.
 void AssignPlayerName(void)
 {
     DoNamingScreen(NAMING_SCREEN_PLAYER, gSaveBlock2Ptr->playerName, gSaveBlock2Ptr->playerGender, 0, 0, CB2_ReturnToFieldContinueScript);
+}
+
+// Set VAR_RESULT to equal player's character ID.
+void GetCharacterId(void)
+{
+    gSpecialVar_Result = gSaveBlock1Ptr->characterId;
+}
+
+void AssignStarterToPlayer(void)
+{
+    u32 species = gCharacterInfos[gSaveBlock1Ptr->characterId].starters[gSpecialVar_Result];
+    StringCopy(gStringVar1, GetSpeciesName(species));
 }
