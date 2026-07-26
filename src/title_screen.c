@@ -111,10 +111,6 @@ static void VBlankCB2_TitleScreen(void);
 static void Task_OpenTitleScreen(u8 taskId);
 static void Task_TitleScreenWaitForKeypress(u8 taskId);
 static void Task_FadeOutToGame(u8 taskId);
-static void CB2_GoToClearSaveDataScreen(void);
-static void CB2_GoToResetRtcScreen(void);
-static void CB2_GoToBerryFixScreen(void);
-static void CB2_StartNewRun(void);
 static void Task_UpdateContinueText(u8 taskId);
 
 // UI functions
@@ -223,62 +219,20 @@ static void Task_TitleScreenWaitForKeypress(u8 taskId)
         BeginNormalPaletteFade(PALETTES_ALL, 0, 0, 16, RGB_BLACK);
         gTasks[taskId].func = Task_FadeOutToGame;
     }
-    else if (JOY_HELD(CLEAR_SAVE_BUTTON_COMBO) == CLEAR_SAVE_BUTTON_COMBO)
-    {
-        SetMainCallback2(CB2_GoToClearSaveDataScreen);
-    }
-    else if (JOY_HELD(RESET_RTC_BUTTON_COMBO) == RESET_RTC_BUTTON_COMBO
-      && CanResetRTC() == TRUE)
-    {
-        FadeOutBGM(4);
-        BeginNormalPaletteFade(PALETTES_ALL, 0, 0, 16, RGB_BLACK);
-        SetMainCallback2(CB2_GoToResetRtcScreen);
-    }
-    else if (JOY_HELD(BERRY_UPDATE_BUTTON_COMBO) == BERRY_UPDATE_BUTTON_COMBO)
-    {
-        FadeOutBGM(4);
-        BeginNormalPaletteFade(PALETTES_ALL, 0, 0, 16, RGB_BLACK);
-        SetMainCallback2(CB2_GoToBerryFixScreen);
-    }
 }
 
-static void CB2_GoToClearSaveDataScreen(void)
-{
-    if (!UpdatePaletteFade())
-        SetMainCallback2(CB2_InitClearSaveDataScreen);
-}
-
-static void CB2_GoToResetRtcScreen(void)
-{
-    if (!UpdatePaletteFade())
-        SetMainCallback2(CB2_InitResetRtcScreen);
-}
-
-static void CB2_GoToBerryFixScreen(void)
-{
-    if (!UpdatePaletteFade())
-    {
-        m4aMPlayAllStop();
-        SetMainCallback2(CB2_InitBerryFixProgram);
-    }
-}
-
+// Toggle visibility for the continue text.
 static void Task_UpdateContinueText(u8 taskId)
 {
     if (++gTasks[taskId].data[0] < 30)
-    {
         ShowBg(1);
-    }
     else if (gTasks[taskId].data[0] < 60)
-    {
         HideBg(1);
-    }
     else
-    {
         gTasks[taskId].data[0] = 0;
-    }
 }
 
+// Fade out to continue screen or straight into new game.
 static void Task_FadeOutToGame(u8 taskId)
 {
     if (!gPaletteFade.active)
@@ -289,97 +243,9 @@ static void Task_FadeOutToGame(u8 taskId)
             sTitleTilemapPtrs[i] = NULL;
         }
 		DestroyTask(taskId);
-        SetMainCallback2(CB2_StartNewRun);
+        if (!FlagGet(FLAG_RECEIVED_RUNNING_SHOES)) // TODO: Proper new game check
+            SetMainCallback2(CB2_StartNewRun);
+        else
+            SetMainCallback2(CB2_StartScreen);
 	}
-}
-
-// Clears run-specific save data to start a new run or end a run.
-static void ResetRunSaveData1(void)
-{
-    gSaveBlock1Ptr->characterId = 0;
-    gSaveBlock1Ptr->currentFloor = 0;
-    gSaveBlock1Ptr->currentRoom = 0;
-    gSaveBlock1Ptr->currentTemplateType = 0;
-}
-
-// Sets flags for an entirely new save.
-static void NewSaveInitData(void)
-{
-    FlagSet(FLAG_SYS_POKEMON_GET);
-    FlagSet(FLAG_SYS_POKEDEX_GET);
-    FlagSet(FLAG_RECEIVED_POKEDEX_FROM_BIRCH);
-    FlagSet(FLAG_RECEIVED_RUNNING_SHOES);
-    FlagSet(FLAG_SYS_B_DASH);
-    EnableNationalPokedex();
-    StringCopy(gSaveBlock2Ptr->playerName, COMPOUND_STRING("You"));
-}
-
-static void NewRunInitData(void)
-{
-    ZeroPlayerPartyMons();
-    ZeroEnemyPartyMons();
-    gPlayerPartyCount = 0;
-    ClearBag();
-    PlayTimeCounter_Reset();
-}
-
-static void CB2_StartNewRun(void)
-{
-    StopMapMusic();
-    ResetInitialPlayerAvatarState();
-    PlayTimeCounter_Start();
-    ScriptContext_Init();
-    UnlockPlayerFieldControls();
-
-    // TODO: Proper new game check
-    if (!FlagGet(FLAG_RECEIVED_RUNNING_SHOES))
-        NewSaveInitData();
-
-    ResetRunSaveData1();
-    NewRunInitData();
-
-    StoreInitialPlayerAvatarState();
-    LockPlayerFieldControls();
-    TryFadeOutOldMapMusic();
-    WarpFadeOutScreen();
-    PlayRainStoppingSoundEffect();
-    SetWarpDestination(MAP_GROUP(INTRO_SEQUENCE), MAP_NUM(INTRO_SEQUENCE), WARP_ID_NONE, 7, 5);
-    WarpIntoMap();
-    SetMainCallback2(CB2_LoadMap);
-}
-
-// Assigns player character and refreshes graphics for intro sequence.
-void AssignPlayerCharacter(void)
-{
-    struct SpriteTemplate spriteTemplate;
-    struct SpriteFrameImage spriteFrameImage;
-    const struct SubspriteTable *subspriteTables;
-    const struct ObjectEventGraphicsInfo *graphicsInfo;
-
-    // Update character ID and change sprite template.
-    gSaveBlock1Ptr->characterId = gSpecialVar_Result;
-    graphicsInfo = GetObjectEventGraphicsInfo(gCharacterInfos[gSpecialVar_Result].graphicsId);
-    CopyObjectGraphicsInfoToSpriteTemplate_WithMovementType(gCharacterInfos[gSpecialVar_Result].graphicsId, MOVEMENT_TYPE_WALK_LEFT_AND_RIGHT, &spriteTemplate, &subspriteTables);
-    spriteFrameImage.size = graphicsInfo->size;
-    spriteTemplate.images = &spriteFrameImage;
-    
-    gSprites[gObjectEvents[gPlayerAvatar.objectEventId].spriteId].images = graphicsInfo->images;
-}
-
-// Trigger naming screen for intro sequence.
-void AssignPlayerName(void)
-{
-    DoNamingScreen(NAMING_SCREEN_PLAYER, gSaveBlock2Ptr->playerName, gSaveBlock2Ptr->playerGender, 0, 0, CB2_ReturnToFieldContinueScript);
-}
-
-// Set VAR_RESULT to equal player's character ID.
-void GetCharacterId(void)
-{
-    gSpecialVar_Result = gSaveBlock1Ptr->characterId;
-}
-
-void AssignStarterToPlayer(void)
-{
-    u32 species = gCharacterInfos[gSaveBlock1Ptr->characterId].starters[gSpecialVar_Result];
-    StringCopy(gStringVar1, GetSpeciesName(species));
 }

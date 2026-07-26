@@ -1151,11 +1151,16 @@ static u8 SaveDoSaveCallback(void)
         saveStatus = TrySavingData(SAVE_OVERWRITE_DIFFERENT_FILE);
         gDifferentSaveFile = FALSE;
     }
-    else
+    else if (IsPlayerInFloorMap())
     {
+        DebugPrintf("yes?");
         SetContinueGameWarpStatus();
         SetWarpData(&gSaveBlock1Ptr->continueGameWarp, GetCurrentTemplateRules()->mapGroup,
                         gFloorplan.layout[gSaveBlock1Ptr->currentRoom].mapNum, WARP_ID_NONE, gSaveBlock1Ptr->pos.x, gSaveBlock1Ptr->pos.y);
+        saveStatus = TrySavingData(SAVE_NORMAL);
+    }
+    else
+    {
         saveStatus = TrySavingData(SAVE_NORMAL);
     }
 
