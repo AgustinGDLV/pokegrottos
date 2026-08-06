@@ -34,6 +34,7 @@
 #include "start_menu.h"
 #include "trainer_see.h"
 #include "trainer_hill.h"
+#include "trail_interface.h"
 #include "vs_seeker.h"
 #include "wild_encounter.h"
 #include "constants/event_bg.h"
@@ -857,7 +858,9 @@ static void StorePlayerStateAndSetupWarp(struct MapPosition *position, s32 warpE
     StoreInitialPlayerAvatarState();
     SetupWarp(&gMapHeader, warpEventId, position);
 }
-
+#include "constants/songs.h"
+#include "palette.h"
+#include "constants/rgb.h"
 static bool8 TryArrowWarp(struct MapPosition *position, u16 metatileBehavior, u8 direction)
 {
     s32 warpEventId = GetWarpEventAtMapPosition(&gMapHeader, position);
@@ -868,8 +871,16 @@ static bool8 TryArrowWarp(struct MapPosition *position, u16 metatileBehavior, u8
 
     if (IsArrowWarpMetatileBehavior(metatileBehavior, direction) == TRUE)
     {
+        // TODO: Less jank
+        if (gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(INTRO_SEQUENCE) && gSaveBlock1Ptr->location.mapNum == MAP_NUM(INTRO_SEQUENCE))
+        {
+            PlaySE(SE_WARP_IN);
+            SetMainCallback2(CB2_InitTrailInterface);
+            BeginNormalPaletteFade(PALETTES_ALL, 2, 0, 16, RGB_BLACK);
+            return TRUE;
+        }
         // Do custom warp in floor rooms.
-        if (IsPlayerInFloorMap())
+        else if (IsPlayerInFloorMap())
         {
             if (GetRoomType(GetRoomInDirection(direction)) == BOSS_ROOM)
             {

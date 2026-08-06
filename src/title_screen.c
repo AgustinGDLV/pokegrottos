@@ -44,11 +44,6 @@
 #include "constants/songs.h"
 #include "constants/flags.h"
 
-#define CLEAR_SAVE_BUTTON_COMBO (B_BUTTON | SELECT_BUTTON | DPAD_UP)
-#define RESET_RTC_BUTTON_COMBO (B_BUTTON | SELECT_BUTTON | DPAD_LEFT)
-#define BERRY_UPDATE_BUTTON_COMBO (B_BUTTON | SELECT_BUTTON)
-#define A_B_START_SELECT (A_BUTTON | B_BUTTON | START_BUTTON | SELECT_BUTTON)
-
 // const rom data
 static const struct BgTemplate sTitleScreenBgTemplates[] =
 {

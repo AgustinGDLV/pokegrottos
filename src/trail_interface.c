@@ -1,0 +1,574 @@
+#include "global.h"
+#include "battle.h"
+#include "bg.h"
+#include "title_screen.h"
+#include "sprite.h"
+#include "gba/m4a_internal.h"
+#include "clear_save_data_menu.h"
+#include "decompress.h"
+#include "deck_battle.h"
+#include "deck_battle_interface.h"
+#include "event_data.h"
+#include "event_object_movement.h"
+#include "field_screen_effect.h"
+#include "field_weather.h"
+#include "global.fieldmap.h"
+#include "intro.h"
+#include "item.h"
+#include "m4a.h"
+#include "main.h"
+#include "main_menu.h"
+#include "malloc.h"
+#include "map_gen.h"
+#include "map_preview.h"
+#include "menu.h"
+#include "naming_screen.h"
+#include "overworld.h"
+#include "palette.h"
+#include "play_time.h"
+#include "pokemon.h"
+#include "reset_rtc_screen.h"
+#include "berry_fix_program.h"
+#include "scanline_effect.h"
+#include "script.h"
+#include "sound.h"
+#include "sprite.h"
+#include "start_screen.h"
+#include "string.h"
+#include "string_util.h"
+#include "international_string_util.h"
+#include "task.h"
+#include "text.h"
+#include "trail_interface.h"
+#include "gpu_regs.h"
+#include "trig.h"
+#include "graphics.h"
+#include "window.h"
+#include "constants/rgb.h"
+#include "constants/songs.h"
+#include "constants/flags.h"
+
+// sprite tags
+enum
+{
+    TAG_NORTH_ARROW = 5000,
+    TAG_SOUTH_ARROW,
+    TAG_EAST_ARROW,
+    TAG_WEST_ARROW,
+    TAG_PLAYER_SHADOW,
+};
+
+// const rom data
+static const struct BgTemplate sTrailMapBgTemplates[] =
+{
+    {
+        .bg = 0,
+        .charBaseIndex = 2,
+        .mapBaseIndex = 30,
+        .screenSize = 0,
+        .paletteMode = 0,
+        .priority = 0,
+        .baseTile = 0
+    },
+    { // Logo
+        .bg = 2,
+        .charBaseIndex = 0,
+        .mapBaseIndex = 14,
+        .screenSize = 0,
+        .paletteMode = 0,
+        .priority = 2,
+        .baseTile = 0,
+    },
+    { // Text
+        .bg = 1,
+        .charBaseIndex = 2,
+        .mapBaseIndex = 6,
+        .screenSize = 0,
+        .paletteMode = 0,
+        .priority = 1,
+        .baseTile = 0,
+    },
+    { // Environment
+        .bg = 3,
+        .charBaseIndex = 1,
+        .mapBaseIndex = 21,
+        .screenSize = 0,
+        .paletteMode = 0,
+        .priority = 3,
+        .baseTile = 0,
+    },
+};
+
+enum
+{
+    WIN_TIME,
+    WINDOW_COUNT,
+};
+
+static const struct WindowTemplate sTrailInterfaceWinTemplates[WINDOW_COUNT + 1] =
+{
+	[WIN_TIME] =
+	{
+		.bg = 1,
+		.tilemapLeft = 16,
+		.tilemapTop = 0,
+		.width = 14,
+		.height = 2,
+		.paletteNum = 0,
+		.baseBlock = 1,
+	},
+	DUMMY_WIN_TEMPLATE
+};
+
+// graphics data
+static const u32 sTrailMapGfx[] = INCBIN_U32("graphics/trail_map/map_tiles.4bpp.lz");
+static const u32 sTrailMapTilemap[] = INCBIN_U32("graphics/trail_map/map_tiles.bin.lz");
+static const u16 sTrailMapPal[] = INCBIN_U16("graphics/trail_map/map_tiles.gbapal");
+
+static const u8 sNorthArrowGfx[] = INCBIN_U8("graphics/trail_map/north_arrow.4bpp");
+static const u8 sSouthArrowGfx[] = INCBIN_U8("graphics/trail_map/south_arrow.4bpp");
+static const u8 sEastArrowGfx[] = INCBIN_U8("graphics/trail_map/east_arrow.4bpp");
+static const u8 sWestArrowGfx[] = INCBIN_U8("graphics/trail_map/west_arrow.4bpp");
+static const u8 sShadowGfx[] = INCBIN_U8("graphics/trail_map/shadow.4bpp");
+static const u16 sInterfaceGraphicsPal[] = INCBIN_U16("graphics/trail_map/shadow.gbapal");
+
+static const struct SpriteSheet sArrowSpriteSheets[5] = 
+{
+    {},
+    {sSouthArrowGfx, sizeof(sSouthArrowGfx), TAG_SOUTH_ARROW},
+    {sNorthArrowGfx, sizeof(sNorthArrowGfx), TAG_NORTH_ARROW},
+    {sWestArrowGfx, sizeof(sWestArrowGfx), TAG_WEST_ARROW},
+    {sEastArrowGfx, sizeof(sEastArrowGfx), TAG_EAST_ARROW},
+};
+
+static const struct SpriteSheet sShadowSpriteSheet = {sShadowGfx, sizeof(sShadowGfx), TAG_PLAYER_SHADOW};
+
+static const struct SpritePalette sInterfaceGraphicsSpritePalette = {sInterfaceGraphicsPal, TAG_NORTH_ARROW};
+
+static const struct OamData sOAM_8x8 =
+{
+	.affineMode = ST_OAM_AFFINE_OFF,
+	.objMode = ST_OAM_OBJ_NORMAL,
+	.shape = SPRITE_SHAPE(8x8),
+	.size = SPRITE_SIZE(8x8),
+	.priority = 0,
+};
+
+static const struct OamData sOAM_16x16 =
+{
+	.affineMode = ST_OAM_AFFINE_OFF,
+	.objMode = ST_OAM_OBJ_BLEND,
+	.shape = SPRITE_SHAPE(16x16),
+	.size = SPRITE_SIZE(16x16),
+	.priority = 0,
+};
+
+static void SpriteCB_Arrow(struct Sprite *sprite);
+static const struct SpriteTemplate sArrowSpriteTemplates[5] =
+{
+    {},
+    {
+        .tileTag = TAG_SOUTH_ARROW,
+        .paletteTag = TAG_NORTH_ARROW,
+        .oam = &sOAM_8x8,
+        .anims = gDummySpriteAnimTable,
+        .images = NULL,
+        .affineAnims = gDummySpriteAffineAnimTable,
+        .callback = SpriteCB_Arrow,
+    },
+    {
+        .tileTag = TAG_NORTH_ARROW,
+        .paletteTag = TAG_NORTH_ARROW,
+        .oam = &sOAM_8x8,
+        .anims = gDummySpriteAnimTable,
+        .images = NULL,
+        .affineAnims = gDummySpriteAffineAnimTable,
+        .callback = SpriteCB_Arrow,
+    },
+    {
+        .tileTag = TAG_WEST_ARROW,
+        .paletteTag = TAG_NORTH_ARROW,
+        .oam = &sOAM_8x8,
+        .anims = gDummySpriteAnimTable,
+        .images = NULL,
+        .affineAnims = gDummySpriteAffineAnimTable,
+        .callback = SpriteCB_Arrow,
+    },
+    {
+        .tileTag = TAG_EAST_ARROW,
+        .paletteTag = TAG_NORTH_ARROW,
+        .oam = &sOAM_8x8,
+        .anims = gDummySpriteAnimTable,
+        .images = NULL,
+        .affineAnims = gDummySpriteAffineAnimTable,
+        .callback = SpriteCB_Arrow,
+    },
+};
+
+static const struct SpriteTemplate sShadowSpriteTemplate =
+{
+    .tileTag = TAG_PLAYER_SHADOW,
+    .paletteTag = TAG_NORTH_ARROW,
+    .oam = &sOAM_16x16,
+    .anims = gDummySpriteAnimTable,
+    .images = NULL,
+    .affineAnims = gDummySpriteAffineAnimTable,
+    .callback = SpriteCallbackDummy,
+};
+
+// ewram data
+EWRAM_DATA static u32 *sTrailMapTilemapPtr = NULL;
+EWRAM_DATA struct TrailInterface gTrailInterface = {};
+
+// const data
+const u8 gTrailMapData[TRAIL_MAP_HEIGHT][TRAIL_MAP_WIDTH] =
+{
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 2, 1, 1, 1, 2, 1, 1, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 2, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 1, 2, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 2, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 2, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 2, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+};
+
+// forward declarations
+static void MainCB2_TrailMap(void);
+static void VBlankCB2_TrailMap(void);
+static void Task_OpenTrailMap(u8 taskId);
+static void Task_TrailMapWaitForKeypress(u8 taskId);
+static void Task_FadeOutToGame(u8 taskId);
+static void LoadMapSprites(u32 characterId);
+static void IncrementTime(void);
+static void PrintTime(void);
+static bool32 CheckCollisionInDirection(u32 dir);
+static bool32 TryMoveInDirection(u32 dir);
+
+// UI functions
+static void MainCB2_TrailMap(void)
+{
+    RunTasks();
+    AnimateSprites();
+    BuildOamBuffer();
+    DoScheduledBgTilemapCopiesToVram();
+    UpdatePaletteFade();
+}
+
+static void VBlankCB2_TrailMap(void)
+{
+    LoadOam();
+    ProcessSpriteCopyRequests();
+    TransferPlttBuffer();
+}
+
+void GoToTrailMap(void) // for callnative testing
+{
+    SetMainCallback2(CB2_InitTrailInterface);
+}
+
+void CB2_InitTrailInterface(void)
+{
+    switch (gMain.state) {
+        default:
+        case 0:
+            UpdatePaletteFade();
+            if (!gPaletteFade.active)
+                gMain.state++;
+            break;
+        case 1:
+            SetVBlankCallback(NULL); 
+            ClearVramOamPlttRegs();
+            SetGpuReg(REG_OFFSET_DISPCNT, DISPCNT_OBJ_ON | DISPCNT_OBJ_1D_MAP);
+            gMain.state++;
+            break;
+        case 2:
+            ClearTasksAndGraphicalStructs();
+            gMain.state++;
+            break;
+        case 3:
+            sTrailMapTilemapPtr = AllocZeroed(BG_SCREEN_SIZE);
+            ResetBgsAndClearDma3BusyFlags(0);
+            InitBgsFromTemplates(0, sTrailMapBgTemplates, ARRAY_COUNT(sTrailMapBgTemplates));
+            SetBgTilemapBuffer(3, sTrailMapTilemapPtr);
+            gMain.state++;
+            break;
+        case 4:
+            DecompressAndCopyTileDataToVram(3, sTrailMapGfx, 0, 0, 0);
+            LZDecompressWram(sTrailMapTilemap, sTrailMapTilemapPtr);
+            LoadPalette(sTrailMapPal, BG_PLTT_ID(0), PLTT_SIZE_4BPP);
+
+            Menu_LoadStdPalAt(BG_PLTT_ID(15));
+            gMain.state++;
+            break;
+        case 5:
+            if (IsDma3ManagerBusyWithBgCopy() != TRUE)
+            {
+                HideBg(0);
+                ShowBg(1);
+                ShowBg(2);
+                ShowBg(3);
+                CopyBgTilemapBufferToVram(3);
+                gMain.state++;
+            }
+            break;
+        case 6:
+            InitWindows(sTrailInterfaceWinTemplates);
+            DeactivateAllTextPrinters();
+            gMain.state++;
+            break;
+        case 7:
+            LoadSpritePalette(&gMiscGfxSpritePalette);
+            LoadSpriteSheet(&gShadowSpriteSheet); // TODO: Shadow sprite
+            SetGpuReg(REG_OFFSET_BLDCNT, BLDCNT_TGT2_ALL | BLDCNT_EFFECT_BLEND);
+            SetGpuReg(REG_OFFSET_BLDALPHA, BLDALPHA_BLEND(8, 6));
+
+            gTrailInterface.player.x = 16;
+            gTrailInterface.player.y = 8;
+            LoadMapSprites(gSaveBlock1Ptr->characterId);
+            gMain.state++;
+            break;
+        case 8:
+            PlayBGM(MUS_ROUTE119);
+            BeginNormalPaletteFade(PALETTES_ALL, 2, 16, 0, RGB_BLACK);
+            SetVBlankCallback(VBlankCB2_TrailMap);
+            CreateTask(Task_OpenTrailMap, 0);
+            SetMainCallback2(MainCB2_TrailMap);
+            break;
+    }
+}
+
+static void Task_OpenTrailMap(u8 taskId)
+{
+    if (!gPaletteFade.active)
+    {
+        gTasks[taskId].func = Task_TrailMapWaitForKeypress;
+    }
+}
+
+static void Task_TrailMapWaitForKeypress(u8 taskId)
+{
+    if (JOY_HELD(DPAD_ANY))
+    {
+        gTrailInterface.keyHeldTimer += 1;
+    }
+    else
+    {
+        gTrailInterface.keyHeldTimer = 0;
+    }
+
+    if (JOY_NEW(DPAD_UP) || (JOY_HELD(DPAD_UP) && gTrailInterface.keyHeldTimer % 16 == 0))
+    {
+        if (TryMoveInDirection(DIR_NORTH))
+            IncrementTime();
+    }
+    if (JOY_NEW(DPAD_DOWN) || (JOY_HELD(DPAD_DOWN) && gTrailInterface.keyHeldTimer % 16 == 0))
+    {
+        if (TryMoveInDirection(DIR_SOUTH))
+            IncrementTime();
+    }
+    if (JOY_NEW(DPAD_RIGHT) || (JOY_HELD(DPAD_RIGHT) && gTrailInterface.keyHeldTimer % 16 == 0))
+    {
+        if (TryMoveInDirection(DIR_EAST))
+            IncrementTime();
+    }
+    if (JOY_NEW(DPAD_LEFT) || (JOY_HELD(DPAD_LEFT) && gTrailInterface.keyHeldTimer % 16 == 0))
+    {
+        if (TryMoveInDirection(DIR_WEST))
+            IncrementTime();
+    }
+}
+
+static void Task_FadeOutToGame(u8 taskId)
+{
+    if (!gPaletteFade.active)
+	{
+        Free(sTrailMapTilemapPtr);
+        sTrailMapTilemapPtr = NULL;
+		DestroyTask(taskId);
+        // SetMainCallback2(CB2_StartNewRun);
+	}
+}
+
+static void SpriteCB_PlayerSprite(struct Sprite *sprite)
+{
+    sprite->x = gTrailInterface.player.x;
+    sprite->y = gTrailInterface.player.y;
+}
+
+static const u8 sArrowSpriteOffsets[5][2] =
+{
+    [DIR_NORTH] =   {12, 3},
+    [DIR_SOUTH] =   {12, 29},
+    [DIR_EAST] =    {24, 16},
+    [DIR_WEST] =    {0,  16},
+};
+
+static void SpriteCB_Arrow(struct Sprite *sprite)
+{
+    u8 dir = sprite->data[0];
+    sprite->invisible = CheckCollisionInDirection(sprite->data[0]); // TODO: trigger only after movement
+    sprite->x = gTrailInterface.player.x + sArrowSpriteOffsets[dir][0];
+    sprite->y = gTrailInterface.player.y + sArrowSpriteOffsets[dir][1];
+}
+
+static void LoadMapSprites(u32 characterId)
+{
+    // Draw player sprite.
+    gTrailInterface.playerSpriteId = CreateObjectGraphicsSprite(gCharacterInfos[characterId].graphicsId, SpriteCallbackDummy, 28, 18, 0);
+    SetAndStartSpriteAnim(&gSprites[gTrailInterface.playerSpriteId], ANIM_STD_GO_SOUTH, 0);
+    gSprites[gTrailInterface.playerSpriteId].oam.priority = 0;
+    gSprites[gTrailInterface.playerSpriteId].callback = SpriteCB_PlayerSprite;
+    gSprites[gTrailInterface.playerSpriteId].x2 = 12;
+    gSprites[gTrailInterface.playerSpriteId].y2 = 9;
+
+    // Draw arrow sprites.
+    LoadSpritePalette(&sInterfaceGraphicsSpritePalette);
+    for (u32 dir = DIR_SOUTH; dir <= DIR_EAST; ++dir)
+    {
+        LoadSpriteSheet(&sArrowSpriteSheets[dir]);
+        gTrailInterface.arrowSpriteIds[dir] = CreateSprite(&sArrowSpriteTemplates[dir], 16+dir*16, 16, 0);
+        gSprites[gTrailInterface.arrowSpriteIds[dir]].data[0] = dir;
+    }
+
+    // Draw shadow.
+    // LoadSpriteSheet(&sShadowSpriteSheet);
+    // u32 spriteId = CreateSprite(&sShadowSpriteTemplate, 0, 0, 16);
+    // gSprites[spriteId].callback = SpriteCB_PlayerSprite;
+    // gSprites[spriteId].x2 = 12;
+    // gSprites[spriteId].y2 = 17;
+    // gSprites[gTrailInterface.playerSpriteId].data[0] = spriteId;
+}
+
+static void IncrementTime(void) // TODO: Support AM/PM
+{
+    gTrailInterface.minute += 60;
+    if (gTrailInterface.minute == 60)
+    {
+        gTrailInterface.minute = 0;
+        gTrailInterface.hour += 1;
+    }
+
+    if (gTrailInterface.hour == 13)
+    {
+        gTrailInterface.hour = 1;
+        gTrailInterface.halfDay += 1;
+    }
+
+    if (gTrailInterface.halfDay == 2) // AM/PM
+    {
+        gTrailInterface.halfDay = 0;
+        gTrailInterface.day += 1;
+    }
+    PrintTime();
+}
+
+static void PrintTime(void)
+{    
+	const u8 textColor[] = {TEXT_COLOR_TRANSPARENT, 1, 8};
+	StringCopy(gStringVar1, COMPOUND_STRING("DAY "));
+	ConvertIntToDecimalStringN(gStringVar2, gTrailInterface.day, STR_CONV_MODE_LEFT_ALIGN, 3);
+	StringAppend(gStringVar1, gStringVar2);
+
+    StringCopy(gStringVar2, COMPOUND_STRING(", "));
+	ConvertIntToDecimalStringN(gStringVar3, gTrailInterface.hour, STR_CONV_MODE_LEADING_ZEROS, 2);
+	StringAppend(gStringVar2, gStringVar3);
+    StringAppend(gStringVar1, gStringVar2);
+
+    StringCopy(gStringVar2, COMPOUND_STRING(":"));
+	ConvertIntToDecimalStringN(gStringVar3, gTrailInterface.minute, STR_CONV_MODE_LEADING_ZEROS, 2);
+	StringAppend(gStringVar2, gStringVar3);
+    StringAppend(gStringVar1, gStringVar2);
+
+    if (gTrailInterface.halfDay == 0)
+        StringCopy(gStringVar2, COMPOUND_STRING(" AM"));
+    else
+        StringCopy(gStringVar2, COMPOUND_STRING(" PM"));
+	StringAppend(gStringVar1, gStringVar2);
+
+    u32 offset = GetStringRightAlignXOffset(FONT_NORMAL, gStringVar1, 108);
+    FillWindowPixelBuffer(WIN_TIME, PIXEL_FILL(0));
+    AddTextPrinterParameterized3(WIN_TIME, FONT_NORMAL, 0 + offset, 0, textColor, TEXT_SKIP_DRAW, gStringVar1);
+    CopyWindowToVram(WIN_TIME, COPYWIN_FULL);
+    PutWindowTilemap(WIN_TIME);
+}
+
+// Movement functions
+static bool32 CheckCollisionInDirection(u32 dir)
+{
+    u8 x = gTrailInterface.player.x / 8;
+    u8 y = gTrailInterface.player.y / 8;
+
+    if (gTrailInterface.player.x % 8 == 0)
+    {
+        if (dir == DIR_EAST && gTrailMapData[y][x+1] == 0)
+            return TRUE;
+        if (dir == DIR_WEST && gTrailMapData[y][x-1] == 0)
+            return TRUE;
+    }
+    else
+    {
+        if (dir == DIR_NORTH)
+            return TRUE;
+        if (dir == DIR_SOUTH)
+            return TRUE;
+    }
+
+    if (gTrailInterface.player.y % 8 == 0)
+    {
+        if (dir == DIR_NORTH && gTrailMapData[y-1][x] == 0)
+            return TRUE;
+        if (dir == DIR_SOUTH && gTrailMapData[y+1][x] == 0)
+            return TRUE;
+    }
+    else
+    {
+        if (dir == DIR_EAST)
+            return TRUE;
+        if (dir == DIR_WEST)
+            return TRUE;
+    }
+
+    return FALSE;
+}
+
+static bool32 TryMoveInDirection(u32 dir)
+{
+    // Check collision.
+    if (CheckCollisionInDirection(dir))
+        return FALSE;
+
+    // Update facing direction.
+    if (gTrailInterface.player.facing != dir)
+    {
+        SetAndStartSpriteAnim(&gSprites[gTrailInterface.playerSpriteId], dir + 3, 0); // anim constant jank
+        gTrailInterface.player.facing = dir;
+    }
+
+    // Update position.
+    switch (dir)
+    {
+        case DIR_NORTH:
+            gTrailInterface.player.y -= 1;
+            break;
+        case DIR_SOUTH:
+            gTrailInterface.player.y += 1;
+            break;
+        case DIR_EAST:
+            gTrailInterface.player.x += 1;
+            break;
+        case DIR_WEST:
+            gTrailInterface.player.x -= 1;    
+            break;
+    }
+    return TRUE;
+}

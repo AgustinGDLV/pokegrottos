@@ -930,6 +930,7 @@ gGBSSongTable::
 	song_gbs MUS_HG_GOLDENROD, gbs_Music_BlackCity, 0, 0
 	song_gbs MUS_TITLE, gbs_Music_SafariZone, 0, 0
 	song_gbs MUS_HG_ELM_LAB, gbs_Music_TrainerSchool, 0, 0
+	song_gbs MUS_ROUTE119, gbs_Music_Route119, 0, 0
 	.4byte 0xFFFFFFFF
 
 	.align 2

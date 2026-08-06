@@ -29,7 +29,27 @@
     }
   ],
   "warp_events": [
-
+    {
+      "x": 8,
+      "y": 9,
+      "elevation": 0,
+      "dest_map": "MAP_INTRO_SEQUENCE",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 6,
+      "y": 9,
+      "elevation": 0,
+      "dest_map": "MAP_INTRO_SEQUENCE",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 7,
+      "y": 9,
+      "elevation": 0,
+      "dest_map": "MAP_INTRO_SEQUENCE",
+      "dest_warp_id": "0"
+    }
   ],
   "coord_events": [
     {
