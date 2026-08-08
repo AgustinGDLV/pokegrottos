@@ -1081,9 +1081,14 @@ struct SaveBlock1
               u16 shopItems[11];        // stores the current stock of the Kecleon Shop
               u8 currentTemplateType;   // current template type for use outside of active run
               u32 unlockedCharacters;   // long bitfield
+              u8 day;                   // current day
+              u8 halfDay;               // AM or PM
+              u8 hour;                  // current hour
+              u8 trailX;                // x coord on trail map
+              u8 trailY;                // y coord on trail map
+              u8 facing;                // facing direction
 
-    /*0x9C0*/ u16 berryBlenderRecords[3];
-    /*0x9C6*/ u8 unused_9C2[2];
+    /*0x9C2*/ u16 berryBlenderRecords[3];
 #if FREE_MATCH_CALL == FALSE
     /*0x9C8*/ u16 trainerRematchStepCounter;
     /*0x9CA*/ u8 trainerRematches[MAX_REMATCH_ENTRIES];

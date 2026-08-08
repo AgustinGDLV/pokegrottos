@@ -29,6 +29,7 @@
 #include "pokemon.h"
 #include "reset_rtc_screen.h"
 #include "berry_fix_program.h"
+#include "save.h"
 #include "scanline_effect.h"
 #include "script.h"
 #include "sound.h"
@@ -247,8 +248,8 @@ static void MainCB2_TrailMap(void);
 static void VBlankCB2_TrailMap(void);
 static void Task_OpenTrailMap(u8 taskId);
 static void Task_TrailMapWaitForKeypress(u8 taskId);
-static void Task_FadeOutToGame(u8 taskId);
-static void LoadMapSprites(u32 characterId);
+static void Task_SaveAndExit(u8 taskId);
+static void LoadMapGraphics(u32 characterId);
 static void IncrementTime(void);
 static void PrintTime(void);
 static bool32 CheckCollisionInDirection(u32 dir);
@@ -332,9 +333,7 @@ void CB2_InitTrailInterface(void)
             SetGpuReg(REG_OFFSET_BLDCNT, BLDCNT_TGT2_ALL | BLDCNT_EFFECT_BLEND);
             SetGpuReg(REG_OFFSET_BLDALPHA, BLDALPHA_BLEND(8, 6));
 
-            gTrailInterface.player.x = 16;
-            gTrailInterface.player.y = 8;
-            LoadMapSprites(gSaveBlock1Ptr->characterId);
+            LoadMapGraphics(gSaveBlock1Ptr->characterId);
             gMain.state++;
             break;
         case 8:
@@ -386,23 +385,36 @@ static void Task_TrailMapWaitForKeypress(u8 taskId)
         if (TryMoveInDirection(DIR_WEST))
             IncrementTime();
     }
+
+    if (JOY_NEW(START_BUTTON))
+    {
+        gTasks[taskId].func = Task_SaveAndExit;
+    }
 }
 
-static void Task_FadeOutToGame(u8 taskId)
+static void Task_SaveAndExit(u8 taskId)
 {
-    if (!gPaletteFade.active)
-	{
-        Free(sTrailMapTilemapPtr);
-        sTrailMapTilemapPtr = NULL;
-		DestroyTask(taskId);
-        // SetMainCallback2(CB2_StartNewRun);
-	}
+    if (gTasks[taskId].data[0] == 0)
+    {
+        TrySavingData(SAVE_LINK);
+        ++gTasks[taskId].data[0];
+    }
+    else if (gTasks[taskId].data[0] == 1)
+    {
+        PlaySE(SE_SAVE);
+        // TODO: Text confirmation
+        ++gTasks[taskId].data[0];
+    }
+    else if (JOY_NEW(A_BUTTON) && gTasks[taskId].data[0] == 2)
+    {
+        DoSoftReset();
+    }
 }
 
 static void SpriteCB_PlayerSprite(struct Sprite *sprite)
 {
-    sprite->x = gTrailInterface.player.x;
-    sprite->y = gTrailInterface.player.y;
+    sprite->x = gSaveBlock1Ptr->trailX;
+    sprite->y = gSaveBlock1Ptr->trailY;
 }
 
 static const u8 sArrowSpriteOffsets[5][2] =
@@ -417,15 +429,15 @@ static void SpriteCB_Arrow(struct Sprite *sprite)
 {
     u8 dir = sprite->data[0];
     sprite->invisible = CheckCollisionInDirection(sprite->data[0]); // TODO: trigger only after movement
-    sprite->x = gTrailInterface.player.x + sArrowSpriteOffsets[dir][0];
-    sprite->y = gTrailInterface.player.y + sArrowSpriteOffsets[dir][1];
+    sprite->x = gSaveBlock1Ptr->trailX + sArrowSpriteOffsets[dir][0];
+    sprite->y = gSaveBlock1Ptr->trailY + sArrowSpriteOffsets[dir][1];
 }
 
-static void LoadMapSprites(u32 characterId)
+static void LoadMapGraphics(u32 characterId)
 {
     // Draw player sprite.
     gTrailInterface.playerSpriteId = CreateObjectGraphicsSprite(gCharacterInfos[characterId].graphicsId, SpriteCallbackDummy, 28, 18, 0);
-    SetAndStartSpriteAnim(&gSprites[gTrailInterface.playerSpriteId], ANIM_STD_GO_SOUTH, 0);
+    SetAndStartSpriteAnim(&gSprites[gTrailInterface.playerSpriteId], 3 + gSaveBlock1Ptr->facing, 0);
     gSprites[gTrailInterface.playerSpriteId].oam.priority = 0;
     gSprites[gTrailInterface.playerSpriteId].callback = SpriteCB_PlayerSprite;
     gSprites[gTrailInterface.playerSpriteId].x2 = 12;
@@ -447,28 +459,26 @@ static void LoadMapSprites(u32 characterId)
     // gSprites[spriteId].x2 = 12;
     // gSprites[spriteId].y2 = 17;
     // gSprites[gTrailInterface.playerSpriteId].data[0] = spriteId;
+
+    // Print time.
+    PrintTime();
 }
 
-static void IncrementTime(void) // TODO: Support AM/PM
+static void IncrementTime(void)
 {
-    gTrailInterface.minute += 60;
-    if (gTrailInterface.minute == 60)
+    gSaveBlock1Ptr->hour += 1;
+    if (gSaveBlock1Ptr->hour >= 13)
     {
-        gTrailInterface.minute = 0;
-        gTrailInterface.hour += 1;
+        gSaveBlock1Ptr->hour = 1;
+        gSaveBlock1Ptr->halfDay += 1;
     }
 
-    if (gTrailInterface.hour == 13)
+    if (gSaveBlock1Ptr->halfDay >= 2) // AM/PM
     {
-        gTrailInterface.hour = 1;
-        gTrailInterface.halfDay += 1;
+        gSaveBlock1Ptr->halfDay = 0;
+        gSaveBlock1Ptr->day += 1;
     }
 
-    if (gTrailInterface.halfDay == 2) // AM/PM
-    {
-        gTrailInterface.halfDay = 0;
-        gTrailInterface.day += 1;
-    }
     PrintTime();
 }
 
@@ -476,20 +486,20 @@ static void PrintTime(void)
 {    
 	const u8 textColor[] = {TEXT_COLOR_TRANSPARENT, 1, 8};
 	StringCopy(gStringVar1, COMPOUND_STRING("DAY "));
-	ConvertIntToDecimalStringN(gStringVar2, gTrailInterface.day, STR_CONV_MODE_LEFT_ALIGN, 3);
+	ConvertIntToDecimalStringN(gStringVar2, gSaveBlock1Ptr->day, STR_CONV_MODE_LEFT_ALIGN, 3);
 	StringAppend(gStringVar1, gStringVar2);
 
     StringCopy(gStringVar2, COMPOUND_STRING(", "));
-	ConvertIntToDecimalStringN(gStringVar3, gTrailInterface.hour, STR_CONV_MODE_LEADING_ZEROS, 2);
+	ConvertIntToDecimalStringN(gStringVar3, gSaveBlock1Ptr->hour, STR_CONV_MODE_LEADING_ZEROS, 2);
 	StringAppend(gStringVar2, gStringVar3);
     StringAppend(gStringVar1, gStringVar2);
 
     StringCopy(gStringVar2, COMPOUND_STRING(":"));
-	ConvertIntToDecimalStringN(gStringVar3, gTrailInterface.minute, STR_CONV_MODE_LEADING_ZEROS, 2);
+	ConvertIntToDecimalStringN(gStringVar3, 0, STR_CONV_MODE_LEADING_ZEROS, 2);
 	StringAppend(gStringVar2, gStringVar3);
     StringAppend(gStringVar1, gStringVar2);
 
-    if (gTrailInterface.halfDay == 0)
+    if (gSaveBlock1Ptr->halfDay == 0)
         StringCopy(gStringVar2, COMPOUND_STRING(" AM"));
     else
         StringCopy(gStringVar2, COMPOUND_STRING(" PM"));
@@ -505,10 +515,10 @@ static void PrintTime(void)
 // Movement functions
 static bool32 CheckCollisionInDirection(u32 dir)
 {
-    u8 x = gTrailInterface.player.x / 8;
-    u8 y = gTrailInterface.player.y / 8;
+    u8 x = gSaveBlock1Ptr->trailX / 8;
+    u8 y = gSaveBlock1Ptr->trailY / 8;
 
-    if (gTrailInterface.player.x % 8 == 0)
+    if (gSaveBlock1Ptr->trailX % 8 == 0)
     {
         if (dir == DIR_EAST && gTrailMapData[y][x+1] == 0)
             return TRUE;
@@ -523,7 +533,7 @@ static bool32 CheckCollisionInDirection(u32 dir)
             return TRUE;
     }
 
-    if (gTrailInterface.player.y % 8 == 0)
+    if (gSaveBlock1Ptr->trailY % 8 == 0)
     {
         if (dir == DIR_NORTH && gTrailMapData[y-1][x] == 0)
             return TRUE;
@@ -548,26 +558,26 @@ static bool32 TryMoveInDirection(u32 dir)
         return FALSE;
 
     // Update facing direction.
-    if (gTrailInterface.player.facing != dir)
+    if (gSaveBlock1Ptr->facing != dir)
     {
         SetAndStartSpriteAnim(&gSprites[gTrailInterface.playerSpriteId], dir + 3, 0); // anim constant jank
-        gTrailInterface.player.facing = dir;
+        gSaveBlock1Ptr->facing = dir;
     }
 
     // Update position.
     switch (dir)
     {
         case DIR_NORTH:
-            gTrailInterface.player.y -= 1;
+            gSaveBlock1Ptr->trailY -= 1;
             break;
         case DIR_SOUTH:
-            gTrailInterface.player.y += 1;
+            gSaveBlock1Ptr->trailY += 1;
             break;
         case DIR_EAST:
-            gTrailInterface.player.x += 1;
+            gSaveBlock1Ptr->trailX += 1;
             break;
         case DIR_WEST:
-            gTrailInterface.player.x -= 1;    
+            gSaveBlock1Ptr->trailX -= 1;    
             break;
     }
     return TRUE;

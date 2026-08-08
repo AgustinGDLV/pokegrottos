@@ -872,10 +872,15 @@ static bool8 TryArrowWarp(struct MapPosition *position, u16 metatileBehavior, u8
 
     if (IsArrowWarpMetatileBehavior(metatileBehavior, direction) == TRUE)
     {
-        // TODO: Less jank
+        // TODO: Put this elsewhere?
         if (gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(INTRO_SEQUENCE) && gSaveBlock1Ptr->location.mapNum == MAP_NUM(INTRO_SEQUENCE))
         {
             PlaySE(SE_WARP_IN);
+            gSaveBlock1Ptr->trailX = 16;
+            gSaveBlock1Ptr->trailY = 8;
+            gSaveBlock1Ptr->hour = 8;
+            gSaveBlock1Ptr->day = 1;
+            gSaveBlock1Ptr->facing = DIR_SOUTH;
             SetMainCallback2(CB2_InitTrailInterface);
             BeginNormalPaletteFade(PALETTES_ALL, 2, 0, 16, RGB_BLACK);
             return TRUE;

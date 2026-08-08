@@ -22,6 +22,7 @@
 #include "link.h"
 #include "load_save.h"
 #include "main.h"
+#include "map_gen.h"
 #include "menu.h"
 #include "new_game.h"
 #include "option_menu.h"
@@ -1137,8 +1138,6 @@ static u8 SaveSavingMessageCallback(void)
     return SAVE_IN_PROGRESS;
 }
 
-#include "map_gen.h"
-
 static u8 SaveDoSaveCallback(void)
 {
     u8 saveStatus;
@@ -1153,7 +1152,6 @@ static u8 SaveDoSaveCallback(void)
     }
     else if (IsPlayerInFloorMap())
     {
-        DebugPrintf("yes?");
         SetContinueGameWarpStatus();
         SetWarpData(&gSaveBlock1Ptr->continueGameWarp, GetCurrentTemplateRules()->mapGroup,
                         gFloorplan.layout[gSaveBlock1Ptr->currentRoom].mapNum, WARP_ID_NONE, gSaveBlock1Ptr->pos.x, gSaveBlock1Ptr->pos.y);
