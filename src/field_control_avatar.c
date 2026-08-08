@@ -26,6 +26,7 @@
 #include "match_call.h"
 #include "metatile_behavior.h"
 #include "overworld.h"
+#include "palette.h"
 #include "pokemon.h"
 #include "safari_zone.h"
 #include "script.h"
@@ -44,6 +45,8 @@
 #include "constants/metatile_behaviors.h"
 #include "constants/songs.h"
 #include "constants/trainer_hill.h"
+#include "constants/songs.h"
+#include "constants/rgb.h"
 
 static EWRAM_DATA u8 sWildEncounterImmunitySteps = 0;
 static EWRAM_DATA u16 sPrevMetatileBehavior = 0;
@@ -858,9 +861,7 @@ static void StorePlayerStateAndSetupWarp(struct MapPosition *position, s32 warpE
     StoreInitialPlayerAvatarState();
     SetupWarp(&gMapHeader, warpEventId, position);
 }
-#include "constants/songs.h"
-#include "palette.h"
-#include "constants/rgb.h"
+
 static bool8 TryArrowWarp(struct MapPosition *position, u16 metatileBehavior, u8 direction)
 {
     s32 warpEventId = GetWarpEventAtMapPosition(&gMapHeader, position);

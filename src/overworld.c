@@ -65,6 +65,7 @@
 #include "time_events.h"
 #include "trainer_hill.h"
 #include "trainer_pokemon_sprites.h"
+#include "trail_interface.h"
 #include "tv.h"
 #include "scanline_effect.h"
 #include "wild_encounter.h"
@@ -2001,7 +2002,12 @@ void CB2_ContinueSavedGame(void)
     UnlockPlayerFieldControls();
     gExitStairsMovementDisabled = TRUE;
     InitMatchCallCounters();
-    if (UseContinueGameWarp() == TRUE)
+
+    if (gSaveBlock1Ptr->characterId != 0) // TODO: Placeholder trigger, could move out to start screen
+    {
+        SetMainCallback2(CB2_InitTrailInterface);
+    }
+    else if (UseContinueGameWarp() == TRUE)
     {
         ClearContinueGameWarpStatus();
         SetWarpDestinationToContinueGameWarp();
