@@ -315,6 +315,7 @@ static void Task_ContinueScreenWaitForKeypress(u8 taskId)
     if (gMain.newKeys & B_BUTTON)
 	{
         PlaySE(SE_SELECT);
+		BeginNormalPaletteFade(PALETTES_ALL, 0, 0, 16, RGB_BLACK);
         sExitCallback = CB2_InitTitleScreen;
 		gTasks[taskId].func = Task_StartScreenFadeOutAndExit;
     }
