@@ -15,6 +15,7 @@
 #include "global.fieldmap.h"
 #include "intro.h"
 #include "item.h"
+#include "list_menu.h"
 #include "m4a.h"
 #include "main.h"
 #include "main_menu.h"
@@ -103,22 +104,44 @@ static const struct BgTemplate sTrailMapBgTemplates[] =
 enum
 {
     WIN_TIME,
+    WIN_MESSAGE,
+    WIN_YESNO,
     WINDOW_COUNT,
 };
 
 static const struct WindowTemplate sTrailInterfaceWinTemplates[WINDOW_COUNT + 1] =
 {
-	[WIN_TIME] =
-	{
-		.bg = 1,
-		.tilemapLeft = 16,
-		.tilemapTop = 0,
-		.width = 14,
-		.height = 2,
-		.paletteNum = 0,
-		.baseBlock = 1,
-	},
-	DUMMY_WIN_TEMPLATE
+    [WIN_TIME] =
+    {
+        .bg = 1,
+        .tilemapLeft = 16,
+        .tilemapTop = 0,
+        .width = 14,
+        .height = 2,
+        .paletteNum = 0,
+        .baseBlock = 1,
+    },
+    [WIN_MESSAGE] =
+    {
+        .bg = 1,
+        .tilemapLeft = 1,
+        .tilemapTop = 15,
+        .width = 28,
+        .height = 4,
+        .paletteNum = 0,
+        .baseBlock = 1 + 14*2,
+    },
+    [WIN_YESNO] =
+    {
+        .bg = 1,
+        .tilemapLeft = 24,
+        .tilemapTop = 9,
+        .width = 5,
+        .height = 4,
+        .paletteNum = 0,
+        .baseBlock = 1 + 14*2 + 28*4,
+    },
+    DUMMY_WIN_TEMPLATE
 };
 
 // graphics data
@@ -250,8 +273,11 @@ static void Task_OpenTrailMap(u8 taskId);
 static void Task_TrailMapWaitForKeypress(u8 taskId);
 static void Task_SaveAndExit(u8 taskId);
 static void LoadMapGraphics(u32 characterId);
-static void IncrementTime(void);
+static void IncrementTime(u32 hours);
 static void PrintTime(void);
+static void PrintTextToMessageBox(const u8 *str);
+static u32 CreateYesNoBox(void);
+static void ClearWindow(u32 windowId);
 static bool32 CheckCollisionInDirection(u32 dir);
 static bool32 TryMoveInDirection(u32 dir);
 
@@ -307,8 +333,8 @@ void CB2_InitTrailInterface(void)
             DecompressAndCopyTileDataToVram(3, sTrailMapGfx, 0, 0, 0);
             LZDecompressWram(sTrailMapTilemap, sTrailMapTilemapPtr);
             LoadPalette(sTrailMapPal, BG_PLTT_ID(0), PLTT_SIZE_4BPP);
-
             Menu_LoadStdPalAt(BG_PLTT_ID(15));
+            LoadMessageBoxAndBorderGfx();
             gMain.state++;
             break;
         case 5:
@@ -368,22 +394,22 @@ static void Task_TrailMapWaitForKeypress(u8 taskId)
     if (JOY_NEW(DPAD_UP) || (JOY_HELD(DPAD_UP) && gTrailInterface.keyHeldTimer % 16 == 0))
     {
         if (TryMoveInDirection(DIR_NORTH))
-            IncrementTime();
+            IncrementTime(1);
     }
     if (JOY_NEW(DPAD_DOWN) || (JOY_HELD(DPAD_DOWN) && gTrailInterface.keyHeldTimer % 16 == 0))
     {
         if (TryMoveInDirection(DIR_SOUTH))
-            IncrementTime();
+            IncrementTime(1);
     }
     if (JOY_NEW(DPAD_RIGHT) || (JOY_HELD(DPAD_RIGHT) && gTrailInterface.keyHeldTimer % 16 == 0))
     {
         if (TryMoveInDirection(DIR_EAST))
-            IncrementTime();
+            IncrementTime(1);
     }
     if (JOY_NEW(DPAD_LEFT) || (JOY_HELD(DPAD_LEFT) && gTrailInterface.keyHeldTimer % 16 == 0))
     {
         if (TryMoveInDirection(DIR_WEST))
-            IncrementTime();
+            IncrementTime(1);
     }
 
     if (JOY_NEW(START_BUTTON))
@@ -394,20 +420,51 @@ static void Task_TrailMapWaitForKeypress(u8 taskId)
 
 static void Task_SaveAndExit(u8 taskId)
 {
-    if (gTasks[taskId].data[0] == 0)
+    switch (gTasks[taskId].data[0])
     {
-        TrySavingData(SAVE_LINK);
-        ++gTasks[taskId].data[0];
-    }
-    else if (gTasks[taskId].data[0] == 1)
-    {
-        PlaySE(SE_SAVE);
-        // TODO: Text confirmation
-        ++gTasks[taskId].data[0];
-    }
-    else if (JOY_NEW(A_BUTTON) && gTasks[taskId].data[0] == 2)
-    {
-        DoSoftReset();
+        case 0: // Print message and yes no box.
+            PlaySE(SE_SELECT);
+            PrintTextToMessageBox(COMPOUND_STRING("Save and exit?"));
+            gTasks[taskId].data[2] = CreateYesNoBox();
+            ++gTasks[taskId].data[0];
+            break;
+        case 1:
+        {
+            u32 input = ListMenu_ProcessInput(gTasks[taskId].data[2]);
+            if (gMain.newKeys & A_BUTTON)
+            {
+                PlaySE(SE_SELECT);
+                DestroyTask(gTasks[taskId].data[2]);
+                if (input == 0) gTasks[taskId].data[0] += 1;
+                else gTasks[taskId].data[0] = 5;
+            }
+            else if (gMain.newKeys & B_BUTTON)
+            {
+                PlaySE(SE_SELECT);
+                DestroyTask(gTasks[taskId].data[2]);
+                gTasks[taskId].data[0] = 5;
+            }
+            break;
+        }
+        case 2:
+            TrySavingData(SAVE_LINK);
+            ++gTasks[taskId].data[0];
+        case 3:
+            ClearWindow(WIN_YESNO);
+            PlaySE(SE_SAVE);
+            PrintTextToMessageBox(COMPOUND_STRING("Save complete!\nPress A to exit."));
+            ++gTasks[taskId].data[0];
+            break;
+        case 4:
+            if (JOY_NEW(A_BUTTON))
+                DoSoftReset();
+            break;
+        case 5:
+            ClearWindow(WIN_MESSAGE);
+            ClearWindow(WIN_YESNO);
+            gTasks[taskId].func = Task_TrailMapWaitForKeypress;
+            gTasks[taskId].data[0] = 0;
+            break;
     }
 }
 
@@ -464,26 +521,28 @@ static void LoadMapGraphics(u32 characterId)
     PrintTime();
 }
 
-static void IncrementTime(void)
+// Increment time by set amount of hours and update text.
+static void IncrementTime(u32 hours)
 {
     gSaveBlock1Ptr->hour += 1;
-    if (gSaveBlock1Ptr->hour >= 13)
+    while (gSaveBlock1Ptr->hour >= 13)
     {
-        gSaveBlock1Ptr->hour = 1;
+        gSaveBlock1Ptr->hour -= 12;
         gSaveBlock1Ptr->halfDay += 1;
     }
 
-    if (gSaveBlock1Ptr->halfDay >= 2) // AM/PM
+    while (gSaveBlock1Ptr->halfDay >= 2) // AM/PM
     {
-        gSaveBlock1Ptr->halfDay = 0;
+        gSaveBlock1Ptr->halfDay -= 2;
         gSaveBlock1Ptr->day += 1;
     }
 
     PrintTime();
 }
 
+// Print time to top right.
 static void PrintTime(void)
-{    
+{
 	const u8 textColor[] = {TEXT_COLOR_TRANSPARENT, 1, 8};
 	StringCopy(gStringVar1, COMPOUND_STRING("DAY "));
 	ConvertIntToDecimalStringN(gStringVar2, gSaveBlock1Ptr->day, STR_CONV_MODE_LEFT_ALIGN, 3);
@@ -510,6 +569,58 @@ static void PrintTime(void)
     AddTextPrinterParameterized3(WIN_TIME, FONT_NORMAL, 0 + offset, 0, textColor, TEXT_SKIP_DRAW, gStringVar1);
     CopyWindowToVram(WIN_TIME, COPYWIN_FULL);
     PutWindowTilemap(WIN_TIME);
+}
+
+// Draw message box and print text.
+static void PrintTextToMessageBox(const u8 *str)
+{
+	const u8 textColor[] = {TEXT_COLOR_TRANSPARENT, 1, 8};
+    FillWindowPixelBuffer(WIN_MESSAGE, PIXEL_FILL(0));
+    DrawStdWindowFrame(WIN_MESSAGE, FALSE);
+
+    AddTextPrinterParameterized3(WIN_MESSAGE, FONT_NORMAL, 6, 0, textColor, TEXT_SKIP_DRAW, str);
+    CopyWindowToVram(WIN_MESSAGE, COPYWIN_FULL);
+    CopyBgTilemapBufferToVram(1);
+}
+
+static const struct ListMenuItem sYesNoMenuItems[] = 
+{
+    { COMPOUND_STRING("YES"),       0 },
+    { COMPOUND_STRING("NO"),        1 },
+};
+
+// Create yes no box and return input task ID.
+static u32 CreateYesNoBox(void)
+{
+    struct ListMenuTemplate menuTemplate = {0};
+    LoadMessageBoxAndBorderGfx();
+    DrawStdWindowFrame(WIN_YESNO, FALSE);
+
+    menuTemplate.moveCursorFunc = ListMenuDefaultCursorMoveFunc;
+    menuTemplate.items = sYesNoMenuItems;
+    menuTemplate.totalItems = 2;
+    menuTemplate.maxShowed = 2;
+    menuTemplate.windowId = WIN_YESNO;
+    menuTemplate.item_X = 8;
+    menuTemplate.upText_Y = 1;
+    menuTemplate.cursorPal = 1;
+    menuTemplate.fillValue = 15;
+    menuTemplate.cursorShadowPal = 15;
+    menuTemplate.scrollMultiple = LIST_NO_MULTIPLE_SCROLL;
+    menuTemplate.fontId = FONT_NORMAL;
+    u32 taskId = ListMenuInit(&menuTemplate, 0, 0);
+    CopyWindowToVram(WIN_YESNO, COPYWIN_FULL);
+    CopyBgTilemapBufferToVram(1);
+
+    return taskId;
+}
+
+static void ClearWindow(u32 windowId)
+{
+    FillWindowPixelBuffer(windowId, PIXEL_FILL(0));
+    CopyWindowToVram(windowId, COPYWIN_FULL);
+    if (windowId > WIN_TIME)
+        ClearStdWindowAndFrame(windowId, FALSE);
 }
 
 // Movement functions
