@@ -16,6 +16,7 @@
 #include "intro.h"
 #include "item.h"
 #include "list_menu.h"
+#include "load_save.h"
 #include "m4a.h"
 #include "main.h"
 #include "main_menu.h"
@@ -272,6 +273,7 @@ static void VBlankCB2_TrailMap(void);
 static void Task_OpenTrailMap(u8 taskId);
 static void Task_TrailMapWaitForKeypress(u8 taskId);
 static void Task_SaveAndExit(u8 taskId);
+static void Task_GoToOverworldCamp(u8 taskId);
 static void LoadMapGraphics(u32 characterId);
 static void IncrementTime(u32 hours);
 static void PrintTime(void);
@@ -300,6 +302,7 @@ static void VBlankCB2_TrailMap(void)
 
 void GoToTrailMap(void) // for callnative testing
 {
+    BeginNormalPaletteFade(PALETTES_ALL, 2, 0, 16, RGB_BLACK);
     SetMainCallback2(CB2_InitTrailInterface);
 }
 
@@ -364,6 +367,7 @@ void CB2_InitTrailInterface(void)
             break;
         case 8:
             PlayBGM(MUS_ROUTE119);
+            ClearContinueGameWarpStatus();
             BeginNormalPaletteFade(PALETTES_ALL, 2, 16, 0, RGB_BLACK);
             SetVBlankCallback(VBlankCB2_TrailMap);
             CreateTask(Task_OpenTrailMap, 0);
@@ -414,21 +418,27 @@ static void Task_TrailMapWaitForKeypress(u8 taskId)
 
     if (JOY_NEW(START_BUTTON))
     {
+        PlaySE(SE_SELECT);
         gTasks[taskId].func = Task_SaveAndExit;
+    }
+    if (JOY_NEW(A_BUTTON))
+    {
+        PlaySE(SE_SELECT);
+        gTasks[taskId].func = Task_GoToOverworldCamp;
     }
 }
 
+// Trigger save sequence from trail map.
 static void Task_SaveAndExit(u8 taskId)
 {
     switch (gTasks[taskId].data[0])
     {
         case 0: // Print message and yes no box.
-            PlaySE(SE_SELECT);
             PrintTextToMessageBox(COMPOUND_STRING("Save and exit?"));
             gTasks[taskId].data[2] = CreateYesNoBox();
             ++gTasks[taskId].data[0];
             break;
-        case 1:
+        case 1: // Process menu input.
         {
             u32 input = ListMenu_ProcessInput(gTasks[taskId].data[2]);
             if (gMain.newKeys & A_BUTTON)
@@ -446,18 +456,92 @@ static void Task_SaveAndExit(u8 taskId)
             }
             break;
         }
-        case 2:
+        case 2: // Do save.
             TrySavingData(SAVE_LINK);
             ++gTasks[taskId].data[0];
-        case 3:
+        case 3: // Print confirmation.
             ClearWindow(WIN_YESNO);
             PlaySE(SE_SAVE);
             PrintTextToMessageBox(COMPOUND_STRING("Save complete!\nPress A to exit."));
             ++gTasks[taskId].data[0];
             break;
-        case 4:
+        case 4: // Exit to title.
             if (JOY_NEW(A_BUTTON))
                 DoSoftReset();
+            break;
+        case 5: // Return to trail map.
+            ClearWindow(WIN_MESSAGE);
+            ClearWindow(WIN_YESNO);
+            gTasks[taskId].func = Task_TrailMapWaitForKeypress;
+            gTasks[taskId].data[0] = 0;
+            break;
+    }
+}
+
+// Trigger map generation and warp to overworld.
+static void Task_GoToOverworldCamp(u8 taskId)
+{
+    switch (gTasks[taskId].data[0])
+    {
+        case 0: // Print message and yes no box.
+            PlaySE(SE_SELECT);
+            PrintTextToMessageBox(COMPOUND_STRING("Stop to camp?"));
+            gTasks[taskId].data[2] = CreateYesNoBox();
+            ++gTasks[taskId].data[0];
+            break;
+        case 1: // Process menu input.
+        {
+            u32 input = ListMenu_ProcessInput(gTasks[taskId].data[2]);
+            if (gMain.newKeys & A_BUTTON)
+            {
+                PlaySE(SE_SELECT);
+                DestroyTask(gTasks[taskId].data[2]);
+                if (input == 0) gTasks[taskId].data[0] += 1;
+                else gTasks[taskId].data[0] = 5;
+            }
+            else if (gMain.newKeys & B_BUTTON)
+            {
+                PlaySE(SE_SELECT);
+                DestroyTask(gTasks[taskId].data[2]);
+                gTasks[taskId].data[0] = 5;
+            }
+            break;
+        }
+        case 2: // Do map generation.
+            // Update save fields.
+            ++gSaveBlock1Ptr->currentFloor;
+            gSaveBlock1Ptr->floorSeed = gFloorplan.nextFloorSeed;
+            memset(gSaveBlock1Ptr->visitedRooms, 0, sizeof(gSaveBlock1Ptr->visitedRooms));
+
+            // Generate the new floorplan and warp.
+            GenerateFloorplan();
+            ClearFloorEventFlags();
+            SetContinueGameWarpStatus();
+            SetWarpData(&gSaveBlock1Ptr->continueGameWarp, GetCurrentTemplateRules()->mapGroup,
+                        gFloorplan.layout[STARTING_ROOM].mapNum, 0, -1, -1);
+            gSaveBlock1Ptr->currentRoom = STARTING_ROOM;
+
+            // Autosave.
+            TrySavingData(SAVE_LINK);
+            ++gTasks[taskId].data[0];
+            break;
+        case 3: // 
+            PlaySE(SE_SAVE);
+            BeginNormalPaletteFade(PALETTES_ALL, 0, 0, 16, RGB_BLACK);
+            ++gTasks[taskId].data[0];
+            break;
+        case 4:
+            if (!gPaletteFade.active)
+            {
+                TryWarpToRoom(STARTING_ROOM, 0xFF);
+                Free(sTrailMapTilemapPtr);
+                sTrailMapTilemapPtr = NULL;
+                FreeAllWindowBuffers();
+                ResetSpriteData();
+                UnlockPlayerFieldControls();
+                UnfreezeObjectEvents();
+                DestroyTask(taskId);
+            }
             break;
         case 5:
             ClearWindow(WIN_MESSAGE);
@@ -615,6 +699,7 @@ static u32 CreateYesNoBox(void)
     return taskId;
 }
 
+// Clear window and border.
 static void ClearWindow(u32 windowId)
 {
     FillWindowPixelBuffer(windowId, PIXEL_FILL(0));

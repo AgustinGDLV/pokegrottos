@@ -2003,7 +2003,7 @@ void CB2_ContinueSavedGame(void)
     gExitStairsMovementDisabled = TRUE;
     InitMatchCallCounters();
 
-    if (gSaveBlock1Ptr->characterId != 0) // TODO: Placeholder trigger, could move out to start screen
+    if (UseContinueGameWarp() == FALSE) // TOOD: Modify this trigger to support fixed locations.
     {
         SetMainCallback2(CB2_InitTrailInterface);
     }

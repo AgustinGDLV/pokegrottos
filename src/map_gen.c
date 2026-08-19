@@ -40,7 +40,6 @@ static u8 GetMaxRooms(void);
 static void PopulateFloorplan(struct Floorplan* floorplan);
 static void AssignSpecialRoomTypes(struct Floorplan* floorplan);
 static void AssignRoomMapIds(struct Floorplan* floorplan);
-static void ClearFloorEventFlags(void);
 
 // Returns the number of occupied neighbors for a room index.
 static u32 CountNeighbors(struct Floorplan* floorplan, u32 i)
@@ -159,7 +158,7 @@ static void ShuffleArrayU8(u8* array, u32 size)
 static void AssignSpecialRoomTypes(struct Floorplan* floorplan)
 {
     // The farthest room is first on the stack and will always be the boss room.
-    floorplan->layout[Pop(&floorplan->endrooms)].type = BOSS_ROOM;
+    // floorplan->layout[Pop(&floorplan->endrooms)].type = BOSS_ROOM;
 
     // Afterwards, we shuffle the remaining endrooms and assign room types.
     ShuffleArrayU8(floorplan->endrooms.arr, floorplan->endrooms.top);
@@ -215,11 +214,15 @@ static void AssignRoomMapIds(struct Floorplan* floorplan)
                 break;
         }
     }
+
+    // Assign starting room as campsite.
+    floorplan->layout[STARTING_ROOM].mapNum = rules->specialRoomIds[BOSS_ROOM];
+
     Free(shuffled);
 }
 
 // Clears all loot and encounter flags between floors.
-static void ClearFloorEventFlags(void)
+void ClearFloorEventFlags(void)
 {
     u32 i;
     for (i = TEMPLATE_EVENT_FLAGS_START; i < TEMPLATE_EVENT_FLAGS_END + 1; ++i)
@@ -358,7 +361,8 @@ void GenerateFloorplan(void)
     } while (gFloorplan.numRooms < MIN_ROOMS && ++attempts < 10);
 
     // Handle the rest of the floorplan data.
-    gSaveBlock1Ptr->currentTemplateType = gFloorplan.templateType;
+    gFloorplan.templateType = TEMPLATES_DESERT;
+    gSaveBlock1Ptr->currentTemplateType = TEMPLATES_DESERT; // gFloorplan.templateType;
     AssignRoomMapIds(&gFloorplan);
     gFloorplan.nextFloorSeed = RandomF();
     GenerateKecleonShopList();

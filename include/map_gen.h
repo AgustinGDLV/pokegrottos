@@ -102,6 +102,7 @@ extern const struct CharacterInfo gCharacterInfos[CHARACTERS_COUNT];
 
 void SetRoomAsVisited(u32 i);
 bool32 IsRoomVisited(u32 i);
+void ClearFloorEventFlags(void);
 bool32 DoesRoomExist(u32 i);
 bool32 IsRoomAdjacentToVisited(u32 i);
 u32 GetRoomInDirection(u32 dir);

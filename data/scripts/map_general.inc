@@ -128,3 +128,38 @@ EventScript_GoToNextFloor::
 	goto_if_eq VAR_RESULT, 0, EventScript_End
 	callnative GoToNextFloor
 	end
+
+EventScript_Campfire::
+	lockall
+	message EventScript_Campfire_Text
+	waitmessage
+	dynmultipush EventScript_Resume_Text, 0
+	dynmultipush EventScript_Rest_Text, 1
+	dynmultipush EventScript_Stay_Text, 2
+	dynmultistack 21, 6, TRUE, 3, FALSE, 0, NULL
+	releaseall
+	switch VAR_RESULT
+	case 0, EventScript_Campfire_Rest
+	case 1, EventScript_Campfire_Resume
+	case 2, EventScript_End
+	end
+
+EventScript_Campfire_Rest:
+	end
+
+EventScript_Campfire_Resume:
+	callnative GoToTrailMap
+	end
+
+EventScript_Campfire_Text:
+	.string "What would you\n"
+	.string "like to do?$"
+
+EventScript_Resume_Text:
+	.string "Rest$"
+
+EventScript_Rest_Text:
+	.string "Resume$"
+
+EventScript_Stay_Text:
+	.string "Stay$"
