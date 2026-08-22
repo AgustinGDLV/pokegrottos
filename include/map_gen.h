@@ -15,7 +15,7 @@
 #define STARTING_ROOM               45
 
 // Template Constants
-#define TEMPLATE_MAP_GROUP_END      7 // *TODO
+#define TEMPLATE_MAP_GROUP_END      (MAP_GROUP(PETALBURG_CITY) - 1) // *TODO
 
 // Room Constants
 #define ROOM_COORD(x, y)            ((x+1) + (y+1)*10)  // gFloorplan.layout is not zero-indexed

@@ -205,14 +205,14 @@ const struct DeckBattleBackground gDeckBackgrounds[BG_COUNT] =
     },
     [BG_FOREST_EVE] =
     {
-        .palette = sForestBackgroundPalette,
-        .tiles = sForestBackgroundTiles,
-        .map = sForestBackgroundMap,
+        .palette = sForestEveBackgroundPalette,
+        .tiles = sForestEveBackgroundTiles,
+        .map = sForestEveBackgroundMap,
     },
     [BG_FOREST_NIGHT] =
     {
-        .palette = sForestBackgroundPalette,
-        .tiles = sForestBackgroundTiles,
-        .map = sForestBackgroundMap,
+        .palette = sForestNightBackgroundPalette,
+        .tiles = sForestNightBackgroundTiles,
+        .map = sForestNightBackgroundMap,
     },
 };

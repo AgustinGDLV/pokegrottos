@@ -221,6 +221,12 @@ static const u8 sDesertNormalRooms[] =
     MAP_NUM(DESERT_TEMPLATES_ROOM2),
 };
 
+// Forest Template Pools
+static const u8 sForestNormalRooms[] =
+{
+    MAP_NUM(FOREST_TEMPLATES_ROOM1),
+};
+
 const struct TemplateRules gTemplateRules[TEMPLATE_TYPES_COUNT] = 
 {
     [TEMPLATES_UNDERWATER] =
@@ -398,30 +404,27 @@ const struct TemplateRules gTemplateRules[TEMPLATE_TYPES_COUNT] =
     [TEMPLATES_FOREST] =
     {
         .name = COMPOUND_STRING("Funky Forest"),
-        .mapGroup = MAP_GROUP(DESERT_TEMPLATES_CONNECTIONS),
-        .bgm = MUS_DP_GREAT_MARSH,
+        .mapGroup = MAP_GROUP(FOREST_TEMPLATES_CONNECTIONS),
+        .bgm = MUS_RG_VIRIDIAN_FOREST,
         .background = BG_FOREST,
         .connectionType = CONNECTION_TYPE_SEAMLESS,
         .offsets = {
-            [DIR_NORTH] = {-1, -2, 4, 2},
-            [DIR_SOUTH] = {-1, 1, 4, 2},
-            [DIR_EAST] = {1, -2, 2, 4},
-            [DIR_WEST] = {-2, -2, 2, 4},
+            [DIR_NORTH] = {-2, -3, 6, 3},
+            [DIR_SOUTH] = {-2, 1, 6, 3},
+            [DIR_EAST] = {1, -2, 3, 4},
+            [DIR_WEST] = {-3, -1, 3, 4},
         },
-        .numNormalRooms = ARRAY_COUNT(sDesertNormalRooms),
-        .normalRoomIds = sDesertNormalRooms,
+        .numNormalRooms = ARRAY_COUNT(sForestNormalRooms),
+        .normalRoomIds = sForestNormalRooms,
         .specialRoomIds = {
-            [BOSS_ROOM] = MAP_NUM(DESERT_TEMPLATES_BOSS_ROOM),
-            [TREASURE_ROOM] = MAP_NUM(DESERT_TEMPLATES_TREASURE_ROOM),
-            [SHOP_ROOM] = MAP_NUM(DESERT_TEMPLATES_SHOP_ROOM),
+            [BOSS_ROOM] = MAP_NUM(FOREST_TEMPLATES_BOSS_ROOM),
+            [TREASURE_ROOM] = MAP_NUM(FOREST_TEMPLATES_BOSS_ROOM),
+            [SHOP_ROOM] = MAP_NUM(FOREST_TEMPLATES_BOSS_ROOM),
         },
         .itemPools = gDefaultItemPools,
         .encounterPool = {
-            {SPECIES_BALTOY, 100},
-            {SPECIES_CACNEA, 100},
-            {SPECIES_HIPPOPOTAS, 100},
-            {SPECIES_SKORUPI, 100},
-            {SPECIES_TRAPINCH, 100},
+            {SPECIES_APPLIN, 100},
+            {SPECIES_SPEAROW, 100},
         }
     },
 };

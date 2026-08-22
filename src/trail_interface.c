@@ -246,7 +246,7 @@ EWRAM_DATA static u32 *sTrailMapTilemapPtr = NULL;
 EWRAM_DATA struct TrailInterface gTrailInterface = {};
 
 // const data
-const u8 gTrailMapData[TRAIL_MAP_HEIGHT][TRAIL_MAP_WIDTH] =
+const u8 gTrailMapCollisionData[TRAIL_MAP_HEIGHT][TRAIL_MAP_WIDTH] =
 {
     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
     {0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
@@ -263,6 +263,48 @@ const u8 gTrailMapData[TRAIL_MAP_HEIGHT][TRAIL_MAP_WIDTH] =
     {0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
     {0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 1, 2, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0},
     {0, 0, 0, 2, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 2, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 2, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+};
+
+const u8 gTrailMapCheckpointData[TRAIL_MAP_HEIGHT][TRAIL_MAP_WIDTH] = // TODO: Something readable
+{
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, CHECKPOINT_PEONY_TOWN, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, CHECKPOINT_FUNKY_FOREST_NORTH, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, CHECKPOINT_FUNKY_FOREST_EAST, 1, 1, 1, CHECKPOINT_FUNKY_FOREST_WEST, 1, 1, 1, CHECKPOINT_COOL_COAST_NORTH, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, CHECKPOINT_DEEP_DESERT_WEST, 1, 1, 1, CHECKPOINT_DEEP_DESERT_EAST, 1, 1, 1, 1, 1, 1, CHECKPOINT_COOL_COAST_EAST, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 1, CHECKPOINT_MOLTEN_MOUNTAIN_NORTH, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, CHECKPOINT_DEEP_DESERT_SOUTH, 1, 1, 1, 1, 1, CHECKPOINT_TULIP_TOWN, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, CHECKPOINT_ORCHID_CITY, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, CHECKPOINT_MOLTEN_MOUNTAIN_SOUTH, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+};
+
+const u8 gTrailMapTemplateData[TRAIL_MAP_HEIGHT][TRAIL_MAP_WIDTH] = // TODO: Something readable; incomplete
+{
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, TEMPLATES_CITY, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, TEMPLATES_FOREST, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, TEMPLATES_FOREST, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, TEMPLATES_FOREST, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, TEMPLATES_FOREST, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, TEMPLATES_FOREST, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, TEMPLATES_FOREST, TEMPLATES_FOREST, TEMPLATES_FOREST, TEMPLATES_FOREST, TEMPLATES_FOREST, 1, 1, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, TEMPLATES_FOREST, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, TEMPLATES_FOREST, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, TEMPLATES_DESERT, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, TEMPLATES_FOREST, TEMPLATES_DESERT, TEMPLATES_DESERT, TEMPLATES_DESERT, 2, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, TEMPLATES_DESERT, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, TEMPLATES_DESERT, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 1, 2, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, TEMPLATES_DESERT, TEMPLATES_DESERT, TEMPLATES_DESERT, TEMPLATES_DESERT, TEMPLATES_FOREST, TEMPLATES_FOREST, 2, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 2, 0, 0, 0},
     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 2, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0},
     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
 };
@@ -477,6 +519,11 @@ static void Task_SaveAndExit(u8 taskId)
     }
 }
 
+static enum TemplateTypes GetTemplateTypeFromTrailPos(void)
+{
+    return gTrailMapTemplateData[gSaveBlock1Ptr->trailY / 8][gSaveBlock1Ptr->trailX / 8];
+}
+
 // Trigger map generation and warp to overworld.
 static void Task_GoToOverworldCamp(u8 taskId)
 {
@@ -526,7 +573,7 @@ static void Task_GoToOverworldCamp(u8 taskId)
             break;
         case 3: // Confirm save and begin warp.
             PlaySE(SE_SAVE);
-            BeginNormalPaletteFade(PALETTES_ALL, 0, 0, 16, RGB_BLACK);
+            FadeScreen(FADE_TO_BLACK, 0);
             ++gTasks[taskId].data[0];
             break;
         case 4:
@@ -726,9 +773,9 @@ static bool32 CheckCollisionInDirection(u32 dir)
 
     if (gSaveBlock1Ptr->trailX % 8 == 0)
     {
-        if (dir == DIR_EAST && gTrailMapData[y][x+1] == 0)
+        if (dir == DIR_EAST && gTrailMapCollisionData[y][x+1] == 0)
             return TRUE;
-        if (dir == DIR_WEST && gTrailMapData[y][x-1] == 0)
+        if (dir == DIR_WEST && gTrailMapCollisionData[y][x-1] == 0)
             return TRUE;
     }
     else
@@ -741,9 +788,9 @@ static bool32 CheckCollisionInDirection(u32 dir)
 
     if (gSaveBlock1Ptr->trailY % 8 == 0)
     {
-        if (dir == DIR_NORTH && gTrailMapData[y-1][x] == 0)
+        if (dir == DIR_NORTH && gTrailMapCollisionData[y-1][x] == 0)
             return TRUE;
-        if (dir == DIR_SOUTH && gTrailMapData[y+1][x] == 0)
+        if (dir == DIR_SOUTH && gTrailMapCollisionData[y+1][x] == 0)
             return TRUE;
     }
     else
@@ -769,6 +816,9 @@ static bool32 TryMoveInDirection(u32 dir)
         SetAndStartSpriteAnim(&gSprites[gTrailInterface.playerSpriteId], dir + 3, 0); // anim constant jank
         gSaveBlock1Ptr->facing = dir;
     }
+
+    // Update template type.
+    gSaveBlock1Ptr->currentTemplateType = GetTemplateTypeFromTrailPos();
 
     // Update position.
     switch (dir)

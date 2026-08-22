@@ -21,6 +21,7 @@
 #include "strings.h"
 #include "string_util.h"
 #include "text.h"
+#include "trail_interface.h"
 #include "constants/songs.h"
 #include "constants/event_objects.h"
 #include "constants/rgb.h"
@@ -362,8 +363,7 @@ void GenerateFloorplan(void)
     } while (gFloorplan.numRooms < MIN_ROOMS && ++attempts < 10);
 
     // Handle the rest of the floorplan data.
-    gFloorplan.templateType = TEMPLATES_DESERT;
-    gSaveBlock1Ptr->currentTemplateType = TEMPLATES_DESERT; // gFloorplan.templateType;
+    gFloorplan.templateType = gSaveBlock1Ptr->currentTemplateType;
     AssignRoomMapIds(&gFloorplan);
     gFloorplan.nextFloorSeed = RandomF();
     GenerateKecleonShopList();
