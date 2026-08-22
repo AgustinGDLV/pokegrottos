@@ -1217,6 +1217,10 @@ u16 GetWarpDestinationMusic(void)
     {
         return music;
     }
+    else if (sWarpDestination.mapGroup < TEMPLATE_MAP_GROUP_END)
+    {
+        return GetCurrentTemplateRules()->bgm;
+    }
     else
     {
         if (gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(MAUVILLE_CITY)
@@ -1577,9 +1581,8 @@ const struct BlendSettings gTimeOfDayBlend[] =
 void UpdateTimeOfDay(void)
 {
     s32 hours, minutes;
-    RtcCalcLocalTime();
-    hours = sHoursOverride ? sHoursOverride : gLocalTime.hours;
-    minutes = sHoursOverride ? 0 : gLocalTime.minutes;
+    hours = gSaveBlock1Ptr->hour + gSaveBlock1Ptr->halfDay * 12;
+    minutes = 0;
 
     if (IsBetweenHours(hours, MORNING_HOUR_BEGIN, MORNING_HOUR_MIDDLE)) // night->morning
     {

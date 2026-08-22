@@ -88,7 +88,7 @@ static const struct BgTemplate sTrailMapBgTemplates[] =
         .mapBaseIndex = 6,
         .screenSize = 0,
         .paletteMode = 0,
-        .priority = 1,
+        .priority = 0,
         .baseTile = 0,
     },
     { // Environment
@@ -119,7 +119,7 @@ static const struct WindowTemplate sTrailInterfaceWinTemplates[WINDOW_COUNT + 1]
         .tilemapTop = 0,
         .width = 14,
         .height = 2,
-        .paletteNum = 0,
+        .paletteNum = 15,
         .baseBlock = 1,
     },
     [WIN_MESSAGE] =
@@ -129,7 +129,7 @@ static const struct WindowTemplate sTrailInterfaceWinTemplates[WINDOW_COUNT + 1]
         .tilemapTop = 15,
         .width = 28,
         .height = 4,
-        .paletteNum = 0,
+        .paletteNum = 15,
         .baseBlock = 1 + 14*2,
     },
     [WIN_YESNO] =
@@ -139,7 +139,7 @@ static const struct WindowTemplate sTrailInterfaceWinTemplates[WINDOW_COUNT + 1]
         .tilemapTop = 9,
         .width = 5,
         .height = 4,
-        .paletteNum = 0,
+        .paletteNum = 15,
         .baseBlock = 1 + 14*2 + 28*4,
     },
     DUMMY_WIN_TEMPLATE
@@ -176,7 +176,7 @@ static const struct OamData sOAM_8x8 =
 	.objMode = ST_OAM_OBJ_NORMAL,
 	.shape = SPRITE_SHAPE(8x8),
 	.size = SPRITE_SIZE(8x8),
-	.priority = 0,
+	.priority = 1,
 };
 
 static const struct OamData sOAM_16x16 =
@@ -185,7 +185,7 @@ static const struct OamData sOAM_16x16 =
 	.objMode = ST_OAM_OBJ_BLEND,
 	.shape = SPRITE_SHAPE(16x16),
 	.size = SPRITE_SIZE(16x16),
-	.priority = 0,
+	.priority = 1,
 };
 
 static void SpriteCB_Arrow(struct Sprite *sprite);
@@ -302,7 +302,7 @@ static void VBlankCB2_TrailMap(void)
 
 void GoToTrailMap(void) // for callnative testing
 {
-    BeginNormalPaletteFade(PALETTES_ALL, 2, 0, 16, RGB_BLACK);
+    FadeScreen(FADE_TO_BLACK, 2);
     SetMainCallback2(CB2_InitTrailInterface);
 }
 
@@ -361,14 +361,13 @@ void CB2_InitTrailInterface(void)
             LoadSpriteSheet(&gShadowSpriteSheet); // TODO: Shadow sprite
             SetGpuReg(REG_OFFSET_BLDCNT, BLDCNT_TGT2_ALL | BLDCNT_EFFECT_BLEND);
             SetGpuReg(REG_OFFSET_BLDALPHA, BLDALPHA_BLEND(8, 6));
-
             LoadMapGraphics(gSaveBlock1Ptr->characterId);
             gMain.state++;
             break;
         case 8:
             PlayBGM(MUS_ROUTE119);
             ClearContinueGameWarpStatus();
-            BeginNormalPaletteFade(PALETTES_ALL, 2, 16, 0, RGB_BLACK);
+            FadeScreen(FADE_FROM_BLACK, 2);
             SetVBlankCallback(VBlankCB2_TrailMap);
             CreateTask(Task_OpenTrailMap, 0);
             SetMainCallback2(MainCB2_TrailMap);
@@ -525,7 +524,7 @@ static void Task_GoToOverworldCamp(u8 taskId)
             TrySavingData(SAVE_LINK);
             ++gTasks[taskId].data[0];
             break;
-        case 3: // 
+        case 3: // Confirm save and begin warp.
             PlaySE(SE_SAVE);
             BeginNormalPaletteFade(PALETTES_ALL, 0, 0, 16, RGB_BLACK);
             ++gTasks[taskId].data[0];
@@ -579,7 +578,7 @@ static void LoadMapGraphics(u32 characterId)
     // Draw player sprite.
     gTrailInterface.playerSpriteId = CreateObjectGraphicsSprite(gCharacterInfos[characterId].graphicsId, SpriteCallbackDummy, 28, 18, 0);
     SetAndStartSpriteAnim(&gSprites[gTrailInterface.playerSpriteId], 3 + gSaveBlock1Ptr->facing, 0);
-    gSprites[gTrailInterface.playerSpriteId].oam.priority = 0;
+    gSprites[gTrailInterface.playerSpriteId].oam.priority = 1;
     gSprites[gTrailInterface.playerSpriteId].callback = SpriteCB_PlayerSprite;
     gSprites[gTrailInterface.playerSpriteId].x2 = 12;
     gSprites[gTrailInterface.playerSpriteId].y2 = 9;
@@ -601,6 +600,11 @@ static void LoadMapGraphics(u32 characterId)
     // gSprites[spriteId].y2 = 17;
     // gSprites[gTrailInterface.playerSpriteId].data[0] = spriteId;
 
+    // Update palette blend.
+    UpdateTimeOfDay();
+    u32 palettes = PALETTES_ALL & ~(1 << 15);
+    TimeMixPalettes(palettes, gPlttBufferUnfaded, gPlttBufferFaded, &gTimeBlend.startBlend, &gTimeBlend.endBlend, gTimeBlend.weight);
+
     // Print time.
     PrintTime();
 }
@@ -621,7 +625,13 @@ static void IncrementTime(u32 hours)
         gSaveBlock1Ptr->day += 1;
     }
 
+    // Update UI.
     PrintTime();
+
+    // Update palette blend.
+    UpdateTimeOfDay();
+    u32 palettes = PALETTES_ALL & ~(1 << 15);
+    TimeMixPalettes(palettes, gPlttBufferUnfaded, gPlttBufferFaded, &gTimeBlend.startBlend, &gTimeBlend.endBlend, gTimeBlend.weight);
 }
 
 // Print time to top right.
@@ -642,10 +652,10 @@ static void PrintTime(void)
 	StringAppend(gStringVar2, gStringVar3);
     StringAppend(gStringVar1, gStringVar2);
 
-    if (gSaveBlock1Ptr->halfDay == 0)
-        StringCopy(gStringVar2, COMPOUND_STRING(" AM"));
-    else
+    if ((gSaveBlock1Ptr->halfDay == 0) != (gSaveBlock1Ptr->hour != 12)) // this is an XOR
         StringCopy(gStringVar2, COMPOUND_STRING(" PM"));
+    else
+        StringCopy(gStringVar2, COMPOUND_STRING(" AM"));
 	StringAppend(gStringVar1, gStringVar2);
 
     u32 offset = GetStringRightAlignXOffset(FONT_NORMAL, gStringVar1, 108);
