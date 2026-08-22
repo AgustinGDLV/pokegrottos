@@ -879,10 +879,11 @@ static bool8 TryArrowWarp(struct MapPosition *position, u16 metatileBehavior, u8
             gSaveBlock1Ptr->trailX = 16;
             gSaveBlock1Ptr->trailY = 8;
             gSaveBlock1Ptr->hour = 8;
+            gSaveBlock1Ptr->halfDay = 0;
             gSaveBlock1Ptr->day = 1;
             gSaveBlock1Ptr->facing = DIR_SOUTH;
             SetMainCallback2(CB2_InitTrailInterface);
-            BeginNormalPaletteFade(PALETTES_ALL, 2, 0, 16, RGB_BLACK);
+            FadeScreen(FADE_TO_BLACK, 2);
             return TRUE;
         }
         // Do custom warp in floor rooms.

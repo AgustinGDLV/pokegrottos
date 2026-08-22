@@ -265,7 +265,7 @@ static void Task_FloorPreviewFadeIn(u8 taskId)
 
 static void LoadMapPreviewGfx(void)
 {   
-    const struct DeckBattleBackground *bg = &gDeckBackgrounds[GetCurrentTemplateRules()->background];
+    const struct DeckBattleBackground *bg = GetCurrentDeckBattleBackground();
     DecompressAndCopyTileDataToVram(2, bg->tiles, 0, 0, 0);
 	LZDecompressWram(bg->map, sMapPreviewTilemapPtr);
 	LoadPalette(bg->palette, BG_PLTT_ID(1), PLTT_SIZE_4BPP);

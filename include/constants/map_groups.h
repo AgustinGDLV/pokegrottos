@@ -69,6 +69,7 @@
 // gMapGroup_ForestTemplates
 #define MAP_FOREST_TEMPLATES_CONNECTIONS (0 | (7 << 8))
 #define MAP_FOREST_TEMPLATES_BOSS_ROOM   (1 | (7 << 8))
+#define MAP_FOREST_TEMPLATES_ROOM1       (2 | (7 << 8))
 
 // gMapGroup_SwampTemplates
 

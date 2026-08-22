@@ -329,8 +329,8 @@ static void Task_ContinueScreenWaitForKeypress(u8 taskId)
 }
 
 static void LoadMapPreviewGfx(void)
-{   
-    const struct DeckBattleBackground *bg = &gDeckBackgrounds[GetCurrentTemplateRules()->background];
+{
+    const struct DeckBattleBackground *bg = GetCurrentDeckBattleBackground();
     DecompressAndCopyTileDataToVram(2, bg->tiles, 0, 0, 0);
 	LZDecompressWram(bg->map, sMapPreviewTilemapPtr);
 	LoadPalette(bg->palette, BG_PLTT_ID(1), PLTT_SIZE_4BPP);
@@ -430,17 +430,9 @@ static void DrawContinueScreenText(void)
 
 #define dShadow data[0]
 
-static void DrawOverworld(u32 characterId)
+static void DrawPlayerObject(u32 characterId)
 {
-    // Free data if there is already a mugshot drawn.
-    if (sOverworldSpriteId != SPRITE_NONE)
-    {
-        FreeSpriteTilesByTag(gSprites[sOverworldSpriteId].template->tileTag);
-        FreeSpritePaletteByTag(gSprites[sOverworldSpriteId].template->paletteTag);
-        DestroySprite(&gSprites[gSprites[sOverworldSpriteId].dShadow]);
-        DestroySprite(&gSprites[sOverworldSpriteId]);
-    }
-    // Draw the new mugshot.
+    // Draw the player sprite.
     sOverworldSpriteId = CreateObjectGraphicsSprite(gCharacterInfos[characterId].graphicsId, SpriteCallbackDummy, 32, 38, 0);
     SetAndStartSpriteAnim(&gSprites[sOverworldSpriteId], ANIM_STD_GO_SOUTH, 0);
     gSprites[sOverworldSpriteId].oam.priority = 0;
@@ -463,11 +455,11 @@ static void DrawBattlerSprites(void)
             continue;
 
         // Draw battler sprite.
-        palIndex = LoadSpritePaletteWithTag(gDeckSpeciesInfo[species].objectPalette, 9000 + i);
-        const struct SpriteSheet spriteSheet = {gDeckSpeciesInfo[species].opponentIdle, sizeof(sDummyObjectGfx), 10000 + i};
+        palIndex = LoadSpritePaletteWithTag(gDeckSpeciesInfo[species].objectPalette, 8001 + i);
+        const struct SpriteSheet spriteSheet = {gDeckSpeciesInfo[species].opponentIdle, sizeof(sDummyObjectGfx), 8001 + i};
         const struct SpriteTemplate spriteTemplate =
         {
-            .tileTag = 10000+i,
+            .tileTag = 8001+i,
             .paletteTag = 0,
             .oam = &sOamData_Battler,
             .anims = sAnims_Battler,
@@ -496,9 +488,8 @@ static void LoadScreenGfx(void)
     DrawBattlerSprites();
 
     // Load main graphics.
-    LoadPalette(gDeckBackgrounds[GetCurrentTemplateRules()->background].palette, BG_PLTT_ID(1), PLTT_SIZE_4BPP);
     DrawStartButtonWindow();
-    DrawOverworld(gSaveBlock1Ptr->characterId);
+    DrawPlayerObject(gSaveBlock1Ptr->characterId);
     DrawContinueAndSelectWindows();
     DrawContinueScreenText();
 }
@@ -611,4 +602,5 @@ void AssignStarterToPlayer(void)
 {
     u32 species = gCharacterInfos[gSaveBlock1Ptr->characterId].starters[gSpecialVar_Result];
     StringCopy(gStringVar1, GetSpeciesName(species));
+    CreateMon(&gPlayerParty[0], species, 5, USE_RANDOM_IVS, FALSE, 0, OT_ID_PLAYER_ID, TRUE);
 }

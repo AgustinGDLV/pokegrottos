@@ -329,7 +329,7 @@ void CB2_OpenPartyMenuCustom(void)
             LoadPalette(sPartyMenuPalette, BG_PLTT_ID(0), PLTT_SIZE_4BPP);
             Menu_LoadStdPalAt(BG_PLTT_ID(15));
 
-            const struct DeckBattleBackground *bg = &gDeckBackgrounds[GetCurrentTemplateRules()->background];
+            const struct DeckBattleBackground *bg = GetCurrentDeckBattleBackground();
             DecompressAndCopyTileDataToVram(3, bg->tiles, 0, 0, 0);
             LZDecompressVram(bg->map, sEnvironmentTilemapPtr);
             LoadPalette(bg->palette, BG_PLTT_ID(1), PLTT_SIZE_4BPP);

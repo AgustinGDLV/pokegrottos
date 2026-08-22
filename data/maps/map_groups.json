@@ -109,7 +109,8 @@
   ],
   "gMapGroup_ForestTemplates": [
     "ForestTemplates_Connections",
-    "ForestTemplates_BossRoom"
+    "ForestTemplates_BossRoom",
+    "ForestTemplates_Room1"
   ],
   "gMapGroup_SwampTemplates": [
 

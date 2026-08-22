@@ -367,10 +367,40 @@ const struct TemplateRules gTemplateRules[TEMPLATE_TYPES_COUNT] =
 
     [TEMPLATES_DESERT] =
     {
-        .name = COMPOUND_STRING("Sandile Dunes"),
+        .name = COMPOUND_STRING("Deep Desert"),
         .mapGroup = MAP_GROUP(DESERT_TEMPLATES_CONNECTIONS),
         .bgm = MUS_ROUTE113,
         .background = BG_DESERT,
+        .connectionType = CONNECTION_TYPE_SEAMLESS,
+        .offsets = {
+            [DIR_NORTH] = {-1, -2, 4, 2},
+            [DIR_SOUTH] = {-1, 1, 4, 2},
+            [DIR_EAST] = {1, -2, 2, 4},
+            [DIR_WEST] = {-2, -2, 2, 4},
+        },
+        .numNormalRooms = ARRAY_COUNT(sDesertNormalRooms),
+        .normalRoomIds = sDesertNormalRooms,
+        .specialRoomIds = {
+            [BOSS_ROOM] = MAP_NUM(DESERT_TEMPLATES_BOSS_ROOM),
+            [TREASURE_ROOM] = MAP_NUM(DESERT_TEMPLATES_TREASURE_ROOM),
+            [SHOP_ROOM] = MAP_NUM(DESERT_TEMPLATES_SHOP_ROOM),
+        },
+        .itemPools = gDefaultItemPools,
+        .encounterPool = {
+            {SPECIES_BALTOY, 100},
+            {SPECIES_CACNEA, 100},
+            {SPECIES_HIPPOPOTAS, 100},
+            {SPECIES_SKORUPI, 100},
+            {SPECIES_TRAPINCH, 100},
+        }
+    },
+
+    [TEMPLATES_FOREST] =
+    {
+        .name = COMPOUND_STRING("Funky Forest"),
+        .mapGroup = MAP_GROUP(DESERT_TEMPLATES_CONNECTIONS),
+        .bgm = MUS_DP_GREAT_MARSH,
+        .background = BG_FOREST,
         .connectionType = CONNECTION_TYPE_SEAMLESS,
         .offsets = {
             [DIR_NORTH] = {-1, -2, 4, 2},

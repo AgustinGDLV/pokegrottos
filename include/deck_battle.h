@@ -119,12 +119,37 @@ struct DeckBattleStruct
 enum DeckBattleBackgroundId
 {
     BG_GRASS,
+    BG_GRASS_EVE,
+    BG_GRASS_NIGHT,
+
     BG_UNDERWATER,
+    BG_UNDERWATER_EVE,
+    BG_UNDERWATER_NIGHT,
+
     BG_CITY,
+    BG_CITY_EVE,
+    BG_CITY_NIGHT,
+
     BG_ICE_PATH,
+    BG_ICE_PATH_EVE,
+    BG_ICE_PATH_NIGHT,
+
     BG_VOLCANO,
+    BG_VOLCANO_EVE,
+    BG_VOLCANO_NIGHT,
+
     BG_CAVE,
+    BG_CAVE_EVE,
+    BG_CAVE_NIGHT,
+
     BG_DESERT,
+    BG_DESERT_EVE,
+    BG_DESERT_NIGHT,
+
+    BG_FOREST,
+    BG_FOREST_EVE,
+    BG_FOREST_NIGHT,
+
     BG_COUNT,
 };
 

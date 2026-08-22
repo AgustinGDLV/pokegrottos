@@ -300,9 +300,23 @@ void ClearDeckBattleGraphicsStruct(void)
     gDeckGraphics.portraitSpriteId = SPRITE_NONE;
 }
 
+const struct DeckBattleBackground * GetCurrentDeckBattleBackground(void)
+{
+    // Get time of day.
+    u32 hours = gSaveBlock1Ptr->hour + gSaveBlock1Ptr->halfDay * 12;
+    u32 timeOfDayOffset = 0;
+    if (hours > 20 || hours < 6)
+        timeOfDayOffset = 2; // Night
+    else if (hours > 18 || hours < 8)
+        timeOfDayOffset = 1; // Eve
+
+    // Load battle background.
+    const struct DeckBattleBackground *bg = &gDeckBackgrounds[GetCurrentTemplateRules()->background + timeOfDayOffset];
+    return bg;
+}
+
 void LoadBattleBoxesAndBackground(void)
 {
-    const struct DeckBattleBackground *bg;
     ResetBgsAndClearDma3BusyFlags(0);
     InitBgsFromTemplates(0, sDeckBattleBgTemplates, ARRAY_COUNT(sDeckBattleBgTemplates));
 
@@ -310,7 +324,7 @@ void LoadBattleBoxesAndBackground(void)
     LZDecompressVram(sDeckBattleInterfaceTilemap, (void *)(BG_SCREEN_ADDR(14)));
     LoadPalette(sDeckBattleInterfacePalette, BG_PLTT_ID(0), PLTT_SIZE_4BPP);
 
-    bg = &gDeckBackgrounds[GetCurrentTemplateRules()->background];
+    const struct DeckBattleBackground *bg = GetCurrentDeckBattleBackground();
     LZDecompressVram(bg->tiles, (void *)(BG_CHAR_ADDR(1)));
     LZDecompressVram(bg->map, (void *)(BG_SCREEN_ADDR(21)));
     LoadPalette(bg->palette, BG_PLTT_ID(1), PLTT_SIZE_4BPP);

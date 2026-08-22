@@ -36,6 +36,7 @@ struct DeckBattleGraphics
 };
 
 void ClearDeckBattleGraphicsStruct(void);
+const struct DeckBattleBackground * GetCurrentDeckBattleBackground(void);
 void LoadBattleBoxesAndBackground(void);
 void InitDeckBattleWindows(void);
 void InitDeckBattleGfx(void);
