@@ -367,9 +367,6 @@ static void DrawContinueAndSelectWindows(void)
     }
 }
 
-static const u8 sTextColor_Name[] = {TEXT_COLOR_TRANSPARENT, TEXT_DYNAMIC_COLOR_1, TEXT_COLOR_LIGHT_GRAY};
-static const u8 sTextColor_Stats[] = {TEXT_COLOR_TRANSPARENT, TEXT_COLOR_BLUE, TEXT_COLOR_LIGHT_GRAY};
-static const u8 sTextColor_Info[] = {TEXT_COLOR_TRANSPARENT, TEXT_COLOR_WHITE, TEXT_COLOR_LIGHT_GRAY};
 static const u8 sTextColor_Instructions[] = {TEXT_COLOR_TRANSPARENT, TEXT_COLOR_WHITE, TEXT_COLOR_DARK_GRAY};
 
 static void DrawStartButtonWindow(void)
@@ -387,36 +384,33 @@ static void DrawStartButtonWindow(void)
 
 static void DrawContinueScreenText(void)
 {
-    u8 * ptr;
-    u8 strFloor[0x20] = {0};
-    // u8 strMoney[0x20] = {0};
-    u8 strTime[0x20] = {0};
+    const u8 textColor[] = {TEXT_COLOR_TRANSPARENT, TEXT_COLOR_WHITE, TEXT_COLOR_DARK_GRAY};
 
-    // Load dynamic text colors.
-    u16 palette = RGB_WHITE; // gCharacterInfos[gSaveBlock1Ptr->characterId].color;
-    LoadPalette(&palette, BG_PLTT_ID(15) + 10, PLTT_SIZEOF(1));
-    palette = RGB(0, 0, 0); // dark gray used in BG top/bottom
-    LoadPalette(&palette, BG_PLTT_ID(15) + 11, PLTT_SIZEOF(1));
+    // Set up time of day string.
+	StringCopy(gStringVar1, COMPOUND_STRING("DAY "));
+	ConvertIntToDecimalStringN(gStringVar2, gSaveBlock1Ptr->day, STR_CONV_MODE_LEFT_ALIGN, 3);
+	StringAppend(gStringVar1, gStringVar2);
+
+    StringCopy(gStringVar2, COMPOUND_STRING(", "));
+	ConvertIntToDecimalStringN(gStringVar3, gSaveBlock1Ptr->hour, STR_CONV_MODE_LEADING_ZEROS, 2);
+	StringAppend(gStringVar2, gStringVar3);
+    StringAppend(gStringVar1, gStringVar2);
+
+    StringCopy(gStringVar2, COMPOUND_STRING(":"));
+	ConvertIntToDecimalStringN(gStringVar3, 0, STR_CONV_MODE_LEADING_ZEROS, 2);
+	StringAppend(gStringVar2, gStringVar3);
+    StringAppend(gStringVar1, gStringVar2);
+
+    if ((gSaveBlock1Ptr->halfDay == 0) != (gSaveBlock1Ptr->hour != 12)) // this is an XOR
+        StringCopy(gStringVar2, COMPOUND_STRING(" PM"));
+    else
+        StringCopy(gStringVar2, COMPOUND_STRING(" AM"));
+	StringAppend(gStringVar1, gStringVar2);
 
     // Load text into stats window.
-    AddTextPrinterParameterized3(sStartScreenWindowIds[WIN_INFO], FONT_NORMAL, 2, 0, sTextColor_Name, TEXT_SKIP_DRAW, gSaveBlock2Ptr->playerName);
-    AddTextPrinterParameterized3(sStartScreenWindowIds[WIN_INFO], FONT_NORMAL, 2, 16, sTextColor_Info, TEXT_SKIP_DRAW, COMPOUND_STRING("Floor"));
-    // AddTextPrinterParameterized3(sStartScreenWindowIds[WIN_INFO], FONT_NORMAL, 2, 32, sTextColor_Info, TEXT_SKIP_DRAW, COMPOUND_STRING("Gold"));
-    AddTextPrinterParameterized3(sStartScreenWindowIds[WIN_INFO], FONT_NORMAL, 2, 32, sTextColor_Info, TEXT_SKIP_DRAW, COMPOUND_STRING("Time"));
-
-    ConvertIntToDecimalStringN(strFloor, gSaveBlock1Ptr->currentFloor, STR_CONV_MODE_LEFT_ALIGN, 3);
-    AddTextPrinterParameterized3(sStartScreenWindowIds[WIN_INFO], FONT_NORMAL, GetStringRightAlignXOffset(FONT_NORMAL, strFloor, 126), 16, sTextColor_Info, TEXT_SKIP_DRAW, strFloor);
-    
-    // ptr = strMoney;
-    // *ptr = CHAR_CURRENCY;
-    // ptr = ConvertIntToDecimalStringN(ptr + 1, GetMoney(&gSaveBlock1Ptr->money), STR_CONV_MODE_LEFT_ALIGN, 6);
-    // AddTextPrinterParameterized3(WIN_INFO, FONT_NORMAL, GetStringRightAlignXOffset(FONT_NORMAL, strMoney, 126), 32, sTextColor_Info, TEXT_SKIP_DRAW, strMoney);
-    
-    ptr = ConvertIntToDecimalStringN(strTime, gSaveBlock2Ptr->playTimeHours, STR_CONV_MODE_LEFT_ALIGN, 3);
-    *ptr = CHAR_COLON;
-    ConvertIntToDecimalStringN(ptr + 1, gSaveBlock2Ptr->playTimeMinutes, STR_CONV_MODE_LEADING_ZEROS, 2);
-    AddTextPrinterParameterized3(sStartScreenWindowIds[WIN_INFO], FONT_NORMAL, GetStringRightAlignXOffset(FONT_NORMAL, strTime, 126), 32, sTextColor_Info, TEXT_SKIP_DRAW, strTime);
-
+    AddTextPrinterParameterized3(sStartScreenWindowIds[WIN_INFO], FONT_NORMAL, 2, 0, textColor, TEXT_SKIP_DRAW, gSaveBlock2Ptr->playerName);
+    AddTextPrinterParameterized3(sStartScreenWindowIds[WIN_INFO], FONT_NORMAL, 2, 16, textColor, TEXT_SKIP_DRAW, GetCurrentTemplateRules()->name);
+    AddTextPrinterParameterized3(sStartScreenWindowIds[WIN_INFO], FONT_NORMAL, 2, 32, textColor, TEXT_SKIP_DRAW, gStringVar1);
     CopyWindowToVram(sStartScreenWindowIds[WIN_INFO], COPYWIN_FULL);
 
     // Load text into main window.
@@ -538,6 +532,12 @@ static void NewRunInitData(void)
     ZeroEnemyPartyMons();
     gPlayerPartyCount = 0;
     gSaveBlock1Ptr->checkpoints = 0;
+    gSaveBlock1Ptr->trailX = 16;
+    gSaveBlock1Ptr->trailY = 8;
+    gSaveBlock1Ptr->hour = 9;
+    gSaveBlock1Ptr->halfDay = 0;
+    gSaveBlock1Ptr->day = 1;
+    gSaveBlock1Ptr->facing = DIR_SOUTH;
     ClearBag();
     PlayTimeCounter_Reset();
 }

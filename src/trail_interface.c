@@ -107,6 +107,7 @@ enum
     WIN_TIME,
     WIN_MESSAGE,
     WIN_YESNO,
+    WIN_LOCATION,
     WINDOW_COUNT,
 };
 
@@ -141,6 +142,16 @@ static const struct WindowTemplate sTrailInterfaceWinTemplates[WINDOW_COUNT + 1]
         .height = 4,
         .paletteNum = 15,
         .baseBlock = 1 + 14*2 + 28*4,
+    },
+    [WIN_LOCATION] =
+    {
+        .bg = 1,
+        .tilemapLeft = 0,
+        .tilemapTop = 0,
+        .width = 14,
+        .height = 2,
+        .paletteNum = 15,
+        .baseBlock = 1 + 14*2 + 28*4 + 5*4,
     },
     DUMMY_WIN_TEMPLATE
 };
@@ -333,6 +344,7 @@ static void Task_GoToCheckpoint(u8 taskId);
 static void LoadMapGraphics(u32 characterId);
 static void IncrementTime(u32 hours);
 static void PrintTime(void);
+static void PrintLocation(void);
 static void PrintTextToMessageBox(const u8 *str);
 static u32 CreateYesNoBox(void);
 static void ClearWindow(u32 windowId);
@@ -772,6 +784,9 @@ static void LoadMapGraphics(u32 characterId)
 
     // Print time.
     PrintTime();
+
+    // Print location.
+    PrintLocation();
 }
 
 // Increment time by set amount of hours and update text.
@@ -823,11 +838,21 @@ static void PrintTime(void)
         StringCopy(gStringVar2, COMPOUND_STRING(" AM"));
 	StringAppend(gStringVar1, gStringVar2);
 
-    u32 offset = GetStringRightAlignXOffset(FONT_NORMAL, gStringVar1, 108);
+    u32 offset = GetStringRightAlignXOffset(FONT_NORMAL, gStringVar1, 107);
     FillWindowPixelBuffer(WIN_TIME, PIXEL_FILL(0));
     AddTextPrinterParameterized3(WIN_TIME, FONT_NORMAL, 0 + offset, 0, textColor, TEXT_SKIP_DRAW, gStringVar1);
     CopyWindowToVram(WIN_TIME, COPYWIN_FULL);
     PutWindowTilemap(WIN_TIME);
+}
+
+// Print location to top left.
+static void PrintLocation(void)
+{
+	const u8 textColor[] = {TEXT_COLOR_TRANSPARENT, 1, 8};
+    FillWindowPixelBuffer(WIN_LOCATION, PIXEL_FILL(0));
+    AddTextPrinterParameterized3(WIN_LOCATION, FONT_NORMAL, 7, 0, textColor, TEXT_SKIP_DRAW, GetCurrentTemplateRules()->name);
+    CopyWindowToVram(WIN_LOCATION, COPYWIN_FULL);
+    PutWindowTilemap(WIN_LOCATION);
 }
 
 // Draw message box and print text.
@@ -950,7 +975,10 @@ static bool32 TryMoveInDirection(u32 dir)
     }
 
     // Update template type.
+    u8 templateType = gSaveBlock1Ptr->currentTemplateType;
     gSaveBlock1Ptr->currentTemplateType = GetTemplateTypeFromTrailPos();
+    if (templateType != gSaveBlock1Ptr->currentTemplateType)
+        PrintLocation();
 
     // Update position.
     switch (dir)

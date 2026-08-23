@@ -875,17 +875,6 @@ static bool8 TryArrowWarp(struct MapPosition *position, u16 metatileBehavior, u8
         // Warps back to trail map from overworld checkpoints.
         if (gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(INTRO_SEQUENCE))
         {
-            // Intro Sequence / Peony Town
-            if (gSaveBlock1Ptr->location.mapNum == MAP_NUM(INTRO_SEQUENCE))
-            {
-                gSaveBlock1Ptr->trailX = 16;
-                gSaveBlock1Ptr->trailY = 8;
-                gSaveBlock1Ptr->hour = 9;
-                gSaveBlock1Ptr->halfDay = 0;
-                gSaveBlock1Ptr->day = 1;
-                gSaveBlock1Ptr->facing = DIR_SOUTH;
-            }
-
             // Funky Forest North
             if (gSaveBlock1Ptr->location.mapNum == MAP_NUM(FUNKY_FOREST_NORTH1) && direction == DIR_NORTH)
             {
