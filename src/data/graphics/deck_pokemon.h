@@ -166,6 +166,18 @@ const u16 gBaltoyObjectPal[] = INCBIN_U16("graphics/deck_pokemon/baltoy/player_i
 const u8 gBaltoyPortraitGfx[] = INCBIN_U8("graphics/deck_pokemon/baltoy/portrait_normal.4bpp");
 const u16 gBaltoyPortraitPal[] = INCBIN_U16("graphics/deck_pokemon/baltoy/portrait_normal.gbapal");
 
+// Budew
+const u8 gBudewPlayerIdleGfx[] = INCBIN_U8("graphics/deck_pokemon/budew/player_idle.4bpp"); 
+const u8 gBudewOpponentIdleGfx[] = INCBIN_U8("graphics/deck_pokemon/budew/opponent_idle.4bpp"); 
+const u8 gBudewPlayerAttackGfx[] = INCBIN_U8("graphics/deck_pokemon/budew/player_attack.4bpp"); 
+const u8 gBudewOpponentAttackGfx[] = INCBIN_U8("graphics/deck_pokemon/budew/opponent_attack.4bpp"); 
+const u8 gBudewPlayerHurtGfx[] = INCBIN_U8("graphics/deck_pokemon/budew/player_hurt.4bpp"); 
+const u8 gBudewOpponentHurtGfx[] = INCBIN_U8("graphics/deck_pokemon/budew/opponent_hurt.4bpp"); 
+const u16 gBudewObjectPal[] = INCBIN_U16("graphics/deck_pokemon/budew/player_idle.gbapal"); 
+ 
+const u8 gBudewPortraitGfx[] = INCBIN_U8("graphics/deck_pokemon/budew/portrait_normal.4bpp"); 
+const u16 gBudewPortraitPal[] = INCBIN_U16("graphics/deck_pokemon/budew/portrait_normal.gbapal");
+
 // Chingling
 const u8 gChinglingPlayerIdleGfx[] = INCBIN_U8("graphics/deck_pokemon/chingling/player_idle.4bpp");
 const u8 gChinglingOpponentIdleGfx[] = INCBIN_U8("graphics/deck_pokemon/chingling/opponent_idle.4bpp");

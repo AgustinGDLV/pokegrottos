@@ -308,6 +308,28 @@ const struct DeckSpeciesInfo gDeckSpeciesInfo[NUM_SPECIES] =
         .portraitPalette = gBaltoyPortraitPal,
     },
 
+    [SPECIES_BUDEW] = 
+    { 
+        .baseHP = 100, 
+        .basePower = 100, 
+        .baseDef = 100, 
+        .move = MOVE_TACKLE, 
+        .ability = ABILITY_NONE, 
+    
+        .playerIdle = gBudewPlayerIdleGfx, 
+        .opponentIdle = gBudewOpponentIdleGfx, 
+        .playerAttack = gBudewPlayerAttackGfx, 
+        .opponentAttack = gBudewOpponentAttackGfx, 
+        .playerHurt = gBudewPlayerHurtGfx, 
+        .opponentHurt = gBudewOpponentHurtGfx, 
+        .objectPalette = gBudewObjectPal, 
+        .playerYOffset = 0, 
+        .opponentYOffset = 0, 
+    
+        .portrait = gBudewPortraitGfx, 
+        .portraitPalette = gBudewPortraitPal, 
+    },
+
     [SPECIES_CHINGLING] =
     {
         .baseHP = 50,
