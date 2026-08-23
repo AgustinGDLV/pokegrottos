@@ -259,9 +259,9 @@ const struct TemplateRules gTemplateRules[TEMPLATE_TYPES_COUNT] =
         }
     },
 
-    [TEMPLATES_CITY] =
+    [TEMPLATES_ORCHID_CITY] =
     {
-        .name = COMPOUND_STRING("Pidove City"),
+        .name = COMPOUND_STRING("Orchid City"),
         .mapGroup = MAP_GROUP(CITY_TEMPLATES_CONNECTIONS),
         .bgm = MUS_RG_CELADON,
         .background = BG_CITY,
@@ -316,9 +316,9 @@ const struct TemplateRules gTemplateRules[TEMPLATE_TYPES_COUNT] =
         }
     },
 
-    [TEMPLATES_VOLCANO] =
+    [TEMPLATES_SWEATY_SUMMIT] =
     {
-        .name = COMPOUND_STRING("Slugma Peak"),
+        .name = COMPOUND_STRING("Sweaty Summit"),
         .mapGroup = MAP_GROUP(VOLCANO_TEMPLATES_CONNECTIONS),
         .bgm = MUS_MT_CHIMNEY,
         .background = BG_VOLCANO,
@@ -343,9 +343,9 @@ const struct TemplateRules gTemplateRules[TEMPLATE_TYPES_COUNT] =
         }
     },
 
-    [TEMPLATES_CAVE] =
+    [TEMPLATES_TERRIBLE_TUNNEL] =
     {
-        .name = COMPOUND_STRING("Zubat Tunnels"),
+        .name = COMPOUND_STRING("Terrible Tunnel"),
         .mapGroup = MAP_GROUP(CAVE_TEMPLATES_CONNECTIONS),
         .bgm = MUS_DP_MT_CORONET,
         .background = BG_CAVE,
@@ -371,7 +371,7 @@ const struct TemplateRules gTemplateRules[TEMPLATE_TYPES_COUNT] =
         }
     },
 
-    [TEMPLATES_DESERT] =
+    [TEMPLATES_DEEP_DESERT] =
     {
         .name = COMPOUND_STRING("Deep Desert"),
         .mapGroup = MAP_GROUP(DESERT_TEMPLATES_CONNECTIONS),
@@ -401,12 +401,201 @@ const struct TemplateRules gTemplateRules[TEMPLATE_TYPES_COUNT] =
         }
     },
 
-    [TEMPLATES_FOREST] =
+    [TEMPLATES_FUNKY_FOREST] =
     {
         .name = COMPOUND_STRING("Funky Forest"),
         .mapGroup = MAP_GROUP(FOREST_TEMPLATES_CONNECTIONS),
         .bgm = MUS_RG_VIRIDIAN_FOREST,
         .background = BG_FOREST,
+        .connectionType = CONNECTION_TYPE_SEAMLESS,
+        .offsets = {
+            [DIR_NORTH] = {-2, -3, 6, 3},
+            [DIR_SOUTH] = {-2, 1, 6, 3},
+            [DIR_EAST] = {1, -2, 3, 4},
+            [DIR_WEST] = {-3, -1, 3, 4},
+        },
+        .numNormalRooms = ARRAY_COUNT(sForestNormalRooms),
+        .normalRoomIds = sForestNormalRooms,
+        .specialRoomIds = {
+            [BOSS_ROOM] = MAP_NUM(FOREST_TEMPLATES_BOSS_ROOM),
+            [TREASURE_ROOM] = MAP_NUM(FOREST_TEMPLATES_BOSS_ROOM),
+            [SHOP_ROOM] = MAP_NUM(FOREST_TEMPLATES_BOSS_ROOM),
+        },
+        .itemPools = gDefaultItemPools,
+        .encounterPool = {
+            {SPECIES_APPLIN, 100},
+            {SPECIES_SPEAROW, 100},
+        }
+    },
+
+    [TEMPLATES_FRIENDLY_FIELDS] =
+    {
+        .name = COMPOUND_STRING("Friendly Fields"),
+        .mapGroup = MAP_GROUP(FOREST_TEMPLATES_CONNECTIONS),
+        .bgm = MUS_RG_VIRIDIAN_FOREST,
+        .background = BG_GRASS,
+        .connectionType = CONNECTION_TYPE_SEAMLESS,
+        .offsets = {
+            [DIR_NORTH] = {-2, -3, 6, 3},
+            [DIR_SOUTH] = {-2, 1, 6, 3},
+            [DIR_EAST] = {1, -2, 3, 4},
+            [DIR_WEST] = {-3, -1, 3, 4},
+        },
+        .numNormalRooms = ARRAY_COUNT(sForestNormalRooms),
+        .normalRoomIds = sForestNormalRooms,
+        .specialRoomIds = {
+            [BOSS_ROOM] = MAP_NUM(FOREST_TEMPLATES_BOSS_ROOM),
+            [TREASURE_ROOM] = MAP_NUM(FOREST_TEMPLATES_BOSS_ROOM),
+            [SHOP_ROOM] = MAP_NUM(FOREST_TEMPLATES_BOSS_ROOM),
+        },
+        .itemPools = gDefaultItemPools,
+        .encounterPool = {
+            {SPECIES_APPLIN, 100},
+            {SPECIES_SPEAROW, 100},
+        }
+    },
+
+    [TEMPLATES_PEONY_TOWN] =
+    {
+        .name = COMPOUND_STRING("Peony Town"),
+        .mapGroup = MAP_GROUP(FOREST_TEMPLATES_CONNECTIONS),
+        .bgm = MUS_RG_VIRIDIAN_FOREST,
+        .background = BG_CITY,
+        .connectionType = CONNECTION_TYPE_SEAMLESS,
+        .offsets = {
+            [DIR_NORTH] = {-2, -3, 6, 3},
+            [DIR_SOUTH] = {-2, 1, 6, 3},
+            [DIR_EAST] = {1, -2, 3, 4},
+            [DIR_WEST] = {-3, -1, 3, 4},
+        },
+        .numNormalRooms = ARRAY_COUNT(sForestNormalRooms),
+        .normalRoomIds = sForestNormalRooms,
+        .specialRoomIds = {
+            [BOSS_ROOM] = MAP_NUM(FOREST_TEMPLATES_BOSS_ROOM),
+            [TREASURE_ROOM] = MAP_NUM(FOREST_TEMPLATES_BOSS_ROOM),
+            [SHOP_ROOM] = MAP_NUM(FOREST_TEMPLATES_BOSS_ROOM),
+        },
+        .itemPools = gDefaultItemPools,
+        .encounterPool = {
+            {SPECIES_APPLIN, 100},
+            {SPECIES_SPEAROW, 100},
+        }
+    },
+
+    [TEMPLATES_COOL_COAST] =
+    {
+        .name = COMPOUND_STRING("Cool Coast"),
+        .mapGroup = MAP_GROUP(FOREST_TEMPLATES_CONNECTIONS),
+        .bgm = MUS_RG_VIRIDIAN_FOREST,
+        .background = BG_GRASS,
+        .connectionType = CONNECTION_TYPE_SEAMLESS,
+        .offsets = {
+            [DIR_NORTH] = {-2, -3, 6, 3},
+            [DIR_SOUTH] = {-2, 1, 6, 3},
+            [DIR_EAST] = {1, -2, 3, 4},
+            [DIR_WEST] = {-3, -1, 3, 4},
+        },
+        .numNormalRooms = ARRAY_COUNT(sForestNormalRooms),
+        .normalRoomIds = sForestNormalRooms,
+        .specialRoomIds = {
+            [BOSS_ROOM] = MAP_NUM(FOREST_TEMPLATES_BOSS_ROOM),
+            [TREASURE_ROOM] = MAP_NUM(FOREST_TEMPLATES_BOSS_ROOM),
+            [SHOP_ROOM] = MAP_NUM(FOREST_TEMPLATES_BOSS_ROOM),
+        },
+        .itemPools = gDefaultItemPools,
+        .encounterPool = {
+            {SPECIES_APPLIN, 100},
+            {SPECIES_SPEAROW, 100},
+        }
+    },
+
+    [TEMPLATES_SMELLY_SWAMP] =
+    {
+        .name = COMPOUND_STRING("Smelly Swamp"),
+        .mapGroup = MAP_GROUP(FOREST_TEMPLATES_CONNECTIONS),
+        .bgm = MUS_RG_VIRIDIAN_FOREST,
+        .background = BG_FOREST,
+        .connectionType = CONNECTION_TYPE_SEAMLESS,
+        .offsets = {
+            [DIR_NORTH] = {-2, -3, 6, 3},
+            [DIR_SOUTH] = {-2, 1, 6, 3},
+            [DIR_EAST] = {1, -2, 3, 4},
+            [DIR_WEST] = {-3, -1, 3, 4},
+        },
+        .numNormalRooms = ARRAY_COUNT(sForestNormalRooms),
+        .normalRoomIds = sForestNormalRooms,
+        .specialRoomIds = {
+            [BOSS_ROOM] = MAP_NUM(FOREST_TEMPLATES_BOSS_ROOM),
+            [TREASURE_ROOM] = MAP_NUM(FOREST_TEMPLATES_BOSS_ROOM),
+            [SHOP_ROOM] = MAP_NUM(FOREST_TEMPLATES_BOSS_ROOM),
+        },
+        .itemPools = gDefaultItemPools,
+        .encounterPool = {
+            {SPECIES_APPLIN, 100},
+            {SPECIES_SPEAROW, 100},
+        }
+    },
+
+    [TEMPLATES_TULIP_TOWN] =
+    {
+        .name = COMPOUND_STRING("Tulip Town"),
+        .mapGroup = MAP_GROUP(FOREST_TEMPLATES_CONNECTIONS),
+        .bgm = MUS_RG_VIRIDIAN_FOREST,
+        .background = BG_CITY,
+        .connectionType = CONNECTION_TYPE_SEAMLESS,
+        .offsets = {
+            [DIR_NORTH] = {-2, -3, 6, 3},
+            [DIR_SOUTH] = {-2, 1, 6, 3},
+            [DIR_EAST] = {1, -2, 3, 4},
+            [DIR_WEST] = {-3, -1, 3, 4},
+        },
+        .numNormalRooms = ARRAY_COUNT(sForestNormalRooms),
+        .normalRoomIds = sForestNormalRooms,
+        .specialRoomIds = {
+            [BOSS_ROOM] = MAP_NUM(FOREST_TEMPLATES_BOSS_ROOM),
+            [TREASURE_ROOM] = MAP_NUM(FOREST_TEMPLATES_BOSS_ROOM),
+            [SHOP_ROOM] = MAP_NUM(FOREST_TEMPLATES_BOSS_ROOM),
+        },
+        .itemPools = gDefaultItemPools,
+        .encounterPool = {
+            {SPECIES_APPLIN, 100},
+            {SPECIES_SPEAROW, 100},
+        }
+    },
+
+    [TEMPLATES_POSITIVE_PLAINS] =
+    {
+        .name = COMPOUND_STRING("Positive Plains"),
+        .mapGroup = MAP_GROUP(FOREST_TEMPLATES_CONNECTIONS),
+        .bgm = MUS_RG_VIRIDIAN_FOREST,
+        .background = BG_GRASS,
+        .connectionType = CONNECTION_TYPE_SEAMLESS,
+        .offsets = {
+            [DIR_NORTH] = {-2, -3, 6, 3},
+            [DIR_SOUTH] = {-2, 1, 6, 3},
+            [DIR_EAST] = {1, -2, 3, 4},
+            [DIR_WEST] = {-3, -1, 3, 4},
+        },
+        .numNormalRooms = ARRAY_COUNT(sForestNormalRooms),
+        .normalRoomIds = sForestNormalRooms,
+        .specialRoomIds = {
+            [BOSS_ROOM] = MAP_NUM(FOREST_TEMPLATES_BOSS_ROOM),
+            [TREASURE_ROOM] = MAP_NUM(FOREST_TEMPLATES_BOSS_ROOM),
+            [SHOP_ROOM] = MAP_NUM(FOREST_TEMPLATES_BOSS_ROOM),
+        },
+        .itemPools = gDefaultItemPools,
+        .encounterPool = {
+            {SPECIES_APPLIN, 100},
+            {SPECIES_SPEAROW, 100},
+        }
+    },
+
+    [TEMPLATES_FROSTY_FLATS] =
+    {
+        .name = COMPOUND_STRING("Frosty Flats"),
+        .mapGroup = MAP_GROUP(FOREST_TEMPLATES_CONNECTIONS),
+        .bgm = MUS_RG_VIRIDIAN_FOREST,
+        .background = BG_GRASS,
         .connectionType = CONNECTION_TYPE_SEAMLESS,
         .offsets = {
             [DIR_NORTH] = {-2, -3, 6, 3},

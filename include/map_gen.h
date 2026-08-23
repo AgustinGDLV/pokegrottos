@@ -35,13 +35,20 @@ struct Room {
 };
 
 enum TemplateTypes {
-    TEMPLATES_CITY,
-    TEMPLATES_UNDERWATER,
-    TEMPLATES_ICE_PATH,
-    TEMPLATES_VOLCANO,
-    TEMPLATES_CAVE,
-    TEMPLATES_DESERT,
-    TEMPLATES_FOREST,
+    TEMPLATES_ORCHID_CITY,      // Orchid City
+    TEMPLATES_UNDERWATER,       // Unused
+    TEMPLATES_ICE_PATH,         // Unused
+    TEMPLATES_SWEATY_SUMMIT,    // Sweaty Summit
+    TEMPLATES_TERRIBLE_TUNNEL,  // Terrible Tunnel
+    TEMPLATES_DEEP_DESERT,      // Deep Desert
+    TEMPLATES_FUNKY_FOREST,     // Funky Forest
+    TEMPLATES_PEONY_TOWN,       // Peony Town
+    TEMPLATES_FRIENDLY_FIELDS,  // Friendly Fields
+    TEMPLATES_COOL_COAST,       // Cool Coast
+    TEMPLATES_SMELLY_SWAMP,     // Smelly Swamp
+    TEMPLATES_TULIP_TOWN,       // Tulip Town
+    TEMPLATES_POSITIVE_PLAINS,  // Positive Plains
+    TEMPLATES_FROSTY_FLATS,     // Frosty Flats
     TEMPLATE_TYPES_COUNT,
 };
 

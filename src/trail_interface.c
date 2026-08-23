@@ -282,41 +282,41 @@ const u8 gTrailMapCheckpointData[TRAIL_MAP_HEIGHT][TRAIL_MAP_WIDTH] = // TODO: S
 {
     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
     {0, 0, CHECKPOINT_PEONY_TOWN, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
     {0, 0, CHECKPOINT_FUNKY_FOREST_NORTH, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-    {0, CHECKPOINT_FUNKY_FOREST_EAST, 1, 1, 1, CHECKPOINT_FUNKY_FOREST_WEST, 1, 1, 1, CHECKPOINT_COOL_COAST_NORTH, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, CHECKPOINT_FUNKY_FOREST_EAST, 1, 1, 1, CHECKPOINT_FUNKY_FOREST_WEST, 1, 1, 1, CHECKPOINT_SMELLY_SWAMP, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
     {0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
     {0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
     {0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-    {0, CHECKPOINT_DEEP_DESERT_WEST, 1, 1, 1, CHECKPOINT_DEEP_DESERT_EAST, 1, 1, 1, 1, 1, 1, CHECKPOINT_COOL_COAST_EAST, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, CHECKPOINT_DEEP_DESERT_WEST, 1, 1, 1, CHECKPOINT_DEEP_DESERT_EAST, 1, 1, 1, 1, 1, 1, CHECKPOINT_COOL_COAST, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
     {0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-    {0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 1, CHECKPOINT_MOLTEN_MOUNTAIN_NORTH, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0},
-    {0, 0, 0, CHECKPOINT_DEEP_DESERT_SOUTH, 1, 1, 1, 1, 1, CHECKPOINT_TULIP_TOWN, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, CHECKPOINT_ORCHID_CITY, 0, 0, 0},
-    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, CHECKPOINT_MOLTEN_MOUNTAIN_SOUTH, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 1, CHECKPOINT_TERRIBLE_TUNNEL_NORTH, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, CHECKPOINT_MOLTEN_MOUNTAIN, 1, 1, 1, 1, 1, CHECKPOINT_TULIP_TOWN, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, CHECKPOINT_ORCHID_CITY, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, CHECKPOINT_TERRIBLE_TUNNEL_SOUTH, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0},
     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
 };
 
 const u8 gTrailMapTemplateData[TRAIL_MAP_HEIGHT][TRAIL_MAP_WIDTH] = // TODO: Something readable; incomplete
 {
     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-    {0, 0, TEMPLATES_CITY, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-    {0, 0, TEMPLATES_FOREST, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-    {0, 0, TEMPLATES_FOREST, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-    {0, 0, TEMPLATES_FOREST, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-    {0, 0, TEMPLATES_FOREST, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-    {0, 0, TEMPLATES_FOREST, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-    {0, TEMPLATES_FOREST, TEMPLATES_FOREST, TEMPLATES_FOREST, TEMPLATES_FOREST, TEMPLATES_FOREST, 1, 1, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-    {0, TEMPLATES_FOREST, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-    {0, TEMPLATES_FOREST, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-    {0, TEMPLATES_DESERT, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-    {0, TEMPLATES_FOREST, TEMPLATES_DESERT, TEMPLATES_DESERT, TEMPLATES_DESERT, 2, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-    {0, 0, 0, TEMPLATES_DESERT, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-    {0, 0, 0, TEMPLATES_DESERT, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 1, 2, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0},
-    {0, 0, 0, TEMPLATES_DESERT, TEMPLATES_DESERT, TEMPLATES_DESERT, TEMPLATES_DESERT, TEMPLATES_FOREST, TEMPLATES_FOREST, 2, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 2, 0, 0, 0},
-    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 2, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, TEMPLATES_PEONY_TOWN, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, TEMPLATES_FRIENDLY_FIELDS, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, TEMPLATES_FRIENDLY_FIELDS, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, TEMPLATES_FUNKY_FOREST, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, TEMPLATES_FUNKY_FOREST, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, TEMPLATES_FUNKY_FOREST, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, TEMPLATES_FUNKY_FOREST, TEMPLATES_FUNKY_FOREST, TEMPLATES_FUNKY_FOREST, TEMPLATES_FUNKY_FOREST, TEMPLATES_FUNKY_FOREST, TEMPLATES_FUNKY_FOREST, TEMPLATES_FRIENDLY_FIELDS, TEMPLATES_FRIENDLY_FIELDS, TEMPLATES_SMELLY_SWAMP, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, TEMPLATES_FRIENDLY_FIELDS, 0, 0, 0, 0, 0, 0, 0, TEMPLATES_POSITIVE_PLAINS, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, TEMPLATES_FRIENDLY_FIELDS, 0, 0, 0, 0, 0, 0, 0, TEMPLATES_POSITIVE_PLAINS, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, TEMPLATES_DEEP_DESERT, 0, 0, 0, 0, 0, 0, 0, TEMPLATES_POSITIVE_PLAINS, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, TEMPLATES_DEEP_DESERT, TEMPLATES_DEEP_DESERT, TEMPLATES_DEEP_DESERT, TEMPLATES_DEEP_DESERT, TEMPLATES_DEEP_DESERT, TEMPLATES_POSITIVE_PLAINS, TEMPLATES_POSITIVE_PLAINS, TEMPLATES_POSITIVE_PLAINS, TEMPLATES_POSITIVE_PLAINS, TEMPLATES_POSITIVE_PLAINS, TEMPLATES_COOL_COAST, TEMPLATES_COOL_COAST, TEMPLATES_COOL_COAST, TEMPLATES_COOL_COAST, TEMPLATES_COOL_COAST, TEMPLATES_COOL_COAST, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, TEMPLATES_DEEP_DESERT, 0, 0, 0, 0, 0, TEMPLATES_POSITIVE_PLAINS, 0, 0, 0, 0, 0, 0, TEMPLATES_COOL_COAST, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, TEMPLATES_SWEATY_SUMMIT, 0, 0, 0, 0, 0, TEMPLATES_POSITIVE_PLAINS, 0, 0, 0, TEMPLATES_TERRIBLE_TUNNEL, TEMPLATES_TERRIBLE_TUNNEL, TEMPLATES_TERRIBLE_TUNNEL, TEMPLATES_TERRIBLE_TUNNEL, TEMPLATES_TERRIBLE_TUNNEL, TEMPLATES_TERRIBLE_TUNNEL, TEMPLATES_TERRIBLE_TUNNEL, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, TEMPLATES_SWEATY_SUMMIT, TEMPLATES_SWEATY_SUMMIT, TEMPLATES_DEEP_DESERT, TEMPLATES_FROSTY_FLATS, TEMPLATES_FROSTY_FLATS, TEMPLATES_FROSTY_FLATS, TEMPLATES_TULIP_TOWN, TEMPLATES_FROSTY_FLATS, TEMPLATES_FROSTY_FLATS, TEMPLATES_FROSTY_FLATS, TEMPLATES_TERRIBLE_TUNNEL, 0, 0, 0, 0, 0, TEMPLATES_TERRIBLE_TUNNEL, TEMPLATES_FROSTY_FLATS, TEMPLATES_FROSTY_FLATS, TEMPLATES_FROSTY_FLATS, TEMPLATES_FROSTY_FLATS, TEMPLATES_ORCHID_CITY, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, TEMPLATES_TERRIBLE_TUNNEL, TEMPLATES_TERRIBLE_TUNNEL, TEMPLATES_TERRIBLE_TUNNEL, TEMPLATES_TERRIBLE_TUNNEL, TEMPLATES_TERRIBLE_TUNNEL, TEMPLATES_TERRIBLE_TUNNEL, TEMPLATES_TERRIBLE_TUNNEL, 0, 0, 0, 0, 0, 0, 0, 0},
     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
 };
 
@@ -434,6 +434,7 @@ void CB2_InitTrailInterface(void)
             gMain.state++;
             break;
         case 8:
+            ResetMapMusic();
             PlayBGM(MUS_ROUTE119);
             ClearContinueGameWarpStatus();
             FadeScreen(FADE_FROM_BLACK, 2);
@@ -974,12 +975,6 @@ static bool32 TryMoveInDirection(u32 dir)
         gSaveBlock1Ptr->facing = dir;
     }
 
-    // Update template type.
-    u8 templateType = gSaveBlock1Ptr->currentTemplateType;
-    gSaveBlock1Ptr->currentTemplateType = GetTemplateTypeFromTrailPos();
-    if (templateType != gSaveBlock1Ptr->currentTemplateType)
-        PrintLocation();
-
     // Update position.
     switch (dir)
     {
@@ -996,5 +991,12 @@ static bool32 TryMoveInDirection(u32 dir)
             gSaveBlock1Ptr->trailX -= 1;    
             break;
     }
+
+    // Update template type.
+    u8 templateType = gSaveBlock1Ptr->currentTemplateType;
+    gSaveBlock1Ptr->currentTemplateType = GetTemplateTypeFromTrailPos();
+    if (templateType != gSaveBlock1Ptr->currentTemplateType)
+        PrintLocation();
+
     return TRUE;
 }
