@@ -10,6 +10,7 @@
     "gMapGroup_ForestTemplates",
     "gMapGroup_SwampTemplates",
     "gMapGroup_TundraTemplates",
+    "gMapGroup_Checkpoints",
     "gMapGroup_TownsAndRoutes",
     "gMapGroup_IndoorLittleroot",
     "gMapGroup_IndoorOldale",
@@ -118,6 +119,10 @@
   "gMapGroup_TundraTemplates": [
 
   ],
+  "gMapGroup_Checkpoints": [
+    "IntroSequence",
+    "FunkyForestNorth1"
+  ],
   "gMapGroup_TownsAndRoutes": [
     "PetalburgCity",
     "SlateportCity",
@@ -175,8 +180,7 @@
     "Underwater_Route128",
     "Underwater_Route129",
     "Underwater_Route105",
-    "Underwater_Route125",
-    "IntroSequence"
+    "Underwater_Route125"
   ],
   "gMapGroup_IndoorLittleroot": [
     "LittlerootTown_BrendansHouse_1F",

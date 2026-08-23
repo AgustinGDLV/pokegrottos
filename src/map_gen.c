@@ -309,7 +309,6 @@ bool32 TryWarpToRoom(u32 target, u32 warpId)
     // Do warp.
     StoreInitialPlayerAvatarState();
     LockPlayerFieldControls();
-    // TryFadeOutOldMapMusic();
     PlayBGM(GetCurrentTemplateRules()->bgm);
     WarpFadeOutScreen();
     PlayRainStoppingSoundEffect();

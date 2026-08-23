@@ -1077,7 +1077,8 @@ struct SaveBlock1
               u16 floorSeed;            // stores the seed of the current floor
               u16 unidSeed;             // stores the seed for unidentified items
               u32 visitedRooms[4];      // long bitfield
-              u32 identifiedItems[2];   // long bitfield
+              u32 checkpoints;          // long bitfield
+              u32 buffer;               // buffer
               u16 shopItems[11];        // stores the current stock of the Kecleon Shop
               u8 currentTemplateType;   // current template type for use outside of active run
               u32 unlockedCharacters;   // long bitfield

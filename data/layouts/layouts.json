@@ -4920,6 +4920,16 @@
       "secondary_tileset": "gTileset_Unused1",
       "border_filepath": "data/layouts/ForestTemplates_Room1/border.bin",
       "blockdata_filepath": "data/layouts/ForestTemplates_Room1/map.bin"
+    },
+    {
+      "id": "LAYOUT_FUNKY_FOREST_NORTH1",
+      "name": "FunkyForestNorth1_Layout",
+      "width": 30,
+      "height": 30,
+      "primary_tileset": "gTileset_Forest",
+      "secondary_tileset": "gTileset_Unused2",
+      "border_filepath": "data/layouts/FunkyForestNorth1/border.bin",
+      "blockdata_filepath": "data/layouts/FunkyForestNorth1/map.bin"
     }
   ]
 }

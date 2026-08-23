@@ -271,11 +271,11 @@ const u8 gTrailMapCheckpointData[TRAIL_MAP_HEIGHT][TRAIL_MAP_WIDTH] = // TODO: S
 {
     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
     {0, 0, CHECKPOINT_PEONY_TOWN, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-    {0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-    {0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
     {0, 0, CHECKPOINT_FUNKY_FOREST_NORTH, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-    {0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-    {0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
     {0, CHECKPOINT_FUNKY_FOREST_EAST, 1, 1, 1, CHECKPOINT_FUNKY_FOREST_WEST, 1, 1, 1, CHECKPOINT_COOL_COAST_NORTH, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
     {0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
     {0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
@@ -309,6 +309,19 @@ const u8 gTrailMapTemplateData[TRAIL_MAP_HEIGHT][TRAIL_MAP_WIDTH] = // TODO: Som
     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
 };
 
+const struct CheckpointData gCheckpointData[CHECKPOINT_COUNT] =
+{
+    [CHECKPOINT_FUNKY_FOREST_NORTH] =
+    {
+        .name = COMPOUND_STRING("Funky Forest"),
+        .mapNum = MAP_NUM(FUNKY_FOREST_NORTH1),
+        .warpId = {
+            [DIR_NORTH] = 2,
+            [DIR_SOUTH] = 0,
+        }
+    },
+};
+
 // forward declarations
 static void MainCB2_TrailMap(void);
 static void VBlankCB2_TrailMap(void);
@@ -316,6 +329,7 @@ static void Task_OpenTrailMap(u8 taskId);
 static void Task_TrailMapWaitForKeypress(u8 taskId);
 static void Task_SaveAndExit(u8 taskId);
 static void Task_GoToOverworldCamp(u8 taskId);
+static void Task_GoToCheckpoint(u8 taskId);
 static void LoadMapGraphics(u32 characterId);
 static void IncrementTime(u32 hours);
 static void PrintTime(void);
@@ -323,6 +337,7 @@ static void PrintTextToMessageBox(const u8 *str);
 static u32 CreateYesNoBox(void);
 static void ClearWindow(u32 windowId);
 static bool32 CheckCollisionInDirection(u32 dir);
+static bool32 CheckCheckpointTrigger(void);
 static bool32 TryMoveInDirection(u32 dir);
 
 // UI functions
@@ -456,6 +471,11 @@ static void Task_TrailMapWaitForKeypress(u8 taskId)
         if (TryMoveInDirection(DIR_WEST))
             IncrementTime(1);
     }
+    if ((JOY_NEW(DPAD_ANY) || JOY_HELD(DPAD_ANY)) && CheckCheckpointTrigger())
+    {
+        PlaySE(SE_SELECT);
+        gTasks[taskId].func = Task_GoToCheckpoint;
+    }
 
     if (JOY_NEW(START_BUTTON))
     {
@@ -530,7 +550,6 @@ static void Task_GoToOverworldCamp(u8 taskId)
     switch (gTasks[taskId].data[0])
     {
         case 0: // Print message and yes no box.
-            PlaySE(SE_SELECT);
             PrintTextToMessageBox(COMPOUND_STRING("Stop to camp?"));
             gTasks[taskId].data[2] = CreateYesNoBox();
             ++gTasks[taskId].data[0];
@@ -576,7 +595,7 @@ static void Task_GoToOverworldCamp(u8 taskId)
             FadeScreen(FADE_TO_BLACK, 0);
             ++gTasks[taskId].data[0];
             break;
-        case 4:
+        case 4: // Warp.
             if (!gPaletteFade.active)
             {
                 TryWarpToRoom(STARTING_ROOM, 0xFF);
@@ -589,7 +608,106 @@ static void Task_GoToOverworldCamp(u8 taskId)
                 DestroyTask(taskId);
             }
             break;
-        case 5:
+        case 5: // Return to trail map.
+            ClearWindow(WIN_MESSAGE);
+            ClearWindow(WIN_YESNO);
+            gTasks[taskId].func = Task_TrailMapWaitForKeypress;
+            gTasks[taskId].data[0] = 0;
+            break;
+    }
+}
+
+// Trigger warp to checkpoint.
+static void Task_GoToCheckpoint(u8 taskId)
+{
+    enum Checkpoint checkpoint = gTrailMapCheckpointData[gSaveBlock1Ptr->trailY/8][gSaveBlock1Ptr->trailX/8];
+    DebugPrintf("here");
+    switch (gTasks[taskId].data[0])
+    {
+        case 0: // Route to correct step.
+            if (gCheckpointData[checkpoint].mapNum == 0) // Safety check
+            {
+                gTasks[taskId].func = Task_TrailMapWaitForKeypress;
+                return;
+            }
+            else if (gSaveBlock1Ptr->checkpoints & (1 << checkpoint)) // Yes no
+            {
+                ++gTasks[taskId].data[0];
+            }
+            else // No choice
+            {
+                gTasks[taskId].data[0] = 6;
+            }
+            break;
+        case 1: // Print message and yes no box.
+            StringCopy(gStringVar1, COMPOUND_STRING("Stop at "));
+            StringAppend(gStringVar1, gCheckpointData[checkpoint].name);
+            StringAppend(gStringVar1, COMPOUND_STRING("?"));
+            PrintTextToMessageBox(gStringVar1);
+            gTasks[taskId].data[2] = CreateYesNoBox();
+            ++gTasks[taskId].data[0];
+            break;
+        case 2: // Process menu input.
+        {
+            u32 input = ListMenu_ProcessInput(gTasks[taskId].data[2]);
+            if (gMain.newKeys & A_BUTTON)
+            {
+                PlaySE(SE_SELECT);
+                DestroyTask(gTasks[taskId].data[2]);
+                if (input == 0) gTasks[taskId].data[0] += 1;
+                else gTasks[taskId].data[0] = 8;
+            }
+            else if (gMain.newKeys & B_BUTTON)
+            {
+                PlaySE(SE_SELECT);
+                DestroyTask(gTasks[taskId].data[2]);
+                gTasks[taskId].data[0] = 8;
+            }
+            break;
+        }
+        case 3: // Autosave.
+            TrySavingData(SAVE_LINK);
+            ++gTasks[taskId].data[0];
+            break;
+        case 4: // Confirm save and begin warp.
+            PlaySE(SE_SAVE);
+            FadeScreen(FADE_TO_BLACK, 0);
+            ++gTasks[taskId].data[0];
+            break;
+        case 5: // Go to map.
+            if (!gPaletteFade.active)
+            {
+                StoreInitialPlayerAvatarState();
+                LockPlayerFieldControls();
+                PlayBGM(GetCurrentTemplateRules()->bgm);
+                WarpFadeOutScreen();
+                PlayRainStoppingSoundEffect();
+                SetWarpDestination(MAP_GROUP(INTRO_SEQUENCE), gCheckpointData[checkpoint].mapNum, gCheckpointData[checkpoint].warpId[gSaveBlock1Ptr->facing], 0, 0);
+                WarpIntoMap();
+                SetMainCallback2(CB2_LoadMap);
+
+                // Clean up data.
+                Free(sTrailMapTilemapPtr);
+                sTrailMapTilemapPtr = NULL;
+                FreeAllWindowBuffers();
+                ResetSpriteData();
+                UnlockPlayerFieldControls();
+                UnfreezeObjectEvents();
+                DestroyTask(taskId);
+            }
+            break;
+        case 6: // Print message with no yes no box.
+            StringCopy(gStringVar1, COMPOUND_STRING("Stopping at "));
+            StringAppend(gStringVar1, gCheckpointData[checkpoint].name);
+            StringAppend(gStringVar1, COMPOUND_STRING("…"));
+            PrintTextToMessageBox(gStringVar1);
+            ++gTasks[taskId].data[0];
+            break;
+        case 7: // Wait for input.
+            if (JOY_NEW(A_BUTTON))
+                gTasks[taskId].data[0] = 3;
+            break;
+        case 8: // Return to trail map.
             ClearWindow(WIN_MESSAGE);
             ClearWindow(WIN_YESNO);
             gTasks[taskId].func = Task_TrailMapWaitForKeypress;
@@ -649,7 +767,7 @@ static void LoadMapGraphics(u32 characterId)
 
     // Update palette blend.
     UpdateTimeOfDay();
-    u32 palettes = PALETTES_ALL & ~(1 << 15);
+    u32 palettes = PALETTES_ALL & ~((1 << 15) | (1 << 14));
     TimeMixPalettes(palettes, gPlttBufferUnfaded, gPlttBufferFaded, &gTimeBlend.startBlend, &gTimeBlend.endBlend, gTimeBlend.weight);
 
     // Print time.
@@ -801,6 +919,20 @@ static bool32 CheckCollisionInDirection(u32 dir)
             return TRUE;
     }
 
+    return FALSE;
+}
+
+static bool32 CheckCheckpointTrigger(void)
+{    
+    u8 x = gSaveBlock1Ptr->trailX / 8;
+    u8 y = gSaveBlock1Ptr->trailY / 8;
+
+    if ((gSaveBlock1Ptr->trailX % 8 == 0)
+        && (gSaveBlock1Ptr->trailY % 8 == 0)
+        && (gTrailMapCollisionData[y][x] == 2))
+    {
+        return TRUE;
+    }
     return FALSE;
 }
 

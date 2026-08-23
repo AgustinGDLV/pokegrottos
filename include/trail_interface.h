@@ -21,6 +21,14 @@ enum Checkpoint
     CHECKPOINT_MOLTEN_MOUNTAIN_NORTH,
     CHECKPOINT_MOLTEN_MOUNTAIN_SOUTH,
     CHECKPOINT_ORCHID_CITY,
+    CHECKPOINT_COUNT,
+};
+
+struct CheckpointData
+{
+    const u8 *name;
+    u8 mapNum;
+    u8 warpId[5]; // facing direction
 };
 
 struct TrailInterface
@@ -32,5 +40,6 @@ struct TrailInterface
 
 extern const u8 gTrailMapData[TRAIL_MAP_HEIGHT][TRAIL_MAP_WIDTH];
 extern struct TrailInterface gTrailInterface;
+extern const struct CheckpointData gCheckpointData[CHECKPOINT_COUNT];
 
 #endif

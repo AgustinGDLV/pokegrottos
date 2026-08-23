@@ -1239,3 +1239,5 @@ EventScript_VsSeekerChargingDone::
 	.include "data/maps/IntroSequence/scripts.inc"
 
 	.include "data/maps/ForestTemplates_Room1/scripts.inc"
+
+	.include "data/maps/FunkyForestNorth1/scripts.inc"

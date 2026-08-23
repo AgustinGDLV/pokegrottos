@@ -537,6 +537,7 @@ static void NewRunInitData(void)
     ZeroPlayerPartyMons();
     ZeroEnemyPartyMons();
     gPlayerPartyCount = 0;
+    gSaveBlock1Ptr->checkpoints = 0;
     ClearBag();
     PlayTimeCounter_Reset();
 }

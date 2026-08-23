@@ -872,16 +872,36 @@ static bool8 TryArrowWarp(struct MapPosition *position, u16 metatileBehavior, u8
 
     if (IsArrowWarpMetatileBehavior(metatileBehavior, direction) == TRUE)
     {
-        // TODO: Put this elsewhere?
-        if (gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(INTRO_SEQUENCE) && gSaveBlock1Ptr->location.mapNum == MAP_NUM(INTRO_SEQUENCE))
+        // Warps back to trail map from overworld checkpoints.
+        if (gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(INTRO_SEQUENCE))
         {
-            PlaySE(SE_WARP_IN);
-            gSaveBlock1Ptr->trailX = 16;
-            gSaveBlock1Ptr->trailY = 8;
-            gSaveBlock1Ptr->hour = 8;
-            gSaveBlock1Ptr->halfDay = 0;
-            gSaveBlock1Ptr->day = 1;
-            gSaveBlock1Ptr->facing = DIR_SOUTH;
+            // Intro Sequence / Peony Town
+            if (gSaveBlock1Ptr->location.mapNum == MAP_NUM(INTRO_SEQUENCE))
+            {
+                gSaveBlock1Ptr->trailX = 16;
+                gSaveBlock1Ptr->trailY = 8;
+                gSaveBlock1Ptr->hour = 9;
+                gSaveBlock1Ptr->halfDay = 0;
+                gSaveBlock1Ptr->day = 1;
+                gSaveBlock1Ptr->facing = DIR_SOUTH;
+            }
+
+            // Funky Forest North
+            if (gSaveBlock1Ptr->location.mapNum == MAP_NUM(FUNKY_FOREST_NORTH1) && direction == DIR_NORTH)
+            {
+                gSaveBlock1Ptr->trailX = 16;
+                gSaveBlock1Ptr->trailY = 31;
+                gSaveBlock1Ptr->facing = DIR_NORTH;
+            }
+            if (gSaveBlock1Ptr->location.mapNum == MAP_NUM(FUNKY_FOREST_NORTH1) && direction == DIR_EAST)
+            {
+                gSaveBlock1Ptr->trailX = 16;
+                gSaveBlock1Ptr->trailY = 33;
+                gSaveBlock1Ptr->checkpoints |= (1 << CHECKPOINT_FUNKY_FOREST_NORTH);
+                gSaveBlock1Ptr->facing = DIR_SOUTH;
+            }
+
+            PlaySE(SE_EXIT);
             SetMainCallback2(CB2_InitTrailInterface);
             FadeScreen(FADE_TO_BLACK, 2);
             return TRUE;
