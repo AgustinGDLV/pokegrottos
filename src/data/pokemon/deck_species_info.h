@@ -1,5 +1,27 @@
 const struct DeckSpeciesInfo gDeckSpeciesInfo[NUM_SPECIES] =
 {
+    [SPECIES_CATERPIE] = 
+    { 
+        .baseHP = 100, 
+        .basePower = 100, 
+        .baseDef = 100, 
+        .move = MOVE_TACKLE, 
+        .ability = ABILITY_NONE, 
+    
+        .playerIdle = gCaterpiePlayerIdleGfx, 
+        .opponentIdle = gCaterpieOpponentIdleGfx, 
+        .playerAttack = gCaterpiePlayerAttackGfx, 
+        .opponentAttack = gCaterpieOpponentAttackGfx, 
+        .playerHurt = gCaterpiePlayerHurtGfx, 
+        .opponentHurt = gCaterpieOpponentHurtGfx, 
+        .objectPalette = gCaterpieObjectPal, 
+        .playerYOffset = 2, 
+        .opponentYOffset = 2, 
+    
+        .portrait = gCaterpiePortraitGfx, 
+        .portraitPalette = gCaterpiePortraitPal, 
+    },
+
     [SPECIES_RATTATA] =
     {
         .baseHP = 50,

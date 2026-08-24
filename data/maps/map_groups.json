@@ -106,7 +106,12 @@
     "DesertTemplates_Room2"
   ],
   "gMapGroup_FieldsTemplates": [
-
+    "FieldsTemplates_Connections",
+    "FieldTemplates_Campsite",
+    "FieldsTemplates_Room1",
+    "FieldsTemplates_Room2",
+    "FieldsTemplates_Room3",
+    "FieldsTemplates_Room4"
   ],
   "gMapGroup_ForestTemplates": [
     "ForestTemplates_Connections",

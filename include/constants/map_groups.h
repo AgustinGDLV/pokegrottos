@@ -65,6 +65,12 @@
 #define MAP_DESERT_TEMPLATES_ROOM2          (6 | (5 << 8))
 
 // gMapGroup_FieldsTemplates
+#define MAP_FIELDS_TEMPLATES_CONNECTIONS (0 | (6 << 8))
+#define MAP_FIELD_TEMPLATES_CAMPSITE     (1 | (6 << 8))
+#define MAP_FIELDS_TEMPLATES_ROOM1       (2 | (6 << 8))
+#define MAP_FIELDS_TEMPLATES_ROOM2       (3 | (6 << 8))
+#define MAP_FIELDS_TEMPLATES_ROOM3       (4 | (6 << 8))
+#define MAP_FIELDS_TEMPLATES_ROOM4       (5 | (6 << 8))
 
 // gMapGroup_ForestTemplates
 #define MAP_FOREST_TEMPLATES_CONNECTIONS (0 | (7 << 8))

@@ -464,22 +464,22 @@ static void Task_TrailMapWaitForKeypress(u8 taskId)
         gTrailInterface.keyHeldTimer = 0;
     }
 
-    if (JOY_NEW(DPAD_UP) || (JOY_HELD(DPAD_UP) && gTrailInterface.keyHeldTimer % 16 == 0))
+    if (JOY_NEW(DPAD_UP) || (JOY_HELD(DPAD_UP) && gTrailInterface.keyHeldTimer % 12 == 0))
     {
         if (TryMoveInDirection(DIR_NORTH))
             IncrementTime(1);
     }
-    if (JOY_NEW(DPAD_DOWN) || (JOY_HELD(DPAD_DOWN) && gTrailInterface.keyHeldTimer % 16 == 0))
+    if (JOY_NEW(DPAD_DOWN) || (JOY_HELD(DPAD_DOWN) && gTrailInterface.keyHeldTimer % 12 == 0))
     {
         if (TryMoveInDirection(DIR_SOUTH))
             IncrementTime(1);
     }
-    if (JOY_NEW(DPAD_RIGHT) || (JOY_HELD(DPAD_RIGHT) && gTrailInterface.keyHeldTimer % 16 == 0))
+    if (JOY_NEW(DPAD_RIGHT) || (JOY_HELD(DPAD_RIGHT) && gTrailInterface.keyHeldTimer % 12 == 0))
     {
         if (TryMoveInDirection(DIR_EAST))
             IncrementTime(1);
     }
-    if (JOY_NEW(DPAD_LEFT) || (JOY_HELD(DPAD_LEFT) && gTrailInterface.keyHeldTimer % 16 == 0))
+    if (JOY_NEW(DPAD_LEFT) || (JOY_HELD(DPAD_LEFT) && gTrailInterface.keyHeldTimer % 12 == 0))
     {
         if (TryMoveInDirection(DIR_WEST))
             IncrementTime(1);

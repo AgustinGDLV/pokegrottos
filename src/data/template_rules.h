@@ -227,6 +227,15 @@ static const u8 sForestNormalRooms[] =
     MAP_NUM(FOREST_TEMPLATES_ROOM1),
 };
 
+// Fields Template Pools
+static const u8 sFieldsNormalRooms[] =
+{
+    MAP_NUM(FIELDS_TEMPLATES_ROOM1),
+    MAP_NUM(FIELDS_TEMPLATES_ROOM2),
+    MAP_NUM(FIELDS_TEMPLATES_ROOM3),
+    MAP_NUM(FIELDS_TEMPLATES_ROOM4),
+};
+
 const struct TemplateRules gTemplateRules[TEMPLATE_TYPES_COUNT] = 
 {
     [TEMPLATES_UNDERWATER] =
@@ -431,27 +440,27 @@ const struct TemplateRules gTemplateRules[TEMPLATE_TYPES_COUNT] =
     [TEMPLATES_FRIENDLY_FIELDS] =
     {
         .name = COMPOUND_STRING("Friendly Fields"),
-        .mapGroup = MAP_GROUP(FOREST_TEMPLATES_CONNECTIONS),
-        .bgm = MUS_RG_VIRIDIAN_FOREST,
+        .mapGroup = MAP_GROUP(FIELDS_TEMPLATES_CONNECTIONS),
+        .bgm = MUS_ROUTE101,
         .background = BG_GRASS,
         .connectionType = CONNECTION_TYPE_SEAMLESS,
         .offsets = {
-            [DIR_NORTH] = {-2, -3, 6, 3},
-            [DIR_SOUTH] = {-2, 1, 6, 3},
-            [DIR_EAST] = {1, -2, 3, 4},
-            [DIR_WEST] = {-3, -1, 3, 4},
+            [DIR_NORTH] = {0, -1, 2, 1},
+            [DIR_SOUTH] = {0, 1, 2, 1},
+            [DIR_EAST] = {1, -1, 1, 3},
+            [DIR_WEST] = {-1, -1, 1, 3},
         },
-        .numNormalRooms = ARRAY_COUNT(sForestNormalRooms),
-        .normalRoomIds = sForestNormalRooms,
+        .numNormalRooms = ARRAY_COUNT(sFieldsNormalRooms),
+        .normalRoomIds = sFieldsNormalRooms,
         .specialRoomIds = {
-            [BOSS_ROOM] = MAP_NUM(FOREST_TEMPLATES_BOSS_ROOM),
-            [TREASURE_ROOM] = MAP_NUM(FOREST_TEMPLATES_BOSS_ROOM),
-            [SHOP_ROOM] = MAP_NUM(FOREST_TEMPLATES_BOSS_ROOM),
+            [BOSS_ROOM] = MAP_NUM(FIELD_TEMPLATES_CAMPSITE),
+            [TREASURE_ROOM] = MAP_NUM(FIELD_TEMPLATES_CAMPSITE),
+            [SHOP_ROOM] = MAP_NUM(FIELD_TEMPLATES_CAMPSITE),
         },
         .itemPools = gDefaultItemPools,
         .encounterPool = {
-            {SPECIES_APPLIN, 100},
-            {SPECIES_SPEAROW, 100},
+            {SPECIES_RATTATA, 100},
+            {SPECIES_POOCHYENA, 100},
         }
     },
 

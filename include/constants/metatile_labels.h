@@ -249,9 +249,6 @@
 #define METATILE_GenericBuilding_TrickHouse_Door_Closed  0x21B
 #define METATILE_GenericBuilding_TrickHouse_Stairs_Down  0x219
 
-// gTileset_IceCave
-#define METATILE_IceCave_METATILE_IceCaveTemplates_Hole  0x202
-
 // gTileset_InsideOfTruck
 #define METATILE_InsideOfTruck_DoorClosedFloor_Bottom  0x21D
 #define METATILE_InsideOfTruck_DoorClosedFloor_Mid     0x215
@@ -783,11 +780,12 @@
 #define METATILE_Underwater_RockWall     0x21E
 
 // Other
-#define METATILE_RSMossdeepGym_RedArrow_Down   0x205
-#define METATILE_RSMossdeepGym_RedArrow_Left   0x20C
-#define METATILE_RSMossdeepGym_RedArrow_Right  0x204
-#define METATILE_RSMossdeepGym_RedArrow_Up     0x20D
-#define METATILE_RSMossdeepGym_Switch_Down     0x239
-#define METATILE_RSMossdeepGym_Switch_Up       0x238
+#define METATILE_IceCave_METATILE_IceCaveTemplates_Hole  0x202
+#define METATILE_RSMossdeepGym_RedArrow_Down             0x205
+#define METATILE_RSMossdeepGym_RedArrow_Left             0x20C
+#define METATILE_RSMossdeepGym_RedArrow_Right            0x204
+#define METATILE_RSMossdeepGym_RedArrow_Up               0x20D
+#define METATILE_RSMossdeepGym_Switch_Down               0x239
+#define METATILE_RSMossdeepGym_Switch_Up                 0x238
 
 #endif // GUARD_METATILE_LABELS_H

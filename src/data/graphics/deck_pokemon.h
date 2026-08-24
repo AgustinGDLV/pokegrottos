@@ -1,3 +1,15 @@
+// Caterpie
+const u8 gCaterpiePlayerIdleGfx[] = INCBIN_U8("graphics/deck_pokemon/caterpie/player_idle.4bpp"); 
+const u8 gCaterpieOpponentIdleGfx[] = INCBIN_U8("graphics/deck_pokemon/caterpie/opponent_idle.4bpp"); 
+const u8 gCaterpiePlayerAttackGfx[] = INCBIN_U8("graphics/deck_pokemon/caterpie/player_attack.4bpp"); 
+const u8 gCaterpieOpponentAttackGfx[] = INCBIN_U8("graphics/deck_pokemon/caterpie/opponent_attack.4bpp"); 
+const u8 gCaterpiePlayerHurtGfx[] = INCBIN_U8("graphics/deck_pokemon/caterpie/player_hurt.4bpp"); 
+const u8 gCaterpieOpponentHurtGfx[] = INCBIN_U8("graphics/deck_pokemon/caterpie/opponent_hurt.4bpp"); 
+const u16 gCaterpieObjectPal[] = INCBIN_U16("graphics/deck_pokemon/caterpie/player_idle.gbapal"); 
+ 
+const u8 gCaterpiePortraitGfx[] = INCBIN_U8("graphics/deck_pokemon/caterpie/portrait_normal.4bpp"); 
+const u16 gCaterpiePortraitPal[] = INCBIN_U16("graphics/deck_pokemon/caterpie/portrait_normal.gbapal");
+
 // Rattata
 const u8 gRattataPlayerIdleGfx[] = INCBIN_U8("graphics/deck_pokemon/rattata/player_idle.4bpp");
 const u8 gRattataOpponentIdleGfx[] = INCBIN_U8("graphics/deck_pokemon/rattata/opponent_idle.4bpp");

@@ -244,3 +244,7 @@ const u16 gMetatileAttributes_IcePath[] = INCBIN_U16("data/tilesets/primary/ice_
 
 const u16 gMetatiles_Volcano[] = INCBIN_U16("data/tilesets/primary/volcano/metatiles.bin");
 const u16 gMetatileAttributes_Volcano[] = INCBIN_U16("data/tilesets/primary/volcano/metatile_attributes.bin");
+
+const u16 gMetatiles_OverworldSecondary[] = INCBIN_U16("data/tilesets/secondary/overworld_secondary/metatiles.bin");
+const u16 gMetatileAttributes_OverworldSecondary[] = INCBIN_U16("data/tilesets/secondary/overworld_secondary/metatile_attributes.bin");
+

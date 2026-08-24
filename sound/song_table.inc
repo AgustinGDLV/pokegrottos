@@ -932,6 +932,7 @@ gGBSSongTable::
 	song_gbs MUS_HG_ELM_LAB, gbs_Music_TrainerSchool, 0, 0
 	song_gbs MUS_ROUTE119, gbs_Music_Route119, 0, 0
 	song_gbs MUS_RG_VIRIDIAN_FOREST, gbs_Music_SantaluneForest, 0, 0
+	song_gbs MUS_ROUTE101, gbs_Music_UnovaRoute1, 0, 0
 	.4byte 0xFFFFFFFF
 
 	.align 2

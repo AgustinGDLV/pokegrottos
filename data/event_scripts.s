@@ -1241,3 +1241,15 @@ EventScript_VsSeekerChargingDone::
 	.include "data/maps/ForestTemplates_Room1/scripts.inc"
 
 	.include "data/maps/FunkyForestNorth1/scripts.inc"
+
+	.include "data/maps/FieldsTemplates_Connections/scripts.inc"
+
+	.include "data/maps/FieldTemplates_Campsite/scripts.inc"
+
+	.include "data/maps/FieldsTemplates_Room1/scripts.inc"
+
+	.include "data/maps/FieldsTemplates_Room2/scripts.inc"
+
+	.include "data/maps/FieldsTemplates_Room3/scripts.inc"
+
+	.include "data/maps/FieldsTemplates_Room4/scripts.inc"

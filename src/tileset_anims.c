@@ -1220,3 +1220,35 @@ static void BlendAnimPalette_BattleDome_FloorLightsNoBlend(u16 timer)
 //     sPrimaryTilesetAnimCounterMax = 256;
 //     sPrimaryTilesetAnimCallback = TilesetAnim_Overworld;
 // }
+
+const u16 gTilesetAnims_Overworld_Campfire_Frame0[] = INCBIN_U16("data/tilesets/secondary/overworld_secondary/anim/campfire/00.4bpp");
+const u16 gTilesetAnims_Overworld_Campfire_Frame1[] = INCBIN_U16("data/tilesets/secondary/overworld_secondary/anim/campfire/01.4bpp");
+const u16 gTilesetAnims_Overworld_Campfire_Frame2[] = INCBIN_U16("data/tilesets/secondary/overworld_secondary/anim/campfire/02.4bpp");
+const u16 gTilesetAnims_Overworld_Campfire_Frame3[] = INCBIN_U16("data/tilesets/secondary/overworld_secondary/anim/campfire/03.4bpp");
+
+const u16 *const gTilesetAnims_Overworld_Campfire[] = {
+    gTilesetAnims_Overworld_Campfire_Frame0,
+    gTilesetAnims_Overworld_Campfire_Frame1,
+    gTilesetAnims_Overworld_Campfire_Frame2,
+    gTilesetAnims_Overworld_Campfire_Frame3
+};
+
+static void QueueAnimTiles_Overworld_Campfire(u16 timer)
+{
+    u16 i = timer % ARRAY_COUNT(gTilesetAnims_Overworld_Campfire);
+    AppendTilesetAnimToBuffer(gTilesetAnims_Overworld_Campfire[i], (u16 *)(BG_VRAM + TILE_OFFSET_4BPP(NUM_TILES_IN_PRIMARY)), 4*TILE_SIZE_4BPP);
+}
+
+static void TilesetAnim_OverworldSecondary(u16 timer)
+{
+    if (timer % 16 == 0) {
+        QueueAnimTiles_Overworld_Campfire(timer / 16);
+    }
+}
+
+void InitTilesetAnim_OverworldSecondary(void)
+{
+    sSecondaryTilesetAnimCounter = 0;
+    sSecondaryTilesetAnimCounterMax = 256;
+    sSecondaryTilesetAnimCallback = TilesetAnim_OverworldSecondary;
+}

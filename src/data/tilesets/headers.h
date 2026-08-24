@@ -962,3 +962,14 @@ const struct Tileset gTileset_Volcano =
     .metatileAttributes = gMetatileAttributes_Volcano,
     .callback = NULL,
 };
+
+const struct Tileset gTileset_OverworldSecondary =
+{
+    .isCompressed = FALSE,
+    .isSecondary = TRUE,
+    .tiles = gTilesetTiles_OverworldSecondary,
+    .palettes = gTilesetPalettes_OverworldSecondary,
+    .metatiles = gMetatiles_OverworldSecondary,
+    .metatileAttributes = gMetatileAttributes_OverworldSecondary,
+    .callback = InitTilesetAnim_OverworldSecondary,
+};
