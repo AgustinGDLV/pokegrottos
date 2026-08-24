@@ -133,8 +133,8 @@ EventScript_Campfire::
 	lockall
 	message EventScript_Campfire_Text
 	waitmessage
-	dynmultipush EventScript_Resume_Text, 0
-	dynmultipush EventScript_Rest_Text, 1
+	dynmultipush EventScript_Rest_Text, 0
+	dynmultipush EventScript_Resume_Text, 1
 	dynmultipush EventScript_Stay_Text, 2
 	dynmultistack 21, 6, TRUE, 3, FALSE, 0, NULL
 	releaseall
@@ -155,11 +155,11 @@ EventScript_Campfire_Text:
 	.string "What would you\n"
 	.string "like to do?$"
 
-EventScript_Resume_Text:
+EventScript_Rest_Text:
 	.string "Rest$"
 
-EventScript_Rest_Text:
-	.string "Resume$"
+EventScript_Resume_Text:
+	.string "Travel$"
 
 EventScript_Stay_Text:
 	.string "Stay$"

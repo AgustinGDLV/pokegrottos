@@ -3,6 +3,14 @@ static const u16 sGrassBackgroundPalette[] = INCBIN_U16("graphics/deck_battle_ba
 static const u32 sGrassBackgroundTiles[] = INCBIN_U32("graphics/deck_battle_backgrounds/grass_tiles.4bpp.lz");
 static const u32 sGrassBackgroundMap[] = INCBIN_U32("graphics/deck_battle_backgrounds/grass_map.bin.lz");
 
+static const u16 sGrassEveBackgroundPalette[] = INCBIN_U16("graphics/deck_battle_backgrounds/grass_tiles_eve.gbapal");
+static const u32 sGrassEveBackgroundTiles[] = INCBIN_U32("graphics/deck_battle_backgrounds/grass_tiles_eve.4bpp.lz");
+static const u32 sGrassEveBackgroundMap[] = INCBIN_U32("graphics/deck_battle_backgrounds/grass_map_eve.bin.lz");
+
+static const u16 sGrassNightBackgroundPalette[] = INCBIN_U16("graphics/deck_battle_backgrounds/grass_tiles_night.gbapal");
+static const u32 sGrassNightBackgroundTiles[] = INCBIN_U32("graphics/deck_battle_backgrounds/grass_tiles_night.4bpp.lz");
+static const u32 sGrassNightBackgroundMap[] = INCBIN_U32("graphics/deck_battle_backgrounds/grass_map_night.bin.lz");
+
 // Underwater
 static const u16 sUnderwaterBackgroundPalette[] = INCBIN_U16("graphics/deck_battle_backgrounds/underwater_tiles.gbapal");
 static const u32 sUnderwaterBackgroundTiles[] = INCBIN_U32("graphics/deck_battle_backgrounds/underwater_tiles.4bpp.lz");
@@ -65,15 +73,15 @@ const struct DeckBattleBackground gDeckBackgrounds[BG_COUNT] =
     },
     [BG_GRASS_EVE] =
     {
-        .palette = sGrassBackgroundPalette,
-        .tiles = sGrassBackgroundTiles,
-        .map = sGrassBackgroundMap,
+        .palette = sGrassEveBackgroundPalette,
+        .tiles = sGrassEveBackgroundTiles,
+        .map = sGrassEveBackgroundMap,
     },
     [BG_GRASS_NIGHT] =
     {
-        .palette = sGrassBackgroundPalette,
-        .tiles = sGrassBackgroundTiles,
-        .map = sGrassBackgroundMap,
+        .palette = sGrassNightBackgroundPalette,
+        .tiles = sGrassNightBackgroundTiles,
+        .map = sGrassNightBackgroundMap,
     },
 
     // Underwater
