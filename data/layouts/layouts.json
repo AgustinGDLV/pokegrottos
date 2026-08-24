@@ -4935,7 +4935,7 @@
       "id": "LAYOUT_FIELDS_TEMPLATES_CONNECTIONS",
       "name": "FieldsTemplates_Connections_Layout",
       "width": 12,
-      "height": 12,
+      "height": 16,
       "primary_tileset": "gTileset_Forest",
       "secondary_tileset": "gTileset_Unused1",
       "border_filepath": "data/layouts/FieldsTemplates_Connections/border.bin",
@@ -4990,6 +4990,36 @@
       "secondary_tileset": "gTileset_Unused1",
       "border_filepath": "data/layouts/FieldsTemplates_Room4/border.bin",
       "blockdata_filepath": "data/layouts/FieldsTemplates_Room4/map.bin"
+    },
+    {
+      "id": "LAYOUT_FIELDS_TEMPLATES_ROOM5",
+      "name": "FieldsTemplates_Room5_Layout",
+      "width": 18,
+      "height": 16,
+      "primary_tileset": "gTileset_Forest",
+      "secondary_tileset": "gTileset_Unused1",
+      "border_filepath": "data/layouts/FieldsTemplates_Room5/border.bin",
+      "blockdata_filepath": "data/layouts/FieldsTemplates_Room5/map.bin"
+    },
+    {
+      "id": "LAYOUT_FIELDS_TEMPLATES_ROOM6",
+      "name": "FieldsTemplates_Room6_Layout",
+      "width": 18,
+      "height": 16,
+      "primary_tileset": "gTileset_Forest",
+      "secondary_tileset": "gTileset_Unused1",
+      "border_filepath": "data/layouts/FieldsTemplates_Room6/border.bin",
+      "blockdata_filepath": "data/layouts/FieldsTemplates_Room6/map.bin"
+    },
+    {
+      "id": "LAYOUT_FIELDS_TEMPLATES_ROOM7",
+      "name": "FieldsTemplates_Room7_Layout",
+      "width": 18,
+      "height": 16,
+      "primary_tileset": "gTileset_Forest",
+      "secondary_tileset": "gTileset_Unused1",
+      "border_filepath": "data/layouts/FieldsTemplates_Room7/border.bin",
+      "blockdata_filepath": "data/layouts/FieldsTemplates_Room7/map.bin"
     }
   ]
 }

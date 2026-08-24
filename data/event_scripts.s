@@ -1253,3 +1253,9 @@ EventScript_VsSeekerChargingDone::
 	.include "data/maps/FieldsTemplates_Room3/scripts.inc"
 
 	.include "data/maps/FieldsTemplates_Room4/scripts.inc"
+
+	.include "data/maps/FieldsTemplates_Room5/scripts.inc"
+
+	.include "data/maps/FieldsTemplates_Room6/scripts.inc"
+
+	.include "data/maps/FieldsTemplates_Room7/scripts.inc"

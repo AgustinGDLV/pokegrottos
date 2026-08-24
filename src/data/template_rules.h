@@ -234,6 +234,9 @@ static const u8 sFieldsNormalRooms[] =
     MAP_NUM(FIELDS_TEMPLATES_ROOM2),
     MAP_NUM(FIELDS_TEMPLATES_ROOM3),
     MAP_NUM(FIELDS_TEMPLATES_ROOM4),
+    MAP_NUM(FIELDS_TEMPLATES_ROOM5),
+    MAP_NUM(FIELDS_TEMPLATES_ROOM6),
+    MAP_NUM(FIELDS_TEMPLATES_ROOM7),
 };
 
 const struct TemplateRules gTemplateRules[TEMPLATE_TYPES_COUNT] = 
@@ -447,8 +450,8 @@ const struct TemplateRules gTemplateRules[TEMPLATE_TYPES_COUNT] =
         .offsets = {
             [DIR_NORTH] = {0, -1, 2, 1},
             [DIR_SOUTH] = {0, 1, 2, 1},
-            [DIR_EAST] = {1, -1, 1, 3},
-            [DIR_WEST] = {-1, -1, 1, 3},
+            [DIR_EAST] = {1, -1, 1, 4},
+            [DIR_WEST] = {-1, -1, 1, 4},
         },
         .numNormalRooms = ARRAY_COUNT(sFieldsNormalRooms),
         .normalRoomIds = sFieldsNormalRooms,
@@ -459,8 +462,16 @@ const struct TemplateRules gTemplateRules[TEMPLATE_TYPES_COUNT] =
         },
         .itemPools = gDefaultItemPools,
         .encounterPool = {
-            {SPECIES_RATTATA, 100},
-            {SPECIES_POOCHYENA, 100},
+            {SPECIES_RATTATA,       100},
+            {SPECIES_POOCHYENA,     100},
+            {SPECIES_PONYTA,        100},
+            {SPECIES_SPEAROW,       100},
+            {SPECIES_BELLSPROUT,    100},
+            {SPECIES_EKANS,         100},
+            {SPECIES_HOPPIP,        100},
+            {SPECIES_SWABLU,        50},
+            {SPECIES_MAREEP,        50},
+            {SPECIES_CHINGLING,     50},
         }
     },
 
