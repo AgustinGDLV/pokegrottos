@@ -68,7 +68,7 @@ struct PartyMonData
     u16 maxHP;
     u16 power;
     u16 def;
-    u16 rank;
+    u16 level;
     u16 position;
     u16 item;
 };
@@ -273,7 +273,6 @@ static void Task_PartyMenuHandleDefaultInput(u8 taskId);
 static void Task_PartyMenuHandleSwapInput(u8 taskId);
 static void LoadPartyMenuGfx(void);
 static void CreatePartyMenuWindows(void);
-static void DrawRankStars(u32 index);
 static void PrintMonInfo(vu32 index);
 static void PrintMoveInfo(u32 index);
 static void DrawBattlerSprites(void);
@@ -630,27 +629,6 @@ static void CreatePartyMenuWindows(void)
     }
 }
 
-#define POS_TO_SCR_ADDR(x,y) (32*(y) + (x))
-#define SCR_MAP_ENTRY(tile, pal, hflip, vflip) ((tile) | (hflip ? (1<<10) : 0) | (vflip ? (1 << 11) : 0) | (pal << 12))
-
-static void DrawRankStars(u32 index)
-{
-    for (u32 i = 0; i < MAX_RANK; ++i)
-    {
-        if (i < sPartyMenuData.mons[index].rank)
-        {
-            *((u16 *)(BG_SCREEN_ADDR(14)) + POS_TO_SCR_ADDR(3+i, 14)) = 0x3A;
-            *((u16 *)(BG_SCREEN_ADDR(14)) + POS_TO_SCR_ADDR(3+i, 15)) = 0x3B;
-        }
-        else
-        {
-            *((u16 *)(BG_SCREEN_ADDR(14)) + POS_TO_SCR_ADDR(3+i, 14)) = 0x26;
-            *((u16 *)(BG_SCREEN_ADDR(14)) + POS_TO_SCR_ADDR(3+i, 15)) = 0x26;
-        }
-    }
-    ScheduleBgCopyTilemapToVram(1);
-}
-
 static void PrintMonInfo(u32 index)
 {
     u8 *strPtr;
@@ -676,8 +654,11 @@ static void PrintMonInfo(u32 index)
     ConvertIntToDecimalStringN(strPtr, sPartyMenuData.mons[index].maxHP, STR_CONV_MODE_LEFT_ALIGN, 3);
     AddTextPrinterParameterized3(WINDOW_INFO, FONT_NORMAL, 17*8+4, 12, sTextColor_Black, TEXT_SKIP_DRAW, gStringVar1);
     
-    // Draw rank stars.
-    DrawRankStars(index);
+    // Print level.
+    StringCopy(gStringVar1, COMPOUND_STRING("LVL "));
+    ConvertIntToDecimalStringN(gStringVar2, sPartyMenuData.mons[index].level, STR_CONV_MODE_LEFT_ALIGN, 3);
+    StringAppend(gStringVar1, gStringVar2);
+    AddTextPrinterParameterized3(WINDOW_INFO, FONT_NORMAL, 0, 23, sTextColor_Black, TEXT_SKIP_DRAW, gStringVar1);
 
     // Print item.
     if (sPartyMenuData.mons[index].item != ITEM_NONE)
@@ -759,7 +740,7 @@ static void InitPartyDataStruct(void)
             data->maxHP = GetMonData(&gPlayerParty[i], MON_DATA_MAX_HP);
             data->power = GetMonData(&gPlayerParty[i], MON_DATA_ATK);
             data->def = GetMonData(&gPlayerParty[i], MON_DATA_DEF);
-            data->rank = GetMonData(&gPlayerParty[i], MON_DATA_RANK);
+            data->level = GetMonData(&gPlayerParty[i], MON_DATA_LEVEL);
             data->item = GetMonData(&gPlayerParty[i], MON_DATA_HELD_ITEM);
         }
         if (data->species != SPECIES_NONE)
@@ -779,17 +760,8 @@ static void CopyPartyDataToMonData(void)
             SetMonData(&gPlayerParty[i], MON_DATA_HP, &sPartyMenuData.mons[i].hp);
             SetMonData(&gPlayerParty[i], MON_DATA_ATK, &sPartyMenuData.mons[i].power);
             SetMonData(&gPlayerParty[i], MON_DATA_DEF, &sPartyMenuData.mons[i].def);
-            SetMonData(&gPlayerParty[i], MON_DATA_RANK, &sPartyMenuData.mons[i].rank);
+            SetMonData(&gPlayerParty[i], MON_DATA_LEVEL, &sPartyMenuData.mons[i].level);
         }
-    }
-}
-
-static void Task_DrawRankStarsAfterPageChange(u8 taskId) // janky but the tilemap copy takes a frame
-{
-    if (++gTasks[taskId].data[0] > 1)
-    {
-        DrawRankStars(GetPartyIndexAtPosition(sPartyMenuData.selectedPosition));
-        DestroyTask(taskId);
     }
 }
 
@@ -807,7 +779,6 @@ static void IncrementCurrentPage(void)
             LZDecompressWram(sPartyMenuStatsTilemap, sPartyMenuTilemapPtr);
             FillWindowPixelBuffer(WINDOW_CONTROL, PIXEL_FILL(0));
             AddTextPrinterParameterized3(WINDOW_CONTROL, FONT_SMALL, 2, 0, sTextColor_White, TEXT_SKIP_DRAW, COMPOUND_STRING("MOVE"));
-            CreateTask(Task_DrawRankStarsAfterPageChange, 0);
             break;
         case PAGE_MOVE:
             PrintMoveInfo(index);

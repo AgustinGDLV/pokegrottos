@@ -23,9 +23,10 @@ u16 GetOverworldSpeciesInRoom(u32 index, u32 localId)
 
 void InitEnemyPartyFromEncounter(void) // used by callnative
 {
+    u32 enemyLevel = 5;
     for (u32 i = 0; i < PARTY_SIZE; ++i)
     {
-        CreateMon(&gEnemyParty[i], gEncountersInfo[gSpecialVar_0x8000][i], 50, USE_RANDOM_IVS, 0, 0, OT_ID_PLAYER_ID, 0);
+        CreateMon(&gEnemyParty[i], gEncountersInfo[gSpecialVar_0x8000][i], enemyLevel + (Random() % 2), USE_RANDOM_IVS, 0, 0, OT_ID_PLAYER_ID, 0);
         SetMonData(&gEnemyParty[i], MON_DATA_POSITION, &i);
     }
 }

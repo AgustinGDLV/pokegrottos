@@ -607,5 +607,5 @@ void AssignStarterToPlayer(void)
 {
     u32 species = gCharacterInfos[gSaveBlock1Ptr->characterId].starters[gSpecialVar_Result];
     StringCopy(gStringVar1, GetSpeciesName(species));
-    CreateMon(&gPlayerParty[0], species, 5, USE_RANDOM_IVS, FALSE, 0, OT_ID_PLAYER_ID, TRUE);
+    CreateMon(&gPlayerParty[0], species, 10, USE_RANDOM_IVS, FALSE, 0, OT_ID_PLAYER_ID, TRUE);
 }

@@ -1861,14 +1861,13 @@ u32 GetRankBasedBaseStat(u32 statIndex, struct Pokemon *mon)
     #endif
 }
 
-#define CALC_STAT(iv, ev, statIndex, field)                      \
-{                                                                \
-    u8 baseStat = GetRankBasedBaseStat(statIndex, mon);          \
-    s32 n = (((2 * baseStat + iv + ev) * level) / 100) + 5;   \
-    n = ModifyStatByNature(nature, n, statIndex);                \
-    if (B_FRIENDSHIP_BOOST == TRUE)                              \
+#define CALC_STAT(base, iv, ev, statIndex, field)               \
+{                                                               \
+    u8 baseStat = gDeckSpeciesInfo[species].base;               \
+    s32 n = (((2 * baseStat + iv + ev / 4) * level) / 100) + 5; \
+    if (B_FRIENDSHIP_BOOST == TRUE)                             \
         n = n + ((n * 10 * friendship) / (MAX_FRIENDSHIP * 100));\
-    SetMonData(mon, field, &n);                                  \
+    SetMonData(mon, field, &n);                                 \
 }
 
 void CalculateMonStats(struct Pokemon *mon)
@@ -1881,24 +1880,12 @@ void CalculateMonStats(struct Pokemon *mon)
     s32 attackEV = GetMonData(mon, MON_DATA_ATK_EV, NULL);
     s32 defenseIV = GetMonData(mon, MON_DATA_HYPER_TRAINED_DEF) ? MAX_PER_STAT_IVS : GetMonData(mon, MON_DATA_DEF_IV, NULL);
     s32 defenseEV = GetMonData(mon, MON_DATA_DEF_EV, NULL);
-    s32 speedIV = GetMonData(mon, MON_DATA_HYPER_TRAINED_SPEED) ? MAX_PER_STAT_IVS : GetMonData(mon, MON_DATA_SPEED_IV, NULL);
-    s32 speedEV = GetMonData(mon, MON_DATA_SPEED_EV, NULL);
-    s32 spAttackIV = GetMonData(mon, MON_DATA_HYPER_TRAINED_SPATK) ? MAX_PER_STAT_IVS : GetMonData(mon, MON_DATA_SPATK_IV, NULL);
-    s32 spAttackEV = GetMonData(mon, MON_DATA_SPATK_EV, NULL);
-    s32 spDefenseIV = GetMonData(mon, MON_DATA_HYPER_TRAINED_SPDEF) ? MAX_PER_STAT_IVS : GetMonData(mon, MON_DATA_SPDEF_IV, NULL);
-    s32 spDefenseEV = GetMonData(mon, MON_DATA_SPDEF_EV, NULL);
     u16 species = GetMonData(mon, MON_DATA_SPECIES, NULL);
     u8 friendship = GetMonData(mon, MON_DATA_FRIENDSHIP, NULL);
+    s32 level = GetLevelFromMonExp(mon);
     s32 newMaxHP;
 
-    #if TESTING
-    s32 level = GetLevelFromMonExp(mon);
     SetMonData(mon, MON_DATA_LEVEL, &level);
-    #else
-    s32 level = 50;
-    #endif
-
-    u8 nature = GetMonData(mon, MON_DATA_HIDDEN_NATURE, NULL);
 
     if (species == SPECIES_SHEDINJA)
     {
@@ -1906,16 +1893,18 @@ void CalculateMonStats(struct Pokemon *mon)
     }
     else
     {
-        s32 n = 2 * GetRankBasedBaseStat(STAT_HP, mon) + hpIV;
-        newMaxHP = (((n + hpEV) * level) / 100) + (level) + 10;
+        s32 n = 2 * gDeckSpeciesInfo[species].baseHP + hpIV;
+        newMaxHP = (((n + hpEV / 4) * level) / 100) + level + 10;
     }
+
+    gBattleScripting.levelUpHP = newMaxHP - oldMaxHP;
+    if (gBattleScripting.levelUpHP == 0)
+        gBattleScripting.levelUpHP = 1;
+
     SetMonData(mon, MON_DATA_MAX_HP, &newMaxHP);
 
-    CALC_STAT(attackIV, attackEV, STAT_ATK, MON_DATA_ATK)
-    CALC_STAT(defenseIV, defenseEV, STAT_DEF, MON_DATA_DEF)
-    CALC_STAT(speedIV, speedEV, STAT_SPEED, MON_DATA_SPEED)
-    CALC_STAT(spAttackIV, spAttackEV, STAT_SPATK, MON_DATA_SPATK)
-    CALC_STAT(spDefenseIV, spDefenseEV, STAT_SPDEF, MON_DATA_SPDEF)
+    CALC_STAT(basePower, attackIV, attackEV, STAT_ATK, MON_DATA_ATK)
+    CALC_STAT(baseDef, defenseIV, defenseEV, STAT_DEF, MON_DATA_DEF)
 
     // Since a pokemon's maxHP data could either not have
     // been initialized at this point or this pokemon is
