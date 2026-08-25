@@ -44,6 +44,28 @@ const struct DeckSpeciesInfo gDeckSpeciesInfo[NUM_SPECIES] =
         .portraitPalette = gRattataPortraitPal,
     },
 
+    [SPECIES_EKANS] = 
+    { 
+        .baseHP = 100, 
+        .basePower = 100, 
+        .baseDef = 100, 
+        .move = MOVE_TACKLE, 
+        .ability = ABILITY_NONE, 
+    
+        .playerIdle = gEkansPlayerIdleGfx, 
+        .opponentIdle = gEkansOpponentIdleGfx, 
+        .playerAttack = gEkansPlayerAttackGfx, 
+        .opponentAttack = gEkansOpponentAttackGfx, 
+        .playerHurt = gEkansPlayerHurtGfx, 
+        .opponentHurt = gEkansOpponentHurtGfx, 
+        .objectPalette = gEkansObjectPal, 
+        .playerYOffset = 0, 
+        .opponentYOffset = 0, 
+    
+        .portrait = gEkansPortraitGfx, 
+        .portraitPalette = gEkansPortraitPal, 
+    },
+
     [SPECIES_SPEAROW] =
     {
         .baseHP = 50,
@@ -198,6 +220,28 @@ const struct DeckSpeciesInfo gDeckSpeciesInfo[NUM_SPECIES] =
         .portraitPalette = gKrabbyPortraitPal,
     },
 
+    [SPECIES_PONYTA] = 
+    { 
+        .baseHP = 100, 
+        .basePower = 100, 
+        .baseDef = 100, 
+        .move = MOVE_TACKLE, 
+        .ability = ABILITY_NONE, 
+    
+        .playerIdle = gPonytaPlayerIdleGfx, 
+        .opponentIdle = gPonytaOpponentIdleGfx, 
+        .playerAttack = gPonytaPlayerAttackGfx, 
+        .opponentAttack = gPonytaOpponentAttackGfx, 
+        .playerHurt = gPonytaPlayerHurtGfx, 
+        .opponentHurt = gPonytaOpponentHurtGfx, 
+        .objectPalette = gPonytaObjectPal, 
+        .playerYOffset = 0, 
+        .opponentYOffset = 0, 
+    
+        .portrait = gPonytaPortraitGfx, 
+        .portraitPalette = gPonytaPortraitPal, 
+    },
+
     [SPECIES_MAREEP] =
     {
         .baseHP = 55,
@@ -218,6 +262,28 @@ const struct DeckSpeciesInfo gDeckSpeciesInfo[NUM_SPECIES] =
 
         .portrait = gMareepPortraitGfx,
         .portraitPalette = gMareepPortraitPal,
+    },
+
+    [SPECIES_HOPPIP] = 
+    { 
+        .baseHP = 100, 
+        .basePower = 100, 
+        .baseDef = 100, 
+        .move = MOVE_TACKLE, 
+        .ability = ABILITY_NONE, 
+    
+        .playerIdle = gHoppipPlayerIdleGfx, 
+        .opponentIdle = gHoppipOpponentIdleGfx, 
+        .playerAttack = gHoppipPlayerAttackGfx, 
+        .opponentAttack = gHoppipOpponentAttackGfx, 
+        .playerHurt = gHoppipPlayerHurtGfx, 
+        .opponentHurt = gHoppipOpponentHurtGfx, 
+        .objectPalette = gHoppipObjectPal, 
+        .playerYOffset = 0, 
+        .opponentYOffset = 0, 
+    
+        .portrait = gHoppipPortraitGfx, 
+        .portraitPalette = gHoppipPortraitPal, 
     },
 
     [SPECIES_CLEFFA] =

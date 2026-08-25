@@ -22,6 +22,18 @@ const u16 gRattataObjectPal[] = INCBIN_U16("graphics/deck_pokemon/rattata/player
 const u8 gRattataPortraitGfx[] = INCBIN_U8("graphics/deck_pokemon/rattata/portrait_normal.4bpp");
 const u16 gRattataPortraitPal[] = INCBIN_U16("graphics/deck_pokemon/rattata/portrait_normal.gbapal");
 
+// Ekans
+const u8 gEkansPlayerIdleGfx[] = INCBIN_U8("graphics/deck_pokemon/ekans/player_idle.4bpp"); 
+const u8 gEkansOpponentIdleGfx[] = INCBIN_U8("graphics/deck_pokemon/ekans/opponent_idle.4bpp"); 
+const u8 gEkansPlayerAttackGfx[] = INCBIN_U8("graphics/deck_pokemon/ekans/player_attack.4bpp"); 
+const u8 gEkansOpponentAttackGfx[] = INCBIN_U8("graphics/deck_pokemon/ekans/opponent_attack.4bpp"); 
+const u8 gEkansPlayerHurtGfx[] = INCBIN_U8("graphics/deck_pokemon/ekans/player_hurt.4bpp"); 
+const u8 gEkansOpponentHurtGfx[] = INCBIN_U8("graphics/deck_pokemon/ekans/opponent_hurt.4bpp"); 
+const u16 gEkansObjectPal[] = INCBIN_U16("graphics/deck_pokemon/ekans/player_idle.gbapal"); 
+ 
+const u8 gEkansPortraitGfx[] = INCBIN_U8("graphics/deck_pokemon/ekans/portrait_normal.4bpp"); 
+const u16 gEkansPortraitPal[] = INCBIN_U16("graphics/deck_pokemon/ekans/portrait_normal.gbapal");
+
 // Spearow
 const u8 gSpearowPlayerIdleGfx[] = INCBIN_U8("graphics/deck_pokemon/spearow/player_idle.4bpp");
 const u8 gSpearowOpponentIdleGfx[] = INCBIN_U8("graphics/deck_pokemon/spearow/opponent_idle.4bpp");
@@ -130,6 +142,18 @@ const u16 gSwinubObjectPal[] = INCBIN_U16("graphics/deck_pokemon/swinub/player_i
 const u8 gSwinubPortraitGfx[] = INCBIN_U8("graphics/deck_pokemon/swinub/portrait_normal.4bpp");
 const u16 gSwinubPortraitPal[] = INCBIN_U16("graphics/deck_pokemon/swinub/portrait_normal.gbapal");
 
+// Ponyta
+const u8 gPonytaPlayerIdleGfx[] = INCBIN_U8("graphics/deck_pokemon/ponyta/player_idle.4bpp"); 
+const u8 gPonytaOpponentIdleGfx[] = INCBIN_U8("graphics/deck_pokemon/ponyta/opponent_idle.4bpp"); 
+const u8 gPonytaPlayerAttackGfx[] = INCBIN_U8("graphics/deck_pokemon/ponyta/player_attack.4bpp"); 
+const u8 gPonytaOpponentAttackGfx[] = INCBIN_U8("graphics/deck_pokemon/ponyta/opponent_attack.4bpp"); 
+const u8 gPonytaPlayerHurtGfx[] = INCBIN_U8("graphics/deck_pokemon/ponyta/player_hurt.4bpp"); 
+const u8 gPonytaOpponentHurtGfx[] = INCBIN_U8("graphics/deck_pokemon/ponyta/opponent_hurt.4bpp"); 
+const u16 gPonytaObjectPal[] = INCBIN_U16("graphics/deck_pokemon/ponyta/player_idle.gbapal"); 
+ 
+const u8 gPonytaPortraitGfx[] = INCBIN_U8("graphics/deck_pokemon/ponyta/portrait_normal.4bpp"); 
+const u16 gPonytaPortraitPal[] = INCBIN_U16("graphics/deck_pokemon/ponyta/portrait_normal.gbapal");
+
 // Mareep
 const u8 gMareepPlayerIdleGfx[] = INCBIN_U8("graphics/deck_pokemon/mareep/player_idle.4bpp");
 const u8 gMareepOpponentIdleGfx[] = INCBIN_U8("graphics/deck_pokemon/mareep/opponent_idle.4bpp");
@@ -141,6 +165,18 @@ const u16 gMareepObjectPal[] = INCBIN_U16("graphics/deck_pokemon/mareep/player_i
 
 const u8 gMareepPortraitGfx[] = INCBIN_U8("graphics/deck_pokemon/mareep/portrait_normal.4bpp");
 const u16 gMareepPortraitPal[] = INCBIN_U16("graphics/deck_pokemon/mareep/portrait_normal.gbapal");
+
+// Hoppip
+const u8 gHoppipPlayerIdleGfx[] = INCBIN_U8("graphics/deck_pokemon/hoppip/player_idle.4bpp"); 
+const u8 gHoppipOpponentIdleGfx[] = INCBIN_U8("graphics/deck_pokemon/hoppip/opponent_idle.4bpp"); 
+const u8 gHoppipPlayerAttackGfx[] = INCBIN_U8("graphics/deck_pokemon/hoppip/player_attack.4bpp"); 
+const u8 gHoppipOpponentAttackGfx[] = INCBIN_U8("graphics/deck_pokemon/hoppip/opponent_attack.4bpp"); 
+const u8 gHoppipPlayerHurtGfx[] = INCBIN_U8("graphics/deck_pokemon/hoppip/player_hurt.4bpp"); 
+const u8 gHoppipOpponentHurtGfx[] = INCBIN_U8("graphics/deck_pokemon/hoppip/opponent_hurt.4bpp"); 
+const u16 gHoppipObjectPal[] = INCBIN_U16("graphics/deck_pokemon/hoppip/player_idle.gbapal"); 
+ 
+const u8 gHoppipPortraitGfx[] = INCBIN_U8("graphics/deck_pokemon/hoppip/portrait_normal.4bpp"); 
+const u16 gHoppipPortraitPal[] = INCBIN_U16("graphics/deck_pokemon/hoppip/portrait_normal.gbapal");
 
 // Poochyena
 const u8 gPoochyenaPlayerIdleGfx[] = INCBIN_U8("graphics/deck_pokemon/poochyena/player_idle.4bpp");
