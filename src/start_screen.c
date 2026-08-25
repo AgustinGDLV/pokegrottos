@@ -522,7 +522,6 @@ static void NewSaveInitData(void)
     FlagSet(FLAG_RECEIVED_RUNNING_SHOES);
     FlagSet(FLAG_SYS_B_DASH);
     EnableNationalPokedex();
-    StringCopy(gSaveBlock2Ptr->playerName, COMPOUND_STRING("Dude"));
 }
 
 // Clear party, bag, and playtime.
@@ -538,6 +537,11 @@ static void NewRunInitData(void)
     gSaveBlock1Ptr->halfDay = 0;
     gSaveBlock1Ptr->day = 1;
     gSaveBlock1Ptr->facing = DIR_SOUTH;
+    // StringCopy(gSaveBlock2Ptr->playerName, COMPOUND_STRING("Player"));
+    gSaveBlock2Ptr->playerName[0] = EOS;
+    for (u32 i = 0; i < PLAYER_NAME_LENGTH; ++i)
+        DebugPrintf("%d: %d", i, gSaveBlock2Ptr->playerName);
+    gSaveBlock1Ptr->currentTemplateType = TEMPLATES_PEONY_TOWN;
     ClearBag();
     PlayTimeCounter_Reset();
 }

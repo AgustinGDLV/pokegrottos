@@ -191,8 +191,8 @@ static void AssignRoomMapIds(struct Floorplan* floorplan)
     u8 *shuffled = AllocZeroed(sizeof(u8) * poolSize);
 
     // Assign special room types if it hasn't been done yet.
-    if (floorplan->endrooms.top > 0)
-        AssignSpecialRoomTypes(floorplan);
+    // if (floorplan->endrooms.top > 0)
+    //     AssignSpecialRoomTypes(floorplan);
 
     // Shuffle the normal map pool.
     memcpy(shuffled, normalPool, sizeof(u8) * poolSize);
