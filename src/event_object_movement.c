@@ -9989,11 +9989,11 @@ bool8 IsElevationMismatchAt(u8 elevation, s16 x, s16 y)
 }
 
 static const u8 sElevationToSubpriority[] = {
-    115, 115, 83, 115, 83, 115, 83, 115, 83, 115, 83, 115, 83, 0, 0, 115
+    115, 115, 0, 115, 83, 115, 83, 115, 83, 115, 83, 115, 83, 0, 0, 115
 };
 
 static const u8 sElevationToPriority[] = {
-    2, 2, 2, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 0, 0, 2
+    2, 2, 3, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 0, 0, 2
 };
 
 static const u8 sElevationToSubspriteTableNum[] = {
