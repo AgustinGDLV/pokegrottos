@@ -23,10 +23,30 @@ u16 GetOverworldSpeciesInRoom(u32 index, u32 localId)
 
 void InitEnemyPartyFromEncounter(void) // used by callnative
 {
-    u32 enemyLevel = 5;
+    u32 level = 5; // TODO: Checkpoint-based levels
     for (u32 i = 0; i < PARTY_SIZE; ++i)
     {
-        CreateMon(&gEnemyParty[i], gEncountersInfo[gSpecialVar_0x8000][i], enemyLevel + (Random() % 2), USE_RANDOM_IVS, 0, 0, OT_ID_PLAYER_ID, 0);
+        CreateMon(&gEnemyParty[i], gEncountersInfo[gSpecialVar_0x8000][i], level + (Random() % 2), USE_RANDOM_IVS, 0, 0, OT_ID_PLAYER_ID, 0);
         SetMonData(&gEnemyParty[i], MON_DATA_POSITION, &i);
     }
 }
+
+void InitBossPartyFromEncounter(void) // used by callnative
+{
+    u32 species = gSpecialVar_0x8000;
+    u32 level = 5;
+    switch (species)
+    {
+        default:
+        case SPECIES_RATTATA:
+            level = 5;
+            break;
+    }
+    
+    for (u32 i = 0; i < PARTY_SIZE; ++i)
+    {
+        CreateMon(&gEnemyParty[i], gBossEncountersInfo[species][i], level + (Random() % 2), USE_RANDOM_IVS, 0, 0, OT_ID_PLAYER_ID, 0);
+        SetMonData(&gEnemyParty[i], MON_DATA_POSITION, &i);
+    }
+}
+

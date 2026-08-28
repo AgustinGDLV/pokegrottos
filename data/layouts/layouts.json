@@ -4924,8 +4924,8 @@
     {
       "id": "LAYOUT_FUNKY_FOREST_NORTH1",
       "name": "FunkyForestNorth1_Layout",
-      "width": 30,
-      "height": 30,
+      "width": 60,
+      "height": 60,
       "primary_tileset": "gTileset_Forest",
       "secondary_tileset": "gTileset_Unused2",
       "border_filepath": "data/layouts/FunkyForestNorth1/border.bin",

@@ -2006,7 +2006,7 @@ void CB2_ContinueSavedGame(void)
     gExitStairsMovementDisabled = TRUE;
     InitMatchCallCounters();
 
-    if (UseContinueGameWarp() == FALSE) // TOOD: Modify this trigger to support fixed locations.
+    if (UseContinueGameWarp() == FALSE && gSaveBlock1Ptr->location.mapGroup != MAP_GROUP(INTRO_SEQUENCE)) // Campsite or checkpoint
     {
         SetMainCallback2(CB2_InitTrailInterface);
     }

@@ -634,7 +634,7 @@ static void Task_GoToOverworldCamp(u8 taskId)
 static void Task_GoToCheckpoint(u8 taskId)
 {
     enum Checkpoint checkpoint = gTrailMapCheckpointData[gSaveBlock1Ptr->trailY/8][gSaveBlock1Ptr->trailX/8];
-    DebugPrintf("here");
+
     switch (gTasks[taskId].data[0])
     {
         case 0: // Route to correct step.
