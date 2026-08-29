@@ -199,17 +199,22 @@ static void Task_RunAwaySuccessful(u8 taskId)
         default:
         case 0:
             PrintStringToMessageBox(COMPOUND_STRING(""));
+            ++gTasks[taskId].tState;
+            break;
+        case 1:
             PrintStringToMessageBox(COMPOUND_STRING("You ran away!"));
             RemoveSelectionCursorOverBattler(GetDeckBattlerAtPos(B_SIDE_PLAYER, gDeckStruct.selectedPos));
             SetBattlerPortraitVisibility(FALSE);
             SetBattlerBobPause(TRUE);
-        case 1:
+            ++gTasks[taskId].tState;
+            break;
+        case 2:
             SetBattlerPortraitVisibility(FALSE);
             SetGpuReg(REG_OFFSET_BG0VOFS, DISPLAY_HEIGHT);
             SetGpuReg(REG_OFFSET_BG1VOFS, DISPLAY_HEIGHT);
             ++gTasks[taskId].tState;
             break;
-        case 2:
+        case 3:
             if (JOY_NEW(A_BUTTON) || JOY_NEW(B_BUTTON))
             {
                 PlaySE(SE_FLEE);
@@ -227,19 +232,22 @@ static void Task_RunAwayFailed(u8 taskId)
         default:
         case 0:
             PrintStringToMessageBox(COMPOUND_STRING(""));
+            ++gTasks[taskId].tState;
+            break;
+        case 1:
             PrintStringToMessageBox(COMPOUND_STRING("You couldn't run away!"));
             RemoveSelectionCursorOverBattler(GetDeckBattlerAtPos(B_SIDE_PLAYER, gDeckStruct.selectedPos));
             StartBattlerAnim(GetDeckBattlerAtPos(B_SIDE_PLAYER, gDeckStruct.selectedPos), ANIM_PAUSED);
             SetBattlerBobPause(TRUE);
             ++gTasks[taskId].tState;
             break;
-        case 1:
+        case 2:
             SetBattlerPortraitVisibility(FALSE);
             SetGpuReg(REG_OFFSET_BG0VOFS, DISPLAY_HEIGHT);
             SetGpuReg(REG_OFFSET_BG1VOFS, DISPLAY_HEIGHT);
             ++gTasks[taskId].tState;
             break;
-        case 2:
+        case 3:
             if (JOY_NEW(A_BUTTON) || JOY_NEW(B_BUTTON))
             {
                 PlaySE(SE_SELECT);
