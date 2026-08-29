@@ -29,13 +29,16 @@ u32 GetDeckBattlerAtPos(u32 side, enum BattlePosition position)
     if (side == B_SIDE_PLAYER)
     {
         for (enum BattleId battler = B_PLAYER_0; battler < B_OPPONENT_0; ++battler)
+        {
+            DebugPrintf("battler %d, species %d is pos %d", battler, gDeckMons[battler].species, gDeckMons[battler].pos);
             if (IsDeckBattlerAlive(battler) && gDeckMons[battler].pos == position)
                 return battler;
+        }
     }
     else
     {
         for (enum BattleId battler = B_OPPONENT_0; battler < MAX_DECK_BATTLERS_COUNT; ++battler)
-            if (IsDeckBattlerAlive(battler) != SPECIES_NONE && gDeckMons[battler].pos == position)
+            if (IsDeckBattlerAlive(battler) && gDeckMons[battler].pos == position)
                 return battler;
     }
     return MAX_DECK_BATTLERS_COUNT; // no luck
@@ -167,7 +170,7 @@ enum BattlePosition GetToMoveOnRight(u32 side, enum BattlePosition position)
     for (enum BattlePosition pos = position + 1; pos < POSITIONS_COUNT; ++pos)
     {
         battler = GetDeckBattlerAtPos(side, pos);
-        if (!gDeckMons[battler].hasMoved && gDeckMons[battler].hp != 0)
+        if (!gDeckMons[battler].hasMoved && IsDeckBattlerAlive(battler))
             return pos;
     }
     return POSITIONS_COUNT;

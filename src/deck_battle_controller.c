@@ -39,6 +39,9 @@
 static void Task_PlayerSelectAllyToSwap(u8 taskId);
 static void Task_PlayerSelectSingleOpponent(u8 taskId);
 static void Task_PlayerDisplayTargets(u8 taskId);
+static void Task_PlayerTryToRun(u8 taskId);
+static void Task_RunAwayFailed(u8 taskId);
+static void Task_RunAwaySuccessful(u8 taskId);
 
 #define tState  data[0]
 #define tTimer  data[1]
@@ -125,9 +128,15 @@ void Task_PlayerSelectAction(u8 taskId)
     {
         if (gDeckStruct.actionsCount == 0)
         {
-            BeginNormalPaletteFade(PALETTES_ALL, 0, 0, 0x10, RGB_BLACK);
-            gTasks[taskId].func = Task_CloseDeckBattle;
-            PlaySE(SE_SELECT);
+            if (gDeckStruct.isBossBattle)
+            {
+                PlaySE(SE_FAILURE);
+            }
+            else
+            {
+                PlaySE(SE_SELECT);
+                gTasks[taskId].func = Task_PlayerTryToRun;
+            }
         }
         else
         {
@@ -157,6 +166,87 @@ void Task_PlayerSelectAction(u8 taskId)
                 --gDeckStruct.actionsCount;
             }
         }
+    }
+}
+
+static void Task_PlayerTryToRun(u8 taskId)
+{
+    u32 playerPartyLevel = 0;
+    u32 enemyPartyLevel = 0;
+
+    for (u32 i = 0; i < PARTY_SIZE; ++i)
+    {
+        if (gDeckMons[i].hp != 0)
+            playerPartyLevel += gDeckMons[i].lvl;
+        if (gDeckMons[i+PARTY_SIZE].hp != 0)
+            enemyPartyLevel += gDeckMons[i+PARTY_SIZE].lvl;
+    }
+
+    if (playerPartyLevel > enemyPartyLevel + 5)
+        gTasks[taskId].func = Task_RunAwaySuccessful;
+    else if (playerPartyLevel >= enemyPartyLevel && (Random() % 100) > 80)
+        gTasks[taskId].func = Task_RunAwaySuccessful;
+    else if ((Random() % 100) > 40)
+        gTasks[taskId].func = Task_RunAwaySuccessful;
+    else
+        gTasks[taskId].func = Task_RunAwayFailed;        
+}
+
+static void Task_RunAwaySuccessful(u8 taskId)
+{
+    switch (gTasks[taskId].tState)
+    {
+        default:
+        case 0:
+            PrintStringToMessageBox(COMPOUND_STRING(""));
+            PrintStringToMessageBox(COMPOUND_STRING("You ran away!"));
+            RemoveSelectionCursorOverBattler(GetDeckBattlerAtPos(B_SIDE_PLAYER, gDeckStruct.selectedPos));
+            SetBattlerPortraitVisibility(FALSE);
+            SetBattlerBobPause(TRUE);
+        case 1:
+            SetBattlerPortraitVisibility(FALSE);
+            SetGpuReg(REG_OFFSET_BG0VOFS, DISPLAY_HEIGHT);
+            SetGpuReg(REG_OFFSET_BG1VOFS, DISPLAY_HEIGHT);
+            ++gTasks[taskId].tState;
+            break;
+        case 2:
+            if (JOY_NEW(A_BUTTON) || JOY_NEW(B_BUTTON))
+            {
+                PlaySE(SE_FLEE);
+                gTasks[taskId].func = Task_CloseDeckBattle;
+                FadeScreen(FADE_TO_BLACK, 0);
+            }
+            break;
+    }
+}
+
+static void Task_RunAwayFailed(u8 taskId)
+{
+    switch (gTasks[taskId].tState)
+    {
+        default:
+        case 0:
+            PrintStringToMessageBox(COMPOUND_STRING(""));
+            PrintStringToMessageBox(COMPOUND_STRING("You couldn't run away!"));
+            RemoveSelectionCursorOverBattler(GetDeckBattlerAtPos(B_SIDE_PLAYER, gDeckStruct.selectedPos));
+            StartBattlerAnim(GetDeckBattlerAtPos(B_SIDE_PLAYER, gDeckStruct.selectedPos), ANIM_PAUSED);
+            SetBattlerBobPause(TRUE);
+            ++gTasks[taskId].tState;
+            break;
+        case 1:
+            SetBattlerPortraitVisibility(FALSE);
+            SetGpuReg(REG_OFFSET_BG0VOFS, DISPLAY_HEIGHT);
+            SetGpuReg(REG_OFFSET_BG1VOFS, DISPLAY_HEIGHT);
+            ++gTasks[taskId].tState;
+            break;
+        case 2:
+            if (JOY_NEW(A_BUTTON) || JOY_NEW(B_BUTTON))
+            {
+                PlaySE(SE_SELECT);
+                gTasks[taskId].tState = 0;
+                gTasks[taskId].func = Task_PrepareForActionPhase;
+            }
+            break;
     }
 }
 
@@ -226,7 +316,7 @@ static void Task_PlayerSelectAllyToSwap(u8 taskId)
         gBattlerTarget = GetDeckBattlerAtPos(B_SIDE_PLAYER, gDeckStruct.selectedPos);
         if (!IsDeckBattlerAlive(gBattlerTarget))
         {
-            // Deselect battler and mark as swapped with transparency.
+            // Deselect battler.
             PlaySE(SE_SELECT);
             RemoveSwapSelectionCursor();
 
@@ -239,7 +329,7 @@ static void Task_PlayerSelectAllyToSwap(u8 taskId)
 
             // Prepare to select next battler for action.
             gDeckStruct.selectedPos = GetLeftmostPositionToMove(B_SIDE_PLAYER);
-            battler = GetDeckBattlerAtPos(B_SIDE_PLAYER, gDeckStruct.selectedPos);
+            gBattlerAttacker = battler = GetDeckBattlerAtPos(B_SIDE_PLAYER, gDeckStruct.selectedPos);
             UpdateBattlerSelection(battler, TRUE);
             DisplayActionSelectionInfo(battler);
 
