@@ -5,6 +5,7 @@
 #include "event_object_movement.h"
 #include "map_gen.h"
 #include "random.h"
+#include "constants/songs.h"
 
 #include "data/encounters.h"
 
@@ -29,17 +30,24 @@ void InitEnemyPartyFromEncounter(void) // used by callnative
         CreateMon(&gEnemyParty[i], gEncountersInfo[gSpecialVar_0x8000][i], level + (Random() % 2), USE_RANDOM_IVS, 0, 0, OT_ID_PLAYER_ID, 0);
         SetMonData(&gEnemyParty[i], MON_DATA_POSITION, &i);
     }
+    gDeckStruct.isBossBattle = FALSE;
+    gDeckStruct.musicOverride = MUS_NONE;
 }
 
 void InitBossPartyFromEncounter(void) // used by callnative
 {
     u32 species = gSpecialVar_0x8000;
     u32 level = 5;
+
     switch (species)
     {
         default:
         case SPECIES_RATTATA:
             level = 5;
+            break;
+        case SPECIES_LOTAD:
+            level = 20;
+            gDeckStruct.musicOverride = MUS_VS_CHAMPION;
             break;
     }
     
@@ -48,5 +56,7 @@ void InitBossPartyFromEncounter(void) // used by callnative
         CreateMon(&gEnemyParty[i], gBossEncountersInfo[species][i], level + (Random() % 2), USE_RANDOM_IVS, 0, 0, OT_ID_PLAYER_ID, 0);
         SetMonData(&gEnemyParty[i], MON_DATA_POSITION, &i);
     }
+
+    gDeckStruct.isBossBattle = TRUE;
 }
 

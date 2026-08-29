@@ -114,6 +114,9 @@ struct DeckBattleStruct
     bool8 isSelectionPhase;
 
     s32 lastHitDamage;
+
+    bool8 isBossBattle;
+    u32 musicOverride;
 };
 
 enum DeckBattleBackgroundId

@@ -135,9 +135,19 @@ static void VBlankCB2_DeckBattle(void)
     TransferPlttBuffer();
 }
 
+static void PlayDeckBattleMusic(void)
+{
+    if (gDeckStruct.musicOverride != MUS_NONE)
+        PlayBGM(gDeckStruct.musicOverride);
+    else if (gDeckStruct.isBossBattle)
+        PlayBGM(MUS_VS_RIVAL);
+    else
+        PlayBGM(MUS_VS_WILD);
+}
+
 void OpenDeckBattle(void)
 {
-    PlayBGM(MUS_VS_WILD);
+    PlayDeckBattleMusic();
     FadeScreen(FADE_TO_BLACK, 0);
     SetMainCallback2(CB2_OpenDeckBattleCustom);
 }

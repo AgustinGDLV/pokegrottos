@@ -933,6 +933,8 @@ gGBSSongTable::
 	song_gbs MUS_ROUTE119, gbs_Music_Route119, 0, 0
 	song_gbs MUS_RG_VIRIDIAN_FOREST, gbs_Music_SantaluneForest, 0, 0
 	song_gbs MUS_ROUTE101, gbs_Music_UnovaRoute1, 0, 0
+	song_gbs MUS_VS_CHAMPION, gbs_Music_MirorBBattle, 0, 0
+	song_gbs MUS_VS_RIVAL, gbs_Music_BattleSim, 0, 0
 	.4byte 0xFFFFFFFF
 
 	.align 2
