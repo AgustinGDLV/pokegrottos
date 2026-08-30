@@ -511,6 +511,7 @@ gbs_Music_MirorBBattle_Ch4:
 	gbs_switch 3
 Music_MirorBBattle_Ch4:
 	toggle_noise 2
+	volume 4, 4
 
 Music_MirorBBattle_Ch4_loop:
 	drum_speed 12

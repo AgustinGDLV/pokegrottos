@@ -66,7 +66,7 @@ FunkyForestNorth1_RattataText:
 
 FunkyForestNorth1_BugCatcher1_Text:
 	.string "Are you on your way\n"
-	.string "to Orchid City?\n"
+	.string "to Orchid City?\p"
 	.string "I think only bug catchers\n"
 	.string "can handle this forest!$"
 
