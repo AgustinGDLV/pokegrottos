@@ -30,7 +30,6 @@ u32 GetDeckBattlerAtPos(u32 side, enum BattlePosition position)
     {
         for (enum BattleId battler = B_PLAYER_0; battler < B_OPPONENT_0; ++battler)
         {
-            DebugPrintf("battler %d, species %d is pos %d", battler, gDeckMons[battler].species, gDeckMons[battler].pos);
             if (IsDeckBattlerAlive(battler) && gDeckMons[battler].pos == position)
                 return battler;
         }

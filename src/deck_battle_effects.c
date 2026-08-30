@@ -149,7 +149,6 @@ static void ExecuteHealEffect(void)
 
 void Task_ExecuteMove(u8 taskId)
 {
-    DebugPrintf("state: %d", gTasks[taskId].tState);
     switch (gTasks[taskId].tState)
     {
     case 0: // Do attack animation.

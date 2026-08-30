@@ -1357,7 +1357,6 @@ static void PlayCollisionSoundIfNotFacingWarp(u8 direction)
         }
         PlaySE(SE_WALL_HIT);
     }
-    DebugPrintf("collide!");
 }
 
 void GetXYCoordsOneStepInFrontOfPlayer(s16 *x, s16 *y)

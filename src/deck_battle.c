@@ -56,6 +56,7 @@ static void ResetTurnValues(void);
 static void Task_HandleBattleVictory(u8 taskId);
 static void Task_HandleBattleLoss(u8 taskId);
 static void Task_HandleCaughtBattler(u8 taskId);
+static void Task_HandleTurnEndEffects(u8 taskId);
 
 static u32 GetBattleSpeedScale(void);
 
@@ -208,8 +209,9 @@ void CB2_OpenDeckBattleCustom(void)
     }
 }
 
-#define tState  data[0]
-#define tTimer  data[1]
+#define tState          data[0]
+#define tTimer          data[1]
+#define tTurnEndState   data[3]
 
 // Fades in battle UI and sets up remaining graphics.
 static void Task_OpenDeckBattle(u8 taskId)
@@ -308,6 +310,10 @@ void Task_CheckFaintAndContinue(u8 taskId)
         PlaySE(SE_FAINT);
         gTasks[taskId].func = Task_WaitForFaintAnim;
     }
+    else if (gTasks[taskId].tTurnEndState > 0) // TODO: There's probably better ways to route here.
+    {
+        gTasks[taskId].func = Task_HandleTurnEndEffects;
+    }
     else
     {
         gTasks[taskId].func = Task_ExecuteQueuedActionOrEnd;
@@ -328,12 +334,20 @@ void Task_CheckForBattleEnd(u8 taskId)
     if (!IsBattlerAliveOnSide(B_SIDE_PLAYER))
     {
         gBattleOutcome = B_OUTCOME_LOST;
+        gTasks[taskId].tTimer = 0;
+        gTasks[taskId].tState = 0;
         gTasks[taskId].func = Task_HandleBattleLoss;
     }
     else if (!IsBattlerAliveOnSide(B_SIDE_OPPONENT))
     {
         gBattleOutcome = B_OUTCOME_WON;
+        gTasks[taskId].tTimer = 0;
+        gTasks[taskId].tState = 0;
         gTasks[taskId].func = Task_HandleBattleVictory;
+    }
+    else if (gTasks[taskId].tTurnEndState > 0) // TODO: There's probably better ways to route here.
+    {
+        gTasks[taskId].func = Task_HandleTurnEndEffects;
     }
     else
     {
@@ -359,43 +373,13 @@ void Task_ExecuteQueuedActionOrEnd(u8 taskId)
             gTasks[taskId].func = Task_ExecuteSwap;
         ++gDeckStruct.executedCount;
     }
-    // Otherwise, return to action selection.
+    // Otherwise, run through turn end effects.
     else
     {
-        ResetTurnValues();
-        gDeckStruct.turns++;
-        gDeckStruct.actingSide ^= 1; // get opposite side
-        gDeckStruct.isSelectionPhase = TRUE;
-        if (gDeckStruct.actingSide == B_SIDE_PLAYER)
-        {
-            // Return to auto battle if enabled.
-            if (gSaveBlock2Ptr->optionsBattleStyle == OPTIONS_BATTLE_STYLE_AUTO)
-            {
-                SetGpuReg(REG_OFFSET_BG0VOFS, DISPLAY_HEIGHT);
-                SetGpuReg(REG_OFFSET_BG1VOFS, DISPLAY_HEIGHT);
-                gTasks[taskId].func = Task_AutoSelectAction;
-                gTasks[taskId].tState = 0;
-                gTasks[taskId].tTimer = 0;
-            }
-            // Or set up UI for action selection.
-            else
-            {
-                gDeckStruct.selectedPos = GetLeftmostPositionToMove(B_SIDE_PLAYER);
-                u32 battler = GetDeckBattlerAtPos(B_SIDE_PLAYER, gDeckStruct.selectedPos);
-                UpdateBattlerSelection(battler, TRUE);
-                DisplayActionSelectionInfo(battler);
-
-                SetBattlerBobPause(FALSE);
-                SetBattlerPortraitVisibility(TRUE);
-                SetGpuReg(REG_OFFSET_BG0VOFS, 0);
-                SetGpuReg(REG_OFFSET_BG1VOFS, 0);
-                gTasks[taskId].func = Task_PlayerSelectAction;
-            }
-        }
-        else
-        {
-            gTasks[taskId].func = Task_OpponentSelectAction;
-        }
+        gTasks[taskId].tState = 0;
+        gTasks[taskId].tTimer = 0;
+        gTasks[taskId].tTurnEndState = 0;
+        gTasks[taskId].func = Task_HandleTurnEndEffects;
     }
 }
 
@@ -698,8 +682,115 @@ static void Task_HandleCaughtBattler(u8 taskId)
     }
 }
 
+// Calculate end of turn fatigue damage.
+static u32 GetTurnEndFatigueDamage(u32 turns)
+{
+    if (turns < 10)
+        return 0;
+    if (turns < 12)
+        return 10;
+    if (turns < 14)
+        return 20;
+    if (turns < 18)
+        return 50;
+    else
+        return 100;
+}
+
+// Execute any turn end effects (e.g., poison, fatigue, sleep).
+static void Task_HandleTurnEndEffects(u8 taskId)
+{
+    u32 damage = 0;
+    switch (gTasks[taskId].tTurnEndState)
+    {
+    case TURN_END_CHECK_FATIGUE:
+        if (gDeckStruct.turns >= 10)
+        {
+            PrintStringToMessageBox(COMPOUND_STRING("Battlers are weakened by\nfatigue…"));
+            ++gTasks[taskId].tTurnEndState;
+            return;
+        }
+        else
+        {
+            gTasks[taskId].tTurnEndState = TURN_END_POISON;
+        }
+        break;
+    case TURN_END_FATIGUE:
+        if (++gTasks[taskId].tTimer > 10 && JOY_NEW(A_BUTTON))
+        {
+            for (u32 battler = 0; battler < MAX_DECK_BATTLERS_COUNT; ++battler)
+            {
+                if (IsDeckBattlerAlive(battler))
+                {
+                    StartBattlerAnim(battler, ANIM_HURT);
+                    damage = GetTurnEndFatigueDamage(gDeckStruct.turns);
+                    UpdateBattlerHP(battler, damage);
+                }
+            }
+            PlaySE(SE_EFFECTIVE);
+            gTasks[taskId].tTimer = 0;
+            gTasks[taskId].tTurnEndState = TURN_END_PAUSE;
+            gTasks[taskId].tState = TURN_END_POISON; // this is a bug waiting to happen
+            gTasks[taskId].func = Task_CheckFaintAndContinue;
+        }
+        break;
+    case TURN_END_POISON: // TODO
+        ++gTasks[taskId].tTurnEndState;
+        break;
+    case TURN_END_SLEEP: // TODO
+        ++gTasks[taskId].tTurnEndState;
+        break;
+    case TURN_END_RESET_STATUS: // TODO
+        ++gTasks[taskId].tTurnEndState;
+        break;
+    default:
+    case TURN_END_COMPLETED: // TODO
+        ResetTurnValues();
+        gDeckStruct.turns++;
+        gDeckStruct.actingSide ^= 1; // get opposite side
+        gDeckStruct.isSelectionPhase = TRUE;
+        gTasks[taskId].tState = 0;
+        gTasks[taskId].tTimer = 0;
+        gTasks[taskId].tTurnEndState = 0;
+        if (gDeckStruct.actingSide == B_SIDE_PLAYER)
+        {
+            // Return to auto battle if enabled.
+            if (gSaveBlock2Ptr->optionsBattleStyle == OPTIONS_BATTLE_STYLE_AUTO)
+            {
+                SetGpuReg(REG_OFFSET_BG0VOFS, DISPLAY_HEIGHT);
+                SetGpuReg(REG_OFFSET_BG1VOFS, DISPLAY_HEIGHT);
+                gTasks[taskId].func = Task_AutoSelectAction;
+            }
+            // Or set up UI for action selection.
+            else
+            {
+                gDeckStruct.selectedPos = GetLeftmostPositionToMove(B_SIDE_PLAYER);
+                u32 battler = GetDeckBattlerAtPos(B_SIDE_PLAYER, gDeckStruct.selectedPos);
+                UpdateBattlerSelection(battler, TRUE);
+                DisplayActionSelectionInfo(battler);
+
+                SetBattlerBobPause(FALSE);
+                SetBattlerPortraitVisibility(TRUE);
+                SetGpuReg(REG_OFFSET_BG0VOFS, 0);
+                SetGpuReg(REG_OFFSET_BG1VOFS, 0);
+                gTasks[taskId].func = Task_PlayerSelectAction;
+            }
+        }
+        else
+        {
+            gTasks[taskId].func = Task_OpponentSelectAction;
+        }
+        break;
+    case TURN_END_PAUSE: // Allow enough time for animations to reset.
+        if (++gTasks[taskId].tTimer >= 60)
+            gTasks[taskId].tTurnEndState = gTasks[taskId].tState;
+        break;
+    }
+}
+
 #undef tState
 #undef tTimer
+#undef tTurnEndState
 
 // Initialize gDeckStruct to start battle with clean data.
 static void InitBattleStructData(void)

@@ -91,6 +91,15 @@ struct BattleAction
 #define TARGET_ALL_ALLIES           (1 << 5)
 #define TARGET_USER                 (1 << 6)
 
+// turn end constants
+#define TURN_END_CHECK_FATIGUE  0
+#define TURN_END_FATIGUE        1
+#define TURN_END_POISON         2
+#define TURN_END_SLEEP          3
+#define TURN_END_RESET_STATUS   4
+#define TURN_END_COMPLETED      5
+#define TURN_END_PAUSE          6
+
 struct DeckMoveInfo
 {
     const u8* name;
