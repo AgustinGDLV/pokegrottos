@@ -679,6 +679,8 @@ static void Task_GoToCheckpoint(u8 taskId)
             break;
         }
         case 3: // Autosave.
+            SetContinueGameWarpStatus();
+            SetWarpData(&gSaveBlock1Ptr->continueGameWarp, MAP_GROUP(INTRO_SEQUENCE), gCheckpointData[checkpoint].mapNum, gCheckpointData[checkpoint].warpId[gSaveBlock1Ptr->facing], 0, 0);
             TrySavingData(SAVE_LINK);
             ++gTasks[taskId].data[0];
             break;
@@ -697,6 +699,7 @@ static void Task_GoToCheckpoint(u8 taskId)
                 PlayRainStoppingSoundEffect();
                 SetWarpDestination(MAP_GROUP(INTRO_SEQUENCE), gCheckpointData[checkpoint].mapNum, gCheckpointData[checkpoint].warpId[gSaveBlock1Ptr->facing], 0, 0);
                 WarpIntoMap();
+                ClearContinueGameWarpStatus();
                 SetMainCallback2(CB2_LoadMap);
 
                 // Clean up data.
